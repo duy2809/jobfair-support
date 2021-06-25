@@ -1,0 +1,74 @@
+#---------------------------------------------------------------------
+# MAIN SCRIPT
+#---------------------------------------------------------------------
+
+stages:
+  - install
+  - check
+
+jobs:
+  - name: install:yarn
+    stage: install
+    workspace: shared
+    image: node:12-alpine
+    script:
+      - apk add git --no-cache
+      - yarn
+    cache:
+      - key: node_modules_$CI_BRANCH
+        paths:
+        - web/node_modules
+
+  - name: install:composer
+    stage: install
+    workspace: shared
+    image: composer:1.9
+    script:
+      - composer install -d api
+    cache:
+      - key: vendor_$CI_BRANCH
+        paths:
+          - api/vendor
+
+  - name: check:eslint
+    stage: check
+    workspace: shared
+    image: node:12-alpine
+    script:
+      - yarn lint
+
+  - name: check:phpcs
+    stage: check
+    workspace: shared
+    image: sunasteriskrnd/php-workspace:7.3
+    script:
+      - composer sniff -d api
+
+  - name: check:phpunit
+    stage: check
+    workspace: shared
+    image: sunasteriskrnd/php-workspace:7.3
+    allow_failure: true
+    services:
+      - name: mysql
+        image: mariadb:10
+        environment:
+          MYSQL_DATABASE: jobfair_support
+          MYSQL_USER: jobfair_support
+          MYSQL_PASSWORD: secret
+          MYSQL_ROOT_PASSWORD: secret
+    script:
+      - docker-php-ext-disable xdebug
+      - cd api
+      - cp .env.example .env
+      - php artisan key:generate
+      - php artisan migrate
+      - composer coverage
+    artifacts:
+      name: PHPUnit
+      paths:
+        - api/coverage
+      expires_in: 3 days
+    coverage:
+      type: clover
+      path: api/coverage.xml
