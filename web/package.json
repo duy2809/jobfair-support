@@ -55,7 +55,7 @@
     "@zeit/next-sass": "^1.0.1",
     "autoprefixer": "^9",
     "babel-eslint": "^10.1.0",
-    "cypress": "^7.5.0",
+    "cypress": "^7.6.0",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "7.28.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -68,7 +68,7 @@
     "husky": "^4.2.3",
     "next-compose-plugins": "^2.2.1",
     "next-progressbar": "^1.0.0",
-    "node-sass": "4.13.0",
+    "node-sass": "^6.0.1",
     "postcss": "^7",
     "standard-version": "^9.3.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
@@ -85,5 +85,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "description": "The web app is based in Next.js + Express",
+  "main": "commitlint.config.js",
+  "author": "",
+  "license": "ISC"
 }
