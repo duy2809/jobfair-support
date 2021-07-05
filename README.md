@@ -18,7 +18,7 @@ In your terminal window, open the hosts file using your favorite text editor:
 
 ## Services
 ```plain
-mariadb
+mysql
 redis
 php
 web
