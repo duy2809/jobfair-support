@@ -95,6 +95,11 @@ HOSTS_FILE=/etc/hosts
 ```
 
 ## Run container
+```
+cd docker-php-development
+./project up
+```
+
 - API:
 ```
 cd docker-php-development
