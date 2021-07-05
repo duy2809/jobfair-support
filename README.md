@@ -17,6 +17,8 @@ In your terminal window, open the hosts file using your favorite text editor:
 
 
 ## Services
+In folder docker-php-development
+Create file `services`
 ```plain
 mysql
 redis
@@ -107,6 +109,7 @@ cd docker-php-development
 /php # composer install
 /php # php artisan key:generate
 /php # php artisan migrate
+/php # chmod -R 777 storage/
 ```
 
 - Web:
