@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class Addconstraint extends Migration
 {
@@ -11,6 +13,10 @@ class Addconstraint extends Migration
      */
     public function up()
     {
+        Schema::table('jobfairs', function ($table) {
+            $table->foreign('jobfair_admin_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
+        });
     }
 
     /**
@@ -20,5 +26,10 @@ class Addconstraint extends Migration
      */
     public function down()
     {
+        Schema::table('jobfairs', function ($table) {
+            $table->dropForeign('jobfair_admin_id');
+            $table->dropForeign('schedule_id');
+        });
+        
     }
 }

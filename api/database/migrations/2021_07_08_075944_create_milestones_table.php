@@ -15,7 +15,11 @@ class CreateMilestonesTable extends Migration
     {
         Schema::create('milestones', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('name');
+            $table->date('period');
+            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('job_fair_id');
+            $table->foreign('job_fair_id')->references('id')->on('jobfairs')->onDelete('cascade');
         });
     }
 
