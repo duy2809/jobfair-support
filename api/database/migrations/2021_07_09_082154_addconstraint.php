@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class Addconstraint extends Migration
@@ -30,6 +29,5 @@ class Addconstraint extends Migration
             $table->dropForeign('jobfair_admin_id');
             $table->dropForeign('schedule_id');
         });
-        
     }
 }
