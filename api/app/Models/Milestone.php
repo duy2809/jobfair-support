@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Milestone extends Model
 {
     use HasFactory;
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    public function schedule()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
