@@ -46,7 +46,7 @@ export default function Navbar() {
   return (
     <div className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
-        <div className="w-20"><a><img src="images/logo.png" alt="logo" /></a></div>
+        <div className="w-20"><a><img src="/logo.png" alt="logo" /></a></div>
         <div className="flex items-center">
           <div className="px-4"><a>ダッシュボード</a></div>
           <div className="px-4"><a>JF</a></div>
