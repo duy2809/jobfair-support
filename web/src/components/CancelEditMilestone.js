@@ -31,7 +31,7 @@ class CancelEditMilestone extends React.Component {
         </Button>
         <Modal
           visible={visible}
-          title="Title"
+          title="マイルストーン編集"
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
