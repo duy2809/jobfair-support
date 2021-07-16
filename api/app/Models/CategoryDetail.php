@@ -9,8 +9,4 @@ class CategoryDetail extends Model
 {
     use HasFactory;
 
-    public function categoryDetailable()
-    {
-        return $this->morphTo();
-    }
 }

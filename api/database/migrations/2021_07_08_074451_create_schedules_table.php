@@ -16,8 +16,8 @@ class CreateSchedulesTable extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('job_fair_id');
-            $table->foreign('job_fair_id')->references('id')->on('jobfairs')->onDelete('cascade');
+            $table->unsignedBigInteger('jobfair_id')->nullable();
+            $table->foreign('jobfair_id')->references('id')->on('jobfairs')->onDelete('cascade');
         });
     }
 

@@ -22,7 +22,6 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('role');
             $table->unsignedInteger('number_of_record');
             $table->string('chatwork_id');
-            $table->string('chatwork_room_id');
             $table->unsignedInteger('phone_number');
         });
     }

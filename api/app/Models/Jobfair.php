@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Jobfair extends Model
 {
     use HasFactory;
-
-    public function documents()
-    {
-        return $this->morphMany(Document::class, 'documentable');
+    public $timestamps = false;
+   
+    public function schedule() {
+        return $this->hasOne(Schedule::class);
     }
+
 }

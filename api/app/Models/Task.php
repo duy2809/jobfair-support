@@ -24,8 +24,9 @@ class Task extends Model
         return $this->morphMany(Document::class, 'commentable');
     }
 
-    public function categoryDetail()
-    {
-        return $this->morphOne(CategoryDetail::class, 'categoryDetailable');
+    public function categories() {
+        return $this->morphToMany(Category::class, 'categoriable');
     }
+
+   
 }

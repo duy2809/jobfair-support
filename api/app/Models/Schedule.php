@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Schedules extends Model
+class Schedule extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
 
     public function templateMilestones()
     {
@@ -19,6 +21,10 @@ class Schedules extends Model
         return $this->hasMany(Milestone::class);
     }
 
+    public function tasks() {
+        return $this->hasManyThrough(Task::class, Milestone::class);
+    }
+
     public function users()
     {
         return $this->belongsToMany(User::class);
@@ -27,5 +33,14 @@ class Schedules extends Model
     public function templateDocuments()
     {
         return $this->morphMany(TemplateDocument::class, 'templateDocumentable');
+    }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function jobfair() {
+        return $this->belongsTo(Jobfair::class);
     }
 }

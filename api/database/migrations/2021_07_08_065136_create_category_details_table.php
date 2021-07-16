@@ -15,7 +15,6 @@ class CreateCategoryDetailsTable extends Migration
     {
         Schema::create('category_details', function (Blueprint $table) {
             $table->id();
-            $table->morphs('category_detail');
             $table->string('category_item');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
