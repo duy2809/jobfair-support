@@ -23,7 +23,7 @@ class MilestoneFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
             'schedule_id' => Schedule::factory(),
             'period' => $this->faker->numberBetween(1, 50)
         ];

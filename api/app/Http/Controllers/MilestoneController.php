@@ -26,7 +26,7 @@ class MilestoneController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:App\Models\Milestone,name|regex:/^[^\s]*$/',
             'period' => 'required|numeric|min:1|max:3000',
             'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id'
         ]);
@@ -55,7 +55,7 @@ class MilestoneController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'name' => 'max:255',
+            'name' => 'max:255|unique:App\Models\Milestone,name|regex:/^[^\s]*$/',
             'period' => 'numeric|min:1|max:3000',
             'schedule_id' => 'numeric|exists:App\Models\Schedule,id'
         ]);
