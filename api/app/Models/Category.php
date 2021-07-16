@@ -9,11 +9,13 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->morphedByMany(Task::class, 'categoriable');
     }
 
-    public function templateTasks() {
+    public function templateTasks()
+    {
         return $this->morphedByMany(TemplateTask::class, 'categoriable');
     }
 }

@@ -19,7 +19,8 @@ class TemplateTask extends Model
         return $this->morphMany(TemplateDocuments::class, 'templateDocumentable');
     }
 
-    public function categories() {
+    public function categories()
+    {
         return $this->morphToMany(Category::class, 'categoriable');
     }
 }

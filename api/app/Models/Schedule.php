@@ -21,7 +21,8 @@ class Schedule extends Model
         return $this->hasMany(Milestone::class);
     }
 
-    public function tasks() {
+    public function tasks()
+    {
         return $this->hasManyThrough(Task::class, Milestone::class);
     }
 
@@ -40,7 +41,8 @@ class Schedule extends Model
         return $this->morphMany(Document::class, 'documentable');
     }
 
-    public function jobfair() {
+    public function jobfair()
+    {
         return $this->belongsTo(Jobfair::class);
     }
 }

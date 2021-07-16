@@ -9,9 +9,9 @@ class Jobfair extends Model
 {
     use HasFactory;
     public $timestamps = false;
-   
-    public function schedule() {
+
+    public function schedule()
+    {
         return $this->hasOne(Schedule::class);
     }
-
 }
