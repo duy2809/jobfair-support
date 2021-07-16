@@ -50,8 +50,9 @@ const LoginPage = () => {
       
     </Select>
   );
-  const specialCharRegex = new RegExp("[ ]");
-
+  const specialCharRegex = new RegExp("[ 　]");
+   
+  const blockInvalidChar = e => ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault();
 
   return (
         <div>
@@ -137,7 +138,12 @@ const LoginPage = () => {
                         }),
                     ]}
                     >
-                     <Input type="number" addonAfter={selectAfter} defaultValue="" onChange={onValueTimeChange} />
+                     <Input 
+                        type="number"
+                        onKeyDown={blockInvalidChar}
+                        addonAfter={selectAfter} defaultValue="" onChange={onValueTimeChange} />
+                       
+
                 </Form.Item>
 
                 <Modal
@@ -158,7 +164,8 @@ const LoginPage = () => {
                 <div className="flex justify-between my-10 ">
                     <CancelEditMilestone></CancelEditMilestone>
 
-                    {(nameInput !== '' && timeInput !== '' && timeInput <=5 && checkSpace == false  )? (
+                    {/* && timeInput <=5 */}
+                    {(nameInput !== '' && timeInput !== ''  && checkSpace == false  )? (
                     <Button
                         type="primary"
                         htmlType="submit"
