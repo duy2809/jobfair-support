@@ -72,11 +72,11 @@ export default function Navbar() {
         </div>
         <div className="flex px-3 items-center">
           <div className="px-2 border-4 border-white user-icon-container py-1"><UserOutlined className="text-xl user-icon" /></div>
-          <div className="px-5">
+          {/* <div className="px-5">
             <Dropdown overlay={userInformations} trigger={['click']}>
               <div className="cursor-pointer">名前を使用</div>
             </Dropdown>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
