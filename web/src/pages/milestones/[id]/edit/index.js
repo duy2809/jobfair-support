@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, Select, Modal, notification } from 'antd'
+import { Form, Input, InputNumber,Button, Select, Modal, notification } from 'antd'
 import NavBar from './../../../../components/navbar'
 import CancelEditMilestone from './../../../../components/CancelEditMilestone'
 import { useRouter } from "next/router"
@@ -9,6 +9,7 @@ const LoginPage = () => {
     // {query['id']}
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
+  const [checkSpace, setcheckSpace] = useState(false)
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { Option } = Select;
@@ -16,8 +17,8 @@ const LoginPage = () => {
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: 'メールが送信されました。',
-      description: 'メールを確認してください。',
+      message: '変更は正常に保存されました。',
+      
     })
   }
 
@@ -49,13 +50,16 @@ const LoginPage = () => {
       
     </Select>
   );
+  const specialCharRegex = new RegExp("[ ]");
+
 
   return (
         <div>
             <NavBar></NavBar>
+            <p className="text-4xl my-12 mx-12">マイルストーン編集</p>
+
             <div className="h-screen flex flex-col items-center pt-10 bg-white ">
             
-            <p className="text-4xl my-12">マイルストーン編集</p>
             <Form
                 name="basic"
                 labelCol={{
@@ -76,8 +80,24 @@ const LoginPage = () => {
                     rules={[
                         {
                             required: true,
-                            message: '必須項目で入力されていない項目があります。'
+                            message: 'この項目は必須です。'
                         },
+                        // {
+                        //     whitespace: true,
+                        //     message: 'no space。',
+                            
+                        // },
+                        () => ({
+                            validator(_, value) {
+                               
+                                if (specialCharRegex.test(value)) {
+                                    setcheckSpace(true);
+                                return Promise.reject("マイルストーン名はスペースが含まれていません。");
+                                }
+                                
+                                return Promise.resolve();
+                            },
+                        }),
                     ]}
                     >
                     <Input
@@ -94,36 +114,41 @@ const LoginPage = () => {
                         {
                     
                             required: true,
-                            message: '必須項目で入力されていない項目があります。',
+                            message: 'この項目は必須です。',
                             
 
                         },
-                        {
-                            pattern: /^(?:\d*)$/,
-                            message: "数字を入力してください",
-                        },
+                        
+                        // {
+                        //     pattern: /^(?:\d*)$/,
+                        //     message: "数字を入力してください",
+                        // },
                         () => ({
                             validator(_, value) {
                                
-                                if (value > 5) {
-                                return Promise.reject("Zip code can't be more than 5 ");
+                                // if (value > 5) {
+                                // return Promise.reject("Zip code can't be more than 5 ");
+                                // }
+                                if (value < 0) {
+                                return Promise.reject("半角の整数で入力してください。");
                                 }
                                 return Promise.resolve();
                             },
                         }),
                     ]}
                     >
-                     <Input addonAfter={selectAfter} defaultValue="" onChange={onValueTimeChange} />
+                     <Input type="number" addonAfter={selectAfter} defaultValue="" onChange={onValueTimeChange} />
                 </Form.Item>
 
                 <Modal
-                    title="ログインパスワード変更"
+                    title="マイルストーン編集"
                     visible={isModalVisible}
                     onOk={handleOk}
                     onCancel={handleCancel}
-                    cancelText="キャンセル"
+                    cancelText="いいえ"
+                    okText="はい"
                     >
-                    <p className="mb-5">メールアドレス: </p>
+                    <p className="mb-5">このまま保存してもよろしいですか？ </p>
                 </Modal>
 
             
@@ -133,7 +158,7 @@ const LoginPage = () => {
                 <div className="flex justify-between my-10 ">
                     <CancelEditMilestone></CancelEditMilestone>
 
-                    {(nameInput !== '' && timeInput !== '' && timeInput <=5  )? (
+                    {(nameInput !== '' && timeInput !== '' && timeInput <=5 && checkSpace == false  )? (
                     <Button
                         type="primary"
                         htmlType="submit"
