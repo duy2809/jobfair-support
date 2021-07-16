@@ -9,6 +9,8 @@ class Milestone extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     public function tasks()
     {
         return $this->hasMany(Task::class);
@@ -16,6 +18,6 @@ class Milestone extends Model
 
     public function schedule()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->belongsTo(Schedule::class);
     }
 }

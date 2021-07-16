@@ -20,7 +20,7 @@ class CreateJobfairsTable extends Migration
             $table->unsignedInteger('number_of_students');
             $table->unsignedInteger('number_of_companies');
             $table->unsignedBigInteger('jobfair_admin_id');
-            $table->unsignedBigInteger('schedule_id');
+            $table->foreign('jobfair_admin_id')->references('id')->on('users');
         });
     }
 

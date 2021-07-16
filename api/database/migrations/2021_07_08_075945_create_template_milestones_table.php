@@ -17,7 +17,7 @@ class CreateTemplateMilestonesTable extends Migration
             $table->id();
             $table->string('milestone_name');
             $table->date('period');
-            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });
     }

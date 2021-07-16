@@ -17,14 +17,11 @@ class CreateTemplateTasksTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('relation_task_id');
-            $table->date('start_time');
-            $table->date('end_time');
             $table->unsignedInteger('number_of_member');
-            $table->date('time');
             $table->unsignedSmallInteger('status');
             $table->boolean('remind_remember');
             $table->text('description_of_detail');
-            $table->unsignedBigInteger('milestone_id');
+            $table->unsignedBigInteger('milestone_id')->nullable();
             $table->foreign('milestone_id')->references('id')->on('template_milestones')->onDelete('cascade');
         });
     }
