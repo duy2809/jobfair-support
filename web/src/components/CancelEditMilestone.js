@@ -1,5 +1,5 @@
-import { Modal, Button } from 'antd';
-import React from 'react';
+import { Modal, Button } from 'antd'
+import React from 'react'
 
 class CancelEditMilestone extends React.Component {
   state = {
@@ -10,24 +10,23 @@ class CancelEditMilestone extends React.Component {
   showModal = () => {
     this.setState({
       visible: true,
-    });
+    })
   };
 
   handleOk = () => {
-    this.setState({ loading: true });
-
+    this.setState({ loading: true })
   };
 
   handleCancel = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false })
   };
 
   render() {
-    const { visible, loading } = this.state;
+    const { visible, loading } = this.state
     return (
       <>
         <Button type="primary" onClick={this.showModal}>
-            キャンセル
+          キャンセル
         </Button>
         <Modal
           visible={visible}
@@ -41,14 +40,14 @@ class CancelEditMilestone extends React.Component {
             <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
               はい
             </Button>,
-            
+
           ]}
         >
           <p>変更内容が保存されません。よろしいですか？</p>
-          
+
         </Modal>
       </>
-    );
+    )
   }
 }
 export default CancelEditMilestone
