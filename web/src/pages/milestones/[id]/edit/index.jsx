@@ -138,7 +138,6 @@ const EditMilestonePage = () => {
                   type="text"
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
-
                 />
               </Form.Item>
 
