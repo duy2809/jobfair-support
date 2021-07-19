@@ -10,20 +10,20 @@ import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
 
 export default function Navbar() {
   const moreNavbarOptions = (
-    <Menu className="border-2 rounded-2xl py-2 top-7">
+    <Menu className="border-2 rounded-2xl py-2 top-5 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
         <a href="">テンプレートタスク</a>
       </Menu.Item>
       <Menu.Item key="1">
-        <a href="">JF スケジュール</a>
+        <a href="">スケジュール</a>
       </Menu.Item>
       <Menu.Item key="3">
-        <a href="">マスター セッティング</a>
+        <a href="">マスター設定</a>
       </Menu.Item>
     </Menu>
   )
   const notifications = (
-    <Menu className="border-2 rounded-2xl py-2 top-7">
+    <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
         <a href="">通知 1</a>
       </Menu.Item>
@@ -33,9 +33,9 @@ export default function Navbar() {
     </Menu>
   )
   const userInformations = (
-    <Menu className="border-2 rounded-2xl py-2 top-7">
+    <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
-        <a href="">プロフィール</a>
+        <a href="">プロフィール表示</a>
       </Menu.Item>
       <Menu.Item key="1">
         <a href="">ログアウト</a>
@@ -46,12 +46,11 @@ export default function Navbar() {
   return (
     <div className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
-        <div className="w-20"><a><img src="images/logo.png" alt="logo" /></a></div>
+        <div className="w-20 ml-16"><a href=""><img src="images/logo.png" alt="logo" /></a></div>
         <div className="flex items-center">
-          <div className="px-4"><a>ダッシュボード</a></div>
-          <div className="px-4"><a>JF</a></div>
-          <div className="px-4"><a>メンバー</a></div>
-          <div className="px-4">
+          <div className="px-8"><a href="">JF</a></div>
+          <div className="px-8"><a href="">メンバ</a></div>
+          <div className="px-8">
             <Dropdown overlay={moreNavbarOptions} trigger={['click']}>
               <div className="cursor-pointer">
                 その他
@@ -61,22 +60,19 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex px-10 items-center">
-        <div className="px-3">
+      <div className="flex px-16 items-center">
+        <div className="px-4">
           <Dropdown overlay={notifications} trigger={['click']}>
             <div className="cursor-pointer">
-              <BellFilled className="text-2xl bell-icon" />
-              <span className="relative bottom-2 text-lg number-notifications">6</span>
+              <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
+              <span className="relative text-lg number-notifications -top-2 right-2">6</span>
             </div>
           </Dropdown>
         </div>
-        <div className="flex px-3 items-center">
-          <div className="px-2 border-4 border-white user-icon-container py-1"><UserOutlined className="text-xl user-icon" /></div>
-          <div className="px-5">
-            <Dropdown overlay={userInformations} trigger={['click']}>
-              <div className="cursor-pointer">名前を使用</div>
-            </Dropdown>
-          </div>
+        <div className="px-4">
+          <Dropdown overlay={userInformations} trigger={['click']}>
+            <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer"><UserOutlined className="text-xl user-icon" /></div>
+          </Dropdown>
         </div>
       </div>
     </div>
