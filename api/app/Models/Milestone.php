@@ -11,7 +11,7 @@ class Milestone extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['name', 'period', 'schedule_id'];
+    protected $fillable = ['name', 'period', 'schedule_id', 'is_week'];
 
     public function tasks()
     {

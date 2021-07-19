@@ -32,7 +32,8 @@ class MilestoneController extends Controller
             'name' => 'required|max:255|regex:/^[^\s]*$/',
             'name' => Rule::unique('milestones')->where('schedule_id', request('schedule_id')),
             'period' => 'required|numeric|min:1|max:3000',
-            'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id'
+            'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id',
+            'is_week' => 'required|numeric|min:0|max:1'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -67,7 +68,8 @@ class MilestoneController extends Controller
                 Rule::unique('milestones')->where('schedule_id', Milestone::where('id', $id)->pluck('schedule_id')[0])
             ],
             'period' => 'numeric|min:1|max:3000',
-            'schedule_id' => 'numeric|exists:App\Models\Schedule,id'
+            'schedule_id' => 'numeric|exists:App\Models\Schedule,id',
+            'is_week' => 'numeric|min:0|max:1'
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
