@@ -32,16 +32,16 @@ export default function Navbar() {
       </Menu.Item>
     </Menu>
   )
-  const userInformations = (
-    <Menu className="border-2 rounded-2xl py-2 top-7">
-      <Menu.Item key="0">
-        <a href="">プロフィール</a>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <a href="">ログアウト</a>
-      </Menu.Item>
-    </Menu>
-  )
+  // const userInformations = (
+  //   <Menu className="border-2 rounded-2xl py-2 top-7">
+  //     <Menu.Item key="0">
+  //       <a href="">プロフィール</a>
+  //     </Menu.Item>
+  //     <Menu.Item key="1">
+  //       <a href="">ログアウト</a>
+  //     </Menu.Item>
+  //   </Menu>
+  // )
 
   return (
     <div className="flex justify-between items-center border-2 navbar select-none">
