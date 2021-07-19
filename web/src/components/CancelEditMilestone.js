@@ -14,7 +14,7 @@ class CancelEditMilestone extends React.Component {
   };
 
   handleOk = () => {
-    this.setState({ loading: true })
+    this.setState({ visible: false })
   };
 
   handleCancel = () => {
@@ -37,7 +37,7 @@ class CancelEditMilestone extends React.Component {
             <Button key="back" onClick={this.handleCancel}>
               いいえ
             </Button>,
-            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+            <Button key="submit" type="primary" onClick={this.handleOk}>
               はい
             </Button>,
 
