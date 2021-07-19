@@ -10,7 +10,8 @@ class Milestone extends Model
     use HasFactory;
 
     public $timestamps = false;
-    protected $guarded = [];
+
+    protected $fillable = ['name', 'period', 'schedule_id'];
 
     public function tasks()
     {
