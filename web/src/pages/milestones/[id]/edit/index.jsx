@@ -52,7 +52,7 @@ const LoginPage = () => {
   )
   const specialCharRegex = new RegExp('[ 　]')
 
-  const blockInvalidChar = (e) => ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()
+  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
     <div>
