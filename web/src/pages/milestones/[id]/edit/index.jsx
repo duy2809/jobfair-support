@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
@@ -7,8 +7,7 @@ import { updateMilestone, getMilestone } from '../../../../api/milestone'
 
 import './styles.scss'
 
-const EditMilestonePage = (props) => {
-  //   const { query } = useRouter()
+const EditMilestonePage = () => {
   // {query['id']}
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
@@ -17,7 +16,7 @@ const EditMilestonePage = (props) => {
   const [form] = Form.useForm()
 
   // fetch data
-  useEffect(() => {
+  useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     getMilestone(id).then((res) => {
@@ -29,7 +28,7 @@ const EditMilestonePage = (props) => {
         name: res.data.name,
         time: res.data.period,
       })
-    })
+    }).catch((error) => console.log(error.response.request.response))
   }, [])
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -55,7 +54,20 @@ const EditMilestonePage = (props) => {
 
   const handleOk = () => {
     setIsModalVisible(false)
-    openNotificationSuccess()
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    updateMilestone(id, {
+      name: nameInput,
+      period: timeInput,
+      is_week: typePeriodInput,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+          })
+        }
+      })
   }
 
   const handleCancel = () => {

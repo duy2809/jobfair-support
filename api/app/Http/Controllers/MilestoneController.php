@@ -29,16 +29,14 @@ class MilestoneController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|max:255|regex:/^[^\s]*$/',
+            'name' => 'required|regex:/^[^\s]*$/',
             'name' => Rule::unique('milestones')->where('schedule_id', request('schedule_id')),
             'period' => 'required|numeric|min:1|max:3000',
             'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id',
             'is_week' => 'required|numeric|min:0|max:1'
         ];
         $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
-        }
+        $validator->validate();
         return Milestone::create($request->all());
     }
 
@@ -50,6 +48,13 @@ class MilestoneController extends Controller
      */
     public function show($id)
     {
+        $rules = [
+            'id' => 'exists:App\Models\Milestone,id'
+        ];
+        $validator = Validator::make([
+            'id' => $id
+        ], $rules);
+        $validator->validate();
         return Milestone::find($id);
     }
 
@@ -63,18 +68,17 @@ class MilestoneController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'max:255|regex:/^[^\s]*$/',
+            'name' => 'regex:/^[^\s]*$/',
             'name' => [
                 Rule::unique('milestones')->where('schedule_id', Milestone::where('id', $id)->pluck('schedule_id')[0])
+                    ->whereNot('id', $id)
             ],
             'period' => 'numeric|min:1|max:3000',
             'schedule_id' => 'numeric|exists:App\Models\Schedule,id',
             'is_week' => 'numeric|min:0|max:1'
         ];
         $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
-        }
+        $validator->validate();
         return Milestone::find($id)->update($request->all());
     }
 
