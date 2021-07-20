@@ -17,6 +17,7 @@ class CreateMilestonesTable extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedInteger('period');
+            $table->boolean('is_week');
             $table->unsignedBigInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });

@@ -19,11 +19,12 @@ class CreateTasksTable extends Migration
             $table->date('start_time');
             $table->date('end_time');
             $table->unsignedInteger('number_of_member');
-            $table->unsignedSmallInteger('status');
+            $table->string('status');
             $table->boolean('remind_member');
             $table->text('description_of_detail');
             $table->unsignedInteger('relation_task_id');
             $table->unsignedBigInteger('milestone_id');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
         });
