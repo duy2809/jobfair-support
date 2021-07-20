@@ -171,6 +171,7 @@ const EditMilestonePage = () => {
               >
                 <Input
                   type="number"
+                  min='0'
                   onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
