@@ -1,17 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
+import { updateMilestone, getMilestone } from '../../../../api/milestone'
 
 import './styles.scss'
 
-const LoginPage = () => {
-//   const { query } = useRouter()
+const EditMilestonePage = (props) => {
+  //   const { query } = useRouter()
   // {query['id']}
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
+  const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [checkSpace, setcheckSpace] = useState(false)
+  const [form] = Form.useForm()
+
+  // fetch data
+  useEffect(() => {
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    getMilestone(id).then((res) => {
+      setNameInput(res.data.name)
+      setTimeInput(res.data.period.toString())
+      setTypePeriodInput(res.data.is_week)
+
+      form.setFieldsValue({
+        name: res.data.name,
+        time: res.data.period,
+      })
+    })
+  }, [])
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { Option } = Select
@@ -44,9 +63,15 @@ const LoginPage = () => {
   }
 
   const selectAfter = (
-    <Select defaultValue="日後" className="select-after">
-      <Option value="日後">日後</Option>
-      <Option value="週間後">週間後</Option>
+    <Select
+      className="select-after"
+      onChange={(value) => {
+        setTypePeriodInput(parseInt(value, 10))
+      }}
+      value={typePeriodInput.toString()}
+    >
+      <Option value="0">日後</Option>
+      <Option value="1">週間後</Option>
 
     </Select>
   )
@@ -58,12 +83,11 @@ const LoginPage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-
           <p className="text-4xl ">マイルストーン編集</p>
-
           <div className="h-screen flex flex-col items-center pt-10 bg-white ">
 
             <Form
+              form={form}
               name="basic"
               labelCol={{
                 span: 8,
@@ -71,11 +95,7 @@ const LoginPage = () => {
               wrapperCol={{
                 span: 12,
               }}
-              // initialValues={{
-              //     remember: true,
-              // }}
               className="space-y-12 w-1/2 justify-items-center"
-
             >
               <Form.Item
                 label="マイルストーン名"
@@ -106,6 +126,7 @@ const LoginPage = () => {
                   type="text"
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
+
                 />
               </Form.Item>
 
@@ -195,4 +216,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default EditMilestonePage
