@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, Select, Modal, notification } from 'antd'
+import { Form, Input, Button, Select, Modal, notification, InputNumber } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
@@ -139,6 +139,7 @@ const LoginPage = () => {
               >
                 <Input
                   type="number"
+                  min='0'
                   onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
