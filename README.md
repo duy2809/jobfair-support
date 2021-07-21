@@ -2,6 +2,11 @@
 
 ## Viblo Docker for PHP Development
 - Clone repo from: [docker-php-development](https://github.com/sun-asterisk-research/docker-php-development)
+- Reset ve commit `f5da6bf feat: update default minio region`
+```
+cd docker-php-development
+git reset --hard f5da6bf
+```
 - Using in Jobfair support
 ```
 Folder project
@@ -13,7 +18,7 @@ In your terminal window, open the hosts file using your favorite text editor:
 
 ```sudo nano /etc/hosts```
 
-```127.0.0.1 jobfair.local api.jobfair.local traefik.jobfair.local phpmyadmin.jobfair.local```
+```127.0.0.1 jobfair.local traefik.jobfair.local phpmyadmin.jobfair.local```
 
 ## Services
 In folder docker-php-development
@@ -50,8 +55,7 @@ PATH_LOGS=./logs
 # DOMAIN_SECONDARY is the domain used for other services e.g traefik, mailhog, phpmyadmin .etc
 #-------------------------------------------------------------------------------
 
-DOMAIN=api.jobfair.local
-DOMAIN_WEB=jobfair.local
+DOMAIN=jobfair.local
 PORT=8000
 
 DOMAIN_SECONDARY=jobfair.local
@@ -127,7 +131,7 @@ APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:Od/M6XLZCbBcsAn5wjPWRr8YKUdpijE7OD5zgykn96A=
 APP_DEBUG=true
-APP_URL=http://api.jobfair.local:8000
+APP_URL=http://jobfair.local:8000
 
 LOG_CHANNEL=stack
 LOG_LEVEL=debug
@@ -194,8 +198,8 @@ APP_KEY=base64:Od/M6XLZCbBcsAn5wjPWRr8YKUdpijE7OD5zgykn96A=
 APP_URL=http://jobfair.local:8000
 IMAGE_URL=http://images-jobfair.local:8000
 
-SERVER_API_URL=http://jobfair-api/api
-BROWSER_API_URL=http://api.jobfair.local:8000/api
+SERVER_API_URL=http://nginx/api
+BROWSER_API_URL=/api
 
 REDIS_HOST=redis
 
