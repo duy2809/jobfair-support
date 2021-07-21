@@ -1,6 +1,6 @@
 import React from 'react'
 import './style.scss'
-import JfLayout from '../../layouts/JfLayout'
+import JfLayout from '../../layouts/jf-layout'
 
 export default function TaskList() {
   return (
