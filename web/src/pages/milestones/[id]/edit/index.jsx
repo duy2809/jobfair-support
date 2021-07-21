@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Button, Select, Modal, notification, InputNumber } from 'antd'
+import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
-const toHalfWidth = function(v) {
-  return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {return String.fromCharCode(s.charCodeAt(0) - 0xFEE0)});
-};
 
-String.prototype.toFullWidth = function() {
-  return this.replace(/[A-Za-z0-9]/g, function(s) {return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);});
-};
-
-const toHalfWidth = function (v) {
+const ToHalfWidth = function (v) {
   return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 }
 
@@ -54,16 +47,15 @@ const EditMilestonePage = () => {
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
     form.setFieldsValue({
-      name: toHalfWidth(e.target.value),
+      name: ToHalfWidth(e.target.value),
     })
   }
   const onValueTimeChange = (e) => {
     setTimeInput(e.target.value)
     form.setFieldsValue({
-      time: toHalfWidth(e.target.value),
+      time: ToHalfWidth(e.target.value),
     })
   }
-
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -178,7 +170,6 @@ const EditMilestonePage = () => {
                     message: 'この項目は必須です。',
 
                   },
-                 
 
                   {
                     pattern: /^(?:\d*)$/,
@@ -207,8 +198,7 @@ const EditMilestonePage = () => {
                   //   defaultValue="3"
                   onChange={onValueTimeChange}
                 />
-               
-              
+
               </Form.Item>
 
               <Modal
