@@ -10,11 +10,10 @@ import { jfdata } from '../../api/jf-toppage'
 
 export default function jftoppage() {
   const { Search } = Input
-  const [datajf, setdatajf] = useState({})
+  const [datajf, setdatajf] = useState([])
   const fechData = async () => {
     await jfdata().then((response) => {
-      setdatajf(response)
-      console.log(datajf)
+      console.log(response.data)
     }).catch((error) => {
       console.log(error)
     })
@@ -22,6 +21,7 @@ export default function jftoppage() {
   useEffect(() => {
     fechData()
   }, [])
+
   const onSearch = (value) => console.log(value)
   return (
     <div className="JFTopPage">

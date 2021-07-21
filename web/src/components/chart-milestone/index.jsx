@@ -22,6 +22,7 @@ export default function ChartMilestone() {
   const fetchMilestone = async () => {
     await listmilestone().then((response) => {
       setMilestone(response.data)
+      console.log(listMilestone)
     }).catch((error) => {
       console.log(error)
     })
