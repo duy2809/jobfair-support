@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { Input, Space } from 'antd'
-import JfLayout from '../../layouts/JfLayout'
-import NotificationsJf from '../../components/NotificationsJf'
-import ChartStatus from '../../components/chartStatus'
-import ChartMilestone from '../../components/chartMilestone'
+import JfLayout from '../../layouts/jf-layout'
+import NotificationsJf from '../../components/notifications-jf'
+import ChartStatus from '../../components/chart-status'
+import ChartMilestone from '../../components/chart-milestone'
 import { jfdata } from '../../api/jf-toppage'
 
 export default function jftoppage() {
