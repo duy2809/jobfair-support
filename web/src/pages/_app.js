@@ -39,7 +39,7 @@ class Jobfair extends App {
   static async getInitialProps({ Component, ctx }) {
     if (ctx.isServer) {
       axios.defaults.headers.common.cookie = ctx.req.headers.cookie || ''
-      await usePromise(ctx.store.dispatch, { type: INIT_AUTH_USER })
+      await usePromise(ctx.store.dispatch, { type: INIT_AUTH_USER, payload: { res: ctx.res } })
     }
 
     const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}

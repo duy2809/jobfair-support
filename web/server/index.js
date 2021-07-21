@@ -12,10 +12,7 @@ next.prepare().then(async () => {
   // Initial Express server:
   const server = createServer({ publicDir })
 
-  server.all('*', (req, res) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken())
-    return handleNextJSPage(req, res)
-  })
+  server.all('*', (req, res) => handleNextJSPage(req, res))
 
   // Start Express server:
   await server.listen(PORT, HOST)
