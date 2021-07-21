@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Button, Select, Modal, notification } from 'antd'
+import { Form, Input, Button, Select, Modal, notification, InputNumber } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
-
 import './styles.scss'
+const toHalfWidth = function(v) {
+  return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {return String.fromCharCode(s.charCodeAt(0) - 0xFEE0)});
+};
+
+String.prototype.toFullWidth = function() {
+  return this.replace(/[A-Za-z0-9]/g, function(s) {return String.fromCharCode(s.charCodeAt(0) + 0xFEE0);});
+};
 
 const EditMilestonePage = () => {
   // {query['id']}
@@ -43,10 +49,18 @@ const EditMilestonePage = () => {
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
   }
   const onValueTimeChange = (e) => {
     setTimeInput(e.target.value)
+    form.setFieldsValue({
+      time: toHalfWidth(e.target.value),
+    })
+
   }
+
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -90,12 +104,21 @@ const EditMilestonePage = () => {
   const specialCharRegex = new RegExp('[ 　]')
 
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
+//   const onNumberOnlyChange = (event) => {
+//     const keyCode = event.keyCode || event.which;
+//     const keyValue = String.fromCharCode(keyCode);
+//     const isValid = new RegExp("[0-9]").test(keyValue);
+//     if (!isValid) {
+//        event.preventDefault();
+//        return;
+//     }
+// };
 
   return (
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="text-4xl ">マイルストーン編集</p>
+          <p className="text-4xl title">マイルストーン編集</p>
           <div className="h-screen flex flex-col items-center pt-10 bg-white ">
 
             <Form
@@ -110,7 +133,10 @@ const EditMilestonePage = () => {
               className="space-y-12 w-1/2 justify-items-center"
             >
               <Form.Item
-                label="マイルストーン名"
+                // label="マイルストーン名"
+                label={ 
+                  <p style={{color:"#2d334a"}}>マイルストーン名</p>
+                }
                 name="name"
                 rules={[
                   {
@@ -142,7 +168,10 @@ const EditMilestonePage = () => {
               </Form.Item>
 
               <Form.Item
-                label="期日"
+                // label="期日"
+                label={ 
+                  <p style={{color:"#2d334a"}}>期日</p>
+                }
                 name="time"
                 rules={[
                   {
@@ -151,11 +180,12 @@ const EditMilestonePage = () => {
                     message: 'この項目は必須です。',
 
                   },
+                 
 
-                  // {
-                  //     pattern: /^(?:\d*)$/,
-                  //     message: "数字を入力してください",
-                  // },
+                  {
+                      pattern: /^(?:\d*)$/,
+                      message: "半角の整数で入力してください。",
+                  },
                   () => ({
                     validator(_, value) {
                       // if (value > 5) {
@@ -169,15 +199,19 @@ const EditMilestonePage = () => {
                   }),
                 ]}
               >
+              
                 <Input
-                  type="number"
-                  min='0'
+                  className="inputNumber"
+                  type="text"
+                  // onKeyPress={onNumberOnlyChange}
+                  // min='0'
                   onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
                   onChange={onValueTimeChange}
                 />
-
+               
+              
               </Form.Item>
 
               <Modal
@@ -198,7 +232,7 @@ const EditMilestonePage = () => {
                   <CancelEditMilestone />
 
                   {/* && timeInput <=5 */}
-                  {(nameInput !== '' && timeInput !== '' && checkSpace === false) ? (
+                  {(nameInput !== '' && timeInput !== ''&& timeInput >= 0 && checkSpace === false) ? (
                     <Button
                       type="primary"
                       htmlType="submit"
