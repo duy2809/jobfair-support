@@ -52,6 +52,11 @@ class User extends Authenticatable
 
     public function tasks()
     {
-        return $this->belongsToMany(Task::class);
+        return $this->belongsToMany(Task::class, 'assignments');
+    }
+
+    public function jobfair()
+    {
+        return $this->hasOne(Jobfair::class, 'jobfair_admin_id');
     }
 }

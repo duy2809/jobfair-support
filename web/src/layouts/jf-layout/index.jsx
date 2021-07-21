@@ -70,9 +70,9 @@ const JfLayout = ({
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            <Navbar />
-          </Header>
+
+          <Navbar />
+
           <Content
             className="site-layout-background"
             style={{

@@ -9,6 +9,11 @@ class Task extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'start_time' => 'date: Y/m/d',
+        'end_time' => 'date: Y/m/d',
+    ];
+
     public function milestone()
     {
         return $this->belongsTo(Milestone::class);
@@ -16,7 +21,7 @@ class Task extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'assignments', 'task_id', 'user_id')->withPivot(['completed_date']);
     }
 
     public function documents()
