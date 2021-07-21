@@ -143,11 +143,7 @@ const EditMilestonePage = () => {
                     required: true,
                     message: 'この項目は必須です。',
                   },
-                  // {
-                  //     whitespace: true,
-                  //     message: 'no space。',
-
-                  // },
+                  
                   () => ({
                     validator(_, value) {
                       if (specialCharRegex.test(value)) {
@@ -186,17 +182,17 @@ const EditMilestonePage = () => {
                       pattern: /^(?:\d*)$/,
                       message: "半角の整数で入力してください。",
                   },
-                  () => ({
-                    validator(_, value) {
-                      // if (value > 5) {
-                      // return Promise.reject("Zip code can't be more than 5 ");
-                      // }
-                      if (value < 0) {
-                        return Promise.reject(new Error('半角の整数で入力してください。'))
-                      }
-                      return Promise.resolve()
-                    },
-                  }),
+                  // () => ({
+                  //   validator(_, value) {
+                  //     // if (value > 5) {
+                  //     // return Promise.reject("Zip code can't be more than 5 ");
+                  //     // }
+                  //     if (value < 0) {
+                  //       return Promise.reject(new Error('半角の整数で入力してください。'))
+                  //     }
+                  //     return Promise.resolve()
+                  //   },
+                  // }),
                 ]}
               >
               
@@ -232,7 +228,7 @@ const EditMilestonePage = () => {
                   <CancelEditMilestone />
 
                   {/* && timeInput <=5 */}
-                  {(nameInput !== '' && timeInput !== ''&& timeInput >= 0 && checkSpace === false) ? (
+                  {(nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false) ? (
                     <Button
                       type="primary"
                       htmlType="submit"

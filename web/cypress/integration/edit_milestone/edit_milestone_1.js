@@ -16,15 +16,28 @@ describe('Edit Milestone Test', () => {
       cy.get('form label p').contains('期日').should('have.css', 'color')
       .and('eq', expectTextColor)
     })
-    it('Check input name milestone', () => {
+    it('Check input ', () => {
       cy.get('input[id=basic_name]').type('text').invoke('val').then((val) => {
         if(val === ''){
-          cy.get(div).should('have.attr','role','alert').contains('この項目は必須です。')
+          cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
         }
         if(val.includes(' ')){
-          cy.get(div).should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
+          cy.get('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
 
         }
+      })
+      cy.get('input[id=basic_time]').type('text').invoke('val').then((val) => {
+        var regExp = /[a-zA-Z]/g;
+        if(val === ''){
+          cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
+        }
+        if(val.includes(' ')){
+          cy.get('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
+
+        }
+        if(regExp.test(val)){
+          cy.get('div').should('have.class','ant-form-item-explain-error').contains('半角の整数で入力してください。')
+        } 
       })
       
     })
