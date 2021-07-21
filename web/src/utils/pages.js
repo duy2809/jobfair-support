@@ -27,3 +27,18 @@ export const findSlot = (slot, children = []) => {
 
   return whereMatchSlot(children) ? children : null
 }
+
+export function getCookie(setCookie, name) {
+  if (!setCookie) {
+    return null
+  }
+
+  const xsrfCookies = setCookie[0].split(';')
+    .map((c) => c.trim())
+    .filter((c) => c.startsWith(`${name}=`))
+
+  if (xsrfCookies.length === 0) {
+    return null
+  }
+  return decodeURIComponent(xsrfCookies[0].split('=')[1])
+}
