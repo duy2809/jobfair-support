@@ -13,8 +13,7 @@ In your terminal window, open the hosts file using your favorite text editor:
 
 ```sudo nano /etc/hosts```
 
-```127.0.0.1 jobfair.local api.jobfair.local traefik.jobfair.local```
-
+```127.0.0.1 jobfair.local api.jobfair.local traefik.jobfair.local phpmyadmin.jobfair.local```
 
 ## Services
 In folder docker-php-development
@@ -24,6 +23,7 @@ mysql
 redis
 php
 web
+phpmyadmin
 ```
 
 ## Env

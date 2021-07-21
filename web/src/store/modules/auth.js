@@ -3,6 +3,7 @@ import { call, put, takeLatest } from 'redux-saga/effects'
 import { createAction, handleActions } from 'redux-actions'
 import _map from 'lodash/map'
 import { webInit } from '~/api/web-init'
+import { getCookie } from '~/utils/pages'
 
 const initialState = fromJS({
   user: null,
@@ -19,15 +20,19 @@ export const load = createAction(LOAD)
 export const loadSuccess = createAction(LOAD_SUCCESS)
 
 // Sagas
-function* init({ next }) {
-  const { data: { auth } } = yield call(webInit)
+function* init(action) {
+  const response = yield call(webInit)
+  const xsrf = getCookie(response.headers['set-cookie'], 'XSRF-TOKEN')
+  const { res } = action.payload
+  res.cookie('XSRF-TOKEN', xsrf, {})
 
   try {
-    yield put(loadSuccess(auth.user))
-    next(auth.user)
+    const { user } = response.data.auth
+    yield put(loadSuccess(user))
+    action.next(user)
   } catch (error) {
     yield put(loadSuccess({}))
-    next(null)
+    action.next(null)
   }
 }
 
