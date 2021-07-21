@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Milestone;
-use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class MilestoneController extends Controller
 {
@@ -33,10 +32,11 @@ class MilestoneController extends Controller
             'name' => Rule::unique('milestones')->where('schedule_id', request('schedule_id')),
             'period' => 'required|numeric|min:1|max:3000',
             'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id',
-            'is_week' => 'required|numeric|min:0|max:1'
+            'is_week' => 'required|numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return Milestone::create($request->all());
     }
 
@@ -49,12 +49,13 @@ class MilestoneController extends Controller
     public function show($id)
     {
         $rules = [
-            'id' => 'exists:App\Models\Milestone,id'
+            'id' => 'exists:App\Models\Milestone,id',
         ];
         $validator = Validator::make([
-            'id' => $id
+            'id' => $id,
         ], $rules);
         $validator->validate();
+
         return Milestone::find($id);
     }
 
@@ -71,14 +72,15 @@ class MilestoneController extends Controller
             'name' => 'regex:/^[^\s]*$/',
             'name' => [
                 Rule::unique('milestones')->where('schedule_id', Milestone::where('id', $id)->pluck('schedule_id')[0])
-                    ->whereNot('id', $id)
+                    ->whereNot('id', $id),
             ],
             'period' => 'numeric|min:1|max:3000',
             'schedule_id' => 'numeric|exists:App\Models\Schedule,id',
-            'is_week' => 'numeric|min:0|max:1'
+            'is_week' => 'numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return Milestone::find($id)->update($request->all());
     }
 

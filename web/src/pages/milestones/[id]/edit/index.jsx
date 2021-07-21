@@ -89,7 +89,7 @@ const EditMilestonePage = () => {
   )
   const specialCharRegex = new RegExp('[ 　]')
 
-  const blockInvalidChar = (e) => ['e', 'E', '+', '-'].includes(e.key) && e.preventDefault()
+  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
     <div>
@@ -138,7 +138,6 @@ const EditMilestonePage = () => {
                   type="text"
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
-
                 />
               </Form.Item>
 
@@ -172,6 +171,7 @@ const EditMilestonePage = () => {
               >
                 <Input
                   type="number"
+                  min='0'
                   onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
