@@ -26,7 +26,7 @@ class MilestoneFactory extends Factory
             'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
             'schedule_id' => Schedule::factory(),
             'period' => $this->faker->numberBetween(1, 50),
-            'is_week' => false
+            'is_week' => false,
         ];
     }
 }
