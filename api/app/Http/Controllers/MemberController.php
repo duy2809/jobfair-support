@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use \Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
@@ -12,8 +13,9 @@ class MemberController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return User::all('name', 'email', 'created_at');
+        $sizeQuery = $request->input('size');
+        return User::paginate($sizeQuery);
     }
 }
