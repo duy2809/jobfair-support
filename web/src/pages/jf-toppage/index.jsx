@@ -10,10 +10,11 @@ import { jfdata } from '../../api/jf-toppage'
 
 export default function jftoppage() {
   const { Search } = Input
-  const [datajf, setdatajf] = useState([])
+  const [datajf, setdatajf] = useState({})
   const fechData = async () => {
     await jfdata().then((response) => {
-      console.log(response.data)
+     
+      console.log(datajf, 'datajf')
     }).catch((error) => {
       console.log(error)
     })
