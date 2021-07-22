@@ -3,7 +3,6 @@ import React from 'react'
 
 class CancelEditMilestone extends React.Component {
   state = {
-    loading: false,
     visible: false,
   };
 
@@ -22,7 +21,7 @@ class CancelEditMilestone extends React.Component {
   };
 
   render() {
-    const { visible, loading } = this.state
+    const { visible } = this.state
     return (
       <>
         <Button type="primary" onClick={this.showModal}>
