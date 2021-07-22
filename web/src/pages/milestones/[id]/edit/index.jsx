@@ -5,7 +5,6 @@ import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
-import { size } from 'lodash'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
@@ -161,7 +160,7 @@ const EditMilestonePage = () => {
               <Form.Item
                 // label="期日"
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px'}}>期日</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
                 name="time"
                 rules={[
