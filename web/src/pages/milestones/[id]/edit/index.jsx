@@ -6,7 +6,7 @@ import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
 
-const ToHalfWidth = function (v) {
+const toHalfWidth = (v) => {
   return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 }
 
@@ -31,7 +31,7 @@ const EditMilestonePage = () => {
         name: res.data.name,
         time: res.data.period,
       })
-    }).catch((error) => console.log(error.response.request.response))
+    })
   }, [])
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -47,13 +47,13 @@ const EditMilestonePage = () => {
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
     form.setFieldsValue({
-      name: ToHalfWidth(e.target.value),
+      name: toHalfWidth(e.target.value),
     })
   }
   const onValueTimeChange = (e) => {
     setTimeInput(e.target.value)
     form.setFieldsValue({
-      time: ToHalfWidth(e.target.value),
+      time: toHalfWidth(e.target.value),
     })
   }
 
