@@ -26,8 +26,9 @@ describe('Edit Milestone Test', () => {
 
         }
       })
-      cy.get('input[id=basic_time]').type('text').invoke('val').then((val) => {
+      cy.get('input[id=basic_time]').invoke('val').then((val) => {
         var regExp = /[a-zA-Z !,?._'@]/g;
+        var halfWidth = '2';
         if(val === ''){
           cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
         }
@@ -38,6 +39,7 @@ describe('Edit Milestone Test', () => {
         if(regExp.test(val)){
           cy.get('div').should('have.class','ant-form-item-explain-error').contains('半角の整数で入力してください。')
         } 
+        cy.get('input[id=basic_time]').should('have.value', halfWidth)
       })
       
     })
