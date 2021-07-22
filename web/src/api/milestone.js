@@ -1,5 +1,5 @@
-import axios from './axios'
+import instance from './axios'
 
-export const updateMilestone = async (id, argument) => axios.put(`/milestone/${id}`, argument)
+export const updateMilestone = (id, argument) => instance.put(`/milestone/${id}`, argument)
 
-export const getMilestone = async (id) => axios.get(`/milestone/${id}`)
+export const getMilestone = (id) => instance.get(`/milestone/${id}`)

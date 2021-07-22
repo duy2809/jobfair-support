@@ -1,5 +1,5 @@
 describe('Check button save', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('http://jobfair.local:8000/milestones/10/edit')
     cy.wait(500)
   })
@@ -21,6 +21,7 @@ describe('Check button save', () => {
   })
 
   it('check when click outside modal', () => {
+    cy.get('[type="submit"]').click()
     const arr = []
     cy.get('#basic_name').invoke('val')
       .then((sometext) => { arr.push(sometext) })
@@ -38,7 +39,7 @@ describe('Check button save', () => {
   })
 
   it('check click save and click yes when milestone name is duplicate', () => {
-    cy.get('#basic_name').clear().type('Prof._Orin_Yost')
+    cy.get('#basic_name').clear().type('Mr._Abelardo_Botsford') // replace input name with a name that duplicate in database
     cy.get('[type="submit"]').click()
     cy.get('.ant-modal-content').find('.ant-btn').last().click()
     cy.wait(100)
@@ -46,7 +47,7 @@ describe('Check button save', () => {
   })
 
   it('check click save and click yes when milestone name is available', () => {
-    cy.get('#basic_name').clear().type('abc')
+    cy.get('#basic_name').clear().type('abc') // replace with a input name that available in your database
     cy.get('[type="submit"]').click()
     cy.get('.ant-modal-content').find('.ant-btn').last().click()
     cy.wait(100)
