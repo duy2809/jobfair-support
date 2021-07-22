@@ -7,19 +7,18 @@ import Layout from '../../layouts/OtherLayout'
 import { MemberApi } from '~/api/member'
 
 export default function MemberList() {
-
   const [members, setMembers] = useState([])
 
-  const fetchData = useCallback (() => {
-    MemberApi.getListMember().then(res => {
-      const { data } = res;
+  const fetchData = useCallback(() => {
+    MemberApi.getListMember().then((res) => {
+      const { data } = res
       console.log(data)
       setMembers(data)
     })
   })
 
   useEffect(() => {
-    fetchData();
+    fetchData()
   }, [])
 
   const { Option } = Select
