@@ -4,10 +4,12 @@ describe('Edit Milestone Test', () => {
     it('Visits Jobfair Support Edit Milestone', () => {
       cy.visit('http://jobfair.local:8000/milestones/3/edit')
     })
+
     it('Check title', () => {
       cy.get('.title').contains('マイルストーン編集').should('have.css', 'color')
       .and('eq', expectTextColor)
     })
+
     it('Check label', () => {
       
       cy.get('form label p').contains('マイルストーン名').should('have.css', 'color')
@@ -16,6 +18,7 @@ describe('Edit Milestone Test', () => {
       cy.get('form label p').contains('期日').should('have.css', 'color')
       .and('eq', expectTextColor)
     })
+
     it('Check input ', () => {
       cy.get('input[id=basic_name]').type('text').invoke('val').then((val) => {
         if(val === ''){
@@ -28,7 +31,7 @@ describe('Edit Milestone Test', () => {
       })
       cy.get('input[id=basic_time]').invoke('val').then((val) => {
         var regExp = /[a-zA-Z !,?._'@]/g;
-        var halfWidth = '2';
+        var halfWidth = '3';
         if(val === ''){
           cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
         }
