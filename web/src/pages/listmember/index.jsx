@@ -56,7 +56,7 @@ export default function MemberList() {
         <div className="flex flex-col h-screen items-center justify-center bg-white-background">
           <div className="justify-start w-9/12">
             <div className="text-6xl font-bold mb-20 -ml-24">メンバ一覧</div>
-            <span className="text-xl">表示件数:</span>
+            <span className="text-xl">表示件数: </span>
             <Select className="ml-5" defaultValue={10}>
               <Option value={10}>10</Option>
               <Option value={25}>25</Option>
