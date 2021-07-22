@@ -19,13 +19,13 @@ export default function Board3({ data }) {
           <div className="mr-5">参加日</div>
         </div>
       )}
-      renderItem={(item) => (
+      renderItem={(item, index) => (
         <Link href="#">
           <List.Item className="text-xl font-bold border-bottom-styled">
-            <div>{item.Stt}</div>
-            <div className="w-12">{item.Name}</div>
-            <div>{item.Email}</div>
-            <div>{item.Time}</div>
+            <div>{index}</div>
+            <div className="w-12">{item.name}</div>
+            <div>{item.email}</div>
+            <div>{item.created_at}</div>
           </List.Item>
         </Link>
       )}

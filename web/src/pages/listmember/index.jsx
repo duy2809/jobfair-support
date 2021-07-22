@@ -1,55 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Select, Pagination, Input, Form, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import Board3 from '../../components/board_listmember'
 import Layout from '../../layouts/OtherLayout'
 
-const data = [
-
-  {
-    key: '2',
-    Stt: '1',
-    Name: 'tho',
-    Email: 'thopham@gamil.com',
-    Time: '21/7/2021',
-  },
-  {
-    key: '3',
-    Stt: '2',
-    Name: 'tho',
-    Email: 'thopham@gamil.com',
-    Time: '21/7/2021',
-  },
-  {
-    key: '4',
-    Stt: '3',
-    Name: 'tho',
-    Email: 'thopham@gamil.com',
-    Time: '21/7/2021',
-  },
-  {
-    key: '5',
-    Stt: '4',
-    Name: 'tho',
-    Email: 'thopham@gamil.com',
-    Time: '21/7/2021',
-  },
-]
+import { MemberApi } from '~/api/member'
 
 export default function MemberList() {
-  const [isSearch, setIsSearch] = useState(false)
-  const [filteredData, setFilteredData] = useState(data)
-  const handleInput = () => {
-    setIsSearch(!isSearch)
-  }
 
-  const handleChange = (e) => {
-    const result = data.filter((obj) => Object.keys(obj).some((key) => obj[key].toLowerCase().indexOf(e.target.value.toLowerCase()) > -1))
-    setFilteredData(result)
-  }
+  const [members, setMembers] = useState([])
+
+  const fetchData = useCallback (() => {
+    MemberApi.getListMember().then(res => {
+      const { data } = res;
+      console.log(data)
+      setMembers(data)
+    })
+  })
+
+  useEffect(() => {
+    fetchData();
+  }, [])
+
   const { Option } = Select
   const role = 'admin'
-
   return (
     <Layout>
       <Layout.Main>
@@ -65,8 +39,7 @@ export default function MemberList() {
           </div>
           <div className="flex justify-between w-8/12">
             <div className="text-2xl ml-auto flex items-center">
-              <SearchOutlined onClick={handleInput} hidden={isSearch} />
-              <Input placeholder="探索" onChange={handleChange} className={!isSearch ? 'hidden' : ''} prefix={<SearchOutlined />} />
+              <Input placeholder="探索" prefix={<SearchOutlined />} />
               { role === 'admin' ? (
                 <>
                   <Form.Item>
@@ -83,7 +56,7 @@ export default function MemberList() {
               ) : ''}
             </div>
           </div>
-          <Board3 data={filteredData} />
+          <Board3 data={members} />
           <Pagination
             total={85}
             showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
