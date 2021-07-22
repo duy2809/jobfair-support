@@ -5,6 +5,7 @@ import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
+import { size } from 'lodash'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
@@ -111,8 +112,8 @@ const EditMilestonePage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="text-4xl title">マイルストーン編集</p>
-          <div className="h-screen flex flex-col items-center pt-10 bg-white ">
+          <p className="text-4xl title mb-8">マイルストーン編集</p>
+          <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
 
             <Form
               form={form}
@@ -128,8 +129,9 @@ const EditMilestonePage = () => {
               <Form.Item
                 // label="マイルストーン名"
                 label={
-                  <p style={{ color: '#2d334a' }}>マイルストーン名</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
                 }
+                className="text-4xl"
                 name="name"
                 rules={[
                   {
@@ -150,6 +152,7 @@ const EditMilestonePage = () => {
               >
                 <Input
                   type="text"
+                  size="large"
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
                 />
@@ -158,7 +161,7 @@ const EditMilestonePage = () => {
               <Form.Item
                 // label="期日"
                 label={
-                  <p style={{ color: '#2d334a' }}>期日</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px'}}>期日</p>
                 }
                 name="time"
                 rules={[
@@ -189,6 +192,7 @@ const EditMilestonePage = () => {
                 <Input
                   className="inputNumber"
                   type="text"
+                  size="large"
                   // onKeyPress={onNumberOnlyChange}
                   // min='0'
                   onKeyDown={blockInvalidChar}
