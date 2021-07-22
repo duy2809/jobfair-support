@@ -14,3 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/web-init', WebInit::class);
+
+Route::prefix('member')->group(function () {
+    Route::get('/', 'MemberController@index');
+});
