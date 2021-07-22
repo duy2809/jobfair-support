@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { Select, Pagination, Input ,Form,Button} from 'antd'
+import { Select, Pagination, Input, Form, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import Board3 from '../../components/Board_listmember'
-import Layout from '~/layouts/OtherLayout'
+import Board3 from '../../components/board_listmember'
+import Layout from '../../layouts/OtherLayout'
 
 const data = [
-    
+
   {
     key: '2',
     Stt: '1',
@@ -42,20 +42,20 @@ export default function MemberList() {
   const handleInput = () => {
     setIsSearch(!isSearch)
   }
- 
+
   const handleChange = (e) => {
     const result = data.filter((obj) => Object.keys(obj).some((key) => obj[key].toLowerCase().indexOf(e.target.value.toLowerCase()) > -1))
     setFilteredData(result)
   }
   const { Option } = Select
-  const role='admin'
-  
+  const role = 'admin'
+
   return (
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-screen items-center justify-center bg-white-background">
           <div className="justify-start w-9/12">
-          <div className="text-6xl font-bold mb-20 -ml-24">メンバ一覧</div>    
+            <div className="text-6xl font-bold mb-20 -ml-24">メンバ一覧</div>
             <span className="text-xl">表示件数:</span>
             <Select className="ml-5" defaultValue={10}>
               <Option value={10}>10</Option>
@@ -63,27 +63,27 @@ export default function MemberList() {
               <Option value={50}>50</Option>
             </Select>
           </div>
-          <div className="flex justify-between w-8/12">         
+          <div className="flex justify-between w-8/12">
             <div className="text-2xl ml-auto flex items-center">
               <SearchOutlined onClick={handleInput} hidden={isSearch} />
               <Input placeholder="探索" onChange={handleChange} className={!isSearch ? 'hidden' : ''} prefix={<SearchOutlined />} />
-              { role ==='admin' ? (
-               <> 
-                 <Form.Item>
-                    <Button 
-                       type="primary"
-                       htmlType="button"
-                       className="mt-5 ml-5"
-                       enabled
+              { role === 'admin' ? (
+                <>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      className="mt-5 ml-5"
+                      enabled
                     >
-                       メンバー招待
-                    </Button> 
-                </Form.Item>
-              </>
-             ) : ''}
+                      メンバー招待
+                    </Button>
+                  </Form.Item>
+                </>
+              ) : ''}
             </div>
           </div>
-          <Board3 data={filteredData}/>
+          <Board3 data={filteredData} />
           <Pagination
             total={85}
             showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
