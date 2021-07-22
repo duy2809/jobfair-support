@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
@@ -16,6 +16,7 @@ class MemberController extends Controller
     public function index(Request $request)
     {
         $sizeQuery = $request->input('size');
+
         return User::paginate($sizeQuery);
     }
 }

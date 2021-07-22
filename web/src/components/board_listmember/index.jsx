@@ -37,4 +37,5 @@ export default function Board({ data, isLoading }) {
 
 Board.propTypes = {
   data: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 }

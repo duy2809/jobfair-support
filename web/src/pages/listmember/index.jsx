@@ -22,7 +22,7 @@ export default function MemberList() {
 
   const fetchData = useCallback(() => {
     setDataLoading(true)
-    MemberApi.getListMember({size: itemCount}).then((res) => {
+    MemberApi.getListMember({ size: itemCount }).then((res) => {
       const { data } = res
       setMembers(data.data)
     }).finally(() => {
@@ -67,7 +67,7 @@ export default function MemberList() {
               ) : ''}
             </div>
           </div>
-          <Board data={members} isLoading={dataLoading} />        
+          <Board data={members} isLoading={dataLoading} />
           <Pagination
             showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
             total={members.length}
