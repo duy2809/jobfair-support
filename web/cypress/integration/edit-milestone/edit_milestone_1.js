@@ -21,13 +21,13 @@ describe('Edit Milestone Test', () => {
         if(val === ''){
           cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
         }
-        if(val.includes(' ')){
+        if(val.includes('　')){
           cy.get('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
 
         }
       })
       cy.get('input[id=basic_time]').type('text').invoke('val').then((val) => {
-        var regExp = /[a-zA-Z]/g;
+        var regExp = /[a-zA-Z !,?._'@]/g;
         if(val === ''){
           cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
         }
