@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from 'react'
+import { Button } from 'antd'
 
-import Posts from './posts'
-import posts from './data'
-
-const postsPerPage = 3
-let arrayForHoldingPosts = []
+import { listupdate } from '../../api/jf-toppage'
 
 const NotificationsJf = () => {
-  const [postsToShow, setPostsToShow] = useState([])
-  const [next, setNext] = useState(3)
-
-  const loopWithSlice = (start, end) => {
-    const slicedPosts = posts.slice(start, end)
-    arrayForHoldingPosts = [...arrayForHoldingPosts, ...slicedPosts]
-    setPostsToShow(arrayForHoldingPosts)
+  const [posts, setPost] = useState([])
+  const fetchTasks = async () => {
+    await listupdate().then((response) => {
+      setPost(response.data.data[0].tasks)
+      console.log(posts, 'post')
+    }).catch((error) => {
+      console.log(error)
+    })
   }
-
+  const [visi, setVisi] = useState(3)
+  const showMoreItem = () => {
+    setVisi((prevValue) => prevValue + 3)
+  }
   useEffect(() => {
-    loopWithSlice(0, postsPerPage)
+    fetchTasks()
   }, [])
-
-  const handleShowMorePosts = () => {
-    loopWithSlice(next, next + postsPerPage)
-    setNext(next + postsPerPage)
-  }
 
   return (
     <div>
-      <Posts postsToRender={postsToShow} />
-      <button onClick={handleShowMorePosts}>Load more</button>
+      {posts.slice(0, visi).map((item) => (
+        <>
+          <div>{item.name}</div>
+          <div>{item.created_at}</div>
+          <div>{item.username}</div>
+        </>
+
+      ))}
+      <Button onClick={showMoreItem}>Loadmore</Button>
     </div>
   )
 }

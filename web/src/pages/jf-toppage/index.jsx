@@ -10,17 +10,24 @@ import { jfdata } from '../../api/jf-toppage'
 
 export default function jftoppage() {
   const { Search } = Input
-  const [datajf, setdatajf] = useState({})
-  const fechData = async () => {
+  const [name, setName] = useState('')
+  const [start_date, setstart_date] = useState()
+  const [user, setuser] = useState('')
+  const [number_of_students, setnumber_of_students] = useState()
+  const [number_of_companies, setnumber_of_companies] = useState()
+  const fetchTasks = async () => {
     await jfdata().then((response) => {
-     
-      console.log(datajf, 'datajf')
+      setName(response.data.name)
+      setstart_date(response.data.start_date)
+      setuser(response.data.user.name)
+      setnumber_of_students(response.data.number_of_students)
+      setnumber_of_companies(response.data.number_of_companies)
     }).catch((error) => {
       console.log(error)
     })
   }
   useEffect(() => {
-    fechData()
+    fetchTasks()
   }, [])
 
   const onSearch = (value) => console.log(value)
@@ -30,18 +37,18 @@ export default function jftoppage() {
         <JfLayout.Main>
           <div className="Jf__top">
             <div className="Jf__header">
-              <h1>{datajf ? datajf.name : null}</h1>
+              <h1>{name}</h1>
               <div className="admin__jf">
                 <div className="admin__top">
-                  <h3>{datajf ? datajf.start_date : null}</h3>
-                  <h3>{datajf ? datajf.user : null}</h3>
+                  <h3>{start_date}</h3>
+                  <h3>{user}</h3>
                 </div>
                 <div className="admin__top">
                   <h3>
-                    {`企業:${datajf ? datajf.number_of_students : null}`}
+                    {`企業:${number_of_students}`}
                   </h3>
                   <h3>
-                    {`学生:${datajf ? datajf.number_of_companies : null}`}
+                    {`学生:${number_of_companies}`}
                   </h3>
                 </div>
               </div>
