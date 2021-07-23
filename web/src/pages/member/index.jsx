@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Select, Table, Input, Form, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import Layout from '~/layouts/OtherLayout'
+import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
 import './styles.scss'
 
@@ -13,54 +13,50 @@ const columns = [
     key: 'No.',
     dataIndex: 'id',
     render: (id) => id,
-    width: "5%",
+    width: '5%',
   },
   {
     title: 'フルネーム',
     dataIndex: 'name',
     key: 'フルネーム',
-    width: "30%",
-    render: (name) => `${name.slice(0,1).toUpperCase()}${name.slice(1)}`
+    width: '30%',
+    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
   },
   {
     title: 'メールアドレス',
     key: 'メールアドレス',
     dataIndex: 'email',
-    width: "50%",
-    render: (email) => { return email }
+    width: '50%',
+    render: (email) => email,
   },
   {
     title: '参加日',
     dataIndex: '参加日',
     key: '参加日',
-    render: (date) => { return formatDate(date) }
+    render: (date) => formatDate(date),
   },
-];
+]
 
 export default function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({position: ['bottomCenter'], current: 1, pageSize: 10})
+  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10 })
   const [filterData, setFilterData] = useState([])
 
   const handleSelect = (value) => {
-    setPagination((preState) => {
-      return {
-        ...preState,
-        pageSize: value 
-      }
-    })
+    setPagination((preState) => ({
+      ...preState,
+      pageSize: value,
+    }))
     setItemCount(value)
   }
 
   const handleChange = (e) => {
-    setPagination((preState) => {
-      return {
-        ...preState,
-        current: e.current
-      }
-    })
+    setPagination((preState) => ({
+      ...preState,
+      current: e.current,
+    }))
   }
 
   const handleInput = (e) => {
@@ -116,7 +112,7 @@ export default function MemberList() {
               ) : ''}
             </div>
           </div>
-          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterData} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange}/>
+          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterData} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
         </div>
       </Layout.Main>
     </Layout>
