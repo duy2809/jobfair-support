@@ -44,7 +44,7 @@ export default function Navbar() {
   )
 
   return (
-    <div className="flex justify-between items-center border-2 navbar select-none">
+    <div style={{ position: 'fixed', zIndex: 1, width: '100%' }} className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
         <div className="w-20 ml-16"><a href=""><img src="images/logo.png" alt="logo" /></a></div>
         <div className="flex items-center">

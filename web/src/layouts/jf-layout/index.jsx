@@ -20,7 +20,7 @@ const JfLayout = ({
   children,
 }) => {
   const main = findSlot(JfLayout.Main, children)
-  const { Header, Sider, Content } = Layout
+  const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(false)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
@@ -29,10 +29,23 @@ const JfLayout = ({
   useEffect(() => () => {}, [children])
   return (
     <div className="menuu">
-      <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Layout className="site-layout" style={{ marginLeft: 0 }}>
+        <Sider
+          style={{
+            height: '100vh',
+            left: 0,
+            zIndex: 100,
+          }}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+        >
           <Menu
-            style={{ height: '100vh' }}
+            style={{
+
+              height: '100vh',
+
+            }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode="inline"
@@ -74,13 +87,14 @@ const JfLayout = ({
           <Navbar />
 
           <Content
-            className="site-layout-background"
             style={{
-              margin: '45px 16px',
+              margin: '24px 16px',
               padding: 24,
               minHeight: 280,
-              background: 'white',
             }}
+            // style={{ margin: '24px 16px 0', overflow: 'initial' }}
+            className="site-layout-background"
+
           >
             { _get(main, 'props.children') }
           </Content>

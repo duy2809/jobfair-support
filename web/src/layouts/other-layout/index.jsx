@@ -6,23 +6,19 @@ import _get from 'lodash/get'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
 
-const { Header, Content } = Layout
-const otherlayout = ({ children }) => {
-  const main = findSlot(otherlayout.Main, children)
+const { Content } = Layout
+const Otherlayout = ({ children }) => {
+  const main = findSlot(Otherlayout.Main, children)
   return (
     <div className="otherlayout">
       <Layout>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            <Navbar />
-          </Header>
+
+          <Navbar style={{ position: 'fixed', zIndex: 1, width: '100%' }} />
+
           <Content
-            style={{
-              margin: '45px 16px',
-              padding: 24,
-              minHeight: 280,
-              backgroud: '#fff',
-            }}
+            style={{ padding: '50px 41px', marginTop: 64 }}
+
           >
             { _get(main, 'props.children') }
           </Content>
@@ -31,14 +27,14 @@ const otherlayout = ({ children }) => {
     </div>
   )
 }
-otherlayout.Main = () => null
-otherlayout.propTypes = {
+Otherlayout.Main = () => null
+Otherlayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node),
   ]),
 }
-otherlayout.defaultProps = {
+Otherlayout.defaultProps = {
   children: [],
 }
-export default otherlayout
+export default Otherlayout

@@ -58,7 +58,7 @@ export default function jftoppage() {
                 <div className="col-span-7">
                   <div className="notifi">
                     <div className="title">
-                      <h3>
+                      <h3 className='title-h3'>
                         最近の更新
                       </h3>
                       <NotificationsJf />
