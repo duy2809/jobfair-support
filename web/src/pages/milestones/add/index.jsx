@@ -57,7 +57,6 @@ export default function AddMilestonePage() {
   const handleOk = () => {
     form.submit()
     setIsModalVisible(false)
-    console.log(timeInput)
     addMilestone({
       name: nameInput,
       period: timeInput,
