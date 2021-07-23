@@ -6,9 +6,7 @@ import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
 
-const toHalfWidth = (v) => {
-  return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-}
+const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
 const EditMilestonePage = () => {
   // {query['id']}
@@ -45,12 +43,14 @@ const EditMilestonePage = () => {
   }
 
   const onValueNameChange = (e) => {
+    setcheckSpace(false)
     setNameInput(e.target.value)
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
   }
   const onValueTimeChange = (e) => {
+    setcheckSpace(false)
     setTimeInput(e.target.value)
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
@@ -98,22 +98,11 @@ const EditMilestonePage = () => {
   )
   const specialCharRegex = new RegExp('[ 　]')
 
-  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
-  //   const onNumberOnlyChange = (event) => {
-  //     const keyCode = event.keyCode || event.which;
-  //     const keyValue = String.fromCharCode(keyCode);
-  //     const isValid = new RegExp("[0-9]").test(keyValue);
-  //     if (!isValid) {
-  //        event.preventDefault();
-  //        return;
-  //     }
-  // };
-
   return (
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="text-4xl title mb-8">マイルストーン編集</p>
+          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン編集</p>
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
 
             <Form
@@ -132,7 +121,7 @@ const EditMilestonePage = () => {
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
                 }
-                className="text-4xl"
+                // className="text-4xl justify-between"
                 name="name"
                 rules={[
                   {
@@ -177,17 +166,19 @@ const EditMilestonePage = () => {
                     pattern: /^(?:\d*)$/,
                     message: '半角の整数で入力してください。',
                   },
-                  // () => ({
-                  //   validator(_, value) {
-                  //     // if (value > 5) {
-                  //     // return Promise.reject("Zip code can't be more than 5 ");
-                  //     // }
-                  //     if (value < 0) {
-                  //       return Promise.reject(new Error('半角の整数で入力してください。'))
-                  //     }
-                  //     return Promise.resolve()
-                  //   },
-                  // }),
+
+                  () => ({
+                    validator(_, value) {
+                    //   if (value < 0) {
+                    //     return Promise.reject(new Error('半角の整数で入力してください。'))
+                    //   }
+                      if (specialCharRegex.test(value)) {
+                        setcheckSpace(true)
+                      }
+                      return Promise.resolve()
+                    },
+
+                  }),
                 ]}
               >
                 <Input
@@ -196,7 +187,7 @@ const EditMilestonePage = () => {
                   size="large"
                   // onKeyPress={onNumberOnlyChange}
                   // min='0'
-                  onKeyDown={blockInvalidChar}
+                  // onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
                   onChange={onValueTimeChange}
@@ -216,9 +207,9 @@ const EditMilestonePage = () => {
               </Modal>
 
               <Form.Item
-                className=" justify-center "
+                className=" justify-end "
               >
-                <div className="flex justify-between my-10 ">
+                <div className="flex  my-10 ">
                   <CancelEditMilestone />
 
                   {/* && timeInput <=5 */}
@@ -226,7 +217,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14"
+                      className="text-base px-14 ml-10"
                       onClick={showModal}
                     >
                       保存
@@ -235,7 +226,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14"
+                      className="text-base px-14 ml-10"
                       disabled
                     >
                       保存
