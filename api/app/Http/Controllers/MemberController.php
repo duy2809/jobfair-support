@@ -15,8 +15,6 @@ class MemberController extends Controller
      */
     public function index(Request $request)
     {
-        $sizeQuery = $request->input('size');
-
-        return User::paginate($sizeQuery);
+        return User::all('id', 'name', 'email', 'created_at');
     }
 }
