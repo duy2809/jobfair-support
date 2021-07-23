@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use App\Models\Jobfair;
-use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ScheduleFactory extends Factory
+class JobfairFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Schedule::class;
+    protected $model = Jobfair::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +22,14 @@ class ScheduleFactory extends Factory
      */
     public function definition()
     {
+        $records = 1;
+
         return [
-            'jobfair_id' => Jobfair::factory(),
             'name' => $this->faker->name(),
+            'start_date' => $this->faker->dateTimeThisYear('now', null) ,
+            'number_of_students' => $records,
+            'number_of_companies' => $records,
+            'jobfair_admin_id' => User::factory(),
         ];
     }
 }
