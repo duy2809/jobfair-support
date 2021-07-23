@@ -10,12 +10,17 @@ import {
   Col,
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
+import { addMilestone } from '../../../api/milestone'
+
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalVisibleOfCancel, setIsModalVisibleOfCancel] = useState(false)
+  const [typePeriodInput, setTypePeriodInput] = useState(0)
+  const [nameInput, setNameInput] = useState('')
+  const [timeInput, setTimeInput] = useState('')
 
   const { Option } = Select
 
@@ -52,7 +57,28 @@ export default function AddMilestonePage() {
   const handleOk = () => {
     form.submit()
     setIsModalVisible(false)
-    openNotificationSuccess()
+    console.log(timeInput)
+    addMilestone({
+      name: nameInput,
+      period: timeInput,
+      is_week: typePeriodInput,
+      schedule_id: 1,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+          })
+        }
+        console.log(error.response)
+      })
+  }
+
+  const onValueNameChange = (e) => {
+    setNameInput(e.target.value)
+  }
+  const onValueTimeChange = (e) => {
+    setTimeInput(e.target.value)
   }
 
   const handleCancel = () => {
@@ -71,6 +97,10 @@ export default function AddMilestonePage() {
     <Form.Item name="typePeriod" noStyle>
       <Select
         className="select-after"
+        onChange={(value) => {
+        setTypePeriodInput(parseInt(value, 10))
+      }}
+      value={typePeriodInput.toString()}
         style={{
           width: 90,
         }}
