@@ -15,3 +15,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 Route::resource('/milestone', MilestoneController::class);
+Route::get('/categories',[Controllers\Category\CategoryController::class,'index'])
+    ->name('categories.index');
