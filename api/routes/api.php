@@ -15,9 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 Route::resource('/milestone', MilestoneController::class);
-Route::prefix('member')->group(function () {
-    Route::get('/', 'MemberController@index');
-});
 
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@index');
