@@ -217,7 +217,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14 ml-10"
+                      className="text-base px-10 "
                       onClick={showModal}
                     >
                       保存
@@ -226,7 +226,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14 ml-10"
+                      className="text-base px-10 "
                       disabled
                     >
                       保存
