@@ -25,6 +25,12 @@ export default function AddMilestonePage() {
     })
   }
 
+  const onValueTimeChange = (e) => {
+    form.setFieldsValue({
+      time: toHalfWidth(e.target.value),
+    })
+  }
+
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
@@ -155,10 +161,11 @@ export default function AddMilestonePage() {
                       wrapperCol={{ span: 9, offset: 2 }}
                     >
                       <Input
-                        type="number"
-                        /* style={{ width: '100%' }} */
+                        /* type="number" */
+                        type="text"
                         addonAfter={selectAfter}
                         onKeyDown={blockInvalidChar}
+                        onChange={onValueTimeChange}
                         min={0}
                       />
                     </Form.Item>
@@ -169,7 +176,6 @@ export default function AddMilestonePage() {
                     <Form.Item>
                       <Button
                         type="primary"
-                        /* style={{width: '100%'}} */
                         onClick={showModalOfCancel}
                       >
                         キャンセル
