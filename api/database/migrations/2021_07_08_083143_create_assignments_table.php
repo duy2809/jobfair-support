@@ -16,8 +16,8 @@ class CreateAssignmentsTable extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->text('notification');
-            $table->timestamp('join_date');
-            $table->timestamp('completed_date');
+            $table->dateTime('join_date');
+            $table->dateTime('completed_date');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('task_id');
