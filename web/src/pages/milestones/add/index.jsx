@@ -229,7 +229,7 @@ export default function AddMilestonePage() {
                   ]}
                 >
                   <p className="mb-5">
-                      編集中のデータが保存されません。よろしいですか？
+                    追加内容が保存されません。よろしいですか？
                   </p>
                 </Modal>
               </Form>
