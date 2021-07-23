@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jobfair extends Model
 {
-    use HasFactory;
-    public $timestamps = false;
+    use HasFactory, SoftDeletes;
 
     public function schedule()
     {
