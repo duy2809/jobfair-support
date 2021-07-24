@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Button } from 'antd'
 import { listupdate } from '../../api/jf-toppage'
 import './style.scss'
+
 const NotificationsJf = () => {
   const [posts, setPost] = useState([])
   const fetchTasks = async () => {
     await listupdate().then((response) => {
-      console.log(response.data.data[0].tasks,'hihi')
+      console.log(response.data.data[0].tasks, 'hihi')
       setPost(response.data.data[0].tasks)
     }).catch((error) => {
       console.log(error)
@@ -16,12 +17,15 @@ const NotificationsJf = () => {
   const showMoreItem = () => {
     setVisi((prevValue) => prevValue + 5)
   }
+  const matItem = () => {
+    if (visi > 5) { setVisi(5) }
+  }
   useEffect(() => {
     fetchTasks()
   }, [])
 
   return (
-    <div>
+    <div className="noti">
       <div className="table">
         {posts.slice(0, visi).map((item) => (
           <div href="/task-list" className="grid grid-cols-12 gap-4 table-item ">
@@ -33,7 +37,8 @@ const NotificationsJf = () => {
         ))}
       </div>
       <div className="flex justify-center my-4 ...">
-        <Button type="primary" onClick={showMoreItem}>Loadmore</Button>
+        {(visi < 30) ? <Button className="more" type="primary" onClick={showMoreItem}>もっと見る</Button> : null }
+        {(visi > 5) ? <Button type="primary" onClick={matItem}>表示数を戻す</Button> : null}
       </div>
     </div>
   )

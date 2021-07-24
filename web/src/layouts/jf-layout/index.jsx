@@ -32,7 +32,7 @@ const JfLayout = ({
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
         <Sider
           style={{
-            height: '100vh',
+            background: '#bae8e8',
             left: 0,
             zIndex: 100,
           }}
