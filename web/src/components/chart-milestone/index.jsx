@@ -18,8 +18,8 @@ export default function ChartMilestone() {
     fetchTasks()
   }, [])
 
-  const listData = listTask.map((item, index) => (
-    <MilestoneItem listTask={item.tasks} milestoneName={item.name} dealine={item.period} />
+  const listData = listTask.map((item) => (
+    <MilestoneItem listTask={item.tasks} milestoneName={item.name} dealine={item.is_week ? `${item.period}Tuần` : `${item.period}ngay`} />
   ))
   // const [listMilestone, setMilestone] = useState([])
   // const [listTask, setlistTask] = useState([])

@@ -11,17 +11,22 @@ import { jfdata } from '../../api/jf-toppage'
 export default function jftoppage() {
   const { Search } = Input
   const [name, setName] = useState('')
-  const [start_date, setstart_date] = useState()
+  const [startDate, setStartDate] = useState()
   const [user, setuser] = useState('')
-  const [number_of_students, setnumber_of_students] = useState()
-  const [number_of_companies, setnumber_of_companies] = useState()
+  const [numberOfStudents, setNumberOfStudents] = useState()
+  const [numberOfCompanies, setNumberOfCompanies] = useState()
+  const [nameTask,setNameTask] = useState('')
+  const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+  const onValueNameChange = (e) => {
+    setNameTask(toHalfWidth(e.target.value))
+  }
   const fetchTasks = async () => {
     await jfdata().then((response) => {
       setName(response.data.name)
-      setstart_date(response.data.start_date)
+      setStartDate(response.data.start_date.split('-').join('/'))
       setuser(response.data.user.name)
-      setnumber_of_students(response.data.number_of_students)
-      setnumber_of_companies(response.data.number_of_companies)
+      setNumberOfStudents(response.data.number_of_students)
+      setNumberOfCompanies(response.data.number_of_companies)
     }).catch((error) => {
       console.log(error)
     })
@@ -30,7 +35,7 @@ export default function jftoppage() {
     fetchTasks()
   }, [])
 
-  const onSearch = (value) => console.log(value)
+  const onSearch = (value) => console.log(toHalfWidth(value))
   return (
     <div className="JFTopPage">
       <JfLayout>
@@ -40,15 +45,15 @@ export default function jftoppage() {
               <h1>{name}</h1>
               <div className="admin__jf">
                 <div className="admin__top">
-                  <h3>{start_date}</h3>
+                  <h3>{startDate}</h3>
                   <h3>{user}</h3>
                 </div>
                 <div className="admin__top">
                   <h3>
-                    {`企業:${number_of_students}`}
+                    {`企業:${numberOfStudents}`}
                   </h3>
                   <h3>
-                    {`学生:${number_of_companies}`}
+                    {`学生:${numberOfCompanies}`}
                   </h3>
                 </div>
               </div>
@@ -58,7 +63,7 @@ export default function jftoppage() {
                 <div className="col-span-7">
                   <div className="notifi">
                     <div className="title">
-                      <h3 className='title-h3'>
+                      <h3 className="title-h3">
                         最近の更新
                       </h3>
                       <NotificationsJf />
@@ -71,6 +76,7 @@ export default function jftoppage() {
                       <div className="search__task">
                         <Space direction="vertical">
                           <Search
+                            onChange={onValueNameChange}
                             placeholder="タスク名"
                             onSearch={onSearch}
                             style={{ width: 400 }}
