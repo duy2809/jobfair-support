@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { Input, Space } from 'antd'
+import { useRouter } from 'next/router'
 import JfLayout from '../../layouts/jf-layout'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
@@ -11,17 +12,20 @@ import { jfdata } from '../../api/jf-toppage'
 export default function jftoppage() {
   const { Search } = Input
   const [name, setName] = useState('')
+  const router = useRouter()
+  const idJf = router.query.JFid
   const [startDate, setStartDate] = useState()
   const [user, setuser] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
-  const [nameTask,setNameTask] = useState('')
-  const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+  const [nameTask, setNameTask] = useState('')
+  const fullWidthNumConvert = (fullWidthNum) => fullWidthNum.replace(/[\uFF10-\uFF19]/g, (m) => String.fromCharCode(m.charCodeAt(0) - 0xfee0))
   const onValueNameChange = (e) => {
-    setNameTask(toHalfWidth(e.target.value))
+    setNameTask(fullWidthNumConvert(e.target.value))
+    console.log(nameTask)
   }
   const fetchTasks = async () => {
-    await jfdata().then((response) => {
+    await jfdata(idJf).then((response) => {
       setName(response.data.name)
       setStartDate(response.data.start_date.split('-').join('/'))
       setuser(response.data.user.name)
@@ -35,7 +39,7 @@ export default function jftoppage() {
     fetchTasks()
   }, [])
 
-  const onSearch = (value) => console.log(toHalfWidth(value))
+  const onSearch = (value) => console.log(value)
   return (
     <div className="JFTopPage">
       <JfLayout>
@@ -66,7 +70,7 @@ export default function jftoppage() {
                       <h3 className="title-h3">
                         最近の更新
                       </h3>
-                      <NotificationsJf />
+                      <NotificationsJf id={idJf} />
                     </div>
                   </div>
                 </div>
@@ -88,7 +92,7 @@ export default function jftoppage() {
                       <div className="status__global">
                         <h3>ステータス</h3>
                         <div className="status">
-                          <ChartStatus />
+                          <ChartStatus id={idJf} />
                         </div>
                       </div>
                     </div>
@@ -96,7 +100,7 @@ export default function jftoppage() {
                       <div className="status__global">
                         <h3>マイルストーン</h3>
                         <div className="status">
-                          <ChartMilestone />
+                          <ChartMilestone id={idJf} />
                         </div>
                       </div>
                     </div>

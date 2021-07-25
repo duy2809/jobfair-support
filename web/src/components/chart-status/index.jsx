@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { Tooltip } from 'antd'
+import PropTypes from 'prop-types'
 import { jftask } from '../../api/jf-toppage'
 
-export default function ChartStatus() {
+export default function ChartStatus({ id }) {
   const [listTask, setlistTask] = useState([])
   const listStatus = []
   listTask.forEach((element) => {
@@ -27,7 +28,7 @@ export default function ChartStatus() {
   }
 
   const fetchTasks = async () => {
-    await jftask().then((response) => {
+    await jftask(id).then((response) => {
       setlistTask(response.data.data[0].tasks)
     }).catch((error) => {
       console.log(error)
@@ -99,4 +100,7 @@ export default function ChartStatus() {
       </div>
     </>
   )
+}
+ChartStatus.propTypes = {
+  id: PropTypes.number.isRequired,
 }

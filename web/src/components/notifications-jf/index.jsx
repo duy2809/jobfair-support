@@ -6,14 +6,15 @@ import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import { useScrollBy } from 'react-use-window-scroll'
+import PropTypes from 'prop-types'
 import { listupdate } from '../../api/jf-toppage'
 
 const formatter = buildFormatter(frenchStrings)
 
-const NotificationsJf = () => {
+const NotificationsJf = ({ id }) => {
   const [posts, setPost] = useState([])
   const fetchTasks = async () => {
-    await listupdate().then((response) => {
+    await listupdate(id).then((response) => {
       console.log(response.data.data[0].tasks, 'hihi')
       setPost(response.data.data[0].tasks)
     }).catch((error) => {
@@ -70,3 +71,6 @@ const NotificationsJf = () => {
 }
 
 export default NotificationsJf
+NotificationsJf.propTypes = {
+  id: PropTypes.number.isRequired,
+}

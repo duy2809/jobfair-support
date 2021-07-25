@@ -1,8 +1,7 @@
 import axios from './axios'
 
-export const jfdata = () => axios.get('/jobfair/11')
-export const jftask = () => axios.get('/jobfair/11/tasks')
-export const listmilestone = () => axios.get('/jobfair/11/milestones')
-export const listupdate = () => axios.get('/jobfair/11/updated-tasks')
-
+export const jfdata = (id) => axios.get(`/jobfair/${id}`)
+export const jftask = (id) => axios.get(`/jobfair/${id}/tasks`)
+export const listmilestone = (id) => axios.get(`/jobfair/${id}/milestones`)
+export const listupdate = (id) => axios.get(`/jobfair/${id}/updated-tasks`)
 // axios.get('/jobfair/1')
