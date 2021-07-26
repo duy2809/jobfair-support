@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -15,26 +13,24 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $categories = DB::table('categories')
-            ->select('*')
-            ->get();
+        return Category::all();
+    }
 
-        if($request->has('s'))
-        {
-            $query = strtolower($request->get('s'));
-            $categories = $categories->filter(function($categories) use($query)
-            {
-                if(Str::contains(strtolower($categories->category_name), $query))
-                {
-                    return true;
-                }
-                return false;
-            });
-        }
-        return response()->json($categories, 200);
-        // return view('Categories.index',compact('categories'));
+    public function search($key)
+    {
+        $categories = Category::select('*')->get();
+        $query = strtolower($key);
+        $categories = $categories->filter(function ($categories) use ($query) {
+            if (Str::contains(strtolower($categories->category_name), $query)) {
+                return true;
+            }
+
+            return false;
+        });
+
+        return $categories;
     }
 
     /**
@@ -44,7 +40,6 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -55,7 +50,6 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -66,7 +60,6 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -77,7 +70,6 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -89,7 +81,6 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -100,6 +91,5 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

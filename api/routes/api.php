@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,5 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 Route::resource('/milestone', MilestoneController::class);
-Route::get('/categories',[Controllers\Category\CategoryController::class,'index'])
+Route::get('/categories', [Controllers\CategoryController::class, 'index'])
     ->name('categories.index');
+Route::get('/categories/{key}', [Controllers\CategoryController::class, 'search'])
+    ->name('categories.search');
