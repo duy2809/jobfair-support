@@ -123,8 +123,8 @@ export default function AddMilestonePage() {
                   typePeriod: '0',
                 }}
                 size="large"
-                labelCol={{ span: 4, offset: 2 }}
-                wrapperCol={{ span: 9, offset: 2 }}
+                labelCol={{ span: 10}}
+                wrapperCol={{ span: 6}}
               >
                 <Form.Item
                   className="pb-4"
@@ -189,7 +189,7 @@ export default function AddMilestonePage() {
                     min={0}
                   />
                 </Form.Item>
-                <div className="grid grid-cols-12 grid-rows-1 mt-5">
+                <div className="grid grid-cols-12 grid-rows-1 mt-5 gap-x-5">
                   <div className="col-span-7 justify-self-end">
                     <Form.Item>
                       <Button
@@ -206,7 +206,7 @@ export default function AddMilestonePage() {
                       {() => (
                         <Button
                           type="primary"
-                          className="w-32 ml-9"
+                          className="w-32"
                           disabled={
                             !(
                               form.isFieldTouched('name')
