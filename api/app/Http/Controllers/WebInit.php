@@ -12,6 +12,26 @@ class WebInit extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    // public function __invoke(Request $request)
+    // {
+    //     return [
+    //         'auth' => $this->getAuth($request),
+    //     ];
+    // }
+
+    // protected function getAuth(Request $request)
+    // {
+    //     $user = $request->user();
+    //     auth()->loginUsingId(1)
+
+    //     if (!$user) {
+    //         return null;
+    //     }
+
+    //     return [
+    //         'user' => $user,
+    //     ];
+    // }
     public function __invoke(Request $request)
     {
         return [
@@ -22,7 +42,6 @@ class WebInit extends Controller
     protected function getAuth(Request $request)
     {
         $user = $request->user();
-        auth()->loginUsingId(1);
 
         if (!$user) {
             return null;

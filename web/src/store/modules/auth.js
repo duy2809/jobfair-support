@@ -24,7 +24,6 @@ function* init(action) {
   const { res } = action.payload
   res.setHeader('set-cookie', response.headers['set-cookie'])
   console.log(response.headers['set-cookie'])
-
   try {
     const { user } = response.data.auth
     yield put(loadSuccess(user))
