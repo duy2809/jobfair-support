@@ -24,3 +24,4 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 
 Route::resource('/milestone', MilestoneController::class);
+

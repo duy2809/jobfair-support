@@ -50,14 +50,19 @@ export default function jftoppage() {
         '該当結果が見つかりませんでした',
     })
   }
-  const [isValue, setValue] = useState(false)
-  const search = () => {
-    if (isValue) {
-      router.push(`/task-list?name=${nameTask}`)
-    } else {
+  function search() {
+    let a = true
+    listTask.forEach((element) => {
+      if (nameTask === element.name) {
+        a = false
+        router.push(`/task-list?name=${nameTask}`)
+      }
+    })
+    if (a === true) {
       openNotificationWithIcon('error')
     }
   }
+
   useEffect(() => {
     fetchJF()
     fetchTasks()
@@ -104,13 +109,6 @@ export default function jftoppage() {
                           <input
                             onChange={(event) => {
                               setNameTask(event.target.value)
-                              listTask.forEach((element) => {
-                                if (nameTask === element.name) {
-                                  setValue(true)
-                                } else {
-                                  setValue(false)
-                                }
-                              })
                             }}
                             placeholder="タスク名"
                             style={{ width: 400 }}
