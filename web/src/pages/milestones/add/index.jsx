@@ -24,18 +24,6 @@ export default function AddMilestonePage() {
 
   const { Option } = Select
 
-  const onValueNameChange = (e) => {
-    form.setFieldsValue({
-      name: toHalfWidth(e.target.value),
-    })
-  }
-
-  const onValueTimeChange = (e) => {
-    form.setFieldsValue({
-      time: toHalfWidth(e.target.value),
-    })
-  }
-
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
@@ -75,9 +63,15 @@ export default function AddMilestonePage() {
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
   }
   const onValueTimeChange = (e) => {
     setTimeInput(e.target.value)
+    form.setFieldsValue({
+      time: toHalfWidth(e.target.value),
+    })
   }
 
   const handleCancel = () => {
