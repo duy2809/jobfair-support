@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class MakeSchedulesNameUnique extends Migration
+class ChangeTypeRememberTokenToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class MakeSchedulesNameUnique extends Migration
      */
     public function up()
     {
-        Schema::table('schedules', function (Blueprint $table) {
-            $table->string('name')->unique()->change();
+        Schema::table('users', function (Blueprint $table) {
+            $table->rememberToken()->change();
         });
     }
 
@@ -25,8 +25,8 @@ class MakeSchedulesNameUnique extends Migration
      */
     public function down()
     {
-        Schema::table('schedules', function (Blueprint $table) {
-            $table->string('name')->change();
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropRememberToken();
         });
     }
 }

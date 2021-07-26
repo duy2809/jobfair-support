@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsWeekToMilestonesTable extends Migration
+class AddTimestampsAddSoftDeleteToJobfairs extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddIsWeekToMilestonesTable extends Migration
      */
     public function up()
     {
-        Schema::table('milestones', function (Blueprint $table) {
-            $table->boolean('is_week');
+        Schema::table('jobfairs', function (Blueprint $table) {
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +26,9 @@ class AddIsWeekToMilestonesTable extends Migration
      */
     public function down()
     {
-        Schema::table('milestones', function (Blueprint $table) {
-            $table->dropColumn('is_week');
+        Schema::table('jobfairs', function (Blueprint $table) {
+            $table->dropTimestamps();
+            $table->dropSoftDeletes();
         });
     }
 }

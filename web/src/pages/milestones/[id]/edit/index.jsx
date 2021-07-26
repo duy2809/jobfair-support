@@ -6,9 +6,7 @@ import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
 
-const ToHalfWidth = function (v) {
-  return v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-}
+const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
 const EditMilestonePage = () => {
   // {query['id']}
@@ -31,7 +29,7 @@ const EditMilestonePage = () => {
         name: res.data.name,
         time: res.data.period,
       })
-    }).catch((error) => console.log(error.response.request.response))
+    })
   }, [])
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -45,15 +43,17 @@ const EditMilestonePage = () => {
   }
 
   const onValueNameChange = (e) => {
+    setcheckSpace(false)
     setNameInput(e.target.value)
     form.setFieldsValue({
-      name: ToHalfWidth(e.target.value),
+      name: toHalfWidth(e.target.value),
     })
   }
   const onValueTimeChange = (e) => {
+    setcheckSpace(false)
     setTimeInput(e.target.value)
     form.setFieldsValue({
-      time: ToHalfWidth(e.target.value),
+      time: toHalfWidth(e.target.value),
     })
   }
 
@@ -98,23 +98,12 @@ const EditMilestonePage = () => {
   )
   const specialCharRegex = new RegExp('[ 　]')
 
-  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
-  //   const onNumberOnlyChange = (event) => {
-  //     const keyCode = event.keyCode || event.which;
-  //     const keyValue = String.fromCharCode(keyCode);
-  //     const isValid = new RegExp("[0-9]").test(keyValue);
-  //     if (!isValid) {
-  //        event.preventDefault();
-  //        return;
-  //     }
-  // };
-
   return (
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="text-4xl title">マイルストーン編集</p>
-          <div className="h-screen flex flex-col items-center pt-10 bg-white ">
+          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン編集</p>
+          <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
 
             <Form
               form={form}
@@ -130,8 +119,9 @@ const EditMilestonePage = () => {
               <Form.Item
                 // label="マイルストーン名"
                 label={
-                  <p style={{ color: '#2d334a' }}>マイルストーン名</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
                 }
+                // className="text-4xl justify-between"
                 name="name"
                 rules={[
                   {
@@ -152,6 +142,7 @@ const EditMilestonePage = () => {
               >
                 <Input
                   type="text"
+                  size="large"
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
                 />
@@ -160,7 +151,7 @@ const EditMilestonePage = () => {
               <Form.Item
                 // label="期日"
                 label={
-                  <p style={{ color: '#2d334a' }}>期日</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
                 name="time"
                 rules={[
@@ -175,25 +166,28 @@ const EditMilestonePage = () => {
                     pattern: /^(?:\d*)$/,
                     message: '半角の整数で入力してください。',
                   },
-                  // () => ({
-                  //   validator(_, value) {
-                  //     // if (value > 5) {
-                  //     // return Promise.reject("Zip code can't be more than 5 ");
-                  //     // }
-                  //     if (value < 0) {
-                  //       return Promise.reject(new Error('半角の整数で入力してください。'))
-                  //     }
-                  //     return Promise.resolve()
-                  //   },
-                  // }),
+
+                  () => ({
+                    validator(_, value) {
+                    //   if (value < 0) {
+                    //     return Promise.reject(new Error('半角の整数で入力してください。'))
+                    //   }
+                      if (specialCharRegex.test(value)) {
+                        setcheckSpace(true)
+                      }
+                      return Promise.resolve()
+                    },
+
+                  }),
                 ]}
               >
                 <Input
                   className="inputNumber"
                   type="text"
+                  size="large"
                   // onKeyPress={onNumberOnlyChange}
                   // min='0'
-                  onKeyDown={blockInvalidChar}
+                  // onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
                   //   defaultValue="3"
                   onChange={onValueTimeChange}
@@ -213,9 +207,9 @@ const EditMilestonePage = () => {
               </Modal>
 
               <Form.Item
-                className=" justify-center "
+                className=" justify-end "
               >
-                <div className="flex justify-between my-10 ">
+                <div className="flex  my-10 ">
                   <CancelEditMilestone />
 
                   {/* && timeInput <=5 */}
@@ -223,7 +217,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14"
+                      className="text-base px-10 "
                       onClick={showModal}
                     >
                       保存
@@ -232,7 +226,7 @@ const EditMilestonePage = () => {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-14"
+                      className="text-base px-10 "
                       disabled
                     >
                       保存
