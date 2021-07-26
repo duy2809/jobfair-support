@@ -17,7 +17,7 @@ import Navbar from '../../components/navbar'
 import './style.scss'
 
 const JfLayout = ({
-  children,
+  children, id,
 }) => {
   const main = findSlot(JfLayout.Main, children)
   const { Sider, Content } = Layout
@@ -66,19 +66,19 @@ const JfLayout = ({
             </div>
 
             <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href="/JFTopPage">ホーム</Link>
+              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href="/TaskList">タスク</Link>
+              <Link href="/task-list">タスク</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href="/GranttChart">ガントチャート</Link>
+              <Link href="/grantt-chart">ガントチャート</Link>
             </Menu.Item>
             <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href="/KanBan">カンバン</Link>
+              <Link href="/kanban">カンバン</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href="/File">ファイル</Link>
+              <Link href="/file">ファイル</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -108,7 +108,9 @@ JfLayout.Main = () => null
 JfLayout.defaultProps = {
   children: [],
 }
-
+JfLayout.propTypes = {
+  id: PropTypes.number.isRequired,
+}
 JfLayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,

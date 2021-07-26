@@ -69,7 +69,7 @@ export default function jftoppage() {
   }, [])
   return (
     <div className="JFTopPage">
-      <JfLayout>
+      <JfLayout id={idJf}>
         <JfLayout.Main>
           <div className="Jf__top">
             <div className="Jf__header">
