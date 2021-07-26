@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
-import OtherLayout from '../../../../layouts/OtherLayout'
+import OtherLayout from '../../../../layouts/other-layout'
 import { updateMilestone, getMilestone } from '../../../../api/milestone'
 import './styles.scss'
 
