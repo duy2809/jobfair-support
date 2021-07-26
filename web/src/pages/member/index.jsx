@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Form, Button } from 'antd'
+import { Select, Table, Input, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
 import './styles.scss'
@@ -74,6 +75,15 @@ export default function MemberList() {
       setDataLoading(false)
     })
   })
+  const router = useRouter()
+  const handleRow = (record) => ({ onClick: () => {
+    console.log(record)
+    router.push(`/member/${record.id}`)
+  } })
+  const handleClick = (e) => {
+    e.preventDefault()
+    router.push('/member/invite')
+  }
 
   useEffect(() => {
     fetchData()
@@ -84,35 +94,34 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="justify-start w-10/12">
-            <div className="text-6xl font-bold py-10">メンバ一覧</div>
-            <span className="text-xl">表示件数: </span>
-            <Select className="ml-5" defaultValue={10} onChange={handleSelect}>
-              <Option value={10}>10</Option>
-              <Option value={25}>25</Option>
-              <Option value={50}>50</Option>
-            </Select>
-          </div>
-          <div className="flex justify-between w-10/12">
-            <div className="text-2xl ml-auto flex items-center">
-              <Input placeholder="探索" prefix={<SearchOutlined />} onChange={handleInput} />
-              { role === 'admin' ? (
-                <>
-                  <Form.Item>
-                    <Button
-                      type="primary"
-                      htmlType="button"
-                      className="mt-5 ml-5"
-                      enabled
-                    >
-                      メンバー招待
-                    </Button>
-                  </Form.Item>
-                </>
-              ) : ''}
+          <div className="text-6xl w-10/12 font-bold py-10">メンバ一覧</div>
+          <div className="flex w-10/12 items-center justify-between">
+            <div>
+              <span className="text-xl">表示件数: </span>
+              <Select className="ml-5" defaultValue={10} onChange={handleSelect}>
+                <Option value={10}>10</Option>
+                <Option value={25}>25</Option>
+                <Option value={50}>50</Option>
+              </Select>
+            </div>
+            <div>
+              <div className="text-2xl flex items-center">
+                <Input placeholder="探索" prefix={<SearchOutlined />} onChange={handleInput} />
+                { role === 'admin' ? (
+                  <Button
+                    type="primary"
+                    className="ml-5"
+                    htmlType="button"
+                    enabled
+                    onClick={handleClick}
+                  >
+                    メンバー招待
+                  </Button>
+                ) : ''}
+              </div>
             </div>
           </div>
-          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterData} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
+          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterData} onRow={handleRow} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
         </div>
       </Layout.Main>
     </Layout>
