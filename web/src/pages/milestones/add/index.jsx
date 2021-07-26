@@ -8,6 +8,8 @@ import {
   notification,
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
+import { addMilestone } from '../../../api/milestone'
+
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm()
@@ -19,18 +21,6 @@ export default function AddMilestonePage() {
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-  }
-
-  const onValueNameChange = (e) => {
-    form.setFieldsValue({
-      name: toHalfWidth(e.target.value),
-    })
-  }
-
-  const onValueTimeChange = (e) => {
-    form.setFieldsValue({
-      time: toHalfWidth(e.target.value),
-    })
   }
 
   const openNotificationSuccess = () => {
@@ -50,7 +40,33 @@ export default function AddMilestonePage() {
   const handleOk = () => {
     form.submit()
     setIsModalVisible(false)
-    openNotificationSuccess()
+    addMilestone({
+      name: nameInput,
+      period: timeInput,
+      is_week: typePeriodInput,
+      schedule_id: 1,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+          })
+        }
+        console.log(error.response)
+      })
+  }
+
+  const onValueNameChange = (e) => {
+    setNameInput(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
+  }
+  const onValueTimeChange = (e) => {
+    setTimeInput(e.target.value)
+    form.setFieldsValue({
+      time: toHalfWidth(e.target.value),
+    })
   }
 
   const handleCancel = () => {
@@ -69,6 +85,10 @@ export default function AddMilestonePage() {
     <Form.Item name="typePeriod" noStyle>
       <Select
         className="select-after"
+        onChange={(value) => {
+        setTypePeriodInput(parseInt(value, 10))
+      }}
+      value={typePeriodInput.toString()}
         style={{
           width: 90,
         }}
