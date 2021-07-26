@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class JobfairController extends Controller
 {
     protected $offset;
+
     /**
      * Display a listing of the resource.
      *
@@ -62,12 +63,16 @@ class JobfairController extends Controller
 
     public function getMilestones($id)
     {
-        $milestones = Jobfair::find($id)->schedule()->with(['milestones' => function($query) {
-           $query->with(['tasks' => function ($task) {
-               $task->select('milestone_id', 'name', 'status');
-           }])->get(); 
-        }])->get();
-       
+        $milestones = Jobfair::find($id)->schedule()->with([
+            'milestones' => function ($query) {
+                $query->with([
+                    'tasks' => function ($task) {
+                        $task->select('milestone_id', 'name', 'status');
+                    },
+                ])->get();
+            },
+        ])->get();
+
         return response()->json([
             'data' => $milestones,
         ]);
@@ -75,9 +80,11 @@ class JobfairController extends Controller
 
     public function getTasks($id)
     {
-        $tasks = Jobfair::find($id)->schedule()->with(['tasks' => function($query) {
-            $query->select(['tasks.name', 'tasks.status', 'tasks.id']);
-        }])->get(['id']);
+        $tasks = Jobfair::find($id)->schedule()->with([
+            'tasks' => function ($query) {
+                $query->select(['tasks.name', 'tasks.status', 'tasks.id']);
+            },
+        ])->get(['id']);
 
         return response()->json([
             'data' => $tasks,
@@ -85,15 +92,15 @@ class JobfairController extends Controller
     }
 
     public function updatedTasks($id, Request $request)
-    {   
+    {
         $tasks = Jobfair::find($id)->schedule()->with([
             'tasks' => function ($query) {
-                $query->select(['tasks.name', 'tasks.updated_at','tasks.id','users.name as username'])
+                $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'users.name as username'])
                     ->join('users', 'users.id', '=', 'tasks.user_id')
                     ->orderBy('tasks.updated_at', 'DESC')
                     ->take(20);
-            }])->get(['id']);
-        
+            },
+        ])->get(['id']);
 
         return response()->json([
             'data' => $tasks,
