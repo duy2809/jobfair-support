@@ -16,6 +16,9 @@ export default function AddMilestonePage() {
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false)
+  const [typePeriodInput, setTypePeriodInput] = useState(0)
+  const [nameInput, setNameInput] = useState('')
+  const [timeInput, setTimeInput] = useState('')
 
   const { Option } = Select
 
