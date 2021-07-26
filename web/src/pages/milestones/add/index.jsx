@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   Form,
   Input,
@@ -6,66 +6,64 @@ import {
   Select,
   Modal,
   notification,
-} from "antd";
-import OtherLayout from "../../../layouts/OtherLayout";
+} from 'antd'
+import OtherLayout from '../../../layouts/OtherLayout'
 
 export default function AddMilestonePage() {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false)
 
-  const { Option } = Select;
+  const { Option } = Select
 
   function toHalfWidth(fullWidthStr) {
-    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-    );
+    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
 
   const onValueNameChange = (e) => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
-    });
-  };
+    })
+  }
 
   const onValueTimeChange = (e) => {
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
-    });
-  };
+    })
+  }
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: "正常に保存されました。",
+      message: '正常に保存されました。',
 
       style: {
-        marginTop: "70px",
+        marginTop: '70px',
       },
-    });
-  };
+    })
+  }
 
   const showModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
   const handleOk = () => {
-    form.submit();
-    setIsModalVisible(false);
-    openNotificationSuccess();
-  };
+    form.submit()
+    setIsModalVisible(false)
+    openNotificationSuccess()
+  }
 
   const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   const showModalOfBtnCancel = () => {
-    setIsModalVisibleOfBtnCancel(true);
-  };
+    setIsModalVisibleOfBtnCancel(true)
+  }
 
   const handleCancelOfBtnCancel = () => {
-    setIsModalVisibleOfBtnCancel(false);
-  };
+    setIsModalVisibleOfBtnCancel(false)
+  }
 
   const selectAfter = (
     <Form.Item name="typePeriod" noStyle>
@@ -79,14 +77,13 @@ export default function AddMilestonePage() {
         <Option value="1">週間後</Option>
       </Select>
     </Form.Item>
-  );
+  )
 
   const onFinish = (values) => {
     console.log(values)
-  };
+  }
 
-  const blockInvalidChar = (e) =>
-    ["e", "E", "+"].includes(e.key) && e.preventDefault();
+  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
     <>
@@ -100,7 +97,7 @@ export default function AddMilestonePage() {
                 name="addMilestone"
                 onFinish={onFinish}
                 initialValues={{
-                  typePeriod: "0",
+                  typePeriod: '0',
                 }}
                 size="large"
                 labelCol={{ span: 4, offset: 2 }}
@@ -108,30 +105,30 @@ export default function AddMilestonePage() {
               >
                 <Form.Item
                   className="pb-4"
-                  label={
-                    <p style={{ color: "#2d334a", fontSize: "18px" }}>
+                  label={(
+                    <p style={{ color: '#2d334a', fontSize: '18px' }}>
                       マイルストーン名
                     </p>
-                  }
+                  )}
                   name="name"
                   rules={[
                     {
                       required: true,
-                      message: "この項目は必須です。",
+                      message: 'この項目は必須です。',
                     },
 
                     {
                       validator(_, value) {
-                        var specialCharRegex = new RegExp("[ 　]");
+                        const specialCharRegex = new RegExp('[ 　]')
                         if (specialCharRegex.test(value)) {
                           return Promise.reject(
                             new Error(
-                              "マイルストーン名はスペースが含まれていません。"
-                            )
-                          );
+                              'マイルストーン名はスペースが含まれていません。',
+                            ),
+                          )
                         }
 
-                        return Promise.resolve();
+                        return Promise.resolve()
                       },
                     },
                   ]}
@@ -145,18 +142,18 @@ export default function AddMilestonePage() {
                 <Form.Item
                   className="pb-4"
                   label={
-                    <p style={{ color: "#2d334a", fontSize: "18px" }}>期日</p>
+                    <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                   }
                   name="time"
                   rules={[
                     {
                       required: true,
-                      message: "この項目は必須です。",
+                      message: 'この項目は必須です。',
                     },
 
                     {
                       pattern: /^(?:\d*)$/,
-                      message: "半角の整数で入力してください。",
+                      message: '半角の整数で入力してください。',
                     },
                   ]}
                 >
@@ -189,10 +186,10 @@ export default function AddMilestonePage() {
                           className="w-32 ml-9"
                           disabled={
                             !(
-                              form.isFieldTouched("name") &&
-                              form.isFieldTouched("time")
-                            ) ||
-                            !!form
+                              form.isFieldTouched('name')
+                              && form.isFieldTouched('time')
+                            )
+                            || !!form
                               .getFieldsError()
                               .filter(({ errors }) => errors.length).length
                           }
@@ -237,5 +234,5 @@ export default function AddMilestonePage() {
         </OtherLayout.Main>
       </OtherLayout>
     </>
-  );
+  )
 }
