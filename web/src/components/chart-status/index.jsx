@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from 'react'
+import React from 'react'
 import './style.scss'
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
