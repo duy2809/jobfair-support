@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   Form,
   Input,
@@ -6,66 +6,66 @@ import {
   Select,
   Modal,
   notification,
-  Row,
-  Col,
-} from 'antd'
-import OtherLayout from '../../../layouts/OtherLayout'
+} from "antd";
+import OtherLayout from "../../../layouts/OtherLayout";
 
 export default function AddMilestonePage() {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isModalVisibleOfCancel, setIsModalVisibleOfCancel] = useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false);
 
-  const { Option } = Select
+  const { Option } = Select;
+
+  function toHalfWidth(fullWidthStr) {
+    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    );
+  }
 
   const onValueNameChange = (e) => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
-    })
-  }
+    });
+  };
 
   const onValueTimeChange = (e) => {
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
-    })
-  }
-
-  function toHalfWidth(fullWidthStr) {
-    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-  }
+    });
+  };
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: '正常に保存されました。',
+      message: "正常に保存されました。",
 
       style: {
-        marginTop: '70px',
+        marginTop: "70px",
       },
-    })
-  }
+    });
+  };
 
   const showModal = () => {
-    setIsModalVisible(true)
-  }
+    setIsModalVisible(true);
+  };
 
   const handleOk = () => {
-    form.submit()
-    setIsModalVisible(false)
-    openNotificationSuccess()
-  }
+    form.submit();
+    setIsModalVisible(false);
+    openNotificationSuccess();
+  };
 
   const handleCancel = () => {
-    setIsModalVisible(false)
-  }
+    setIsModalVisible(false);
+  };
 
-  const showModalOfCancel = () => {
-    setIsModalVisibleOfCancel(true)
-  }
+  const showModalOfBtnCancel = () => {
+    setIsModalVisibleOfBtnCancel(true);
+  };
 
-  const handleCancelOfCancel = () => {
-    setIsModalVisibleOfCancel(false)
-  }
+  const handleCancelOfBtnCancel = () => {
+    setIsModalVisibleOfBtnCancel(false);
+  };
 
   const selectAfter = (
     <Form.Item name="typePeriod" noStyle>
@@ -79,21 +79,20 @@ export default function AddMilestonePage() {
         <Option value="1">週間後</Option>
       </Select>
     </Form.Item>
-  )
+  );
 
   const onFinish = (values) => {
     console.log(values)
-  }
+  };
 
-  
-
-  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
+  const blockInvalidChar = (e) =>
+    ["e", "E", "+"].includes(e.key) && e.preventDefault();
 
   return (
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <div className = "pt-10">
+          <div className="pt-10">
             <p className="ml-20 font-bold text-4xl">マイルストーン追加</p>
             <div className="pt-20">
               <Form
@@ -101,110 +100,110 @@ export default function AddMilestonePage() {
                 name="addMilestone"
                 onFinish={onFinish}
                 initialValues={{
-                  typePeriod: '0',
+                  typePeriod: "0",
                 }}
                 size="large"
+                labelCol={{ span: 4, offset: 2 }}
+                wrapperCol={{ span: 9, offset: 2 }}
               >
                 <Form.Item
-                  label="マイルストーン名"
+                  className="pb-4"
+                  label={
+                    <p style={{ color: "#2d334a", fontSize: "18px" }}>
+                      マイルストーン名
+                    </p>
+                  }
                   name="name"
                   rules={[
                     {
                       required: true,
-                      message: 'この項目は必須です !',
+                      message: "この項目は必須です。",
                     },
 
                     {
                       validator(_, value) {
-                        var specialCharRegex = new RegExp('[ 　]')
+                        var specialCharRegex = new RegExp("[ 　]");
                         if (specialCharRegex.test(value)) {
-                          return Promise.reject(new Error('マイルストーン名はスペースが含まれていません。'))
+                          return Promise.reject(
+                            new Error(
+                              "マイルストーン名はスペースが含まれていません。"
+                            )
+                          );
                         }
 
-                        return Promise.resolve()
+                        return Promise.resolve();
                       },
-                    }
+                    },
                   ]}
-                  labelCol={{ span: 4, offset: 2 }}
-                  wrapperCol={{ span: 9, offset: 2 }}
                 >
-                  <Input className="w-full" onChange={onValueNameChange} placeholder="マイルストーン名"/>
+                  <Input
+                    className="w-full"
+                    onChange={onValueNameChange}
+                    placeholder="マイルストーン名"
+                  />
                 </Form.Item>
-                <Row className="pt-10 text-lg" gutter={8}>
-                  <Col span={24}>
-                    <Form.Item
-                      label="期日"
-                      name="time"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'この項目は必須です !',
-                        },
+                <Form.Item
+                  className="pb-4"
+                  label={
+                    <p style={{ color: "#2d334a", fontSize: "18px" }}>期日</p>
+                  }
+                  name="time"
+                  rules={[
+                    {
+                      required: true,
+                      message: "この項目は必須です。",
+                    },
 
-                        {
-                          pattern: /^(?:\d*)$/,
-                          message: '半角の整数で入力してください。',
-                        },
-
-                        /* {
-                          validator(_, value) {
-                            if (value < 0) {
-                              return Promise.reject(
-                                new Error('半角の整数で入力してください。'),
-                              )
-                            }
-                            return Promise.resolve()
-                          },
-                        } */
-                      ]}
-                      labelCol={{ span: 4, offset: 2 }}
-                      wrapperCol={{ span: 9, offset: 2 }}
-                    >
-                      <Input
-                        /* type="number" */
-                        type="text"
-                        addonAfter={selectAfter}
-                        onKeyDown={blockInvalidChar}
-                        onChange={onValueTimeChange}
-                        min={0}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className="pt-10">
-                  <Col xs={{span: 2, offset: 10}} sm={{span: 2, offset: 6}} xl={{span: 2, offset: 12}}>
+                    {
+                      pattern: /^(?:\d*)$/,
+                      message: "半角の整数で入力してください。",
+                    },
+                  ]}
+                >
+                  <Input
+                    /* type="number" */
+                    type="text"
+                    addonAfter={selectAfter}
+                    onKeyDown={blockInvalidChar}
+                    onChange={onValueTimeChange}
+                    min={0}
+                  />
+                </Form.Item>
+                <div className="grid grid-cols-12 grid-rows-1 mt-5">
+                  <div className="col-span-7 justify-self-end">
                     <Form.Item>
                       <Button
                         type="primary"
-                        onClick={showModalOfCancel}
+                        onClick={showModalOfBtnCancel}
+                        className="w-32"
                       >
                         キャンセル
                       </Button>
                     </Form.Item>
-                  </Col>
-                  <Col xs={{span: 2, offset:7}} sm={{span: 2, offset: 4}} xl={{span: 2, offset: 1}}>
+                  </div>
+                  <div className="">
                     <Form.Item shouldUpdate>
                       {() => (
                         <Button
                           type="primary"
+                          className="w-32 ml-9"
                           disabled={
                             !(
-                              form.isFieldTouched('name')
-                              && form.isFieldTouched('time')
-                            )
-                            || !!form
+                              form.isFieldTouched("name") &&
+                              form.isFieldTouched("time")
+                            ) ||
+                            !!form
                               .getFieldsError()
                               .filter(({ errors }) => errors.length).length
                           }
-                          style={{width: '120px'}}
                           onClick={showModal}
                         >
                           保存
                         </Button>
                       )}
                     </Form.Item>
-                  </Col>
-                </Row>
+                  </div>
+                </div>
                 <Modal
                   title="マイルストーン追加"
                   visible={isModalVisible}
@@ -217,10 +216,10 @@ export default function AddMilestonePage() {
                 </Modal>
                 <Modal
                   title="マイルストーン追加"
-                  visible={isModalVisibleOfCancel}
-                  onCancel={handleCancelOfCancel}
+                  visible={isModalVisibleOfBtnCancel}
+                  onCancel={handleCancelOfBtnCancel}
                   footer={[
-                    <Button key="back" onClick={handleCancelOfCancel}>
+                    <Button key="back" onClick={handleCancelOfBtnCancel}>
                       いいえ
                     </Button>,
                     <Button key="submit" type="primary" href="../milestones">
@@ -238,5 +237,5 @@ export default function AddMilestonePage() {
         </OtherLayout.Main>
       </OtherLayout>
     </>
-  )
+  );
 }
