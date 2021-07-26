@@ -113,7 +113,7 @@ export default function AddMilestonePage() {
       <OtherLayout>
         <OtherLayout.Main>
           <div className="pt-10">
-            <p className="ml-20 font-bold text-4xl">マイルストーン追加</p>
+            <p className="title ml-20 font-bold text-4xl">マイルストーン追加</p>
             <div className="pt-20">
               <Form
                 form={form}
