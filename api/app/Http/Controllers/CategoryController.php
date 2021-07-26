@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -34,15 +36,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -50,6 +43,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return Category::create($request->all());
     }
 
     /**
@@ -60,16 +62,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
+        return Category::find($id);
     }
 
     /**
@@ -81,6 +74,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $rules = [
+            'category_name' => 'max:255|unique:categories,category_name|regex:/^[^\s]*$/'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
+        }
+        return Category::find($id)->update($request->all());
     }
 
     /**
@@ -91,5 +93,6 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        return Category::destroy($id);
     }
 }

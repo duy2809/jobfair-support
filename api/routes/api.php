@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/web-init', WebInit::class);
-Route::resource('/milestone', MilestoneController::class);
-Route::get('/categories', [Controllers\CategoryController::class, 'index'])
-    ->name('categories.index');
-Route::get('/categories/{key}', [Controllers\CategoryController::class, 'search'])
-    ->name('categories.search');
+
+Route::apiResource('/milestone', MilestoneController::class);
+
+Route::apiResource('/category', CategoryController::class);
+
+Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);

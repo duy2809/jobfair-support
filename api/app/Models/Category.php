@@ -9,6 +9,9 @@ class Category extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $fillable = ['category_name'];
+
     public function tasks()
     {
         return $this->morphedByMany(Task::class, 'categoriable');
