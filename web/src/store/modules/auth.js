@@ -23,6 +23,7 @@ function* init(action) {
   const response = yield call(webInit)
   const { res } = action.payload
   res.setHeader('set-cookie', response.headers['set-cookie'])
+  console.log(response.headers['set-cookie'])
 
   try {
     const { user } = response.data.auth

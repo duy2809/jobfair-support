@@ -20,7 +20,7 @@ export default function ChartMilestone({ id }) {
   }, [])
 
   const listData = listTask.map((item) => (
-    <MilestoneItem listTask={item.tasks} milestoneName={item.name} dealine={item.is_week ? `${item.period}Tuần` : `${item.period}ngay`} />
+    <MilestoneItem listTask={item.tasks} milestoneName={item.name} dealine={item.is_week ? `${item.period} 週間` : `${item.period} 日`} />
   ))
   return (
     <div>
