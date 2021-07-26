@@ -1,16 +1,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react'
 import './style.scss'
-import { Input, Space } from 'antd'
+import { Space, notification, Button } from 'antd'
 import { useRouter } from 'next/router'
+import { SearchOutlined } from '@ant-design/icons'
 import JfLayout from '../../layouts/jf-layout'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jfdata } from '../../api/jf-toppage'
+import { jfdata, jftask } from '../../api/jf-toppage'
 
 export default function jftoppage() {
-  const { Search } = Input
   const [name, setName] = useState('')
   const router = useRouter()
   const idJf = router.query.JFid
@@ -19,12 +19,11 @@ export default function jftoppage() {
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
   const [nameTask, setNameTask] = useState('')
-  const fullWidthNumConvert = (fullWidthNum) => fullWidthNum.replace(/[\uFF10-\uFF19]/g, (m) => String.fromCharCode(m.charCodeAt(0) - 0xfee0))
-  const onValueNameChange = (e) => {
-    setNameTask(fullWidthNumConvert(e.target.value))
-    console.log(nameTask)
-  }
-  const fetchTasks = async () => {
+
+  // const fullWidthNumConvert = (fullWidthNum) => fullWidthNum.replace(/[\uFF10-\uFF19]/g, (m) => String.fromCharCode(m.charCodeAt(0) - 0xfee0))
+
+  const [listTask, setlistTask] = useState([])
+  const fetchJF = async () => {
     await jfdata(idJf).then((response) => {
       setName(response.data.name)
       setStartDate(response.data.start_date.split('-').join('/'))
@@ -35,11 +34,34 @@ export default function jftoppage() {
       console.log(error)
     })
   }
+  const fetchTasks = async () => {
+    await jftask(idJf).then((response) => {
+      setlistTask(response.data.data[0].tasks)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      closable: false,
+      duration: 3,
+      description:
+        '該当結果が見つかりませんでした',
+    })
+  }
+  const [isValue, setValue] = useState(false)
+  const search = () => {
+    if (isValue) {
+      router.push(`/task-list?name=${nameTask}`)
+    } else {
+      openNotificationWithIcon('error')
+    }
+  }
   useEffect(() => {
+    fetchJF()
     fetchTasks()
   }, [])
-
-  const onSearch = (value) => console.log(value)
   return (
     <div className="JFTopPage">
       <JfLayout>
@@ -79,12 +101,24 @@ export default function jftoppage() {
                     <div className="flex justify-center ...">
                       <div className="search__task">
                         <Space direction="vertical">
-                          <Search
-                            onChange={onValueNameChange}
+                          <input
+                            onChange={(event) => {
+                              setNameTask(event.target.value)
+                              listTask.forEach((element) => {
+                                if (nameTask === element.name) {
+                                  setValue(true)
+                                } else {
+                                  setValue(false)
+                                }
+                              })
+                            }}
                             placeholder="タスク名"
-                            onSearch={onSearch}
                             style={{ width: 400 }}
                           />
+                          <Button style={{ border: 'none' }} onClick={search} type="primary" icon={<SearchOutlined />}>
+                            Search
+                          </Button>
+
                         </Space>
                       </div>
                     </div>
@@ -92,7 +126,7 @@ export default function jftoppage() {
                       <div className="status__global">
                         <h3>ステータス</h3>
                         <div className="status">
-                          <ChartStatus id={idJf} />
+                          <ChartStatus task={listTask} />
                         </div>
                       </div>
                     </div>

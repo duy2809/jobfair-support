@@ -1,16 +1,17 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './style.scss'
 import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import { jftask } from '../../api/jf-toppage'
+import { useRouter } from 'next/router'
+// import { jftask } from '../../api/jf-toppage'
 
-export default function ChartStatus({ id }) {
-  const [listTask, setlistTask] = useState([])
+export default function ChartStatus({ task }) {
   const listStatus = []
-  listTask.forEach((element) => {
+  task.forEach((element) => {
     listStatus.push(element.status)
   })
+  const router = useRouter()
   const status = {
     new: listStatus.filter((value) => value === '未着手').length.toString(),
     propress: listStatus.filter((value) => value === '進行中').length.toString(),
@@ -26,18 +27,6 @@ export default function ChartStatus({ id }) {
     pending: ((Number(status.pending) / total) * 100).toString(),
     break: ((Number(status.break) / total) * 100).toString(),
   }
-
-  const fetchTasks = async () => {
-    await jftask(id).then((response) => {
-      setlistTask(response.data.data[0].tasks)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  useEffect(() => {
-    fetchTasks()
-  }, [])
-
   return (
     <>
       <div className="Status">
@@ -68,31 +57,31 @@ export default function ChartStatus({ id }) {
               <div className="new__if">
                 未着手
               </div>
-              <span style={{ background: '#5EB5A6' }}>{status.new}</span>
+              <span onClick={() => { router.push('/task-list?status=未着手') }} style={{ background: '#5EB5A6' }}>{status.new}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 進行中
               </div>
-              <span style={{ background: '#A1AF2F' }}>{status.propress}</span>
+              <span onClick={() => { router.push('/task-list?status=進行中') }} style={{ background: '#A1AF2F' }}>{status.propress}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 完了
               </div>
-              <span style={{ background: '#4488C5' }}>{status.done}</span>
+              <span onClick={() => { router.push('/task-list?status=完了') }} style={{ background: '#4488C5' }}>{status.done}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 中断
               </div>
-              <span style={{ background: 'rgb(185, 86, 86)' }}>{status.pending}</span>
+              <span onClick={() => { router.push('/task-list?status=中断') }} style={{ background: 'rgb(185, 86, 86)' }}>{status.pending}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 未完了
               </div>
-              <span style={{ background: 'rgb(121, 86, 23)' }}>{status.break}</span>
+              <span onClick={() => { router.push('/task-list?status=未完了') }} style={{ background: 'rgb(121, 86, 23)' }}>{status.break}</span>
             </div>
           </div>
         </div>
@@ -102,5 +91,5 @@ export default function ChartStatus({ id }) {
   )
 }
 ChartStatus.propTypes = {
-  id: PropTypes.number.isRequired,
+  task: PropTypes.array.isRequired,
 }
