@@ -1,4 +1,8 @@
 .JFTopPage{
+    .search__task{
+        display: flex;
+        align-items: center;
+    }
     font-size: 14px;
     h3{
         color: #2d334a;
@@ -34,19 +38,16 @@
     }
     .progress{
         .search__task{
-            margin-top: 20px;
+          
             input{
-                border: 1px solid #2d334a;
+                border: 1px solid #999;
                padding: 10px;
                 
             }
             button{
-                border: 1px solid #2d334a;
-                padding: 21px !important;
-                span{
-                    color: #2d334a;
-                    transform: translate(-13px, -14px)!important;
-                }
+               
+              margin-left: 10px;
+              
             }
             
         }

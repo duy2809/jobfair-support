@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react'
 import './style.scss'
-import { Space, notification, Button } from 'antd'
+import { notification, Button } from 'antd'
 import { useRouter } from 'next/router'
 import { SearchOutlined } from '@ant-design/icons'
 import JfLayout from '../../layouts/jf-layout'
@@ -105,19 +105,15 @@ export default function jftoppage() {
                   <div className="progress">
                     <div className="flex justify-center ...">
                       <div className="search__task">
-                        <Space direction="vertical">
-                          <input
-                            onChange={(event) => {
-                              setNameTask(event.target.value)
-                            }}
-                            placeholder="タスク名"
-                            style={{ width: 400 }}
-                          />
-                          <Button style={{ border: 'none' }} onClick={search} type="primary" icon={<SearchOutlined />}>
-                            Search
-                          </Button>
 
-                        </Space>
+                        <input
+                          onChange={(event) => {
+                            setNameTask(event.target.value)
+                          }}
+                          placeholder="タスク名"
+                          style={{ width: 400 }}
+                        />
+                        <Button style={{ border: 'none' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
                       </div>
                     </div>
                     <div className="flex justify-center ...">
