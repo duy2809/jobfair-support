@@ -14,6 +14,6 @@ class JobfairsSeeder extends Seeder
      */
     public function run()
     {
-        Jobfair::factory()->times(10)->create();
+        Jobfair::factory()->times(100)->create();
     }
 }

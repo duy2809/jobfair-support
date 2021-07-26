@@ -23,7 +23,7 @@ class UserFactory extends Factory
     public function definition()
     {
         $role = $this->faker->numberBetween(0, 1);
-        $records = mt_rand(0, 10);
+        $records = mt_rand(0, 100);
 
         return [
             'name' => $this->faker->name(),

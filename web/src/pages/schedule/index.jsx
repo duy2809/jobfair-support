@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Select, Input, Table } from 'antd'
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import './styles.scss'
 
@@ -9,16 +10,16 @@ import { ListScheduleApi } from '~/api/schedule'
 const columns = [
   {
     title: 'No.',
+    dataIndex: 'index',
     key: 'No.',
-    dataIndex: 'id',
-    render: (id) => id,
-    width: '5%',
+    width: '10%',
+    render: (text, record, index) => `${index + 1}`,
   },
   {
     title: 'スケジュール',
     dataIndex: 'name',
     key: 'スケジュール',
-    width: '95%',
+    width: '90%',
     render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
   },
 ]
@@ -61,10 +62,21 @@ export default function ScheduleList() {
     setFilterSchedules(result)
   }
 
+  const router = useRouter()
+  const handleClick = (e) => {
+    e.preventDefault()
+    router.push('/schedule/add')
+  }
+
+  const handleRow = (record) => ({ onClick: () => {
+    router.push(`/schedule/${record.id}`)
+  } })
+
   useEffect(() => {
     fetchData()
   }, [itemCount])
   const { Option } = Select
+  const role = 'super admin'
   return (
     <Layout>
       <Layout.Main>
@@ -79,11 +91,13 @@ export default function ScheduleList() {
           </div>
           <div className="flex justify-between w-10/12">
             <div className="text-2xl ml-auto flex items-center">
-              <PlusCircleOutlined className="mx-8" />
+              { role === 'super admin' ? (
+                <PlusCircleOutlined className="mx-8" onClick={handleClick} />
+              ) : ''}
               <Input placeholder="探索" onChange={handleInput} bordered prefix={<SearchOutlined />} />
             </div>
           </div>
-          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterSchedules} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
+          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterSchedules} pagination={pagination} onRow={handleRow} columns={columns} isLoading={dataLoading} onChange={handleChange} />
         </div>
       </Layout.Main>
     </Layout>
