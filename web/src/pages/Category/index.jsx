@@ -1,40 +1,41 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react'
+import ReactDOM from 'react-dom'
+import 'antd/dist/antd.css'
 import './style.scss'
 
-import { getCategory, searchCategory } from '../../api/category'
+import { Input, Space } from 'antd'
+import { AudioOutlined } from '@ant-design/icons'
+import Item from 'antd/lib/list/Item'
+import { getCategories, getCategory, searchCategory } from '../../api/category'
 
-export default function listCategory() {
+export default function listCategories() {
   const [category, setCategory] = useState([])
-  const [data, setData] = useState('')
+  const [sdata, setSdata] = useState([])
+  const [Cname, setCname] = useState('')
+  const { Search } = Input
   useEffect(async () => {
-    getCategory().then((res) => {
-      setCategory(res)
-      // console.log(res)
-      // console.log(category)
+    getCategories().then((res) => {
+      setCategory(res.data)
+      console.log(res.data)
+      console.log(category)
     }).catch((error) => console.log(error.response.request.response))
-  })
-  // const onChangeHandler = (text) => {
-  //   let matches = []
-  //   if(text.length > 0)
-  //   {
-  //     matches = category.filter(cate => {
-  //       const regex = new RegExp(`${text}`, "gi")
-  //       return cate.category_name.match(regex)
-  //     })
-  //   }
-  //   console.log('matches',matches)
-  //   setSuggestion(matches)
-  //   setText(text)
+  }, [])
+
+  // async function search(key) {
+  //   searchCategory(key).then((res) => {
+  //     console.log(res.data)
+  //     setSdata(res.data)
+  //     console.log(sdata)
+  //   })
   // }
-  async function search(key) {
-    console.log(key)
-    searchCategory(key).then((result) => {
-      setData(result)
-      console.log(result)
+  useEffect(async () => {
+    searchCategory(Cname).then((res) => {
+      setSdata(res.data)
+      console.log(res.data)
     })
-  }
+  }, ['Cname'])
 
   return (
     <div>
@@ -43,13 +44,18 @@ export default function listCategory() {
       </h1>
       <br />
       <div className="container">
-        <input
-          type="text"
-          className="col-md-12 input"
-          style={{ marginTop: 10 }}
-          onChange={(e) => search(e.target.value)}
-          placeholder="Search Category name"
-        />
+        <Space direction="vertical">
+          <Search placeholder="Category name" onChange={(e) => setCname(e.target.value)} style={{ width: 200 }} />
+        </Space>
+        <table>
+          {
+            sdata.map((item) => (
+              <tr>
+                <td>{item.category_name}</td>
+              </tr>
+            ))
+          }
+        </table>
       </div>
     </div>
   )
