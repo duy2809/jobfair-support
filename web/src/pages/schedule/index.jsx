@@ -10,10 +10,10 @@ import { ListScheduleApi } from '~/api/schedule'
 const columns = [
   {
     title: 'No.',
-    dataIndex: 'index',
+    dataIndex: 'id',
     key: 'No.',
     width: '10%',
-    render: (text, record, index) => `${index + 1}`,
+    render: (id) => id,
   },
   {
     title: 'スケジュール',
