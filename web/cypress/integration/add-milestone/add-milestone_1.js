@@ -20,28 +20,36 @@ describe('Edit Milestone Test', () => {
     })
 
     it('Check input ', () => {
-      cy.get('input[id=addMilestone_name]').type('text').invoke('val').then((val) => {
-        if(val === ''){
-          cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
-        }
+      cy.get('input[id=addMilestone_name]').type('３４').should('have.value', '34')
+      cy.get('input[id=addMilestone_name]').clear().then(() => {
+        cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
+      })
+      cy.get('input[id=addMilestone_name]').type('text ').invoke('val').then((val) => {
         if(val.includes('　')){
-          cy.get('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
+
+        }
+        if(val.includes(' ')){
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
 
         }
       })
-      cy.get('input[id=addMilestone_time]').type('text').invoke('val')
-      cy.get('input[id=addMilestone_time]').invoke('val').then((val) => {
+      cy.get('input[id=addMilestone_time]').type('３４').should('have.value', '34')
+      cy.get('input[id=addMilestone_time]').clear().then(() => {
+        cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
+      })
+      cy.get('input[id=addMilestone_time]').type('text　').invoke('val').then((val) => {
         var regExp = /[a-zA-Z !,?._'@]/g;
-        var halfWidth = '3';
-        if(val === ''){
-          cy.get('div').should('have.attr','role','alert').contains('この項目は必須です。')
+        if(val.includes('　')){
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
+
         }
         if(val.includes(' ')){
-          cy.get('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
 
         }
         if(regExp.test(val)){
-          cy.get('div').should('have.class','ant-form-item-explain-error').contains('半角の整数で入力してください。')
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
         } 
       })
       

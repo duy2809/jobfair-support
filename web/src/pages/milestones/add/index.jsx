@@ -10,7 +10,6 @@ import {
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone } from '../../../api/milestone'
 
-
 export default function AddMilestonePage() {
   const [form] = Form.useForm()
 
@@ -89,9 +88,9 @@ export default function AddMilestonePage() {
       <Select
         className="select-after"
         onChange={(value) => {
-        setTypePeriodInput(parseInt(value, 10))
-      }}
-      value={typePeriodInput.toString()}
+          setTypePeriodInput(parseInt(value, 10))
+        }}
+        value={typePeriodInput.toString()}
         style={{
           width: 90,
         }}
