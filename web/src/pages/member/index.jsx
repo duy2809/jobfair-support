@@ -32,7 +32,7 @@ const columns = [
   },
   {
     title: '参加日',
-    dataIndex: '参加日',
+    dataIndex: 'date',
     key: '参加日',
     render: (date) => formatDate(date),
   },
@@ -67,7 +67,7 @@ export default function MemberList() {
 
   const fetchData = useCallback(() => {
     setDataLoading(true)
-    MemberApi.getListMember({ size: itemCount }).then((res) => {
+    MemberApi.getListMember().then((res) => {
       const { data } = res
       setMembers(data)
       setFilterData(data)
@@ -77,7 +77,6 @@ export default function MemberList() {
   })
   const router = useRouter()
   const handleRow = (record) => ({ onClick: () => {
-    console.log(record)
     router.push(`/member/${record.id}`)
   } })
   const handleClick = (e) => {
@@ -94,7 +93,7 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-6xl w-10/12 font-bold py-10">メンバ一覧</div>
+          <div className="text-6xl w-10/12 font-bold py-10 title">メンバ一覧</div>
           <div className="flex w-10/12 items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>

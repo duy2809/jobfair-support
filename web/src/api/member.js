@@ -1,6 +1,6 @@
 import axios from './axios'
 
-const getListMember = (params) => axios.get('/member', { params })
+const getListMember = () => axios.get('/member')
 export const MemberApi = {
   getListMember,
 }
