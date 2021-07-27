@@ -1,0 +1,35 @@
+.ant-btn-primary {
+    color: #272343;
+    background: #ffd803;
+    border-color: #ffd803;
+    box-shadow: shadow-2xl;
+    text-shadow:shadow-2xl;
+    
+}
+.ant-btn-primary:hover, .ant-btn-primary:focus {
+    color: #272343;
+    background: #ffd803;
+    border-color: #ffd803;
+    
+
+}
+
+.ant-layout, .ant-layout * {
+    box-sizing: rounded-5;
+}
+
+.ant-form label {
+    font-size: 25px;
+}
+.ant-form {
+    box-sizing: border-box;
+    margin-bottom: 0;
+    padding: 96px;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    font-feature-settings: 'tnum';
+}
+
