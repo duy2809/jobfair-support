@@ -1,4 +1,21 @@
 .JFTopPage{
+    .cha{
+        position: relative;
+        .react-autosuggest__container, .react-autosuggest__container--open{
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        button{
+           position: absolute;
+           top: 5px;
+           right: 10%;    
+            margin-left: 10px;
+            
+          }
+    }
+    
     .search__task{
         display: flex;
         align-items: center;
@@ -44,11 +61,7 @@
               
                 
             }
-            button{
-               
-              margin-left: 10px;
-              
-            }
+           
             
         }
         

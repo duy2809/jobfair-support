@@ -4,6 +4,7 @@ import './style.scss'
 import { notification, Button } from 'antd'
 import { useRouter } from 'next/router'
 import { SearchOutlined } from '@ant-design/icons'
+import Autosuggest from 'react-autosuggest'
 import JfLayout from '../../layouts/jf-layout'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
@@ -11,6 +12,32 @@ import ChartMilestone from '../../components/chart-milestone'
 import { jfdata, jftask } from '../../api/jf-toppage'
 
 export default function jftoppage() {
+  const [listTask, setlistTask] = useState([])
+  const [value, setValue] = useState('')
+  const [suggestions, setSuggestions] = useState([])
+
+  const getSuggestionValue = (suggestion) => suggestion.name
+  const renderSuggestion = (suggestion) => (
+    <div>
+      {suggestion.name}
+    </div>
+  )
+  const onChange = (event, { newValue }) => {
+    setValue(newValue)
+  }
+  // eslint-disable-next-line no-shadow
+  const getSuggestions = (value) => {
+    const inputValue = value.trim().toLowerCase()
+    const inputLength = inputValue.length
+    return inputLength === 0 ? [] : listTask.filter((lang) => lang.name.toLowerCase().slice(0, inputLength) === inputValue)
+  }
+  // eslint-disable-next-line no-shadow
+  const onSuggestionsFetchRequested = ({ value }) => {
+    setSuggestions(getSuggestions(value))
+  }
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([])
+  }
   const [name, setName] = useState('')
   const router = useRouter()
   const idJf = router.query.JFid
@@ -18,11 +45,9 @@ export default function jftoppage() {
   const [user, setuser] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
-  const [nameTask, setNameTask] = useState('')
 
   // const fullWidthNumConvert = (fullWidthNum) => fullWidthNum.replace(/[\uFF10-\uFF19]/g, (m) => String.fromCharCode(m.charCodeAt(0) - 0xfee0))
 
-  const [listTask, setlistTask] = useState([])
   const fetchJF = async () => {
     await jfdata(idJf).then((response) => {
       setName(response.data.name)
@@ -53,20 +78,26 @@ export default function jftoppage() {
   function search() {
     let a = true
     listTask.forEach((element) => {
-      if (nameTask === element.name) {
+      if (value === element.name) {
         a = false
-        router.push(`/task-list?name=${nameTask}`)
+        router.push(`/task-list?name=${value}`)
       }
     })
     if (a === true) {
       openNotificationWithIcon('error')
     }
   }
-
+  const inputProps = {
+    placeholder: 'タスク名',
+    value,
+    onChange,
+  }
   useEffect(() => {
     fetchJF()
     fetchTasks()
+    console.log(listTask, 'listask')
   }, [])
+
   return (
     <div className="JFTopPage">
       <JfLayout id={idJf}>
@@ -103,15 +134,15 @@ export default function jftoppage() {
                 </div>
                 <div className="col-span-4">
                   <div className="progress">
-                    <div className="flex justify-center ...">
+                    <div className="flex cha justify-center ...">
                       <div className="search__task">
-
-                        <input
-                          onChange={(event) => {
-                            setNameTask(event.target.value)
-                          }}
-                          placeholder="タスク名"
-                          style={{ width: 400 }}
+                        <Autosuggest
+                          suggestions={suggestions}
+                          onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                          onSuggestionsClearRequested={onSuggestionsClearRequested}
+                          getSuggestionValue={getSuggestionValue}
+                          renderSuggestion={renderSuggestion}
+                          inputProps={inputProps}
                         />
                         <Button style={{ border: 'none' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
                       </div>
