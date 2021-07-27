@@ -64,28 +64,25 @@ const JfLayout = ({
                 </div>
               </div>
             </div>
-
             <Menu.Item key="1" icon={<HomeOutlined />}>
               <Link href={`/jf-toppage/${id}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href="/task-list">タスク</Link>
+              <Link href={`/task-list/${id}`}>タスク</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href="/grantt-chart">ガントチャート</Link>
+              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
             </Menu.Item>
             <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href="/kanban">カンバン</Link>
+              <Link href={`/kanban/${id}`}>カンバン</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href="/file">ファイル</Link>
+              <Link href={`/file/${id}`}>ファイル</Link>
             </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
-
           <Navbar />
-
           <Content
             style={{
               margin: '24px 16px',

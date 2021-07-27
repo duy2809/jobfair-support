@@ -14,11 +14,15 @@ const Otherlayout = ({ children }) => {
       <Layout>
         <Layout className="site-layout">
 
-          <Navbar style={{ position: 'fixed', zIndex: 1, width: '100%' }} />
+          <Navbar />
 
           <Content
-            style={{ padding: '50px 41px', marginTop: 64 }}
-
+            style={{
+              margin: '45px 16px',
+              padding: 24,
+              minHeight: 280,
+              backgroud: '#fff',
+            }}
           >
             { _get(main, 'props.children') }
           </Content>
@@ -27,6 +31,7 @@ const Otherlayout = ({ children }) => {
     </div>
   )
 }
+export default Otherlayout
 Otherlayout.Main = () => null
 Otherlayout.propTypes = {
   children: PropTypes.oneOfType([
@@ -37,4 +42,3 @@ Otherlayout.propTypes = {
 Otherlayout.defaultProps = {
   children: [],
 }
-export default Otherlayout
