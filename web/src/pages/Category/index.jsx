@@ -23,19 +23,13 @@ export default function listCategories() {
     }).catch((error) => console.log(error.response.request.response))
   }, [])
 
-  // async function search(key) {
-  //   searchCategory(key).then((res) => {
-  //     console.log(res.data)
-  //     setSdata(res.data)
-  //     console.log(sdata)
-  //   })
-  // }
-  useEffect(async () => {
-    searchCategory(Cname).then((res) => {
-      setSdata(res.data)
-      console.log(res.data)
+  async function search(key) {
+    searchCategory(key).then((res) => {
+      const result = Object.values(res.data)
+      setSdata(result)
+      console.log(sdata)
     })
-  }, ['Cname'])
+  }
 
   return (
     <div>
@@ -45,7 +39,7 @@ export default function listCategories() {
       <br />
       <div className="container">
         <Space direction="vertical">
-          <Search placeholder="Category name" onChange={(e) => setCname(e.target.value)} style={{ width: 200 }} />
+          <Search placeholder="Category name" onChange={(e) => search(e.target.value)} style={{ width: 200 }} />
         </Space>
         <table>
           {
