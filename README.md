@@ -2,11 +2,7 @@
 
 ## Viblo Docker for PHP Development
 - Clone repo from: [docker-php-development](https://github.com/sun-asterisk-research/docker-php-development)
-- Reset ve commit `f5da6bf feat: update default minio region`
-```
-cd docker-php-development
-git reset --hard f5da6bf
-```
+
 - Using in Jobfair support
 ```
 Folder project
@@ -56,6 +52,7 @@ PATH_LOGS=./logs
 #-------------------------------------------------------------------------------
 
 DOMAIN=jobfair.local
+DOMAIN_WEB=jobfair.local
 PORT=8000
 
 DOMAIN_SECONDARY=jobfair.local
