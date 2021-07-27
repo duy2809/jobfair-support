@@ -1,7 +1,14 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Select, Modal, notification } from "antd";
-import OtherLayout from "../../../layouts/OtherLayout";
-import { addMilestone } from "../../../api/milestone";
+import React, { useState } from 'react'
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Modal,
+  notification,
+} from 'antd'
+import OtherLayout from '../../../layouts/OtherLayout'
+import { addMilestone } from '../../../api/milestone'
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm();
@@ -88,7 +95,7 @@ export default function AddMilestonePage() {
       <Select
         className="select-after"
         onChange={(value) => {
-          setTypePeriodInput(parseInt(value, 10));
+          setTypePeriodInput(parseInt(value, 10))
         }}
         value={typePeriodInput.toString()}
         style={{
@@ -113,7 +120,7 @@ export default function AddMilestonePage() {
       <OtherLayout>
         <OtherLayout.Main>
           <div className="pt-10">
-            <p className="ml-20 font-bold text-4xl">マイルストーン追加</p>
+            <p className="title ml-20 font-bold text-4xl">マイルストーン追加</p>
             <div className="pt-20">
               <Form
                 form={form}
