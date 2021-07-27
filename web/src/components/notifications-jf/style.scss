@@ -3,14 +3,18 @@
     border-bottom: 1px solid rgb(197, 193, 193);
     border-left: 1px solid rgb(197, 193, 193);
     border-right: 1px solid rgb(197, 193, 193);
+    border-radius: 0 0 30px 30px;
     padding: 10px;
     h4{
         color: #2d334a;
-font-size: 18px;
+    font-size: 18px;
     }
     h3{
         color: #2d334a;
-        font-size: 20px;
+       
+        a{
+            font-size: 20px;
+        }
     }
     a:hover{
         color: #ffd803;
