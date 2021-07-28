@@ -98,7 +98,7 @@ class JobfairController extends Controller
                 $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'users.name as username'])
                     ->join('users', 'users.id', '=', 'tasks.user_id')
                     ->orderBy('tasks.updated_at', 'DESC')
-                    ->take(20);
+                    ->take(30);
             },
         ])->get(['id']);
 
