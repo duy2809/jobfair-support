@@ -38,8 +38,9 @@ const EditMilestonePage = () => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
-
+      
     })
+    setTimeout(function(){location.href="/milestones"} , 1000);
   }
 
   const onValueNameChange = (e) => {

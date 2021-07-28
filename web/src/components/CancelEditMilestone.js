@@ -13,6 +13,7 @@ class CancelEditMilestone extends React.Component {
   };
 
   handleOk = () => {
+    location.href="/milestones"
     this.setState({ visible: false })
   };
 
