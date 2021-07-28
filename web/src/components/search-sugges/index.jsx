@@ -12,13 +12,15 @@ export default function SearchSugges({ listTask }) {
   const [suggestions, setSuggestions] = useState([])
   const router = useRouter()
   const getSuggestionValue = (suggestion) => suggestion.name
+  const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
   const renderSuggestion = (suggestion) => (
     <div>
       {suggestion.name}
     </div>
   )
   const onChange = (event, { newValue }) => {
-    setValue(newValue)
+    const values = toHalfWidth(newValue)
+    setValue(values)
   }
   // eslint-disable-next-line no-shadow
   const getSuggestions = (value) => {
@@ -36,7 +38,7 @@ export default function SearchSugges({ listTask }) {
   const openNotificationWithIcon = (type) => {
     notification[type]({
       closable: false,
-      duration: 3,
+      duration: 1,
       description:
             '該当結果が見つかりませんでした',
     })

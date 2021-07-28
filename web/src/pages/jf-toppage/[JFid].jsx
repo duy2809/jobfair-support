@@ -14,13 +14,11 @@ export default function jftoppage() {
   const [name, setName] = useState('')
   const router = useRouter()
   const idJf = router.query.JFid
+
   const [startDate, setStartDate] = useState()
   const [user, setuser] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
-
-  // const fullWidthNumConvert = (fullWidthNum) => fullWidthNum.replace(/[\uFF10-\uFF19]/g, (m) => String.fromCharCode(m.charCodeAt(0) - 0xfee0))
-
   const fetchJF = async () => {
     await jfdata(idJf).then((response) => {
       setName(response.data.name)
@@ -40,9 +38,9 @@ export default function jftoppage() {
     })
   }
   useEffect(() => {
+    localStorage.setItem('id-jf', idJf)
     fetchJF()
     fetchTasks()
-    console.log(listTask, 'listask')
   }, [])
 
   return (

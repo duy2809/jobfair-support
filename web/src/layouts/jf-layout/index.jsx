@@ -17,7 +17,7 @@ import Navbar from '../../components/navbar'
 import './style.scss'
 
 const JfLayout = ({
-  children, id,
+  children,
 }) => {
   const main = findSlot(JfLayout.Main, children)
   const { Sider, Content } = Layout
@@ -25,8 +25,10 @@ const JfLayout = ({
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
-
-  useEffect(() => () => {}, [children])
+  const [idJF, setIdJf] = useState('')
+  useEffect(() => {
+    setIdJf(localStorage.getItem('id-jf'))
+  }, [children])
   return (
     <div className="menuu">
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
@@ -65,19 +67,19 @@ const JfLayout = ({
               </div>
             </div>
             <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href={`/task-list/${id}`}>タスク</Link>
+              <Link href={`/task-list/${idJF}`}>タスク</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
             </Menu.Item>
             <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href={`/kanban/${id}`}>カンバン</Link>
+              <Link href={`/kanban/${idJF}`}>カンバン</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href={`/file/${id}`}>ファイル</Link>
+              <Link href={`/file/${idJF}`}>ファイル</Link>
             </Menu.Item>
           </Menu>
         </Sider>
@@ -104,9 +106,6 @@ JfLayout.Main = () => null
 
 JfLayout.defaultProps = {
   children: [],
-}
-JfLayout.propTypes = {
-  id: PropTypes.number.isRequired,
 }
 JfLayout.propTypes = {
   children: PropTypes.oneOfType([
