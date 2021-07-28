@@ -4,7 +4,6 @@ import './style.scss'
 import { SearchOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getJFList, deleteJFList } from '../../api/jf-list'
-import { set } from 'lodash'
 
 export default function JFList() {
   const openNotificationSuccess = () => {
@@ -25,7 +24,7 @@ export default function JFList() {
     const data = []
     for (let i = 0; i < response.data.length; i += 1) {
       data.push({
-        key: response.data[i].id,
+        id: response.data[i].id,
         JF名: response.data[i].name,
         開始日: response.data[i].start_date.replaceAll('-', '/'),
         推定参加学生数: response.data[i].number_of_students,
@@ -62,7 +61,9 @@ export default function JFList() {
       cancelText: 'いいえ',
     })
   }
+
   // columns of tables
+
   const columns = [
     {
       title: 'JF名',
@@ -108,7 +109,7 @@ export default function JFList() {
         <Space size="middle">
           <EditTwoTone />
           <DeleteTwoTone onClick={() => {
-            confirmModle(record.key)
+            confirmModle(record.id)
           }}
           />
         </Space>
@@ -136,49 +137,40 @@ export default function JFList() {
   const [startDate, setStartDate] = useState('')
   // Search data on Table
 
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState([])
 
-  // const searchDataOnTable = (e) => {
-  //   const currValue = e.target.value
-  //   setValueSearch(currValue)
-  //   const filteredData = originalData.filter((JF) => (JF.JF名.includes(currValue) || JF.管理者.includes(currValue))
-  //     && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
-  //     && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
-  //     && (JF.開始日.includes(startDate)))
-  //   setTemperaryData(filteredData)
-  // }
   const searchDataOnTable = (value) => {
     const currValue = value
     const filteredData = originalData.filter((JF) => (JF.JF名.includes(currValue) || JF.管理者.includes(currValue))
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
       && (JF.開始日.includes(startDate)))
-    return filteredData;
+    return filteredData
   }
 
   const handleSearch = (value) => {
     if (!value) {
       setValueSearch('')
-      setTemperaryData(dataFilter);
-      return;
+      setTemperaryData(dataFilter)
+      return
     }
-    let filteredData = searchDataOnTable(value)
+    const filteredData = searchDataOnTable(value)
     const dataSuggest = []
     if (filteredData != null) {
       for (let i = 0; i < filteredData.length; i += 1) {
         if (filteredData[i].JF名.includes(value)) {
           dataSuggest.push(
-            { value: filteredData[i].JF名 }
+            { value: filteredData[i].JF名 },
           )
         } else {
           dataSuggest.push(
-            { value: filteredData[i].管理者 }
+            { value: filteredData[i].管理者 },
           )
         }
       }
     }
-    setOptions(value ? dataSuggest : []);
-  };
+    setOptions(value ? dataSuggest : [])
+  }
 
   const onSelect = (value) => {
     if (!value) {
@@ -186,9 +178,8 @@ export default function JFList() {
       return
     }
     setValueSearch(value)
-    setTemperaryData(searchDataOnTable(value));
-  };
-
+    setTemperaryData(searchDataOnTable(value))
+  }
 
   // filter by number of students
 
@@ -199,7 +190,7 @@ export default function JFList() {
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
       && (JF.開始日.includes(startDate)))
     setTemperaryData(filteredData)
-    setDataFilter(filteredData);
+    setDataFilter(filteredData)
   }
   // filter by number of businesses
 
@@ -339,7 +330,8 @@ export default function JFList() {
             onSelect={onSelect}
             onChange={handleSearch}
           >
-            <Input prefix={<SearchOutlined />}
+            <Input
+              prefix={<SearchOutlined />}
               allowClear="true"
               placeholder="JF名, 管理者"
               onPressEnter={onSelect}
