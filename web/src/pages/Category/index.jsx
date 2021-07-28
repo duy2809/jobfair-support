@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import './style.scss'
 
-import { Input, Space, Table } from 'antd'
-import { getCategories, getCategory, searchCategory } from '../../api/category'
+import { Input, Space, Table, Button, Modal } from 'antd'
+import { getCategories, addCategory, searchCategory } from '../../api/category'
 // import PrjAdd from './components/PrjAdd'
 // import PrjEdit from './components/PrjEdit'
 // import PrjDelete from './components/PrjDelete'
@@ -19,17 +19,30 @@ export default function listCategories() {
   const [pageSize, setPageSize] = useState(10)
   const [sdata, setSdata] = useState([])
   const { Search } = Input
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  // For add modal
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
+  const handleOk = () => {
+    setIsModalVisible(false)
+  }
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
+  // fetch data
   useEffect(async () => {
     setLoading(true)
     getCategories().then((res) => {
-      setCategory(res)
+      setCategory(res.data)
       console.log(res.data)
+      console.log(category)
     }).catch((error) => console.log(error.response.request.response))
       .finally(() => {
         setLoading(false)
       })
   }, [])
-  console.log(category)
+  // search data with key
   async function search(key) {
     searchCategory(key).then((res) => {
       const result = Object.values(res.data)
@@ -37,7 +50,7 @@ export default function listCategories() {
       console.log(sdata)
     })
   }
-
+  // table columns
   const columns = [
     {
       key: '1',
@@ -48,7 +61,7 @@ export default function listCategories() {
     {
       key: '2',
       title: 'カテゴリー名',
-      dataIndex: 'title',
+      dataIndex: 'category_name',
       width: '40%',
       sorter: (record1, record2) => record1.title < record2.title,
     },
@@ -76,7 +89,7 @@ export default function listCategories() {
         <p className="p-8 font-bold text-4xl">カテゴリー覧</p>
         <div className="absolute right-12 top-10">
           <Space direction="vertical">
-            <Search placeholder="search" onSearch={(e) => search(e.target.value)} style={{ width: 200 }} />
+            <Search placeholder="search for category name" onSearch={(e) => search(e.target.value)} style={{ width: 200 }} />
           </Space>
         </div>
       </div>
@@ -88,7 +101,7 @@ export default function listCategories() {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={category.category_name}
+          dataSource={category}
           pagination={{
             current: page,
             pageSize,
@@ -99,7 +112,21 @@ export default function listCategories() {
           }}
         />
         <div className="relative">
-          {/* <PrjAdd /> */}
+          <>
+            <Button type="primary" onClick={showModal} className="add-btn">
+              追加
+            </Button>
+            <Modal
+              title="追加カテゴリ"
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              okText="登録"
+              cancelText="キャンセル"
+            >
+              <input placeholder="Add category" className="input-category" />
+            </Modal>
+          </>
         </div>
       </div>
     </div>
