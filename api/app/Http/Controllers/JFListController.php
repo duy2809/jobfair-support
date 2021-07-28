@@ -86,3 +86,4 @@ class JFListController extends Controller
             ->get();
     }
 }
+
