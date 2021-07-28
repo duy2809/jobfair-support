@@ -86,4 +86,7 @@ class JFListController extends Controller
             ->get();
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Modeifed feat/jobfairs: fix eslint code

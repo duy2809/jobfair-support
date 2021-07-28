@@ -197,7 +197,6 @@ export default function JFList() {
     setTemperaryData(searchDataOnTable(currValue))
   }
 
-
   // filter by number of students
 
   const FilterStudentsNumber = (value) => {
@@ -208,7 +207,6 @@ export default function JFList() {
       && (JF.開始日.includes(startDate)))
     setTemperaryData(filteredData)
     setDataFilter(filteredData)
-
   }
   // filter by number of businesses
 
@@ -369,4 +367,3 @@ export default function JFList() {
     </div>
   )
 }
-
