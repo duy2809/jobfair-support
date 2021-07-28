@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import './style.scss'
 import PropTypes from 'prop-types'
 import { SearchOutlined } from '@ant-design/icons'
