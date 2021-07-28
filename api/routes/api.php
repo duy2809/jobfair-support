@@ -22,4 +22,3 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
 });
-
