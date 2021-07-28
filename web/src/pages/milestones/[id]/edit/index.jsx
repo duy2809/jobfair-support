@@ -165,7 +165,7 @@ const EditMilestonePage = () => {
 
                   {
                     pattern: /^(?:\d*)$/,
-                    message: '半角の整数で入力してください。',
+                    message: '０以上の半角の整数で入力してください。',
                   },
 
                   () => ({

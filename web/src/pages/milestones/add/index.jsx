@@ -184,7 +184,7 @@ export default function AddMilestonePage() {
 
                     {
                       pattern: /^(?:\d*)$/,
-                      message: "半角の整数で入力してください。",
+                      message: "０以上の半角の整数で入力してください。",
                     },
                   ]}
                 >
@@ -226,7 +226,7 @@ export default function AddMilestonePage() {
                           }
                           onClick={showModal}
                         >
-                          保存
+                           登録
                         </Button>
                       )}
                     </Form.Item>
@@ -240,9 +240,7 @@ export default function AddMilestonePage() {
                   okText="はい"
                   cancelText="いいえ"
                 >
-                  <p className="mb-5">追加してもよろしいですか?
-                    
-                  `</p>
+                  <p className="mb-5">このまま保存してもよろしいですか？</p>
                 </Modal>
                 <Modal
                   title="マイルストーン追加"
