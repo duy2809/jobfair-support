@@ -36,6 +36,7 @@ export default function AddMilestonePage() {
         marginTop: "70px",
       },
     });
+    setTimeout(()=>{location.href="/milestones"} , 1000);
   };
 
   const showModal = () => {
