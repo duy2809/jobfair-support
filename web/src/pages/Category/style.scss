@@ -10,7 +10,10 @@
     left: 184px;
     top: -90px;
 }
-
+.selectBox{
+  border: 2px solid black;
+  
+}
 
 .ant-table-pagination-right{
     justify-content: center;
@@ -49,3 +52,15 @@
     width: -webkit-fill-available;
     padding-left: 6px;
 }
+.add-btn{
+    /* position: absolute; */
+    left: 62rem;
+    top: 2rem;
+    width: 8rem;
+}
+
+.input-category{
+    height: 36px;
+    width: -webkit-fill-available;
+    padding-left: 6px;
+} 

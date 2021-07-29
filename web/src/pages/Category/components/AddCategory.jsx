@@ -1,10 +1,14 @@
+/* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState } from 'react'
 import { Modal, Button } from 'antd'
-import '../assets/style/PrjAdd.css'
+import '../style.scss'
 
-const PrjAdd = () => {
+const PrjAdd = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [category, setCategory] = useState({ // khoi tao  input name
+    name: '',
+  })
 
   const showModal = () => {
     setIsModalVisible(true)
@@ -12,10 +16,25 @@ const PrjAdd = () => {
 
   const handleOk = () => {
     setIsModalVisible(false)
+    onSubmit()
   }
 
   const handleCancel = () => {
     setIsModalVisible(false)
+  }
+
+  // add
+  function onChange(event) {
+    const target = event.target
+    const name = target.name
+    const value = target.value
+    setCategory({
+      [name]: value,
+    })
+  }
+
+  function onSubmit() {
+    props.onSubmit(category)
   }
 
   return (
@@ -31,7 +50,15 @@ const PrjAdd = () => {
         okText="登録"
         cancelText="キャンセル"
       >
-        <input placeholder="Add category" className="input-category" />
+        <input
+          type="text"
+          placeholder="Add category"
+          className="input-category"
+          required="required"
+          name="name" // them truong 'name'
+          value={category.name}
+          onChange={onChange}
+        />
       </Modal>
     </>
   )

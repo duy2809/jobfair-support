@@ -8,8 +8,8 @@ const { Search } = Input
 const onSearch = (value) => console.log(value)
 
 const PrjSearch = () => (
-  <Space direction="vertical">
-    <Search placeholder="search" onSearch={onSearch} style={{ width: 200 }} />
+  <Space direction="vertical" className="pr-12">
+    <Search placeholder="カテゴリを検索" onSearch={onSearch} style={{ width: 200 }} />
   </Space>
 )
 
