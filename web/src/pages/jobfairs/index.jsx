@@ -8,7 +8,7 @@ import { getJFList, deleteJFList } from '../../api/jf-list'
 export default function JFList() {
   const openNotificationSuccess = () => {
     notification.success({
-      message: 'Delete successfully',
+      message: '正常に削除',
     })
   }
 
@@ -71,7 +71,7 @@ export default function JFList() {
       dataIndex: 'JF名',
       key: '0',
       fixed: 'left',
-      render: (name) => <a>{name}</a>,
+      render: (name, record) => <a href={`/jf-toppage/${record.id}`}>{name}</a>,
       ellipsis: true,
     },
 
@@ -107,11 +107,17 @@ export default function JFList() {
       width: 50,
       render: (text, record) => (
         <Space size="middle">
-          <EditTwoTone />
-          <DeleteTwoTone onClick={() => {
-            confirmModle(record.id)
-          }}
-          />
+          <a href={`/edit-jf/${record.id}`}>
+            <abbr title="編集" style={{ cursor: 'pointer' }}>
+              <EditTwoTone />
+            </abbr>
+          </a>
+          <abbr title="消去" style={{ cursor: 'pointer' }}>
+            <DeleteTwoTone onClick={() => {
+              confirmModle(record.id)
+            }}
+            />
+          </abbr>
         </Space>
       ),
     },
@@ -140,8 +146,7 @@ export default function JFList() {
   const [options, setOptions] = useState([])
 
   const searchDataOnTable = (value) => {
-    const currValue = value
-    const filteredData = originalData.filter((JF) => (JF.JF名.includes(currValue) || JF.管理者.includes(currValue))
+    const filteredData = originalData.filter((JF) => (JF.JF名.includes(value) || JF.管理者.includes(value))
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
       && (JF.開始日.includes(startDate)))
@@ -155,30 +160,40 @@ export default function JFList() {
       return
     }
     const filteredData = searchDataOnTable(value)
-    const dataSuggest = []
+    const set = new Set()
+    const suggestion = []
     if (filteredData != null) {
       for (let i = 0; i < filteredData.length; i += 1) {
         if (filteredData[i].JF名.includes(value)) {
-          dataSuggest.push(
-            { value: filteredData[i].JF名 },
-          )
-        } else {
-          dataSuggest.push(
-            { value: filteredData[i].管理者 },
-          )
+          set.add(filteredData[i].JF名)
+        } else if (filteredData[i].管理者.includes(value)) {
+          set.add(filteredData[i].管理者)
         }
       }
     }
-    setOptions(value ? dataSuggest : [])
+    set.forEach((item) => {
+      suggestion.push({ value: item })
+    })
+    setOptions(value ? suggestion : [])
   }
-
   const onSelect = (value) => {
     if (!value) {
+      setOptions([])
       setValueSearch('')
       return
     }
     setValueSearch(value)
     setTemperaryData(searchDataOnTable(value))
+  }
+
+  const onEnter = (e) => {
+    const currValue = e.target.value
+    if (!currValue) {
+      setValueSearch('')
+      return
+    }
+    setValueSearch(currValue)
+    setTemperaryData(searchDataOnTable(currValue))
   }
 
   // filter by number of students
@@ -243,10 +258,10 @@ export default function JFList() {
     <div className="JFList">
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="text-3xl title">
+          <p className="title mb-8" style={{ fontSize: '36px' }}>
             JF一覧
             <Button
-              href=""
+              href="/add-jobfair"
               className="button"
               type="primary"
             >
@@ -334,7 +349,7 @@ export default function JFList() {
               prefix={<SearchOutlined />}
               allowClear="true"
               placeholder="JF名, 管理者"
-              onPressEnter={onSelect}
+              onPressEnter={onEnter}
             />
           </AutoComplete>
           <Table
