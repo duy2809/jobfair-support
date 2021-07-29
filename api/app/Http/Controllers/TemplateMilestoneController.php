@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\TemplateMilestone;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
 
 class TemplateMilestoneController extends Controller
 {
@@ -35,6 +34,7 @@ class TemplateMilestoneController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return TemplateMilestone::create($request->all());
     }
 
@@ -76,6 +76,7 @@ class TemplateMilestoneController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return TemplateMilestone::find($id)->update($request->all());
     }
 

@@ -24,7 +24,7 @@ class TemplateMilestoneFactory extends Factory
         return [
             'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
             'period' => $this->faker->numberBetween(1, 50),
-            'is_week' => $this->faker->numberBetween(0,1),
+            'is_week' => $this->faker->numberBetween(0, 1),
         ];
     }
 }
