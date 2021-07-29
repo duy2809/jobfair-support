@@ -15,9 +15,9 @@ describe('Check button save', () => {
     it('check modal when click save button', () => {
       cy.get('#addMilestone_name').type('abc')
       cy.get('#addMilestone_time').type('2')
-      cy.get('[type="button"]').contains('保 存').click()
+      cy.get('[type="button"]').contains('登録').click()
       cy.get('.ant-modal-content').should('be.visible')
-      cy.get('.ant-modal-body').should('contain', '追加してもよろしいですか?')
+      cy.get('.ant-modal-body').should('contain', 'このまま保存してもよろしいですか？')
       cy.get('.ant-modal-content').within(() => {
         cy.get('.ant-btn').first().should('be.visible').should('contain', 'いいえ')
         cy.get('.ant-btn').last().should('be.visible').should('contain', 'はい')
@@ -27,7 +27,7 @@ describe('Check button save', () => {
     it('check when click outside modal', () => {
       cy.get('#addMilestone_name').type('abc')
       cy.get('#addMilestone_time').type('2')
-      cy.get('[type="button"]').contains('保 存').click()
+      cy.get('[type="button"]').contains('登録').click()
       const arr = []
       cy.get('#addMilestone_name').invoke('val')
         .then((sometext) => { arr.push(sometext) })
@@ -47,7 +47,7 @@ describe('Check button save', () => {
     it('check click save and click yes when milestone name is duplicate', () => {
       cy.get('#addMilestone_name').type('Mr._Abelardo_Botsford') // replace input name with a name that duplicate in database
       cy.get('#addMilestone_time').type('2')
-      cy.get('[type="button"]').contains('保 存').click()
+      cy.get('[type="button"]').contains('登録').click()
       cy.get('.ant-modal-content').find('.ant-btn').last().click()
       cy.wait(100)
       cy.get('.ant-notification-notice-message').should('be.visible').should('contain', 'このマイルストーン名は存在しています')
@@ -56,7 +56,7 @@ describe('Check button save', () => {
     it('check click save and click yes when milestone name is available', () => {
       cy.get('#addMilestone_name').type('abc') // replace with a input name that available in your database
       cy.get('#addMilestone_time').type('2')
-      cy.get('[type="button"]').contains('保 存').click()
+      cy.get('[type="button"]').contains('登録').click()
       cy.get('.ant-modal-content').find('.ant-btn').last().click()
       cy.wait(100)
       cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '正常に保存されました。')
@@ -65,7 +65,7 @@ describe('Check button save', () => {
     it('check click save and click no', () => {
       cy.get('#addMilestone_name').type('milestone_name')
       cy.get('#addMilestone_time').type('1')
-      cy.get('[type="button"]').contains('保 存').click()
+      cy.get('[type="button"]').contains('登録').click()
       const arr = []
       cy.get('#addMilestone_name').invoke('val')
         .then((sometext) => { arr.push(sometext) })

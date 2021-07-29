@@ -18,7 +18,7 @@ describe('check button cancel', () => {
     it('check modal when click cancel button', () => {
       cy.get('[type="button"]').contains('キャンセル').click()
       cy.get('.ant-modal-content').should('be.visible')
-      cy.get('.ant-modal-body').should('contain', '追加内容が保存されません。よろしいですか？')
+      cy.get('.ant-modal-body').should('contain', '変更内容が保存されません。よろしいですか？')
       cy.get('.ant-modal-content').within(() => {
         cy.get('.ant-btn').first().should('be.visible').should('contain', 'いいえ')
         cy.get('.ant-btn').last().should('be.visible').should('contain', 'はい')

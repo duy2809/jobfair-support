@@ -45,11 +45,11 @@ describe('Edit Milestone Test', () => {
 
         }
         if(val.includes(' ')){
-          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('０以上の半角の整数で入力してください')
 
         }
         if(regExp.test(val)){
-          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('半角の整数で入力してください。')
+          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('０以上の半角の整数で入力してください')
         } 
       })
       
