@@ -38,7 +38,7 @@ describe('Edit Milestone Test', () => {
         cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
       })
       cy.get('input[id=basic_time]').type('３４').should('have.value', '34')
-      cy.get('input[id=basic_time]').type('text　').invoke('val').then((val) => {
+      cy.get('input[id=basic_time]').type('-5text ').invoke('val').then((val) => {
         var regExp = /[a-zA-Z !,?._'@]/g;
         if(val.includes('　')){
           cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('マイルストーン名はスペースが含まれていません。')
