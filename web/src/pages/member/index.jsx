@@ -51,6 +51,7 @@ export default function MemberList() {
       pageSize: value,
     }))
     setItemCount(value)
+    localStorage.setItem('pagination', JSON.stringify({...pagination, pageSize: value}))
   }
 
   const handleChange = (e) => {
@@ -67,6 +68,7 @@ export default function MemberList() {
 
   const fetchData = useCallback(() => {
     setDataLoading(true)
+    initPagination()
     MemberApi.getListMember().then((res) => {
       const { data } = res
       setMembers(data)
@@ -84,6 +86,11 @@ export default function MemberList() {
     router.push('/member/invite')
   }
 
+  const initPagination = () => {
+    const paginationData = JSON.parse(localStorage.getItem('pagination'))
+    paginationData === null ? localStorage.setItem('pagination', JSON.stringify(pagination)) : setItemCount(paginationData.pageSize)
+  }
+
   useEffect(() => {
     fetchData()
   }, [itemCount])
@@ -97,7 +104,7 @@ export default function MemberList() {
           <div className="flex w-10/12 items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" defaultValue={10} onChange={handleSelect}>
+              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
