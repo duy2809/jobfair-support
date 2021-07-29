@@ -3,7 +3,7 @@
 describe('Check Display', () => {
   // check sub-menu
   it('Case 1', () => {
-    cy.visit('http://jobfair.local:8000/KanBan')
+    cy.visit('http://jobfair.local:8000/jf-toppage/kanban')
     // check sub-menu icon
     cy.get('.ant-menu-item').each(($el, index, $list) => {
       const win = $el[0].ownerDocument.defaultView
@@ -45,17 +45,20 @@ describe('Check Activities', () => {
 
   it('Case 1', () => {
     // check JFTopPage link
-    cy.get("a[href='/JFTopPage']").click()
-    cy.url().should('include', 'JFTopPage')
+    cy.contains('ホーム').click()
+    cy.url().should('include', 'jf-toppage')
     // check Task link
-    cy.get("a[href='/TaskList']").click()
-    cy.url().should('include', 'TaskList')
+    cy.contains('タスク').click()
+    cy.url().should('include', 'task-list')
     // check GranttChart link
-    cy.get("a[href='/GranttChart']").click()
-    cy.url().should('include', 'GranttChart')
+    cy.contains('ガントチャート').click()
+    cy.url().should('include', 'grantt-chart')
     // Check KanBan
-    cy.get("a[href='/KanBan']").click()
-    cy.url().should('include', 'KanBan')
+    cy.contains('カンバン').click()
+    cy.url().should('include', 'kanban')
+    // Check file
+    cy.contains('ファイル').click()
+    cy.url().should('include', 'file')
   })
 
   it('Case 2', () => {
