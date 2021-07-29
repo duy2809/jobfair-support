@@ -51,7 +51,7 @@ export default function MemberList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({...pagination, pageSize: value}))
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
 
   const handleChange = (e) => {
@@ -64,6 +64,15 @@ export default function MemberList() {
   const handleInput = (e) => {
     const result = members.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
     setFilterData(result)
+  }
+
+  const initPagination = () => {
+    const paginationData = JSON.parse(localStorage.getItem('pagination'))
+    if (paginationData === null) {
+      localStorage.setItem('pagination', JSON.stringify(pagination))
+    } else {
+      setItemCount(paginationData.pageSize)
+    }
   }
 
   const fetchData = useCallback(() => {
@@ -84,11 +93,6 @@ export default function MemberList() {
   const handleClick = (e) => {
     e.preventDefault()
     router.push('/member/invite')
-  }
-
-  const initPagination = () => {
-    const paginationData = JSON.parse(localStorage.getItem('pagination'))
-    paginationData === null ? localStorage.setItem('pagination', JSON.stringify(pagination)) : setItemCount(paginationData.pageSize)
   }
 
   useEffect(() => {
