@@ -9,7 +9,6 @@ export default function JFList() {
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に削除されました',
-
     })
   }
 
