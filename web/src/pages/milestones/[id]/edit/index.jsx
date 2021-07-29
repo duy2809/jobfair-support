@@ -40,7 +40,7 @@ const EditMilestonePage = () => {
       message: '変更は正常に保存されました。',
 
     })
-    setTimeout(() => { location.href = '/milestones' }, 1000)
+    setTimeout(() => { window.location.href = '/milestones' }, 1000)
   }
 
   const onValueNameChange = (e) => {

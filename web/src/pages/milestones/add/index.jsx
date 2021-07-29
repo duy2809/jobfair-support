@@ -30,7 +30,7 @@ export default function AddMilestonePage() {
       message: '正常に保存されました。',
 
     })
-    setTimeout(() => { location.href = '/milestones' }, 1000)
+    setTimeout(() => { window.location.href = '/milestones' }, 1000)
   }
 
   const showModal = () => {
@@ -55,7 +55,6 @@ export default function AddMilestonePage() {
             message: 'このマイルストーン名は存在しています',
           })
         }
-        console.log(error.response)
       })
   }
 
@@ -102,9 +101,9 @@ export default function AddMilestonePage() {
     </Form.Item>
   )
 
-  const onFinish = (values) => {
-    console.log(values)
-  }
+  // const onFinish = (values) => {
+  //   console.log(values)
+  // }
 
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
@@ -112,147 +111,146 @@ export default function AddMilestonePage() {
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <div className="pt-10">
-            <p className="title ml-20 font-bold text-4xl">マイルストーン追加</p>
-            <div className="pt-20">
-              <Form
-                form={form}
-                name="addMilestone"
-                onFinish={onFinish}
-                initialValues={{
-                  typePeriod: '0',
-                }}
-                size="large"
-                labelCol={{ span: 10 }}
-                wrapperCol={{ span: 6 }}
+          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン追加</p>
+
+          <div className="pt-20">
+            <Form
+              form={form}
+              name="addMilestone"
+              // onFinish={onFinish}
+              initialValues={{
+                typePeriod: '0',
+              }}
+              size="large"
+              labelCol={{ span: 10 }}
+              wrapperCol={{ span: 6 }}
+            >
+              <Form.Item
+                className="pb-4"
+                label={(
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>
+                    マイルストーン名
+                  </p>
+                )}
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'この項目は必須です。',
+                  },
+
+                  {
+                    validator(_, value) {
+                      const specialCharRegex = new RegExp('[ 　]')
+                      if (specialCharRegex.test(value)) {
+                        return Promise.reject(
+                          new Error(
+                            'マイルストーン名はスペースが含まれていません。',
+                          ),
+                        )
+                      }
+
+                      return Promise.resolve()
+                    },
+                  },
+                ]}
               >
-                <Form.Item
-                  className="pb-4"
-                  label={(
-                    <p style={{ color: '#2d334a', fontSize: '18px' }}>
-                      マイルストーン名
-                    </p>
-                  )}
-                  name="name"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'この項目は必須です。',
-                    },
+                <Input
+                  className="w-full"
+                  onChange={onValueNameChange}
+                  placeholder="マイルストーン名"
+                />
+              </Form.Item>
+              <Form.Item
+                className="pb-4"
+                label={
+                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
+                }
+                name="time"
+                rules={[
+                  {
+                    required: true,
+                    message: 'この項目は必須です。',
+                  },
 
-                    {
-                      validator(_, value) {
-                        const specialCharRegex = new RegExp('[ 　]')
-                        if (specialCharRegex.test(value)) {
-                          return Promise.reject(
-                            new Error(
-                              'マイルストーン名はスペースが含まれていません。',
-                            ),
-                          )
-                        }
-
-                        return Promise.resolve()
-                      },
-                    },
-                  ]}
-                >
-                  <Input
-                    className="w-full"
-                    onChange={onValueNameChange}
-                    placeholder="マイルストーン名"
-                  />
-                </Form.Item>
-                <Form.Item
-                  className="pb-4"
-                  label={
-                    <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
-                  }
-                  name="time"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'この項目は必須です。',
-                    },
-
-                    {
-                      pattern: /^(?:\d*)$/,
-                      message: '０以上の半角の整数で入力してください。',
-                    },
-                  ]}
-                >
-                  <Input
-                    /* type="number" */
-                    type="text"
-                    addonAfter={selectAfter}
-                    onKeyDown={blockInvalidChar}
-                    onChange={onValueTimeChange}
-                    min={0}
-                  />
-                </Form.Item>
-                <div className="grid grid-cols-12 grid-rows-1 mt-5 gap-x-5">
-                  <div className="col-span-7 justify-self-end">
-                    <Form.Item>
+                  {
+                    pattern: /^(?:\d*)$/,
+                    message: '０以上の半角の整数で入力してください。',
+                  },
+                ]}
+              >
+                <Input
+                  /* type="number" */
+                  type="text"
+                  addonAfter={selectAfter}
+                  onKeyDown={blockInvalidChar}
+                  onChange={onValueTimeChange}
+                  min={0}
+                />
+              </Form.Item>
+              <div className="grid grid-cols-12 grid-rows-1 mt-5 gap-x-5">
+                <div className="col-span-7 justify-self-end">
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      onClick={showModalOfBtnCancel}
+                      className="w-32"
+                    >
+                      キャンセル
+                    </Button>
+                  </Form.Item>
+                </div>
+                <div>
+                  <Form.Item shouldUpdate>
+                    {() => (
                       <Button
                         type="primary"
-                        onClick={showModalOfBtnCancel}
                         className="w-32"
-                      >
-                        キャンセル
-                      </Button>
-                    </Form.Item>
-                  </div>
-                  <div>
-                    <Form.Item shouldUpdate>
-                      {() => (
-                        <Button
-                          type="primary"
-                          className="w-32"
-                          disabled={
-                            !(
-                              form.isFieldTouched('name')
+                        disabled={
+                          !(
+                            form.isFieldTouched('name')
                               && form.isFieldTouched('time')
-                            )
+                          )
                             || !!form
                               .getFieldsError()
                               .filter(({ errors }) => errors.length).length
-                          }
-                          onClick={showModal}
-                        >
+                        }
+                        onClick={showModal}
+                      >
                            登録
-                        </Button>
-                      )}
-                    </Form.Item>
-                  </div>
+                      </Button>
+                    )}
+                  </Form.Item>
                 </div>
-                <Modal
-                  title="マイルストーン追加"
-                  visible={isModalVisible}
-                  onOk={handleOk}
-                  onCancel={handleCancel}
-                  okText="はい"
-                  cancelText="いいえ"
-                >
-                  <p className="mb-5">このまま保存してもよろしいですか？</p>
-                </Modal>
-                <Modal
-                  title="マイルストーン追加"
-                  visible={isModalVisibleOfBtnCancel}
-                  onCancel={handleCancelOfBtnCancel}
-                  footer={[
-                    <Button key="back" onClick={handleCancelOfBtnCancel}>
-                      いいえ
-                    </Button>,
-                    <Button key="submit" type="primary" href="../milestones">
-                      はい
-                    </Button>,
-                  ]}
-                >
-                  <p className="mb-5">
-                    変更内容が保存されません。よろしいですか？
-                  </p>
-                </Modal>
-              </Form>
-            </div>
+              </div>
+              <Modal
+                title="マイルストーン追加"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="はい"
+                cancelText="いいえ"
+              >
+                <p className="mb-5">このまま保存してもよろしいですか？</p>
+              </Modal>
+              <Modal
+                title="マイルストーン追加"
+                visible={isModalVisibleOfBtnCancel}
+                onCancel={handleCancelOfBtnCancel}
+                footer={[
+                  <Button key="back" onClick={handleCancelOfBtnCancel}>
+                    いいえ
+                  </Button>,
+                  <Button key="submit" type="primary" href="../milestones">
+                    はい
+                  </Button>,
+                ]}
+              >
+                <p className="mb-5">
+                  変更内容が保存されません。よろしいですか？
+                </p>
+              </Modal>
+            </Form>
           </div>
         </OtherLayout.Main>
       </OtherLayout>
