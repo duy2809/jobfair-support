@@ -20,7 +20,7 @@ const EditMember = () => {
   const { Option } = Select
   const layout = {
     labelCol: {
-      span: 10,
+      span: 5,
     },
     wrapperCol: {
       span: 28,
@@ -31,12 +31,6 @@ const EditMember = () => {
     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>)
   }
 
-  const validateMessages = {
-    required: 'フルネーム必要とされている!',
-    types: {
-      email: 'メールアドレス有効なメールではありません! ',
-    },
-  }
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に更新されました',
@@ -44,12 +38,12 @@ const EditMember = () => {
   }
   const handleOk = () => {
     setIsModalVisible(false)
-    isModalVisible(true)
     openNotificationSuccess()
     router.push('/memberdetail')
   }
 
   const handleCancel = () => {
+    isModalVisible(false)
     setIsModalVisible(false)
   }
 
@@ -63,13 +57,13 @@ const EditMember = () => {
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="text-6xl w-10/12 font-bold py-10 ">メンバ編集</div>
-          <Form className="text-2xl py-10 mb-48 w-3/5" {...layout} name="nest-messages" validateMessages={validateMessages}>
+          <Form className="text-2xl py-10 mb-48 w-3/5" {...layout}>
             <Form.Item
-              className="lable-button"
-              name={['user', 'name']}
+              name="member"
               label="フルネーム"
               rules={[
                 {
+                  message: 'フルネーム必要とされている!',
                   required: true,
                 },
               ]}
@@ -82,11 +76,12 @@ const EditMember = () => {
               />
             </Form.Item>
             <Form.Item
-              name={['user', 'email']}
+              name="email"
               label="メールアドレス"
               rules={[
                 {
                   type: 'email',
+                  message: 'メールアドレス有効なメールではありません! ',
                   required: true,
                 },
               ]}
