@@ -104,7 +104,7 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-6xl w-10/12 font-bold py-10 title">メンバ一覧</div>
+          <div className="text-5xl w-10/12 font-bold py-10 title">メンバ一覧</div>
           <div className="flex w-10/12 items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
@@ -131,7 +131,7 @@ export default function MemberList() {
               </div>
             </div>
           </div>
-          <Table className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows" dataSource={filterData} onRow={handleRow} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
+          <Table className="w-10/12 rounded-3xl table-styled my-5 table-striped-rows" dataSource={filterData} onRow={handleRow} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
         </div>
       </Layout.Main>
     </Layout>
