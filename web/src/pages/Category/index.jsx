@@ -6,10 +6,10 @@ import 'antd/dist/antd.css'
 import './style.scss'
 
 import { Input, Space, Table, Pagination } from 'antd'
-import { getCategories, addCategory, searchCategory } from '../../api/category'
+import { getCategories, searchCategory } from '../../api/category'
 import AddCategory from './components/AddCategory'
-// import PrjEdit from './components/PrjEdit'
-// import PrjDelete from './components/PrjDelete'
+import EditCategory from './components/EditCategory'
+import DeleteCategory from './components/DeleteCategory'
 import Navbar from '../../components/navbar'
 
 export default function listCategories() {
@@ -20,16 +20,6 @@ export default function listCategories() {
   const [sdata, setSdata] = useState([])
   const { Search } = Input
   const [isModalVisible, setIsModalVisible] = useState(false)
-  // For add modal
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-  const handleOk = () => {
-    setIsModalVisible(false)
-  }
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
   // fetch data
   useEffect(async () => {
     setLoading(true)
@@ -63,7 +53,7 @@ export default function listCategories() {
       title: 'カテゴリー名',
       dataIndex: 'category_name',
       width: '40%',
-      sorter: (record1, record2) => record1.title < record2.title,
+      sorter: (record1, record2) => record1.category_name > record2.category_name,
     },
     {
       key: '3',
@@ -71,23 +61,15 @@ export default function listCategories() {
       width: '20%',
       render: () => (
         <Space size="middle">
-          {/* <PrjEdit />
-          <PrjDelete /> */}
-          Edit
-          Delete
+          <EditCategory />
+          <DeleteCategory />
         </Space>
       ),
     },
   ]
-  // // add
-  // onSubmit = (data) => {
-  //   const { orgtableData } = this.state
-  //   data.id = orgtableData.length + 1
-  //   orgtableData.push(data)
-  //   this.setState({
-  //     orgtableData,
-  //   })
-  // }
+  function setPageSize(selectObject) {
+    setPageS(selectObject.value)
+  }
 
   return (
     <div>
@@ -107,7 +89,7 @@ export default function listCategories() {
           <p>表示件数: </p>
           &nbsp;
           <p>
-            <select className="selectBox " onSelect>
+            <select className="selectBox " onChange={(e) => setPageS(e.target.value)}>
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
@@ -119,7 +101,8 @@ export default function listCategories() {
           columns={columns}
           dataSource={category}
           pagination={{
-            defaultPageSize: 10,
+            showSizeChanger: false,
+            defaultCurrent: 1,
             pageSize: pageS,
           }}
         />

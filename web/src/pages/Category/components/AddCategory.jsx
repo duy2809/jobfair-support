@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState } from 'react'
-import { Modal, Button } from 'antd'
+import { Modal, Button, notification } from 'antd'
 import '../style.scss'
+import { addCategory } from '../../../api/category'
 
 const PrjAdd = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -13,14 +15,26 @@ const PrjAdd = (props) => {
   const showModal = () => {
     setIsModalVisible(true)
   }
+  const openNotificationSuccess = () => {
+    notification.success({
+      message: '変更は正常に保存されました。',
 
-  const handleOk = () => {
-    setIsModalVisible(false)
-    onSubmit()
+    })
   }
 
-  const handleCancel = () => {
+  const handleOk = () => {
+    addCategory({
+      category_name: category.name,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+          notification.error({
+            message: '名は存在しています',
+          })
+        }
+      })
     setIsModalVisible(false)
+    window.location.reload()
   }
 
   // add
@@ -32,9 +46,8 @@ const PrjAdd = (props) => {
       [name]: value,
     })
   }
-
-  function onSubmit() {
-    props.onSubmit(category)
+  const handleCancel = () => {
+    setIsModalVisible(false)
   }
 
   return (
@@ -52,7 +65,7 @@ const PrjAdd = (props) => {
       >
         <input
           type="text"
-          placeholder="Add category"
+          placeholder="Category Name"
           className="input-category"
           required="required"
           name="name" // them truong 'name'

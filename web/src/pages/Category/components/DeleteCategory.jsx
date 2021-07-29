@@ -3,12 +3,13 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Modal, Space } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { deleteCategory } from '../../../api/category'
 
 const { confirm } = Modal
 
 const DeleteCategory = (props) => {
   const onDelete = () => {
-    props.onDelete(props.data.id)
+    deleteCategory(props.data.id)
   }
   function showDeleteConfirm() {
     confirm({

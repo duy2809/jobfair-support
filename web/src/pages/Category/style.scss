@@ -31,21 +31,6 @@
 .ant-pagination{
     margin-top: 20px;
 }
-.add-btn{
-    /* background-color: #4ec9d2; */
-    border: none;
-    border-radius: 4px;
-    position: absolute;
-    left: 76rem;
-    bottom: 6rem;
-    width: 6rem;
-}
-
-.add-btn:hover{
-    /* background-color: #4ec9d2; */
-    opacity: 0.7;
-    /* color: white; */
-}
 
 .input-category{
     height: 36px;
@@ -54,6 +39,8 @@
 }
 .add-btn{
     /* position: absolute; */
+    background-color: #ffd803;
+    color: #272343;
     left: 62rem;
     top: 2rem;
     width: 8rem;
