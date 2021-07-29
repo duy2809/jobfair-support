@@ -31,6 +31,6 @@ class Task extends Model
 
     public function relationTask()
     {
-        return $this->belongsTo(Task::class, 'relation_task_id', 'id');
+        return $this->belongsTo(self::class, 'relation_task_id', 'id');
     }
 }
