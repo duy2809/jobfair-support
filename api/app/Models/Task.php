@@ -28,4 +28,9 @@ class Task extends Model
     {
         return $this->morphToMany(Category::class, 'categoriable');
     }
+
+    public function relationTask()
+    {
+        return $this->belongsTo(Task::class, 'relation_task_id', 'id');
+    }
 }
