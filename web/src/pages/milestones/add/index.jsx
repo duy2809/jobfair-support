@@ -32,9 +32,6 @@ export default function AddMilestonePage() {
     notification.success({
       message: "正常に保存されました。",
 
-      style: {
-        marginTop: "70px",
-      },
     });
     setTimeout(()=>{location.href="/milestones"} , 1000);
   };
