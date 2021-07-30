@@ -9,6 +9,7 @@ export default function JFList() {
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に削除されました',
+      duration: 1,
     })
   }
 
@@ -79,30 +80,26 @@ export default function JFList() {
       title: '開始日',
       width: 100,
       dataIndex: '開始日',
-      key: '1',
       fixed: 'left',
     },
     {
       title: '推定参加学生数',
       dataIndex: '推定参加学生数',
-      key: '2',
       width: 100,
     },
     {
       title: '参加企業社数',
       dataIndex: '参加企業社数',
-      key: '3',
       width: 100,
     },
     {
       title: '管理者',
       dataIndex: '管理者',
-      key: '4',
       width: 100,
     },
     {
       title: '',
-      key: '5',
+      dataIndex: 'action',
       fixed: 'right',
       width: 50,
       render: (text, record) => (
@@ -307,7 +304,7 @@ export default function JFList() {
               )
             }}
           />
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none' }}>
+          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center'}}>
             <p>
               推定参加学生数(
               {rangeStudentsNumber[0]}
@@ -322,7 +319,7 @@ export default function JFList() {
               onAfterChange={FilterStudentsNumber}
             />
           </div>
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none' }}>
+          <div className="filter" style={{ display: showFilter ? 'inline' : 'none',textAlign: 'center' }}>
             <p>
               参加企業社数(
               {rangeBussinessesNumber[0]}
@@ -356,9 +353,9 @@ export default function JFList() {
             columns={columns}
             dataSource={temperaryData}
             rowKey={(record) => record.id}
-            scroll={{ y: 360 }}
+            scroll={{ y: 360 }}s
             loading={loading}
-            pagination={{ defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50'] }}
+            pagination={{ position: ['bottomCenter'], defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50'], locale: { items_per_page: "" } }}
             locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
           />
         </OtherLayout.Main>
