@@ -5,8 +5,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import './style.scss'
 
-import { Input, Space, Table, Pagination } from 'antd'
-import { getCategories, searchCategory } from '../../api/category'
+import { Input, Space, Table, Modal, notification } from 'antd'
+import { DeleteTwoTone, EditTwoTone } from '@ant-design/icons'
+import { deleteCategory, getCategories, searchCategory } from '../../api/category'
 import AddCategory from './components/AddCategory'
 import EditCategory from './components/EditCategory'
 import DeleteCategory from './components/DeleteCategory'
@@ -15,11 +16,21 @@ import Navbar from '../../components/navbar'
 export default function listCategories() {
   const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
+  const [id, setId] = useState()
   const [pageS, setPageS] = useState(10)
   const [sdata, setSdata] = useState([])
   const { Search } = Input
   const [isModalVisible, setIsModalVisible] = useState(false)
+  // delete notice
+  const openNotificationSuccess = () => {
+    notification.success({
+      message: '正常に削除',
+    })
+  }
+  // set Modal
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
   // fetch data
   useEffect(async () => {
     setLoading(true)
@@ -40,6 +51,22 @@ export default function listCategories() {
       console.log(sdata)
     })
   }
+  // handle OK
+  const handleOk = async () => {
+    setIsModalVisible(false)
+    try {
+      await deleteCategory(id)
+      setId(null)
+      openNotificationSuccess()
+      window.location.reload()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  // handle Cancel
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
   // table columns
   const columns = [
     {
@@ -47,6 +74,7 @@ export default function listCategories() {
       title: 'ID',
       dataIndex: 'id',
       width: '10%',
+      render: (id) => id,
     },
     {
       key: '2',
@@ -59,10 +87,15 @@ export default function listCategories() {
       key: '3',
       title: 'アクション',
       width: '20%',
-      render: () => (
+      render: (_text, record) => (
         <Space size="middle">
-          <EditCategory />
-          <DeleteCategory />
+          <EditCategory id={record.id} />
+          <DeleteTwoTone
+            onClick={() => {
+              setId(record.id)
+              showModal()
+            }}
+          />
         </Space>
       ),
     },
@@ -76,6 +109,16 @@ export default function listCategories() {
       <div>
         <Navbar />
       </div>
+      <Modal
+        visible={isModalVisible}
+        content=""
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="はい"
+        cancelText="いいえ"
+      >
+        このカテゴリを削除してもよろしいですか？
+      </Modal>
       <div className="flex relative">
         <p className="p-8 font-bold text-4xl">カテゴリー覧</p>
         <div className="absolute right-12 top-10">

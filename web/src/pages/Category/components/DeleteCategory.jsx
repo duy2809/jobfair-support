@@ -7,11 +7,8 @@ import { deleteCategory } from '../../../api/category'
 
 const { confirm } = Modal
 
-const DeleteCategory = (props) => {
-  const onDelete = () => {
-    deleteCategory(props.data.id)
-  }
-  function showDeleteConfirm() {
+const DeleteCategory = () => {
+  function showDeleteConfirm(id) {
     confirm({
       title: '削除カテゴリ',
       icon: <ExclamationCircleOutlined />,
@@ -21,7 +18,8 @@ const DeleteCategory = (props) => {
       cancelText: 'キャンセル',
       onOk() {
         console.log('OK')
-        onDelete()
+        deleteCategory(id)
+        window.location.reload()
       },
       onCancel() {
         console.log('Cancel')
