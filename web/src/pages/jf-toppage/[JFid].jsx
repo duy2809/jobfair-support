@@ -84,22 +84,26 @@ export default function jftoppage() {
                         <SearchSugges listTask={listTask} />
                       </div>
                     </div>
-                    <div className="flex justify-center ...">
-                      <div className="status__global">
-                        <h3>ステータス</h3>
-                        <div className="status">
-                          <ChartStatus task={listTask} />
+                    <div className="chart__tt">
+                      <div className="flex justify-center ...">
+                        <div className="status__global">
+                          <h3>ステータス</h3>
+                          <div className="status">
+                            <ChartStatus task={listTask} />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex justify-center ...">
-                      <div className="status__global">
-                        <h3>マイルストーン</h3>
-                        <div className="status">
-                          <ChartMilestone id={idJf} />
+                      <div className="flex justify-center ...">
+                        <div className="status__global">
+                          <h3>マイルストーン</h3>
+                          <div className="status">
+                            <ChartMilestone id={idJf} />
+                          </div>
                         </div>
                       </div>
+
                     </div>
+
                   </div>
                 </div>
               </div>

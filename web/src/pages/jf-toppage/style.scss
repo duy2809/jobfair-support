@@ -1,16 +1,19 @@
 .JFTopPage{
+    .chart__tt{
+        margin-top: 30px;
+    }
     .cha{
         position: relative;
         .react-autosuggest__container, .react-autosuggest__container--open{
             position: absolute;
             top: -20px;
-            left: 50%;
+            left: 35%;
             transform: translateX(-50%);
         }
         button{
            position: absolute;
            top: -15px;
-           right: 10%;    
+           right: 20%;    
             margin-left: 10px;
             
           }
@@ -58,7 +61,8 @@
             input{
                 border: 1px solid rgb(204, 203, 203);
                padding: 10px;
-              
+              width: 116%;
+              border-radius: 5px;
                 
             }
            
