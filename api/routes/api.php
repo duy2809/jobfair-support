@@ -20,3 +20,6 @@ Route::apiResource('/milestone', MilestoneController::class);
 Route::apiResource('/category', CategoryController::class);
 
 Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
+
+Route::resource('/milestone', TemplateMilestoneController::class);
+
