@@ -16,7 +16,7 @@ class Task extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'assignments', 'task_id', 'user_id')->withPivot(['completed_date']);
     }
 
     public function documents()
@@ -27,5 +27,10 @@ class Task extends Model
     public function categories()
     {
         return $this->morphToMany(Category::class, 'categoriable');
+    }
+
+    public function relationTask()
+    {
+        return $this->belongsTo(self::class, 'relation_task_id', 'id');
     }
 }
