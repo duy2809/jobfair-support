@@ -304,7 +304,7 @@ export default function JFList() {
               )
             }}
           />
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center'}}>
+          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
             <p>
               推定参加学生数(
               {rangeStudentsNumber[0]}
@@ -319,7 +319,7 @@ export default function JFList() {
               onAfterChange={FilterStudentsNumber}
             />
           </div>
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none',textAlign: 'center' }}>
+          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
             <p>
               参加企業社数(
               {rangeBussinessesNumber[0]}
@@ -353,9 +353,10 @@ export default function JFList() {
             columns={columns}
             dataSource={temperaryData}
             rowKey={(record) => record.id}
-            scroll={{ y: 360 }}s
+            scroll={{ y: 360 }}
+            s
             loading={loading}
-            pagination={{ position: ['bottomCenter'], defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50'], locale: { items_per_page: "" } }}
+            pagination={{ position: ['bottomCenter'], defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50'], locale: { items_per_page: '' } }}
             locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
           />
         </OtherLayout.Main>
