@@ -42,7 +42,7 @@ class User extends Authenticatable
 
     public function schedules()
     {
-        return $this->belongsToMany(Schedule::class);
+        return $this->belongsToMany(Schedule::class, 'list_members');
     }
 
     public function notifications()
@@ -53,10 +53,5 @@ class User extends Authenticatable
     public function tasks()
     {
         return $this->belongsToMany(Task::class, 'assignments');
-    }
-
-    public function jobfair()
-    {
-        return $this->hasOne(Jobfair::class, 'jobfair_admin_id');
     }
 }
