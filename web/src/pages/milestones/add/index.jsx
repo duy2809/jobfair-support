@@ -182,6 +182,7 @@ export default function AddMilestonePage() {
                 <Input
                   /* type="number" */
                   type="text"
+                  placeholder="期日"
                   addonAfter={selectAfter}
                   onKeyDown={blockInvalidChar}
                   onChange={onValueTimeChange}
