@@ -1,5 +1,10 @@
 .menuu {
-
+    .ant-layout-sider .ant-layout-sider-dark .ant-layout-sider-collapsed{
+        background: #bae8e8 !important;
+    }
+    .ant-layout-sider .ant-layout-sider-dark{
+        background-color: #bae8e8 !important;
+    }
     .ant-menu-dark.ant-menu-inline,
     .ant-menu-dark.ant-menu-vertical,
     .ant-menu-dark.ant-menu-vertical-left,

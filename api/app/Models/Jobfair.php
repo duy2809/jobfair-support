@@ -14,4 +14,9 @@ class Jobfair extends Model
     {
         return $this->hasOne(Schedule::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'jobfair_admin_id');
+    }
 }
