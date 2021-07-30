@@ -15,7 +15,6 @@ const NotificationsJf = ({ id }) => {
   const [posts, setPost] = useState([])
   const fetchTasks = async () => {
     await listupdate(id).then((response) => {
-      console.log(response.data.data[0].tasks, 'hihi')
       setPost(response.data.data[0].tasks)
     }).catch((error) => {
       console.log(error)
@@ -23,7 +22,6 @@ const NotificationsJf = ({ id }) => {
   }
   const [tp, setTop] = useState(100)
   const scrollBy = useScrollBy()
-  console.log(tp)
   const [visi, setVisi] = useState(5)
   const showMoreItem = () => {
     setTop((to) => to + 100)
@@ -56,7 +54,7 @@ const NotificationsJf = ({ id }) => {
                   ))}
                 </div>
                 <div className="flex justify-center my-4 ...">
-                  {(visi >= 5 && visi < 31) ? <Button className="more" type="primary" onClick={showMoreItem}>もっと見る</Button> : null }
+                  {(visi >= 5 && visi < 26) ? <Button className="more" type="primary" onClick={showMoreItem}>もっと見る</Button> : null }
                   {(visi > 5) ? <Button type="primary" onClick={matItem}>表示数を戻す</Button> : null}
                 </div>
               </div>
