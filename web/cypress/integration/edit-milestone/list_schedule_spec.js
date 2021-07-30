@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
 const select_options = ['10', '25', '50']
+const role = 'admin'
 describe('list-schedule', () => {
   beforeEach(() => {
     cy.visit('http://jobfair.local:8000/schedule')
@@ -26,12 +27,14 @@ describe('list-schedule', () => {
   })
   it('check button add', () => {
     cy.get('.anticon-plus-circle').as('add-button')
-    cy.get('@add-button').should('exist')
-    cy.get('@add-button').click().then(() => {
-      cy.location().should((url) => {
-        expect(url.pathname).to.eq('/schedule/add')
+    if(role == 'admin') {
+      cy.get('@add-button').should('exist')
+      cy.get('@add-button').click().then(() => {
+        cy.location().should((url) => {
+          expect(url.pathname).to.eq('/schedule/add')
+        })
       })
-    })
+    } 
   })
   it('check button search', () => {
     cy.get('.anticon-search').should('exist')
@@ -57,7 +60,7 @@ describe('list-schedule', () => {
       cy.get('.ant-empty').should('exist')
     })
   })
-  it.only('check pagination', () => {
+  it('check pagination', () => {
     cy.get('.ant-select-selection-item').click().then(() => {
       cy.get('.ant-select-item-option').as('options').eq(2).click({force: true}).then(() => {
         cy.get('.ant-pagination-prev .ant-pagination-item-link').as('prev-link').should('be.disabled')
