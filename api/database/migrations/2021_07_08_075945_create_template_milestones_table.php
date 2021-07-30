@@ -15,7 +15,7 @@ class CreateTemplateMilestonesTable extends Migration
     {
         Schema::create('template_milestones', function (Blueprint $table) {
             $table->id();
-            $table->string('milestone_name');
+            $table->string('milestone_name')->unique();
             $table->date('period');
             $table->unsignedBigInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
