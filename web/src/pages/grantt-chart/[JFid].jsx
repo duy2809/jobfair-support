@@ -1,6 +1,6 @@
 import React from 'react'
 import './style.scss'
-import JfLayout from '../../layouts/jf-layout'
+import JfLayout from '../../layouts/JFLayout'
 
 export default function GranttChart() {
   return (

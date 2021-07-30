@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 
-import JfLayout from '../../layouts/jf-layout'
+import JfLayout from '../../layouts/JFLayout'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'

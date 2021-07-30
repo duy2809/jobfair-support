@@ -2,7 +2,7 @@ import { fromJS } from 'immutable'
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { createAction, handleActions } from 'redux-actions'
 import _map from 'lodash/map'
-import { webInit } from '~/api/web-init'
+import { webInit } from '../../api/web-init'
 
 const initialState = fromJS({
   user: null,
