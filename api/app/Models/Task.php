@@ -9,6 +9,11 @@ class Task extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'start_time' => 'date: Y/m/d',
+        'end_time' => 'date: Y/m/d',
+    ];
+
     public function milestone()
     {
         return $this->belongsTo(Milestone::class);
