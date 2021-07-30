@@ -28,7 +28,7 @@ class Schedule extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'list_members');
     }
 
     public function templateDocuments()

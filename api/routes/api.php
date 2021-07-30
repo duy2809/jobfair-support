@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/web-init', WebInit::class);
-Route::resource('/milestone', MilestoneController::class);
-
 Route::resource('/jobfair', 'JobfairController');
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -22,3 +20,5 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
 });
+
+Route::resource('/milestone', TemplateMilestoneController::class);
