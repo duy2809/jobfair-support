@@ -18,7 +18,7 @@ const ResetPage = () => {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label} を入力してください。',
+    required: '${label}を入力してください。',
     types: {
       string: '',
     },
