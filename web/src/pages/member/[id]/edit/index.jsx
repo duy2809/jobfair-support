@@ -1,16 +1,17 @@
 import React, { useState } from 'react'
-import { Form, Input, Button, Popconfirm, notification, Select } from 'antd'
+import { Form, Input, Button, Popconfirm, notification, Select, Modal } from 'antd'
 import { useRouter } from 'next/router'
+import PropTypes from 'prop-types'
 import Layout from '../../../../layouts/OtherLayout'
-import 'antd/dist/antd.css'
 import './styles.scss'
+import { MemberApi } from '~/api/member'
 
-const EditMember = () => {
-  const [emailInput, setEmailInput] = useState('')
-  const [nameInput, setNameInput] = useState('')
+const EditMember = ({ member }) => {
+  const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [emailInput, setEmailInput] = useState(member.email)
+  const [nameInput, setNameInput] = useState(member.name)
   const router = useRouter()
-
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
   }
@@ -18,14 +19,6 @@ const EditMember = () => {
     setEmailInput(e.target.value)
   }
   const { Option } = Select
-  const layout = {
-    labelCol: {
-      span: 5,
-    },
-    wrapperCol: {
-      span: 28,
-    },
-  }
   const children = []
   for (let i = 10; i < 36; i += 1) {
     children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>)
@@ -34,37 +27,41 @@ const EditMember = () => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に更新されました',
+      duration: 1,
     })
   }
+
   const handleOk = () => {
-    setIsModalVisible(false)
     openNotificationSuccess()
-    router.push('/memberdetail')
+    router.push(`/member/${member.id}`)
   }
 
   const handleCancel = () => {
-    isModalVisible(false)
     setIsModalVisible(false)
   }
 
   const handleClick = (e) => {
     e.preventDefault()
-    router.push('/memberdetail')
+    router.push(`/member/${member.id}`)
+  }
+
+  const showModal = () => {
+    setIsModalVisible(true)
   }
 
   return (
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-6xl w-10/12 font-bold py-10 ">メンバ編集</div>
-          <Form className="text-2xl py-10 mb-48 w-3/5" {...layout}>
+          <div className="text-5xl w-10/12 font-bold py-10 ">メンバ編集</div>
+          <Form className="w-10/12" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} form={form}>
             <Form.Item
               name="member"
               label="フルネーム"
               rules={[
                 {
                   message: 'フルネーム必要とされている!',
-                  required: true,
+                  required: (nameInput === ''),
                 },
               ]}
             >
@@ -72,6 +69,7 @@ const EditMember = () => {
                 size="large"
                 onChange={onValueNameChange}
                 type="name"
+                value={nameInput}
                 defaultValue={nameInput}
               />
             </Form.Item>
@@ -81,8 +79,8 @@ const EditMember = () => {
               rules={[
                 {
                   type: 'email',
-                  message: 'メールアドレス有効なメールではありません! ',
-                  required: true,
+                  message: 'メールアドレス有効なメールではありません!',
+                  required: (emailInput === ''),
                 },
               ]}
             >
@@ -91,8 +89,21 @@ const EditMember = () => {
                 onChange={onValueEmailChange}
                 type="email"
                 defaultValue={emailInput}
+                value={emailInput}
               />
             </Form.Item>
+
+            <Modal
+              title="マイルストーン編集"
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              cancelText="いいえ"
+              okText="はい"
+            >
+              <p className="mb-5">このまま保存してもよろしいですか？ </p>
+            </Modal>
+
             <Form.Item
               name={['user', 'category']}
               label="カテゴリ"
@@ -106,40 +117,37 @@ const EditMember = () => {
                 {children}
               </Select>
             </Form.Item>
-            <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-              <div className="flex justify-center w-10/12 ">
-                <div className="flex ml-5">
-                  <Popconfirm
-                    title="変更は保存されていません。続行してもよろしいですか？"
-                    onConfirm={handleClick}
-                    onCancel={handleCancel}
-                    width={600}
-                    okText="OK"
-                    cancelText="キャンセル"
-                  >
-                    <Button
-                      size="large"
-                      className="ml-9 text-base px-14 w-32"
-                      type="primary"
-                      htmlType="submit"
-                      enabled="true"
-                    >
-                      キャンセル
-                    </Button>
-                  </Popconfirm>
-                </div>
-                <div>
+
+            <Form.Item wrapperCol={{ offset: 13 }}>
+              <div className="flex mr-8 justify-between">
+                <Popconfirm
+                  title="変更は保存されていません。続行してもよろしいですか？"
+                  onConfirm={handleClick}
+                  onCancel={handleCancel}
+                  okText="OK"
+                  cancelText="キャンセル"
+                >
                   <Button
                     size="large"
-                    className="ml-9 text-base px-14 w-32"
+                    className="text-base px-14"
                     type="primary"
                     htmlType="submit"
                     enabled="true"
-                    onClick={nameInput !== '' && emailInput !== '' ? handleOk : handleCancel}
                   >
-                    保存
+                    キャンセル
                   </Button>
-                </div>
+                </Popconfirm>
+                <Button
+                  size="large"
+                  className="text-base px-14 ml-7"
+                  type="primary"
+                  htmlType="submit"
+                  enabled="true"
+                  onClick={showModal}
+                  disabled={nameInput === '' || emailInput === ''}
+                >
+                  保存
+                </Button>
               </div>
             </Form.Item>
           </Form>
@@ -147,6 +155,18 @@ const EditMember = () => {
       </Layout.Main>
     </Layout>
   )
+}
+
+EditMember.getInitialProps = async (context) => {
+  const { id } = context.query
+  const res = await MemberApi.getMemberDetail(id)
+  const member = res.data
+  console.log(member)
+  return { member }
+}
+
+EditMember.propTypes = {
+  member: PropTypes.object.isRequired,
 }
 
 export default EditMember

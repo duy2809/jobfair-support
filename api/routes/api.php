@@ -15,3 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 Route::resource('/milestone', MilestoneController::class);
+
+
+Route::prefix('member')->group(function () {
+    Route::get('/', 'MemberController@index');
+    Route::get('/{id}', 'MemberController@showMember');
+    Route::put('/{id}/update', 'MemberController@update');
+});
