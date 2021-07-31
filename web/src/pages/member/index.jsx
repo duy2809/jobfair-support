@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Button ,Empty} from 'antd'
+import { Select, Table, Input, Button, Empty } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -42,7 +42,7 @@ export default function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10 , showSizeChanger: false })
+  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
   const [filterData, setFilterData] = useState([])
 
   const handleSelect = (value) => {
