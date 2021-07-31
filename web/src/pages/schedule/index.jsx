@@ -95,7 +95,7 @@ export default function ScheduleList() {
           <div className="text-5xl w-10/12 font-bold py-10 title" style={{ fontSize: '36px' }}>JFスケジュール一覧</div>
           <div className="justify-start w-10/12">
             <span className="text-xl">表示件数: </span>
-            <Select className="ml-5" defaultValue={10} onChange={handleSelect}>
+            <Select className="ml-5" value={itemCount} onChange={handleSelect}>
               <Option value={10}>10</Option>
               <Option value={25}>25</Option>
               <Option value={50}>50</Option>
