@@ -71,6 +71,10 @@ export default function MemberList() {
     if (paginationData === null) {
       localStorage.setItem('pagination', JSON.stringify(pagination))
     } else {
+      setPagination((preState) => ({
+        ...preState,
+        pageSize: paginationData.pageSize,
+      }))
       setItemCount(paginationData.pageSize)
     }
   }
