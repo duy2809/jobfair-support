@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Button } from 'antd'
+import { Select, Table, Input, Button ,Empty} from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -42,7 +42,7 @@ export default function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10 })
+  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10 , showSizeChanger: false })
   const [filterData, setFilterData] = useState([])
 
   const handleSelect = (value) => {
@@ -104,7 +104,7 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold py-10 title">メンバ一覧</div>
+          <div className="text-5xl w-10/12 font-bold py-10 title" style={{ fontSize: '36px' }}>メンバ一覧</div>
           <div className="flex w-10/12 items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
@@ -131,7 +131,19 @@ export default function MemberList() {
               </div>
             </div>
           </div>
-          <Table className="w-10/12 rounded-3xl table-styled my-5 table-striped-rows" dataSource={filterData} onRow={handleRow} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} />
+          {/* <Table className="w-10/12 rounded-3xl table-styled my-5 table-striped-rows" dataSource={filterData} onRow={handleRow} pagination={pagination} columns={columns} isLoading={dataLoading} onChange={handleChange} /> */}
+          <Table
+            className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows"
+            columns={columns}
+            dataSource={filterData}
+            rowKey={(record) => record.id}
+            scroll={{ y: 360 }}
+            onRow={handleRow}
+            onChange={handleChange}
+            loading={dataLoading}
+            pagination={pagination}
+            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+          />
         </div>
       </Layout.Main>
     </Layout>
