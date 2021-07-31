@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, notification, AutoComplete } from 'antd'
+import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification, AutoComplete } from 'antd'
 import './style.scss'
 import { SearchOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -9,16 +9,23 @@ export default function JFList() {
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に削除されました',
-      duration: 1,
     })
   }
 
   // state of table
-
+  const [pagination, setPagination] = useState({ position: ['bottomCenter'], showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
   const [dataFilter, setDataFilter] = useState()
+  const { Option } = Select
+  // select number to display
+  const handleSelect = (value) => {
+    setPagination((preState) => ({
+      ...preState,
+      pageSize: value,
+    }))
+  }
 
   // add data of table
   const addDataOfTable = (response) => {
@@ -143,7 +150,8 @@ export default function JFList() {
   const [options, setOptions] = useState([])
 
   const searchDataOnTable = (value) => {
-    const filteredData = originalData.filter((JF) => (JF.JF名.includes(value) || JF.管理者.includes(value))
+    value = value.toLowerCase()
+    const filteredData = originalData.filter((JF) => (JF.JF名.toLowerCase().includes(value) || JF.管理者.toLowerCase().includes(value))
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
       && (JF.開始日.includes(startDate)))
@@ -161,9 +169,9 @@ export default function JFList() {
     const suggestion = []
     if (filteredData != null) {
       for (let i = 0; i < filteredData.length; i += 1) {
-        if (filteredData[i].JF名.includes(value)) {
+        if (filteredData[i].JF名.toLowerCase().includes(value.toLowerCase())) {
           set.add(filteredData[i].JF名)
-        } else if (filteredData[i].管理者.includes(value)) {
+        } else if (filteredData[i].管理者.toLowerCase().includes(value.toLowerCase())) {
           set.add(filteredData[i].管理者)
         }
       }
@@ -255,110 +263,123 @@ export default function JFList() {
     <div className="JFList">
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>
-            JF一覧
-            <Button
-              href="/add-jobfair"
-              className="button"
-              type="primary"
-            >
-              JF追加
-            </Button>
-          </p>
-          <p className="filter-hide">
-            フィルタ
-            <Button
-              className="filter-hide"
-              onClick={hideFilter}
-              type="primary"
-              style={{ display: showFilter ? 'inline' : 'none' }}
-            >
-              非表示
-            </Button>
-            <Button
-              className="filter-show"
-              onClick={onShowFilter}
-              type="primary"
-              style={{ display: showFilter ? 'none' : 'inline' }}
-            >
-              表示
-            </Button>
-          </p>
-          <DatePicker
-            style={{ display: showFilter ? 'inline' : 'none' }}
-            inputReadOnly="true"
-            placeholder="開始日"
-            onChange={FilterStartDate}
-            className="filter-root"
-            format="YYYY/MM/DD"
-            dateRender={(current) => {
-              const style = {}
-              if (current.date() === 1) {
-                style.border = '1px solid #1890ff'
-                style.borderRadius = '50%'
-              }
-              return (
-                <div className="ant-picker-cell-inner" style={style}>
-                  {current.date()}
+          <div className="container mx-auto flex flex-col space-y-2 justify-center">
+            <div className="flex-col space-y-9">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl float-left">JF一覧</h1>
+                <Button
+                  className="float-right"
+                  href="/add-jobfair"
+                  type="primary"
+                >
+                  JF追加
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <div className="flex space-x-3 items-center">
+                  <p>フィルタ</p>
+                  <Button
+                    onClick={hideFilter}
+                    type="primary"
+                    style={{ display: showFilter ? 'inline' : 'none' }}
+                  >
+                    非表示
+                  </Button>
+                  <Button
+                    onClick={onShowFilter}
+                    type="primary"
+                    style={{ display: showFilter ? 'none' : 'inline' }}
+                  >
+                    表示
+                  </Button>
                 </div>
-              )
-            }}
-          />
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-            <p>
-              推定参加学生数(
-              {rangeStudentsNumber[0]}
-              {' '}
-              ~
-              {rangeStudentsNumber[1]}
-              )
-            </p>
-            <Slider
-              range="true"
-              defaultValue={[0, 100]}
-              onAfterChange={FilterStudentsNumber}
+                <div className="flex space-x-8 items-center">
+                  <DatePicker
+                    style={{ width: '15%', display: showFilter ? 'inline' : 'none' }}
+                    inputReadOnly="true"
+                    placeholder="開始日"
+                    onChange={FilterStartDate}
+                    format="YYYY/MM/DD"
+                    dateRender={(current) => {
+                      const style = {}
+                      if (current.date() === 1) {
+                        style.border = '1px solid #1890ff'
+                        style.borderRadius = '50%'
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      )
+                    }}
+                  />
+                  <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
+                    <p>
+                      推定参加学生数(
+                      {rangeStudentsNumber[0]}
+                      {' '}
+                      ~
+                      {rangeStudentsNumber[1]}
+                      )
+                    </p>
+                    <Slider
+                      range="true"
+                      defaultValue={[0, 100]}
+                      onAfterChange={FilterStudentsNumber}
+                    />
+                  </div>
+                  <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
+                    <p>
+                      参加企業社数(
+                      {rangeBussinessesNumber[0]}
+                      {' '}
+                      ~
+                      {rangeBussinessesNumber[1]}
+                      )
+                    </p>
+                    <Slider
+                      range="true"
+                      defaultValue={[0, 100]}
+                      onAfterChange={FilterBussinessesNumber}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex space-x-8 items-center justify-between">
+              <div>
+                <span>表示件数: </span>
+                <Select defaultValue={10} onChange={handleSelect}>
+                  <Option value={10}>10</Option>
+                  <Option value={25}>25</Option>
+                  <Option value={50}>50</Option>
+                </Select>
+              </div>
+              <AutoComplete
+                dropdownMatchSelectWidth={252}
+                className="w-1/4"
+                options={options}
+                onSelect={onSelect}
+                onChange={handleSearch}
+              >
+                <Input
+                  prefix={<SearchOutlined />}
+                  allowClear="true"
+                  placeholder="JF名, 管理者"
+                  onPressEnter={onEnter}
+                />
+              </AutoComplete>
+            </div>
+            <Table
+              columns={columns}
+              dataSource={temperaryData}
+              rowKey={(record) => record.id}
+              scroll={{ y: 360 }}
+              loading={loading}
+              pagination={pagination}
+              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
             />
           </div>
-          <div className="filter" style={{ display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-            <p>
-              参加企業社数(
-              {rangeBussinessesNumber[0]}
-              {' '}
-              ~
-              {rangeBussinessesNumber[1]}
-              )
-            </p>
-            <Slider
-              range="true"
-              defaultValue={[0, 100]}
-              onAfterChange={FilterBussinessesNumber}
-            />
-          </div>
-          <AutoComplete
-            className="search-bar"
-            dropdownMatchSelectWidth={252}
-            style={{ width: 300 }}
-            options={options}
-            onSelect={onSelect}
-            onChange={handleSearch}
-          >
-            <Input
-              prefix={<SearchOutlined />}
-              allowClear="true"
-              placeholder="JF名, 管理者"
-              onPressEnter={onEnter}
-            />
-          </AutoComplete>
-          <Table
-            columns={columns}
-            dataSource={temperaryData}
-            rowKey={(record) => record.id}
-            scroll={{ y: 360 }}
-            s
-            loading={loading}
-            pagination={{ position: ['bottomCenter'], defaultPageSize: 10, showSizeChanger: true, pageSizeOptions: ['10', '25', '50'], locale: { items_per_page: '' } }}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
-          />
         </OtherLayout.Main>
       </OtherLayout>
     </div>

@@ -14,10 +14,10 @@ describe('Test pagination', () => {
         cy.visit('/jobfairs')
     })
     it('check number of display', () => {
-        cy.get('[class="ant-select-selection-item"]').as('NumberOfDisplay')
-        cy.get('@NumberOfDisplay').click().get('[title="10 / page"]').contains('10 / page').as('10')
-        cy.get('@NumberOfDisplay').click().get('[title="25 / page"]').contains('25 / page').as('25')
-        cy.get('@NumberOfDisplay').click().get('[title="50 / page"]').contains('50 / page').as('50')
+        cy.get('.ant-select-selector').eq(0).as('NumberOfDisplay')
+        cy.get('@NumberOfDisplay').click().get('[title="10"]').contains('10').as('10')
+        cy.get('@NumberOfDisplay').click().get('[title="25"]').contains('25').as('25')
+        cy.get('@NumberOfDisplay').click().get('[title="50"]').contains('50').as('50')
         var arr = [10, 25, 50]
         var randIndex = Math.floor((Math.random() * 10) % 3)
         if (arr[randIndex] <= jflist.length) {
@@ -31,7 +31,7 @@ describe('Test pagination', () => {
         }
     })
     it('check pagination when data is empty', () => {
-        cy.get('.search-bar').type('*****{enter}')
+        cy.get('.ant-select-selection-search').eq(1).type('*****{enter}')
         cy.get('.ant-empty-description').contains('該当結果が見つかりませんでした')
         cy.get('.ant-table-pagination').should('not.exist')
     })

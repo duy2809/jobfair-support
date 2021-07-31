@@ -10,6 +10,9 @@ describe('Test delete jobfair', () => {
     })
     it('click icon delete ', () => {
         var index = Math.floor((Math.random() * 15) % 10)
+        if (jflist.length < 10) {
+            Math.floor((Math.random() * 15) % jflist.length)
+        }
         var rowDetele = jflist[index]
         cy.get('.anticon-delete').eq(index).as('iconDelete');
         cy.get('@iconDelete').click()
