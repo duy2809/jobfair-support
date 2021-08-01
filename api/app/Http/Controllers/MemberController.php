@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class MemberController extends Controller
 {
@@ -12,10 +12,9 @@ class MemberController extends Controller
         return User::all('id', 'name', 'email', 'created_at');
     }
 
-    public function showMember($id) 
+    public function showMember($id)
     {
-        $member = User::findOrFail($id);
-        return $member;
+        return User::findOrFail($id);
     }
 
     public function update(Request $request, $id)
@@ -29,5 +28,4 @@ class MemberController extends Controller
 
         return User::find($id)->update($request->all());
     }
-
 }

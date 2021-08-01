@@ -18,4 +18,9 @@ class Category extends Model
     {
         return $this->morphedByMany(TemplateTask::class, 'categoriable');
     }
+
+    public function users()
+    {
+        return $this->morphedByMany(User::class, 'categoriable');
+    }
 }
