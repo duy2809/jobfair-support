@@ -38,8 +38,10 @@ const EditMilestonePage = () => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
+      duration: 0,
 
     })
+    setTimeout(() => { window.location.href = '/milestones' }, 1000)
   }
 
   const onValueNameChange = (e) => {
@@ -164,7 +166,7 @@ const EditMilestonePage = () => {
 
                   {
                     pattern: /^(?:\d*)$/,
-                    message: '半角の整数で入力してください。',
+                    message: '０以上の半角の整数で入力してください。',
                   },
 
                   () => ({

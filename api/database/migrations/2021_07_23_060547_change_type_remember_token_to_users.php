@@ -26,7 +26,7 @@ class ChangeTypeRememberTokenToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropRememberToken();
+            $table->string('remember_token', 100)->change();
         });
     }
 }

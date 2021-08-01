@@ -9,13 +9,12 @@ class TemplateMilestone extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+    protected $guarded = [];
+
     public function templateTasks()
     {
         return $this->hasMany(TemplateTask::class);
-    }
-
-    public function schedule()
-    {
-        return $this->belongsTo(Schedule::class);
     }
 }

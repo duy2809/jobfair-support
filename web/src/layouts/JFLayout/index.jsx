@@ -20,19 +20,34 @@ const JfLayout = ({
   children,
 }) => {
   const main = findSlot(JfLayout.Main, children)
-  const { Header, Sider, Content } = Layout
+  const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(false)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
-
-  useEffect(() => () => {}, [children])
+  const [idJF, setIdJf] = useState('')
+  useEffect(() => {
+    setIdJf(localStorage.getItem('id-jf'))
+  }, [children])
   return (
     <div className="menuu">
-      <Layout>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Layout className="site-layout" style={{ marginLeft: 0 }}>
+        <Sider
+          style={{
+            background: '#bae8e8',
+            left: 0,
+            zIndex: 100,
+          }}
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+        >
           <Menu
-            style={{ height: '100vh' }}
+            style={{
+
+              height: '100vh',
+
+            }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode="inline"
@@ -51,36 +66,34 @@ const JfLayout = ({
                 </div>
               </div>
             </div>
-
             <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href="/JFTopPage">ホーム</Link>
+              <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href="/TaskList">タスク</Link>
+              <Link href={`/task-list/${idJF}`}>タスク</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href="/GranttChart">ガントチャート</Link>
+              <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
             </Menu.Item>
             <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href="/KanBan">カンバン</Link>
+              <Link href={`/kanban/${idJF}`}>カンバン</Link>
             </Menu.Item>
             <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href="/File">ファイル</Link>
+              <Link href={`/file/${idJF}`}>ファイル</Link>
             </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            <Navbar />
-          </Header>
+          <Navbar />
           <Content
-            className="site-layout-background"
             style={{
-              margin: '45px 16px',
+              margin: '24px 16px',
               padding: 24,
               minHeight: 280,
-              background: 'white',
             }}
+            // style={{ margin: '24px 16px 0', overflow: 'initial' }}
+            className="site-layout-background"
+
           >
             { _get(main, 'props.children') }
           </Content>
@@ -94,7 +107,6 @@ JfLayout.Main = () => null
 JfLayout.defaultProps = {
   children: [],
 }
-
 JfLayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,

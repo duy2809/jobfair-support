@@ -47,7 +47,7 @@ describe('Check button save', () => {
   })
 
   it('check click save and click yes when milestone name is available', () => {
-    cy.get('#basic_name').clear().type('abc') // replace with a input name that available in your database
+    cy.get('#basic_name').clear().type('ab') // replace with a input name that available in your database
     cy.get('[type="submit"]').click()
     cy.get('.ant-modal-content').find('.ant-btn').last().click()
     cy.wait(100)

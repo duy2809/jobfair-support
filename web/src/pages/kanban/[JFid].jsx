@@ -1,10 +1,10 @@
 import React from 'react'
 import './style.scss'
-import JfLayout from '../../layouts/JfLayout'
+import JfLayout from '../../layouts/JFLayout'
 
-export default function File() {
+export default function KanBan() {
   return (
-    <div className="File">
+    <div>
       <JfLayout>
         <JfLayout.Main>
           hello

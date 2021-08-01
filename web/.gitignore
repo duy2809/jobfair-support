@@ -9,6 +9,7 @@
 /coverage
 /cypress/integration/1-getting-started
 /cypress/integration/2-advanced-examples
+cypress.json
 
 # next.js
 /src/.next/
@@ -36,3 +37,5 @@ yarn-error.log*
 
 # vercel
 .vercel
+.cypress.json.example
+.cypress.json
