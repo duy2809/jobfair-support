@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Milestone;
-use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoriablesFactory extends Factory
@@ -26,11 +24,11 @@ class CategoriablesFactory extends Factory
             App\User::class,
             App\Task::class,
         ];
-    
+
         return [
-            'categoriable_id' => $faker->numberBetween(0,10),
+            'categoriable_id' => $faker->numberBetween(0, 10),
             'categoriable_type' => $faker->randomElement($categoriable),
-            'category_id' => $faker->numberBetween(0,5)
+            'category_id' => $faker->numberBetween(0, 5),
         ];
     }
 }

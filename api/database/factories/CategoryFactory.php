@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Milestone;
-use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
