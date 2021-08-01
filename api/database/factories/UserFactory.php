@@ -23,9 +23,6 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $role = $this->faker->randomElement([0, 1]);
-        $records = mt_rand(0, 10);
-
         return [
             'name'             => $this->faker->name(),
             'email'            => $this->faker->unique()->safeEmail(),
@@ -36,8 +33,8 @@ class UserFactory extends Factory
             'chatwork_id'      => Str::random(10),
             'phone_number'     => $this->faker->numberBetween(10000000, 100000000),
             'remember_token'   => null,
-            'updated_at'       => now(),
             'created_at'       => now(),
+            'updated_at'       => now(),
         ];
     }
 
