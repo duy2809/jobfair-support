@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Button, Empty, AutoComplete } from 'antd'
+import { Select, Table, Input, Button, Empty } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
-import moment from 'moment'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
 import './styles.scss'
@@ -18,9 +17,9 @@ const columns = [
     width: '6%',
   },
   {
-    title: 'フルネーム',
+    title: 'メンバ名',
     dataIndex: 'name',
-    key: 'フルネーム',
+    key: 'メンバ名',
     width: '30%',
     render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
   },
@@ -42,26 +41,9 @@ const columns = [
 export default function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
+  const [filterData, setFilterData] = useState([])
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
-
-  const renderTitle = (title) => (
-    <span>{title}</span>
-  )
-
-  const [filterData, setFilterData] = useState([])
-  const [options, setOptions] = useState([{
-    label: renderTitle('フルネーム'),
-    options: [],
-  },
-  {
-    label: renderTitle('メールアドレス'),
-    options: [],
-  },
-  {
-    label: renderTitle('参加日'),
-    options: [],
-  }])
 
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -79,71 +61,9 @@ export default function MemberList() {
     }))
   }
 
-  const searchData = (value) => {
-    const result = members.filter((obj) => obj.name.toLowerCase().indexOf(value.toLowerCase()) > -1 || obj.email.toLowerCase().indexOf(value.toLowerCase()) > -1 || obj.created_at.indexOf(value) > -1)
-    return result
-  }
-
-  const handleSearch = (value) => {
-    const result = searchData(value)
-    if (!value) {
-      setFilterData(members)
-      return
-    }
-
-    const setName = new Set()
-    const setEmail = new Set()
-    const setDate = new Set()
-
-    const suggestionName = []
-    const suggestionEmail = []
-    const suggestionDate = []
-
-    if (result != null) {
-      for (let i = 0; i < result.length; i += 1) {
-        if (result[i].name.toLowerCase().includes(value.toLowerCase())) {
-          setName.add(result[i].name)
-        } else if (result[i].email.toLowerCase().includes(value.toLowerCase())) {
-          setEmail.add(result[i].email)
-            .add(result[i].email)
-        } else if (result[i].created_at.includes(value)) {
-          setDate.add(moment(result[i].created_at).format('YYYY-MM-DD HH:mm:ss'))
-        }
-      }
-    }
-    setName.forEach((item) => {
-      suggestionName.push({ value: item })
-    })
-
-    setEmail.forEach((item) => {
-      suggestionEmail.push({ value: item })
-    })
-
-    setDate.forEach((item) => {
-      suggestionDate.push({ value: item })
-    })
-
-    setOptions(value ? [{
-      label: renderTitle('フルネーム'),
-      options: suggestionName,
-    },
-    {
-      label: renderTitle('メールアドレス'),
-      options: suggestionEmail,
-    },
-    {
-      label: renderTitle('参加日'),
-      options: suggestionDate,
-    }] : [])
+  const handleInput = (e) => {
+    const result = members.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
     setFilterData(result)
-  }
-
-  const onSelect = (value) => {
-    if (!value) {
-      setOptions([])
-      return
-    }
-    setFilterData(searchData(value))
   }
 
   const initPagination = () => {
@@ -200,14 +120,7 @@ export default function MemberList() {
             </div>
             <div>
               <div className="text-2xl flex items-center">
-                <AutoComplete
-                  dropdownMatchSelectWidth={252}
-                  options={options}
-                  onSelect={onSelect}
-                  onSearch={handleSearch}
-                >
-                  <Input placeholder="探索" prefix={<SearchOutlined />} />
-                </AutoComplete>
+                <Input placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
                 { role === 'admin' ? (
                   <Button
                     type="primary"
