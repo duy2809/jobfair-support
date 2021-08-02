@@ -8,6 +8,7 @@ describe('Test delete jobfair', () => {
         })
         cy.visit('/jobfairs')
     })
+    
     it('click icon delete ', () => {
         var index = Math.floor((Math.random() * 15) % 10)
         if (jflist.length < 10) {

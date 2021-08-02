@@ -29,7 +29,7 @@ describe('Start date test',()=>{
                 return count;
             }, 0)
             cy.get('.ant-table-row').should('have.length', countJF)
-
+            cy.get('.ant-picker-input > input:nth-child(1)').clear({ force: true })
         }
     })
     it('Calendar filter pick notexist day test', () => {

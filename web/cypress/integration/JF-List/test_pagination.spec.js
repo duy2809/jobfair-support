@@ -31,7 +31,7 @@ describe('Test pagination', () => {
         }
     })
     it('check pagination when data is empty', () => {
-        cy.get('.ant-select-selection-search').eq(1).type('*****{enter}')
+        cy.get('.ant-input').type('*****')
         cy.get('.ant-empty-description').contains('該当結果が見つかりませんでした')
         cy.get('.ant-table-pagination').should('not.exist')
     })

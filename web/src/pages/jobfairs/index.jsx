@@ -105,7 +105,7 @@ export default function JFList() {
       dataIndex: 'JF名',
       key: '0',
       fixed: 'left',
-      render: (name, record) => <a href={`/jf-toppage/${record.id}`}>{name}</a>,
+      render: (name, record) => <a href={`/jf-toppage/${record.idJF}`}>{name}</a>,
       ellipsis: true,
     },
 
