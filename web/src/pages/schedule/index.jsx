@@ -96,22 +96,39 @@ export default function ScheduleList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold py-10 title" style={{ fontSize: '36px' }}>JFスケジュール一覧</div>
-          <div className="justify-start w-10/12">
-            <span className="text-xl">表示件数: </span>
-            <Select className="ml-5" value={itemCount} onChange={handleSelect}>
-              <Option value={10}>10</Option>
-              <Option value={25}>25</Option>
-              <Option value={50}>50</Option>
-            </Select>
+          <div className="flex w-full pb-10 justify-between">
+            <div className="text-4xl title">JFスケジュール一覧</div>
+            <div>
+              { role === 'super admin' ? (
+                <Button
+                  type="primary"
+                  className="px-12"
+                  htmlType="button"
+                  enabled
+                  onClick={handleClick}
+                >
+                  追加
+                </Button>
+              ) : ''}
+            </div>
           </div>
-          <div className="flex justify-between w-10/12">
-            <div className="text-2xl ml-auto flex items-center">
-              <Input placeholder="スケジュール" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+          <div className="flex w-full justify-between">
+            <div>
+              <span className="text-xl">表示件数: </span>
+              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+                <Option value={10}>10</Option>
+                <Option value={25}>25</Option>
+                <Option value={50}>50</Option>
+              </Select>
+            </div>
+            <div>
+              <div className="text-2xl ml-auto flex items-center">
+                <Input placeholder="スケジュール" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+              </div>
             </div>
           </div>
           <Table
-            className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows"
+            className="rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
             dataSource={filterSchedules}
             rowKey={(record) => record.id}
@@ -122,19 +139,6 @@ export default function ScheduleList() {
             pagination={pagination}
             locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
           />
-          <div className="flex w-9/12 justify-end">
-            { role === 'super admin' ? (
-              <Button
-                type="primary"
-                className="ml-5 px-12"
-                htmlType="button"
-                enabled
-                onClick={handleClick}
-              >
-                追加
-              </Button>
-            ) : ''}
-          </div>
         </div>
       </Layout.Main>
     </Layout>
