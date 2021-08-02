@@ -15,3 +15,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 Route::resource('/milestone', TemplateMilestoneController::class);
+Route::resource('/profile', ProfileController::class);
+
