@@ -29,10 +29,14 @@ Route::resource('/milestone', MilestoneController::class);
 Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
     Route::get('/{id}', 'MemberController@showMember');
-    Route::put('/{id}/update', 'MemberController@update');
+    Route::patch('/{id}/update', 'MemberController@update');
 });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
+
+Route::prefix('category')->group(function () {
+    Route::get('/', 'CategoryController@index');
+});

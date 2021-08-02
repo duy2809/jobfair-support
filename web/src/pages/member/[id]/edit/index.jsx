@@ -1,23 +1,39 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Form, Input, Button, Popconfirm, notification, Select, Modal } from 'antd'
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
+import { CategoryApi } from '~/api/category'
 
-const EditMember = ({ dataRes }) => {
+const EditMember = ({ data }) => {
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [emailInput, setEmailInput] = useState(dataRes.user.email)
-  const [nameInput, setNameInput] = useState(dataRes.user.name)
+  const [emailInput, setEmailInput] = useState(data.user.email)
+  const [nameInput, setNameInput] = useState(data.user.name)
   const router = useRouter()
+  const [categories, setCategories] = useState(data.categories)
+  const [categoriesSystem, setCategoriesSystem] = useState([])
+
+  const { id } = router.query
+
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
   }
+
+  console.log(data.user.categories)
+
   const onValueEmailChange = (e) => {
     setEmailInput(e.target.value)
   }
+
+  const fetchData = useCallback(() => {
+    CategoryApi.getListCategory().then((res) => {
+      setCategoriesSystem(res.data)
+    })
+  })
+
   const { Option } = Select
 
   const openNotificationSuccess = () => {
@@ -28,8 +44,20 @@ const EditMember = ({ dataRes }) => {
   }
 
   const handleOk = () => {
-    openNotificationSuccess()
-    router.push(`/member/${member.id}`)
+    MemberApi.updateMember(id, {
+      name: nameInput,
+      email: emailInput,
+      categories,
+    }).then(() => {
+      openNotificationSuccess()
+      router.push(`/member/${data.user.id}`)
+    })
+      .catch((error) => {
+        console.log(error)
+        notification.error({
+          message: 'Error',
+        })
+      })
   }
 
   const handleCancel = () => {
@@ -38,12 +66,20 @@ const EditMember = ({ dataRes }) => {
 
   const handleClick = (e) => {
     e.preventDefault()
-    router.push(`/member/${member.id}`)
+    router.push(`/member/${data.user.id}`)
   }
 
   const showModal = () => {
     setIsModalVisible(true)
   }
+
+  const handleChangeSelect = (value) => {
+    setCategories(value)
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <Layout>
@@ -52,7 +88,7 @@ const EditMember = ({ dataRes }) => {
           <div className="text-5xl w-10/12 font-bold py-10 ">メンバ編集</div>
           <Form className="w-10/12" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} form={form}>
             <Form.Item
-              name="member"
+              name="name"
               label="フルネーム"
               rules={[
                 {
@@ -101,7 +137,7 @@ const EditMember = ({ dataRes }) => {
             </Modal>
 
             <Form.Item
-              name={['user', 'category']}
+              name="categories"
               label="カテゴリ"
               rules={[
                 {
@@ -109,15 +145,13 @@ const EditMember = ({ dataRes }) => {
                 },
               ]}
             >
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Tags Mode" size="large">
-                {dataRes.categories.map((item) => {
-                  return <Option key={item.id}>{item.category_name}</Option>
-                })}
+              <Select mode="tags" defaultValue={categories} style={{ width: '100%' }} onChange={handleChangeSelect} placeholder="Tags Mode" size="large">
+                {categoriesSystem.map((item) => <Option key={item}>{item}</Option>)}
               </Select>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 13 }}>
-              <div className="flex mr-8 justify-between">
+            <Form.Item wrapperCol={{ offset: 17 }}>
+              <div className="flex justify-between">
                 <Popconfirm
                   title="変更は保存されていません。続行してもよろしいですか？"
                   onConfirm={handleClick}
@@ -127,7 +161,7 @@ const EditMember = ({ dataRes }) => {
                 >
                   <Button
                     size="large"
-                    className="text-base px-14"
+                    className="text-base"
                     type="primary"
                     htmlType="submit"
                     enabled="true"
@@ -137,7 +171,7 @@ const EditMember = ({ dataRes }) => {
                 </Popconfirm>
                 <Button
                   size="large"
-                  className="text-base px-14 ml-7"
+                  className="text-base px-10"
                   type="primary"
                   htmlType="submit"
                   enabled="true"
@@ -155,15 +189,15 @@ const EditMember = ({ dataRes }) => {
   )
 }
 
-EditMember.getInitialProps = async (context) => {
-  const { id } = context.query
+EditMember.getInitialProps = async (ctx) => {
+  const { id } = ctx.query
   const res = await MemberApi.getMemberDetail(id)
   const dataRes = res.data
-  return { dataRes }
+  return { data: dataRes }
 }
 
 EditMember.propTypes = {
-  dataRes: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
 }
 
 export default EditMember
