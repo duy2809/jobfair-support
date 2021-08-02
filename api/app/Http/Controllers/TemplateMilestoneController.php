@@ -91,6 +91,7 @@ class TemplateMilestoneController extends Controller
     {
         return TemplateMilestone::destroy($id);
     }
+
     public function getSearch(Request $request)
     {
         $s = $request->input('s');
