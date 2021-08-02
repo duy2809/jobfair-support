@@ -108,8 +108,8 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold py-10 title" style={{ fontSize: '36px' }}>メンバ一覧</div>
-          <div className="flex w-10/12 items-center justify-between">
+          <div className="text-5xl w-full py-10 title" >メンバ一覧</div>
+          <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
               <Select className="ml-5" value={itemCount} onChange={handleSelect}>
@@ -136,7 +136,7 @@ export default function MemberList() {
             </div>
           </div>
           <Table
-            className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows"
+            className="w-full rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
             dataSource={filterData}
             rowKey={(record) => record.id}

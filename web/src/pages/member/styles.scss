@@ -42,12 +42,23 @@
     background-color: #ffd803 !important;
 }
 
-.ant-select-selector {
-    background-color: #bae8e8 !important;
-}
-
 thead[class*="ant-table-thead"] th{
     background-color: #bae8e8 !important;
+    font-weight: 800;
+}
+
+.ant-pagination-item:hover, 
+.ant-pagination-item > a:hover, 
+.ant-pagination-item-active > a, 
+.ant-pagination-item-active,
+.ant-pagination-item-link:hover {
+    border-color: #ffd803 !important;
+    color: #ffd803 !important;
+}
+
+.ant-table-row .ant-table-cell:nth-child(2):hover {
+    color: #ffd803 !important;
+    cursor: pointer;
 }
 
 .ant-table-cell {
