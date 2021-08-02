@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button, AutoComplete } from 'antd'
+import { Select, Input, Table, Empty, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -26,11 +26,10 @@ const columns = [
 
 export default function ScheduleList() {
   const [schedules, setSchedules] = useState([])
+  const [filterSchedules, setFilterSchedules] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
-  const [options, setOptions] = useState([])
-  const [temperaryData, setTemperaryData] = useState()
 
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -48,39 +47,9 @@ export default function ScheduleList() {
     }))
   }
 
-  const searchData = (value) => {
-    const result = schedules.filter((obj) => obj.name.toLowerCase().indexOf(value.toLowerCase()) > -1)
-    return result
-  }
-
-  const handleSearch = (value) => {
-    const result = searchData(value)
-    if (!value) {
-      setTemperaryData(schedules)
-      return
-    }
-    const set = new Set()
-    const suggestion = []
-    if (result != null) {
-      for (let i = 0; i < result.length; i += 1) {
-        if (result[i].name.toLowerCase().includes(value.toLowerCase())) {
-          set.add(result[i].name)
-        }
-      }
-    }
-    set.forEach((item) => {
-      suggestion.push({ value: item })
-    })
-    setOptions(value ? suggestion : [])
-    setTemperaryData(result)
-  }
-
-  const onSelect = (value) => {
-    if (!value) {
-      setOptions([])
-      return
-    }
-    setTemperaryData(searchData(value))
+  const handleInput = (e) => {
+    const result = schedules.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
+    setFilterSchedules(result)
   }
 
   const initPagination = () => {
@@ -102,7 +71,7 @@ export default function ScheduleList() {
     ListScheduleApi.getListShedule().then((res) => {
       const { data } = res
       setSchedules(data)
-      setTemperaryData(data)
+      setFilterSchedules(data)
     }).finally(() => {
       setDataLoading(false)
     })
@@ -138,20 +107,13 @@ export default function ScheduleList() {
           </div>
           <div className="flex justify-between w-10/12">
             <div className="text-2xl ml-auto flex items-center">
-              <AutoComplete
-                dropdownMatchSelectWidth={252}
-                options={options}
-                onSelect={onSelect}
-                onSearch={handleSearch}
-              >
-                <Input placeholder="スケジュール" bordered prefix={<SearchOutlined />} />
-              </AutoComplete>
+              <Input placeholder="スケジュール" onChange={handleInput} bordered prefix={<SearchOutlined />} />
             </div>
           </div>
           <Table
             className="w-10/12 rounded-3xl font-bold table-styled my-5 table-striped-rows"
             columns={columns}
-            dataSource={temperaryData}
+            dataSource={filterSchedules}
             rowKey={(record) => record.id}
             scroll={{ y: 360 }}
             onRow={handleRow}
