@@ -17,8 +17,8 @@ class CategoriablesTableSeeder extends Seeder
     {
         $faker = Faker::create();
         $categoriable = [
-            App\User::class,
-            App\Task::class,
+            'App\Models\User',
+            'App\Models\Task',
         ];
 
         for ($i = 0; $i < 5; $i++) {

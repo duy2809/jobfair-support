@@ -6,11 +6,11 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 
-const EditMember = ({ member }) => {
+const EditMember = ({ dataRes }) => {
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [emailInput, setEmailInput] = useState(member.email)
-  const [nameInput, setNameInput] = useState(member.name)
+  const [emailInput, setEmailInput] = useState(dataRes.user.email)
+  const [nameInput, setNameInput] = useState(dataRes.user.name)
   const router = useRouter()
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
@@ -19,10 +19,6 @@ const EditMember = ({ member }) => {
     setEmailInput(e.target.value)
   }
   const { Option } = Select
-  const children = []
-  for (let i = 10; i < 36; i += 1) {
-    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>)
-  }
 
   const openNotificationSuccess = () => {
     notification.success({
@@ -114,7 +110,9 @@ const EditMember = ({ member }) => {
               ]}
             >
               <Select mode="tags" style={{ width: '100%' }} placeholder="Tags Mode" size="large">
-                {children}
+                {dataRes.categories.map((item) => {
+                  return <Option key={item.id}>{item.category_name}</Option>
+                })}
               </Select>
             </Form.Item>
 
@@ -160,13 +158,12 @@ const EditMember = ({ member }) => {
 EditMember.getInitialProps = async (context) => {
   const { id } = context.query
   const res = await MemberApi.getMemberDetail(id)
-  const member = res.data
-  console.log(member)
-  return { member }
+  const dataRes = res.data
+  return { dataRes }
 }
 
 EditMember.propTypes = {
-  member: PropTypes.object.isRequired,
+  dataRes: PropTypes.object.isRequired,
 }
 
 export default EditMember

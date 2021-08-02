@@ -14,7 +14,12 @@ class MemberController extends Controller
 
     public function showMember($id)
     {
-        return User::findOrFail($id);
+        $user = User::findOrFail($id);
+        $categories = $user->categories;
+        return [
+            'user' => $user,
+            'categories' => $categories
+        ];
     }
 
     public function update(Request $request, $id)
