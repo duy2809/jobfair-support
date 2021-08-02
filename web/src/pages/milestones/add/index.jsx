@@ -1,45 +1,49 @@
-import React, { useState } from 'react'
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  Modal,
-  notification,
-} from 'antd'
-import OtherLayout from '../../../layouts/OtherLayout'
-import { addMilestone } from '../../../api/milestone'
+import React, { useState } from "react";
+import { Form, Input, Button, Select, Modal, notification } from "antd";
+import OtherLayout from "../../../layouts/OtherLayout";
+import { addMilestone } from "../../../api/milestone";
 
 export default function AddMilestonePage() {
-  const [form] = Form.useForm()
+  const [form] = Form.useForm();
 
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false)
-  const [typePeriodInput, setTypePeriodInput] = useState(0)
-  const [nameInput, setNameInput] = useState('')
-  const [timeInput, setTimeInput] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] =
+    useState(false);
+  const [typePeriodInput, setTypePeriodInput] = useState(0);
+  const [nameInput, setNameInput] = useState("");
+  const [timeInput, setTimeInput] = useState("");
 
-  const { Option } = Select
+  const { Option } = Select;
 
   function toHalfWidth(fullWidthStr) {
-    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
+      String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+    );
   }
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: '正常に保存されました。',
-
-    })
-    setTimeout(() => { window.location.href = '/milestones' }, 1000)
-  }
+      message: "正常に保存されました。",
+    });
+    setTimeout(() => {
+      window.location.href = "/milestones";
+    }, 3000);
+  };
 
   const showModal = () => {
-    setIsModalVisible(true)
-  }
+    if (
+      !(form.isFieldTouched("name") && form.isFieldTouched("time")) ||
+      !!form.getFieldsError().filter(({ errors }) => errors.length).length
+    ) {
+      setIsModalVisible(false);
+    }else{
+      setIsModalVisible(true);
+    }
+  };
 
   const handleOk = () => {
-    form.submit()
-    setIsModalVisible(false)
+    form.submit();
+    setIsModalVisible(false);
     addMilestone({
       name: nameInput,
       period: timeInput,
@@ -48,47 +52,47 @@ export default function AddMilestonePage() {
       .then(() => openNotificationSuccess())
       .catch((error) => {
         if (
-          JSON.parse(error.response.request.response).errors.name[0]
-          === 'The name has already been taken.'
+          JSON.parse(error.response.request.response).errors.name[0] ===
+          "The name has already been taken."
         ) {
           notification.error({
-            message: 'このマイルストーン名は存在しています',
-          })
+            message: "このマイルストーン名は存在しています",
+          });
         }
-      })
-  }
+      });
+  };
 
   const onValueNameChange = (e) => {
-    setNameInput(e.target.value)
+    setNameInput(e.target.value);
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
-    })
-  }
+    });
+  };
   const onValueTimeChange = (e) => {
-    setTimeInput(e.target.value)
+    setTimeInput(e.target.value);
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
-    })
-  }
+    });
+  };
 
   const handleCancel = () => {
-    setIsModalVisible(false)
-  }
+    setIsModalVisible(false);
+  };
 
   const showModalOfBtnCancel = () => {
-    setIsModalVisibleOfBtnCancel(true)
-  }
+    setIsModalVisibleOfBtnCancel(true);
+  };
 
   const handleCancelOfBtnCancel = () => {
-    setIsModalVisibleOfBtnCancel(false)
-  }
+    setIsModalVisibleOfBtnCancel(false);
+  };
 
   const selectAfter = (
     <Form.Item name="typePeriod" noStyle>
       <Select
         className="select-after"
         onChange={(value) => {
-          setTypePeriodInput(parseInt(value, 10))
+          setTypePeriodInput(parseInt(value, 10));
         }}
         value={typePeriodInput.toString()}
         style={{
@@ -99,27 +103,30 @@ export default function AddMilestonePage() {
         <Option value="1">週間後</Option>
       </Select>
     </Form.Item>
-  )
+  );
 
   // const onFinish = (values) => {
   //   console.log(values)
   // }
 
-  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
+  const blockInvalidChar = (e) =>
+    ["e", "E", "+"].includes(e.key) && e.preventDefault();
 
   return (
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン追加</p>
+          <p className="title mb-8" style={{ fontSize: "36px" }}>
+            マイルストーン追加
+          </p>
 
-          <div className="pt-20">
+          <div className="pt-10">
             <Form
               form={form}
               name="addMilestone"
               // onFinish={onFinish}
               initialValues={{
-                typePeriod: '0',
+                typePeriod: "0",
               }}
               size="large"
               labelCol={{ span: 10 }}
@@ -127,30 +134,30 @@ export default function AddMilestonePage() {
             >
               <Form.Item
                 className="pb-4"
-                label={(
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>
+                label={
+                  <p style={{ color: "#2d334a", fontSize: "18px" }}>
                     マイルストーン名
                   </p>
-                )}
+                }
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: 'この項目は必須です。',
+                    message: "この項目は必須です。",
                   },
 
                   {
                     validator(_, value) {
-                      const specialCharRegex = new RegExp('[ 　]')
+                      const specialCharRegex = new RegExp("[ 　]");
                       if (specialCharRegex.test(value)) {
                         return Promise.reject(
                           new Error(
-                            'マイルストーン名はスペースが含まれていません。',
-                          ),
-                        )
+                            "マイルストーン名はスペースが含まれていません。"
+                          )
+                        );
                       }
 
-                      return Promise.resolve()
+                      return Promise.resolve();
                     },
                   },
                 ]}
@@ -164,18 +171,18 @@ export default function AddMilestonePage() {
               <Form.Item
                 className="pb-4"
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
+                  <p style={{ color: "#2d334a", fontSize: "18px" }}>期日</p>
                 }
                 name="time"
                 rules={[
                   {
                     required: true,
-                    message: 'この項目は必須です。',
+                    message: "この項目は必須です。",
                   },
 
                   {
                     pattern: /^(?:\d*)$/,
-                    message: '０以上の半角の整数で入力してください。',
+                    message: "０以上の半角の整数で入力してください。",
                   },
                 ]}
               >
@@ -193,7 +200,7 @@ export default function AddMilestonePage() {
                 <div className="col-span-7 justify-self-end">
                   <Form.Item>
                     <Button
-                      type="primary"
+                      htmlType="button"
                       onClick={showModalOfBtnCancel}
                       className="w-32"
                     >
@@ -202,25 +209,15 @@ export default function AddMilestonePage() {
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item shouldUpdate>
-                    {() => (
-                      <Button
-                        type="primary"
-                        className="w-32"
-                        disabled={
-                          !(
-                            form.isFieldTouched('name')
-                              && form.isFieldTouched('time')
-                          )
-                            || !!form
-                              .getFieldsError()
-                              .filter(({ errors }) => errors.length).length
-                        }
-                        onClick={showModal}
-                      >
-                           登録
-                      </Button>
-                    )}
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      className="w-32"
+                      onClick={showModal}
+                      htmlType="submit"
+                    >
+                       登録
+                    </Button>
                   </Form.Item>
                 </div>
               </div>
@@ -256,5 +253,5 @@ export default function AddMilestonePage() {
         </OtherLayout.Main>
       </OtherLayout>
     </>
-  )
+  );
 }
