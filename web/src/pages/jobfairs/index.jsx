@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification, AutoComplete } from 'antd'
+import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification } from 'antd'
 import './style.scss'
 import { SearchOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -13,18 +13,35 @@ export default function JFList() {
   }
 
   // state of table
+  const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
   const [dataFilter, setDataFilter] = useState()
   const { Option } = Select
+
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
       pageSize: value,
     }))
+    setItemCount(value)
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+  }
+
+  const initPagination = () => {
+    const paginationData = JSON.parse(localStorage.getItem('pagination'))
+    if (paginationData === null) {
+      localStorage.setItem('pagination', JSON.stringify(pagination))
+    } else {
+      setPagination((preState) => ({
+        ...preState,
+        pageSize: paginationData.pageSize,
+      }))
+      setItemCount(paginationData.pageSize)
+    }
   }
 
   // add data of table
@@ -32,7 +49,8 @@ export default function JFList() {
     const data = []
     for (let i = 0; i < response.data.length; i += 1) {
       data.push({
-        id: response.data[i].id,
+        id: i + 1,
+        idJF: response.data[i].id,
         JF名: response.data[i].name,
         開始日: response.data[i].start_date.replaceAll('-', '/'),
         推定参加学生数: response.data[i].number_of_students,
@@ -52,6 +70,7 @@ export default function JFList() {
       title: '削除してもよろしいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
+      centered: true,
       onOk: async () => {
         setLoading(true)
         try {
@@ -73,6 +92,13 @@ export default function JFList() {
   // columns of tables
 
   const columns = [
+    {
+      title: 'No.',
+      dataIndex: 'id',
+      key: 'No.',
+      width: '5%',
+      render: (id) => id,
+    },
     {
       title: 'JF名',
       width: 80,
@@ -111,14 +137,14 @@ export default function JFList() {
       width: 50,
       render: (text, record) => (
         <Space size="middle">
-          <a href={`/edit-jf/${record.id}`}>
+          <a href={`/edit-jf/${record.idJF}`}>
             <abbr title="編集" style={{ cursor: 'pointer' }}>
               <EditTwoTone />
             </abbr>
           </a>
           <abbr title="消去" style={{ cursor: 'pointer' }}>
             <DeleteTwoTone onClick={() => {
-              confirmModle(record.id)
+              confirmModle(record.idJF)
             }}
             />
           </abbr>
@@ -132,6 +158,7 @@ export default function JFList() {
 
   useEffect(async () => {
     setLoading(true)
+    initPagination()
     await getJFList().then((response) => {
       addDataOfTable(response)
     })
@@ -139,15 +166,15 @@ export default function JFList() {
         console.log(error)
       })
     setLoading(false)
-  }, [])
+  }, [itemCount])
+
   // State of filter'
   const [valueSearch, setValueSearch] = useState('')
   const [rangeStudentsNumber, setRangeStudentsNumber] = useState([0, 100])
   const [rangeBussinessesNumber, setRangeBussinessesNumber] = useState([0, 100])
   const [startDate, setStartDate] = useState('')
-  // Search data on Table
 
-  const [options, setOptions] = useState([])
+  // Search data on Table
 
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
@@ -157,48 +184,18 @@ export default function JFList() {
       && (JF.開始日.includes(startDate)))
     return filteredData
   }
-
-  const handleSearch = (value) => {
-    if (!value) {
-      setValueSearch('')
-      setTemperaryData(dataFilter)
-      return
-    }
-    const filteredData = searchDataOnTable(value)
-    const set = new Set()
-    const suggestion = []
-    if (filteredData != null) {
-      for (let i = 0; i < filteredData.length; i += 1) {
-        if (filteredData[i].JF名.toLowerCase().includes(value.toLowerCase())) {
-          set.add(filteredData[i].JF名)
-        } else if (filteredData[i].管理者.toLowerCase().includes(value.toLowerCase())) {
-          set.add(filteredData[i].管理者)
-        }
-      }
-    }
-    set.forEach((item) => {
-      suggestion.push({ value: item })
-    })
-    setOptions(value ? suggestion : [])
-  }
-  const onSelect = (value) => {
-    if (!value) {
-      setOptions([])
-      setValueSearch('')
-      return
-    }
-    setValueSearch(value)
-    setTemperaryData(searchDataOnTable(value))
-  }
-
-  const onEnter = (e) => {
+  const onSearch = (e) => {
+    setLoading(true)
     const currValue = e.target.value
     if (!currValue) {
       setValueSearch('')
+      setTemperaryData(dataFilter)
+      setLoading(false)
       return
     }
     setValueSearch(currValue)
     setTemperaryData(searchDataOnTable(currValue))
+    setLoading(false)
   }
 
   // filter by number of students
@@ -349,32 +346,25 @@ export default function JFList() {
             <div className="flex space-x-8 items-center justify-between">
               <div>
                 <span>表示件数: </span>
-                <Select defaultValue={10} onChange={handleSelect}>
+                <Select value={itemCount} onChange={handleSelect}>
                   <Option value={10}>10</Option>
                   <Option value={25}>25</Option>
                   <Option value={50}>50</Option>
                 </Select>
               </div>
-              <AutoComplete
-                dropdownMatchSelectWidth={252}
+              <Input
                 className="w-1/4"
-                options={options}
-                onSelect={onSelect}
-                onChange={handleSearch}
-              >
-                <Input
-                  prefix={<SearchOutlined />}
-                  allowClear="true"
-                  placeholder="JF名, 管理者"
-                  onPressEnter={onEnter}
-                />
-              </AutoComplete>
+                allowClear="true"
+                prefix={<SearchOutlined />}
+                placeholder="JF名, 管理者"
+                onChange={onSearch}
+                value={valueSearch}
+              />
             </div>
             <Table
               columns={columns}
               dataSource={temperaryData}
-              rowKey={(record) => record.id}
-              scroll={{ y: 360 }}
+              scroll={{ y: 400 }}
               loading={loading}
               pagination={pagination}
               locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
