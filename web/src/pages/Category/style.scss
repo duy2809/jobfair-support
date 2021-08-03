@@ -1,53 +1,86 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.list-ht{
-    position: relative;
-}
-.ant-pagination-options{
-    position: absolute;
-    left: 184px;
-    top: -90px;
-}
-.selectBox{
-  border: 2px solid black;
-  
-}
-
-.ant-table-pagination-right{
-    justify-content: center;
-}
-
-.ant-pagination-item-active a{
-    background-color: #269268;
-    border-color: black;
+// list
+.ant-spin-container{
+    padding-top: 2rem;
 }
 
 .ant-table{
-    @apply mr-52 ml-52 mt-16 mb-24 rounded-xl;
-    border: 2px solid black;
-}
-.ant-pagination{
-    margin-top: 20px;
+    width: 95%;
+    margin: auto;
+    border: 1px solid black;
 }
 
-.input-category{
-    height: 36px;
-    width: -webkit-fill-available;
-    padding-left: 6px;
+.ant-table-thead > tr > *{
+    background : #bae8e8 !important;
+    font-weight: 700;
+    font-size: 16px;
 }
-.add-btn{
-    /* position: absolute; */
-    background-color: #ffd803;
-    color: #272343;
-    left: 62rem;
+
+.ant-table-body{
+    max-height: 21rem !important;
+}
+
+.ant-table-row{
+    line-height: 0.05;
+}
+
+.ant-table-pagination.ant-pagination{
+    margin-top: 3.7rem;
+}
+
+.ant-table-pagination-right {
+    justify-content: center;
+}
+
+.ant-pagination-options-size-changer.ant-select{
+    display: none;
+}
+.ant-pagination-item:hover,
+.ant-pagination-item > a:hover,
+.ant-pagination-item-link:hover,
+.ant-pagination-item-active,
+.ant-pagination-item-active > a {
+  border-color: #ffd803 !important;
+  color: #ffd803 !important;
+}
+
+.ant-table-container{
+    position: relative;
+}
+
+// add
+.add{
+    position: absolute;
     top: 2rem;
-    width: 8rem;
+    right: 3rem;
+}
+
+.ant-btn-primary{
+    width: 6rem;
+    background-color: #ffd803;
+    border: 1px solid #ffd803;
+}
+
+.ant-btn-primary:hover {
+    background-color: #ffd803;
+    border-color: #272343;
+    color: #272343;
+}
+
+.add-btn:hover {
+    background-color: #ffd803;
+    border-color: #272343;
+    color: #272343;
 }
 
 .input-category{
     height: 36px;
     width: -webkit-fill-available;
     padding-left: 6px;
-} 
+}   
+
+.ant-btn{
+    color: #272343;
+}
