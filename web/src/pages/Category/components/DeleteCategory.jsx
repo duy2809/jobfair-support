@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 /* eslint-disable react/react-in-jsx-scope */
 import { Modal, Space } from 'antd'
-import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
 
 import { deleteCategory } from '../../../api/category'
 
@@ -32,7 +32,7 @@ const DeleteCategory = (props) => {
   return (
     <div>
       <Space>
-        <DeleteOutlined onClick={showDeleteConfirm} />
+        <DeleteTwoTone onClick={showDeleteConfirm} />
       </Space>
     </div>
   )

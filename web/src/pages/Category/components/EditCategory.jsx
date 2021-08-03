@@ -4,7 +4,7 @@
 import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories } from '../../../api/category'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
@@ -70,7 +70,7 @@ const EditCategory = (props) => {
 
   return (
     <>
-      <EditOutlined onClick={showModal} />
+      <EditTwoTone onClick={showModal} />
       <Modal
         title="編集カテゴリ"
         visible={isModalVisible}
@@ -81,9 +81,9 @@ const EditCategory = (props) => {
       >
         <Form>
           <Form.Item
-            label={
-              <p style={{ color: '#2d334a', fontSize: '14px' }}>カテゴリー名</p>
-            }
+            // label={
+            //   <p style={{ color: '#2d334a', fontSize: '14px' }}>カテゴリー名</p>
+            // }
             name="name"
             rules={[
               {
@@ -107,7 +107,7 @@ const EditCategory = (props) => {
               required="required"
               className="input-category"
               onChange={onValueNameChange}
-              placeholder="input category"
+              placeholder="カテゴリ名を書いてください"
               message="この項目は必須です"
             />
           </Form.Item>

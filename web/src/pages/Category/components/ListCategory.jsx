@@ -49,7 +49,8 @@ export default function ListCategories() {
     {
       title: 'No',
       dataIndex: 'id',
-      width: '5%',
+      width: '10%',
+      render: (id) => id,
     },
     {
       key: '2',

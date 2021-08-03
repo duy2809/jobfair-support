@@ -60,7 +60,7 @@ const PrjAdd = (props) => {
       >
         <input
           type="text"
-          placeholder="Category Name"
+          placeholder="カテゴリ名を書いてください"
           className="input-category"
           required="required"
           name="name" // them truong 'name'
