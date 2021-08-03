@@ -59,3 +59,14 @@ tr td:nth-child(1) {
 .ant-layout-content {
   margin: 15px 16px !important;
 }
+.ant-pagination-item:hover,
+.ant-pagination-item > a:hover,
+.ant-pagination-item-active > a,
+.ant-pagination-item-active,
+.ant-pagination-item-link:hover {
+  border-color: #ffd803 !important;
+  color: #ffd803 !important;
+}
+.ant-pagination-item-link-icon {
+  color: #ffd803 !important;
+}
