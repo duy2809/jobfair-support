@@ -262,7 +262,7 @@ const MilestonePage = () => {
         <OtherLayout.Main>
           <div className="container-list">
             <Row
-              style={{ alignItems: 'center', justifyContent: 'space-between' }}
+              style={{ justifyContent: 'space-between', alignItems: 'center' }}
             >
               <Col>
                 <h1>マイルストーン一覧</h1>
