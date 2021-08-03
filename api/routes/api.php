@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
  */
+
 Route::get('/web-init', WebInit::class);
 Route::resource('/jobfair', 'JobfairController');
 Route::group(['prefix' => 'jobfair/{id}'], function () {
@@ -47,3 +48,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
+
+Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
+Route::get('/milestone', 'TemplateMilestoneController@getList');
+Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');

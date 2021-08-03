@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TemplateMilestone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -89,5 +90,44 @@ class TemplateMilestoneController extends Controller
     public function destroy($id)
     {
         return TemplateMilestone::destroy($id);
+    }
+
+    public function getSearch(Request $request)
+    {
+        $s = $request->input('s');
+        if ($request->input('s')) {
+            $data = DB::table('template_milestones')
+                ->where('name', 'LIKE', '%' + $s + '%')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            return response()->json($data);
+        }
+
+        $data = DB::table('template_milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function getList()
+    {
+        $data = DB::table('template_milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function destroyMilestone($id)
+    {
+        $milestones = new TemplateMilestone();
+        $milestones = TemplateMilestone::find($id);
+        $milestones->delete($id);
+
+        return response()->json([
+            'success' => 'Record has been deleted successfully!',
+        ]);
     }
 }
