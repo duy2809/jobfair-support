@@ -1,9 +1,9 @@
-import React from 'react';
-import 'tailwindcss/tailwind.css';
-import { Menu, Dropdown } from 'antd';
-import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons';
-import Link from 'next/link';
-import './styles.scss';
+import React from 'react'
+import 'tailwindcss/tailwind.css'
+import { Menu, Dropdown } from 'antd'
+import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
+import Link from 'next/link'
+import './styles.scss'
 
 export default function Navbar() {
   const moreNavbarOptions = (
@@ -24,7 +24,7 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
     </Menu>
-  );
+  )
   const notifications = (
     <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
@@ -38,7 +38,7 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
     </Menu>
-  );
+  )
   const userInformations = (
     <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
@@ -52,7 +52,7 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
     </Menu>
-  );
+  )
 
   return (
     <div className="flex justify-between items-center border-2 navbar select-none">
@@ -107,5 +107,5 @@ export default function Navbar() {
         </div>
       </div>
     </div>
-  );
+  )
 }

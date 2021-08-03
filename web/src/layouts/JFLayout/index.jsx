@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Menu } from 'antd';
-import Link from 'next/link';
-import PropTypes from 'prop-types';
-import _get from 'lodash/get';
+import React, { useEffect, useState } from 'react'
+import { Layout, Menu } from 'antd'
+import Link from 'next/link'
+import PropTypes from 'prop-types'
+import _get from 'lodash/get'
 import {
   HomeOutlined,
   FileProtectOutlined,
@@ -11,22 +11,22 @@ import {
   FileOutlined,
   ArrowRightOutlined,
   ArrowLeftOutlined,
-} from '@ant-design/icons';
-import { findSlot } from '../../utils/pages';
-import Navbar from '../../components/navbar';
-import './style.scss';
+} from '@ant-design/icons'
+import { findSlot } from '../../utils/pages'
+import Navbar from '../../components/navbar'
+import './style.scss'
 
 const JfLayout = ({ children }) => {
-  const main = findSlot(JfLayout.Main, children);
-  const { Sider, Content } = Layout;
-  const [collapsed, Setcollapsed] = useState(false);
+  const main = findSlot(JfLayout.Main, children)
+  const { Sider, Content } = Layout
+  const [collapsed, Setcollapsed] = useState(false)
   const toggleCollapsed = () => {
-    Setcollapsed(!collapsed);
-  };
-  const [idJF, setIdJf] = useState('');
+    Setcollapsed(!collapsed)
+  }
+  const [idJF, setIdJf] = useState('')
   useEffect(() => {
-    setIdJf(localStorage.getItem('id-jf'));
-  }, [children]);
+    setIdJf(localStorage.getItem('id-jf'))
+  }, [children])
   return (
     <div className="menuu">
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
@@ -95,17 +95,17 @@ const JfLayout = ({ children }) => {
         </Layout>
       </Layout>
     </div>
-  );
-};
-JfLayout.Main = () => null;
+  )
+}
+JfLayout.Main = () => null
 
 JfLayout.defaultProps = {
   children: [],
-};
+}
 JfLayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node),
   ]),
-};
-export default JfLayout;
+}
+export default JfLayout

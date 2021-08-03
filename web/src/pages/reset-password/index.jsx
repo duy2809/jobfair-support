@@ -1,22 +1,22 @@
-import React from 'react';
-import Layout from '~/layouts/Default';
-import { Form, Input, Button, notification } from 'antd';
-import { useRouter } from 'next/router';
-import { updatePassword } from '~/api/authenticate';
-import './style.scss';
+import React from 'react'
+import { Form, Input, Button, notification } from 'antd'
+import { useRouter } from 'next/router'
+import Layout from '~/layouts/Default'
+import { updatePassword } from '~/api/authenticate'
+import './style.scss'
 
 const ResetPage = () => {
-  const [form] = Form.useForm();
-  const router = useRouter();
-  const { token } = router.query;
+  const [form] = Form.useForm()
+  const router = useRouter()
+  const { token } = router.query
 
   const openNotification = (type, message, description) => {
     notification[type]({
       message,
       description,
       duration: 2.5,
-    });
-  };
+    })
+  }
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
@@ -27,32 +27,31 @@ const ResetPage = () => {
     string: {
       range: 'パスワードは${min}文字以上${max}文字以下で入力してください。',
     },
-  };
+  }
   /* eslint-enable no-template-curly-in-string */
 
   const onFinish = async (values) => {
     const data = {
       token,
       password: values.confirm_password,
-    };
+    }
     // console.log(data);
     try {
-      const response = await updatePassword(data);
-      if (response.request.status === 200)
-        openNotification('success', 'パスワードを正常に変更しました');
+      const response = await updatePassword(data)
+      if (response.request.status === 200) openNotification('success', 'パスワードを正常に変更しました')
       setTimeout(() => {
-        router.push('/login');
-      }, 2500);
+        router.push('/login')
+      }, 2500)
     } catch (error) {
       if (error.request.status === 400) {
-        openNotification('error', 'パスワードを正常に変更しません');
+        openNotification('error', 'パスワードを正常に変更しません')
       }
     }
-  };
+  }
 
   const onFinishFailed = (errorInfo) => {
-    openNotification('error', errorInfo);
-  };
+    openNotification('error', errorInfo)
+  }
 
   return (
     <Layout>
@@ -88,13 +87,13 @@ const ResetPage = () => {
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
+                      return Promise.resolve()
                     }
                     return Promise.reject(
                       new Error(
                         '新しいパスワードとパスワード確認用が一致しません。',
                       ),
-                    );
+                    )
                   },
                 }),
               ]}
@@ -111,10 +110,10 @@ const ResetPage = () => {
                     className="text-base px-14"
                     disabled={
                       !(
-                        form.isFieldTouched('password') &&
-                        form.isFieldTouched('confirm_password')
-                      ) ||
-                      !!form
+                        form.isFieldTouched('password')
+                        && form.isFieldTouched('confirm_password')
+                      )
+                      || !!form
                         .getFieldsError()
                         .filter(({ errors }) => errors.length).length
                     }
@@ -128,7 +127,7 @@ const ResetPage = () => {
         </div>
       </Layout.Main>
     </Layout>
-  );
-};
+  )
+}
 
-export default ResetPage;
+export default ResetPage

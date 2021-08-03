@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import Layout from '~/layouts/Default';
-import { Form, Input, Button, Checkbox, Modal, notification } from 'antd';
-import { useRouter } from 'next/router';
-import { login, sendLinkResetPassword } from '~/api/authenticate';
-import './style.scss';
+import React, { useState, useEffect } from 'react'
+import { Form, Input, Button, Checkbox, Modal, notification } from 'antd'
+import { useRouter } from 'next/router'
+import Layout from '~/layouts/Default'
+import { login, sendLinkResetPassword } from '~/api/authenticate'
+import './style.scss'
 
 const LoginPage = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDisableOk, setDisableOk] = useState(true);
-  const [, forceUpdate] = useState({});
-  const [form] = Form.useForm();
-  const [form2] = Form.useForm();
-  const router = useRouter();
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isDisableOk, setDisableOk] = useState(true)
+  const [, forceUpdate] = useState({})
+  const [form] = Form.useForm()
+  const [form2] = Form.useForm()
+  const router = useRouter()
 
   // To disable submit button at the beginning.
   useEffect(() => {
-    forceUpdate({});
-  }, []);
+    forceUpdate({})
+  }, [])
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
@@ -28,7 +28,7 @@ const LoginPage = () => {
     string: {
       range: 'パスワードは${min}文字以上${max}文字以下で入力してください。',
     },
-  };
+  }
   /* eslint-enable no-template-curly-in-string */
 
   const openNotification = (type, message, description) => {
@@ -36,64 +36,62 @@ const LoginPage = () => {
       message,
       description,
       duration: 2.5,
-    });
-  };
+    })
+  }
 
   const onFinish = async (values) => {
     try {
-      const response = await login(values);
-      if (response.request.status === 200)
-        openNotification('success', '正常にログインしました');
+      const response = await login(values)
+      if (response.request.status === 200) openNotification('success', '正常にログインしました')
       setTimeout(() => {
-        router.push('/top-page');
-      }, 2500);
+        router.push('/top-page')
+      }, 2500)
     } catch (error) {
       if (error.request.status === 400) {
         openNotification(
           'error',
           'メールアドレスもしくはパスワードが間違っています',
-        );
+        )
       }
     }
-  };
+  }
 
   const onChangeDisableOk = () => {
     setDisableOk(
-      !form2.isFieldTouched('reset-email') ||
-        !!form2.getFieldsError().filter(({ errors }) => errors.length).length,
-    );
-  };
+      !form2.isFieldTouched('reset-email')
+        || !!form2.getFieldsError().filter(({ errors }) => errors.length).length,
+    )
+  }
 
   const onFinishFailed = (errorInfo) => {
-    openNotification('error', errorInfo);
-  };
+    openNotification('error', errorInfo)
+  }
 
   const showModal = () => {
-    setIsModalVisible(true);
-  };
+    setIsModalVisible(true)
+  }
 
   const handleOk = async () => {
-    setIsModalVisible(false);
+    setIsModalVisible(false)
     try {
       const response = await sendLinkResetPassword(
         form2.getFieldValue('reset-email'),
-      );
+      )
       if (response.request.status === 200) {
         openNotification(
           'success',
           'メールは正常に送信されました',
           'メールを確認してください。',
-        );
+        )
       }
     } catch (error) {
-      if (error.request.status === 400)
-        openNotification('error', 'メールが存在しません');
+      if (error.request.status === 400) openNotification('error', 'メールが存在しません')
     }
-  };
+  }
 
   const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    setIsModalVisible(false)
+  }
 
   return (
     <Layout>
@@ -182,10 +180,10 @@ const LoginPage = () => {
                     className="text-base px-14"
                     disabled={
                       !(
-                        form.isFieldTouched('email') &&
-                        form.isFieldTouched('password')
-                      ) ||
-                      !!form
+                        form.isFieldTouched('email')
+                        && form.isFieldTouched('password')
+                      )
+                      || !!form
                         .getFieldsError()
                         .filter(({ errors }) => errors.length).length
                     }
@@ -199,7 +197,7 @@ const LoginPage = () => {
         </div>
       </Layout.Main>
     </Layout>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage
