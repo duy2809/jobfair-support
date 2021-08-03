@@ -86,7 +86,7 @@ const EditMember = ({ data }) => {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold py-10 ">メンバ編集</div>
+          <div className="text-5xl w-10/12 font-bold py-10 title">メンバ編集</div>
           <Form className="w-10/12" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} form={form}>
             <Form.Item
               name="name"
