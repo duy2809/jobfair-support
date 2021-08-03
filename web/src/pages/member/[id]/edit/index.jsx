@@ -52,9 +52,8 @@ const EditMember = ({ data }) => {
       router.push(`/member/${data.user.id}`)
     })
       .catch((error) => {
-        console.log(error)
         notification.error({
-          message: 'Error',
+          message: error.response.data.errors.email || error.response.data.errors.name,
         })
       })
   }
@@ -86,9 +85,10 @@ const EditMember = ({ data }) => {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold py-10 title">メンバ編集</div>
-          <Form className="w-10/12" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} form={form}>
+          <div className="text-5xl w-10/12 font-bold title">メンバ編集</div>
+          <Form className="w-8/12 pt-10" labelCol={{ span: 6 }} labelAlign="left" form={form}>
             <Form.Item
+              className="mx-10"
               name="name"
               label="フルネーム"
               rules={[
@@ -107,6 +107,7 @@ const EditMember = ({ data }) => {
               />
             </Form.Item>
             <Form.Item
+              className="mx-10"
               name="email"
               label="メールアドレス"
               rules={[
@@ -138,6 +139,7 @@ const EditMember = ({ data }) => {
             </Modal>
 
             <Form.Item
+              className="mx-10"
               name="categories"
               label="カテゴリ"
               rules={[
@@ -151,14 +153,14 @@ const EditMember = ({ data }) => {
               </Select>
             </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 17 }}>
-              <div className="flex justify-between">
+            <Form.Item>
+              <div className="w-full flex justify-end">
                 <Popconfirm
                   title="変更は保存されていません。続行してもよろしいですか？"
                   onConfirm={handleClick}
                   onCancel={handleCancel}
-                  okText="OK"
-                  cancelText="キャンセル"
+                  okText="はい"
+                  cancelText="いいえ"
                 >
                   <Button
                     size="large"
@@ -172,7 +174,7 @@ const EditMember = ({ data }) => {
                 </Popconfirm>
                 <Button
                   size="large"
-                  className="text-base px-10"
+                  className="text-base px-10 ml-4 mr-10"
                   type="primary"
                   htmlType="submit"
                   enabled="true"

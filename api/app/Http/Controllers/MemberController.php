@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class MemberController extends Controller
 {
@@ -27,8 +28,9 @@ class MemberController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|min:10|max:50',
+            'name' => 'required|min:3|max:30',
             'email' => 'required|min:10|max:50',
+            'email' => Rule::unique('users')->ignore($id)->where('email', request('email')),
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
