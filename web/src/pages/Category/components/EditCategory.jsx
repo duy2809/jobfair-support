@@ -1,18 +1,45 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
-import { EditTwoTone } from '@ant-design/icons'
-import { Modal } from 'antd'
+import { Modal, Form, notification } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
+import { updateCategory, getCategories } from '../../../api/category'
 
-function PrjEdit(props) {
+const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+
+const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [category, setCategory] = useState({ // khoi tao  input name
-    id: '',
-    name: '',
-  })
-  // edit
-  const onEdit = () => {
-    props.onEdit(props.data.id)
+  const [nameInput, setNameInput] = useState('')
+  const [checkSpace, setcheckSpace] = useState(false)
+  const [form] = Form.useForm()
+  const specialCharRegex = new RegExp('[ 　]')
+
+  useEffect(async () => {
+    const id = props.record.id
+    getCategories().then((res) => {
+      setNameInput(res.data.name)
+
+      form.setFieldsValue({
+        name: res.data.name,
+      })
+    })
+  }, [])
+
+  const openNotificationSuccess = () => {
+    notification.success({
+      message: '変更は正常に保存されました。',
+    })
+    window.location.reload()
+  }
+
+  const onValueNameChange = (e) => {
+    setcheckSpace(false)
+    setNameInput(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
   }
 
   const showModal = () => {
@@ -21,41 +48,29 @@ function PrjEdit(props) {
 
   const handleOk = () => {
     setIsModalVisible(false)
-    onEdit()
-    onEditSubmit()
+    const id = props.record.id
+    console.log(id)
+    updateCategory(id, {
+      category_name: nameInput,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+          notification.error({
+            message: 'このカテゴリー名は存在しています',
+          })
+        }
+      })
+    console.log(nameInput)
+    // window.location.reload();
   }
 
   const handleCancel = () => {
     setIsModalVisible(false)
   }
 
-  function onChange(event) {
-    const target = event.target
-    const name = target.name
-    const value = target.value
-    setCategory({
-      [name]: value,
-    })
-  }
-
-  function onEditSubmit() {
-    props.onEditSubmit(category)
-  }
-
-  useEffect(() => {
-    if (props.cateEdit) {
-      setCategory({
-        id: props.cateEdit.id,
-        name: props.cateEdit.name,
-      })
-    }
-  }, [])
-
   return (
     <>
-      <EditTwoTone className="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" onClick={showModal}>
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-      </EditTwoTone>
+      <EditOutlined onClick={showModal} />
       <Modal
         title="編集カテゴリ"
         visible={isModalVisible}
@@ -64,17 +79,42 @@ function PrjEdit(props) {
         okText="保存"
         cancelText="キャンセル"
       >
-        <input
-          type="text"
-          required="required"
-          placeholder="Edit category"
-          className="input-category"
-          onChange={onChange}
-          value={category.name}
-        />
+        <Form>
+          <Form.Item
+            label={
+              <p style={{ color: '#2d334a', fontSize: '14px' }}>カテゴリー名</p>
+            }
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'この項目は必須です。',
+              },
+              () => ({
+                validator(_, value) {
+                  if (specialCharRegex.test(value)) {
+                    setcheckSpace(true)
+                    return Promise.reject(new Error('カテゴリー名はスペースが含まれていません。'))
+                  }
+
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
+            <input
+              type="text"
+              required="required"
+              className="input-category"
+              onChange={onValueNameChange}
+              placeholder="input category"
+              message="この項目は必須です"
+            />
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   )
 }
 
-export default PrjEdit
+export default EditCategory

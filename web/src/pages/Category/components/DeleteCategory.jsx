@@ -1,14 +1,16 @@
-/* eslint-disable no-console */
 /* eslint-disable react/prop-types */
+/* eslint-disable no-console */
 /* eslint-disable react/react-in-jsx-scope */
 import { Modal, Space } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons'
+
 import { deleteCategory } from '../../../api/category'
 
 const { confirm } = Modal
 
-const DeleteCategory = () => {
-  function showDeleteConfirm(id) {
+const DeleteCategory = (props) => {
+  const onDelete = () => props.record.id
+  function showDeleteConfirm() {
     confirm({
       title: '削除カテゴリ',
       icon: <ExclamationCircleOutlined />,
@@ -18,7 +20,7 @@ const DeleteCategory = () => {
       cancelText: 'キャンセル',
       onOk() {
         console.log('OK')
-        deleteCategory(id)
+        deleteCategory(onDelete())
         window.location.reload()
       },
       onCancel() {
@@ -30,16 +32,7 @@ const DeleteCategory = () => {
   return (
     <div>
       <Space>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 cursor-pointer"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          onClick={showDeleteConfirm}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-        </svg>
+        <DeleteOutlined onClick={showDeleteConfirm} />
       </Space>
     </div>
   )

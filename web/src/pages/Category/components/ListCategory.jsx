@@ -1,190 +1,140 @@
-import React, { PureComponent } from 'react'
-import axios from 'axios'
-import ReactPaginate from 'react-paginate'
+/* eslint-disable no-shadow */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-console */
+import React, { useContext, useEffect, useState } from 'react'
+import 'antd/dist/antd.css'
 import '../style.scss'
-import EditCategory from './EditCategory'
+
+import { Input, Space, Table, Pagination, Select } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 import AddCategory from './AddCategory'
+import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
+import { getCategories, searchCategory } from '../../../api/category'
 
-export class List extends PureComponent {
-  constructor(props) {
-    super(props)
+export default function ListCategories() {
+  const [pageS, setPageS] = useState(10)
+  // const [sdata, setSdata] = useState([])
+  const [isAll, setIsAll] = useState(false)
+  const [category, setCategory] = useState([])
+  const { Search } = Input
+  const [searchValue, setSearchValue] = useState('')
 
-    this.state = {
-      offset: 0,
-      tableData: [],
-      orgtableData: [],
-      perPage: 10,
-      currentPage: 0,
-      cateEdit: null,
-    }
-    this.handlePageClick = this.handlePageClick.bind(this)
-    this.onSubmit = this.onSubmit.bind(this)
-    // this.onEditSubmit = this.onEditSubmit.bind(this);
-  }
-
-   // add
-   onSubmit = (data) => {
-     const { orgtableData } = this.state
-     data.id = orgtableData.length + 1
-     orgtableData.push(data)
-     this.setState({
-       orgtableData,
-     })
-   }
-
-  // edit
-  findIndex = (id) => {
-    const { orgtableData } = this.state
-    let result = -1
-    orgtableData.forEach((data, index) => {
-      if (data.id === id) {
-        result = index
-      }
-    })
-    return result
-  }
-
-  onEdit = (id) => {
-    const { orgtableData } = this.state
-    const index = this.findIndex(id)
-    const cateEdit = orgtableData[index]
-    this.setState({
-      cateEdit,
-    })
-  }
-
-  onEditSubmit = (data) => {
-    const { orgtableData } = this.state
-    const index = this.findIndex(data.id)
-    orgtableData[index] = data
-  }
-
-  // delete
-  onDelete = (id) => {
-    const deletedTable = this.state.orgtableData.filter((item) => item.id !== id)
-    this.setState({
-      orgtableData: deletedTable,
-    })
-  }
-
-  handlePageClick = (e) => {
-    const selectedPage = e.selected
-    const offset = selectedPage * this.state.perPage
-
-    this.setState({
-      currentPage: selectedPage,
-      offset,
-    }, () => {
-      this.loadMoreData()
-    })
-  };
-
-  loadMoreData() {
-    const data = this.state.orgtableData
-
-    const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-    this.setState({
-      pageCount: Math.ceil(data.length / this.state.perPage),
-      tableData: slice,
-    })
-  }
-
-  componentDidMount() {
-    this.getData()
-  }
-
-  getData() {
-    axios
-      .get('https://jsonplaceholder.typicode.com/comments')
-      .then((res) => {
-        const data = res.data
-
-        const slice = data.slice(this.state.offset, this.state.offset + this.state.perPage)
-
-        this.setState({
-          pageCount: Math.ceil(data.length / this.state.perPage),
-          orgtableData: res.data,
-          tableData: slice,
-        })
+  // fetch data
+  useEffect(async () => {
+    setIsAll(false)
+    getCategories().then((res) => {
+      setCategory(res.data)
+      // console.log(res.data)
+      // console.log(category)
+    }).catch((error) => console.log(error.response.request.response))
+  }, [isAll])
+  // search data with key
+  async function search(key) {
+    if (key) {
+      searchCategory(key).then((res) => {
+        const result = Object.values(res.data)
+        setCategory(result)
+        console.log('res:', result)
+        console.log(res)
       })
+    } else {
+      setIsAll(true)
+    }
+    setSearchValue(key)
   }
 
-  render() {
-    const { cateEdit } = this.state
-
-    return (
-      <div>
-        <div className="flex pt-8 pl-16">
-          <label className="text-xl">表示件数: </label>
-                  &nbsp;
-          <select classNamee="selectBox ">
-            <option value="10">10</option>
-            <option value="10">25</option>
-            <option value="10">50</option>
-          </select>
-        </div>
-        <div>
-          <table className="shadow-lg bg-white table">
-            <thead>
-              <tr>
-                <th className="bg-blue-100 border text-left px-8 py-4">No</th>
-                <th className="bg-blue-100 border text-left px-8 py-4 t-title">カテゴリー</th>
-                <th className="bg-blue-100 border text-left px-8 py-4 w-40">アクション</th>
-              </tr>
-            </thead>
-            <tbody>
-              {
-                this.state.tableData.map((data, index) => (
-                  <tr
-                    key={data.id}
-                    index={index}
-                  >
-                    <td className="border px-8 py-4">{data.id}</td>
-                    <td className="border px-8 py-4 t-title">{data.name}</td>
-                    <td className="border px-8 py-4 w-40 flex">
-                      <EditCategory
-                        data={data}
-                        cateEdit={cateEdit}
-                        onEdit={this.onEdit}
-                        onEditSubmit={this.onEditSubmit}
-                      />
-                                          &nbsp;
-                      <DeleteCategory
-                        data={data}
-                        onDelete={this.onDelete}
-                      />
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <div>
-          <AddCategory
-            onSubmit={this.onSubmit}
+  // table columns
+  const columns = [
+    {
+      title: 'No',
+      dataIndex: 'id',
+      width: '5%',
+    },
+    {
+      key: '2',
+      title: 'カテゴリー名',
+      dataIndex: 'category_name',
+      width: '60%',
+      sorter: (record1, record2) => record1.category_name > record2.category_name,
+    },
+    {
+      key: '3',
+      title: 'アクション',
+      width: '25%',
+      render: (record) => (
+        <Space size="middle">
+          <EditCategory
+            record={record}
           />
-        </div>
+          <DeleteCategory
+            record={record}
+          />
+        </Space>
+      ),
+    },
+  ]
 
-        <ReactPaginate
-          previousLabel="<"
-          nextLabel=">"
-          breakLabel="..."
-          breakClassName="break-me"
-          pageCount={this.state.pageCount}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={this.handlePageClick}
-          containerClassName="pagination"
-          subContainerClassName="pages pagination"
-          activeClassName="active"
-        />
+  // const data = []
+  // for (let i = 0; i < sdata.length; i += 1) {
+  //   data.push({
+  //     key: i,
+  //     id: sdata[i].id,
+  //     title: sdata[i].title,
+  //   })
+  // }
 
-      </div>
-    )
+  function setPageSize(selectObject) {
+    setPageS(selectObject.value)
   }
-}
 
-export default List
+  return (
+    <div>
+      <div className="flex relative">
+        <h1 className="p-8 font-bold text-4xl">カテゴリー覧</h1>
+        <div className="add">
+          <AddCategory />
+        </div>
+      </div>
+
+      <div className="list">
+        <div className="flex pl-8 text-xl list-ht">
+          <p>表示件数: </p>
+          &nbsp;
+          <p>
+            <Select
+              labelInValue
+              defaultValue={{ value: '10' }}
+              style={{ width: 60, borderRadius: '1rem' }}
+              onChange={(e) => setPageS(e.value)}
+            >
+              <Select.Option value="10">10</Select.Option>
+              <Select.Option value="25">25</Select.Option>
+              <Select.Option value="50">50</Select.Option>
+            </Select>
+          </p>
+          <p>
+            <div className="absolute right-12">
+              <Space direction="vertical" className="pl-12">
+                <Input
+                  placeholder="カテゴリを検索"
+                  onChange={(e) => search(e.target.value)}
+                  style={{ width: 250, height: 40 }}
+                  value={searchValue}
+                  // onPressEnter={(e) => search(searchValue)}
+                  prefix={<SearchOutlined />}
+                />
+              </Space>
+            </div>
+          </p>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={category}
+          pagination={{ pageSize: pageS }}
+          scroll={{ y: 510 }}
+        />
+      </div>
+    </div>
+  )
+}

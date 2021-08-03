@@ -11,15 +11,14 @@ const PrjAdd = (props) => {
   const [category, setCategory] = useState({ // khoi tao  input name
     name: '',
   })
-
   const showModal = () => {
     setIsModalVisible(true)
   }
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
-
     })
+    window.location.reload()
   }
 
   const handleOk = () => {
@@ -27,14 +26,10 @@ const PrjAdd = (props) => {
       category_name: category.name,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
-          notification.error({
-            message: '名は存在しています',
-          })
-        }
+        notification.error({
+          message: '名は存在しています',
+        })
       })
-    setIsModalVisible(false)
-    window.location.reload()
   }
 
   // add
