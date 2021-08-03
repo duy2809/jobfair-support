@@ -99,12 +99,6 @@ export default function JFList() {
       dataIndex: '管理者',
       width: 100,
     },
-    {
-      title: '',
-      dataIndex: 'action',
-      fixed: 'right',
-      width: 50,
-    },
   ]
 
   // data of table get from database
