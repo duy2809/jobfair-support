@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class MemberController extends Controller
 {
@@ -27,12 +27,19 @@ class MemberController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|regex:/^[^\s]*$/',
-            'email' => Rule::unique('users'),
+            'name' => 'required|min:10|max:50',
+            'email' => 'required|min:10|max:50',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
 
-        return User::find($id)->update($request->all());
+        $user = User::findOrFail($id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->categories()->sync($request->get('categories'));
+
+        return $user->save();
     }
 }

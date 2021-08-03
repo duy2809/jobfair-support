@@ -15,14 +15,13 @@ const EditMember = ({ data }) => {
   const router = useRouter()
   const [categories, setCategories] = useState(data.categories)
   const [categoriesSystem, setCategoriesSystem] = useState([])
+  const [reqCategories, setReqCategories] = useState([])
 
   const { id } = router.query
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
   }
-
-  console.log(data.user.categories)
 
   const onValueEmailChange = (e) => {
     setEmailInput(e.target.value)
@@ -47,7 +46,7 @@ const EditMember = ({ data }) => {
     MemberApi.updateMember(id, {
       name: nameInput,
       email: emailInput,
-      categories,
+      categories: reqCategories,
     }).then(() => {
       openNotificationSuccess()
       router.push(`/member/${data.user.id}`)
@@ -75,6 +74,8 @@ const EditMember = ({ data }) => {
 
   const handleChangeSelect = (value) => {
     setCategories(value)
+    const result = value.map((item) => categoriesSystem.indexOf(item) + 1)
+    setReqCategories(result)
   }
 
   useEffect(() => {
