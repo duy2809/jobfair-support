@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
-import { updateMilestone, getMilestone } from '../../../../api/milestone'
+import { updateMilestone, getMilestone, getNameExitEdit } from '../../../../api/milestone'
 import './styles.scss'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
@@ -15,6 +15,7 @@ const EditMilestonePage = () => {
   const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
+  const [errorUnique, setErrorUnique] = useState(false)
 
   // fetch data
   useEffect(async () => {
@@ -50,6 +51,7 @@ const EditMilestonePage = () => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
+    
   }
   const onValueTimeChange = (e) => {
     setcheckSpace(false)
@@ -60,7 +62,10 @@ const EditMilestonePage = () => {
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false) {
+      
+      setIsModalVisible(true)
+    }
   }
 
   const handleOk = () => {
@@ -79,6 +84,24 @@ const EditMilestonePage = () => {
           })
         }
       })
+  }
+  const onBlur = () => {
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    const name = nameInput
+    getNameExitEdit(id,name).then((res) => 
+      {
+      if(res.data.length !== 0){
+        form.setFields([
+          {
+            name: 'name',
+            errors: ['このマイルストーン名は存在しています。'],
+          },
+       ]);
+       }
+      }
+    )
+     
   }
 
   const handleCancel = () => {
@@ -119,11 +142,9 @@ const EditMilestonePage = () => {
               className="space-y-12 w-1/2 justify-items-center"
             >
               <Form.Item
-                // label="マイルストーン名"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
                 }
-                // className="text-4xl justify-between"
                 name="name"
                 rules={[
                   {
@@ -136,9 +157,10 @@ const EditMilestonePage = () => {
                         setcheckSpace(true)
                         return Promise.reject(new Error('マイルストーン名はスペースが含まれていません。'))
                       }
-
+                    
                       return Promise.resolve()
                     },
+                  
                   }),
                 ]}
               >
@@ -146,12 +168,12 @@ const EditMilestonePage = () => {
                   type="text"
                   size="large"
                   onChange={onValueNameChange}
+                  onBlur={onBlur}
                   placeholder="マイルストーン名"
                 />
               </Form.Item>
 
               <Form.Item
-                // label="期日"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
@@ -187,11 +209,7 @@ const EditMilestonePage = () => {
                   className="inputNumber"
                   type="text"
                   size="large"
-                  // onKeyPress={onNumberOnlyChange}
-                  // min='0'
-                  // onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
-                  //   defaultValue="3"
                   onChange={onValueTimeChange}
                 />
 
@@ -214,8 +232,6 @@ const EditMilestonePage = () => {
                 <div className="flex  my-10 ">
                   <CancelEditMilestone />
 
-                  {/* && timeInput <=5 */}
-                  {(nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false) ? (
                     <Button
                       type="primary"
                       htmlType="submit"
@@ -224,16 +240,7 @@ const EditMilestonePage = () => {
                     >
                       保存
                     </Button>
-                  ) : (
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base px-10 "
-                      disabled
-                    >
-                      保存
-                    </Button>
-                  )}
+
                 </div>
               </Form.Item>
             </Form>

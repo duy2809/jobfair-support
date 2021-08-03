@@ -8,7 +8,7 @@ import {
   notification,
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
-import { addMilestone } from '../../../api/milestone'
+import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm()
@@ -56,6 +56,22 @@ export default function AddMilestonePage() {
           })
         }
       })
+  }
+  const onBlur = () => {
+    const name = nameInput
+    getNameExitAdd(name).then((res) => 
+      {
+      if(res.data.length !== 0){
+        form.setFields([
+          {
+            name: 'name',
+            errors: ['このマイルストーン名は存在しています。'],
+          },
+       ]);
+       }
+      }
+    )
+     
   }
 
   const onValueNameChange = (e) => {
@@ -157,6 +173,7 @@ export default function AddMilestonePage() {
               >
                 <Input
                   className="w-full"
+                  onBlur={onBlur}
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
                 />
