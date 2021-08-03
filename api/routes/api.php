@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
+// use App\Http\Controllers\TemplateMilestoneController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,8 +25,10 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-Route::resource('/milestone', MilestoneController::class);
+Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
+Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
+Route::resource('/profile', ProfileController::class);

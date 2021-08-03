@@ -1,17 +1,24 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Select, Modal, notification } from "antd";
-import OtherLayout from "../../../layouts/OtherLayout";
-import { addMilestone } from "../../../api/milestone";
+import React, { useState } from 'react'
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Modal,
+  notification,
+} from 'antd'
+import OtherLayout from '../../../layouts/OtherLayout'
+import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm();
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] =
-    useState(false);
-  const [typePeriodInput, setTypePeriodInput] = useState(0);
-  const [nameInput, setNameInput] = useState("");
-  const [timeInput, setTimeInput] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false)
+  const [typePeriodInput, setTypePeriodInput] = useState(0)
+  const [nameInput, setNameInput] = useState('')
+  const [timeInput, setTimeInput] = useState('')
+  const [errorUnique, setErrorUnique] = useState(false)
 
   const { Option } = Select;
 
@@ -32,14 +39,29 @@ export default function AddMilestonePage() {
 
   const showModal = () => {
     if (
-      !(form.isFieldTouched("name") && form.isFieldTouched("time")) ||
-      !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      !(form.isFieldTouched('name') && form.isFieldTouched('time'))
+      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      || errorUnique === true
     ) {
-      setIsModalVisible(false);
-    }else{
-      setIsModalVisible(true);
+      setIsModalVisible(false)
+      const name = nameInput
+      if (name !== '') {
+        getNameExitAdd(name).then((res) => {
+          if (res.data.length !== 0) {
+            setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
+    } else {
+      setIsModalVisible(true)
     }
-  };
+  }
 
   const handleOk = () => {
     form.submit();
@@ -59,8 +81,24 @@ export default function AddMilestonePage() {
             message: "このマイルストーン名は存在しています",
           });
         }
-      });
-  };
+      })
+  }
+  const onBlur = () => {
+    const name = nameInput
+    if (name !== '') {
+      getNameExitAdd(name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+          ])
+        }
+      })
+    }
+  }
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value);
@@ -164,12 +202,13 @@ export default function AddMilestonePage() {
               >
                 <Input
                   className="w-full"
+                  onBlur={onBlur}
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
                 />
               </Form.Item>
               <Form.Item
-                className="pb-4"
+                className="pb-5"
                 label={
                   <p style={{ color: "#2d334a", fontSize: "18px" }}>期日</p>
                 }
@@ -200,7 +239,6 @@ export default function AddMilestonePage() {
                 <div className="col-span-7 justify-self-end">
                   <Form.Item>
                     <Button
-                      htmlType="button"
                       onClick={showModalOfBtnCancel}
                       className="w-32"
                     >
@@ -216,7 +254,7 @@ export default function AddMilestonePage() {
                       onClick={showModal}
                       htmlType="submit"
                     >
-                       登録
+                      登録
                     </Button>
                   </Form.Item>
                 </div>
