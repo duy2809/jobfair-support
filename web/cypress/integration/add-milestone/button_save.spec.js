@@ -44,15 +44,6 @@ describe('Check button save', () => {
         .then((sometext) => { expect(sometext).to.equal(arr[2]) })
     })
   
-    it('check click save and click yes when milestone name is duplicate', () => {
-      cy.get('#addMilestone_name').type('Mr._Abelardo_Botsford') // replace input name with a name that duplicate in database
-      cy.get('#addMilestone_time').type('2')
-      cy.get('[type="button"]').contains('登 録').click()
-      cy.get('.ant-modal-content').find('.ant-btn').last().click()
-      cy.wait(100)
-      cy.get('.ant-notification-notice-message').should('be.visible').should('contain', 'このマイルストーン名は存在しています')
-    })
-  
     it('check click save and click yes when milestone name is available', () => {
       cy.get('#addMilestone_name').type('ab') // replace with a input name that available in your database
       cy.get('#addMilestone_time').type('2')

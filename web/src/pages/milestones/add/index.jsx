@@ -18,6 +18,7 @@ export default function AddMilestonePage() {
   const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
+  const [errorUnique, setErrorUnique] = useState(false)
 
   const { Option } = Select
 
@@ -35,12 +36,27 @@ export default function AddMilestonePage() {
 
   const showModal = () => {
     if (
-      !(form.isFieldTouched("name") && form.isFieldTouched("time")) ||
-      !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      !(form.isFieldTouched('name') && form.isFieldTouched('time'))
+      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      || errorUnique === true
     ) {
-      setIsModalVisible(false);
-    }else{
-      setIsModalVisible(true);
+      setIsModalVisible(false)
+      const name = nameInput
+      if (name !== '') {
+        getNameExitAdd(name).then((res) => {
+          if (res.data.length !== 0) {
+            setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
+    } else {
+      setIsModalVisible(true)
     }
   }
 
@@ -66,22 +82,19 @@ export default function AddMilestonePage() {
   }
   const onBlur = () => {
     const name = nameInput
-    if(name !== ''){
-      getNameExitAdd(name).then((res) => 
-        {
-        if(res.data.length !== 0){
+    if (name !== '') {
+      getNameExitAdd(name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
           form.setFields([
             {
               name: 'name',
               errors: ['このマイルストーン名は存在しています。'],
             },
-         ]);
-         }
+          ])
         }
-      )
-
+      })
     }
-     
   }
 
   const onValueNameChange = (e) => {
@@ -228,14 +241,14 @@ export default function AddMilestonePage() {
                   </Form.Item>
                 </div>
                 <div>
-                <Form.Item>
+                  <Form.Item>
                     <Button
                       type="primary"
                       className="w-32"
                       onClick={showModal}
                       htmlType="submit"
                     >
-                       登録
+                      登録
                     </Button>
                   </Form.Item>
                 </div>

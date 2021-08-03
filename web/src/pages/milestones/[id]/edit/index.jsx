@@ -51,7 +51,6 @@ const EditMilestonePage = () => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
-    
   }
   const onValueTimeChange = (e) => {
     setcheckSpace(false)
@@ -62,9 +61,25 @@ const EditMilestonePage = () => {
   }
 
   const showModal = () => {
-    if (nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false) {
-      
+    if (nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false && errorUnique === false) {
       setIsModalVisible(true)
+    } else {
+      const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+      const id = `${temp[1]}`
+      const name = nameInput
+      if (name !== '') {
+        getNameExitEdit(id, name).then((res) => {
+          if (res.data.length !== 0) {
+            setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
     }
   }
 
@@ -89,22 +104,19 @@ const EditMilestonePage = () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     const name = nameInput
-    if(name !== ''){
-      getNameExitEdit(id,name).then((res) => 
-        {
-        if(res.data.length !== 0){
+    if (name !== '') {
+      getNameExitEdit(id, name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
           form.setFields([
             {
               name: 'name',
               errors: ['このマイルストーン名は存在しています。'],
             },
-         ]);
-         }
+          ])
         }
-      )
-
+      })
     }
-     
   }
 
   const handleCancel = () => {
@@ -161,10 +173,10 @@ const EditMilestonePage = () => {
                         setcheckSpace(true)
                         return Promise.reject(new Error('マイルストーン名はスペースが含まれていません。'))
                       }
-                    
+
                       return Promise.resolve()
                     },
-                  
+
                   }),
                 ]}
               >

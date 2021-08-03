@@ -18,7 +18,6 @@ class MilestoneController extends Controller
     {
         return Milestone::all();
     }
-    
 
     /**
      * Store a newly created resource in storage.

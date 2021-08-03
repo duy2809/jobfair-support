@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -37,8 +35,6 @@ class ProfileController extends Controller
 
         return User::find($id);
     }
-
-    
 
     /**
      * Remove the specified resource from storage.
