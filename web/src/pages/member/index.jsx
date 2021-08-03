@@ -108,7 +108,22 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-full py-10 title">メンバ一覧</div>
+          <div className="text-5xl w-full flex justify-between items-center title">
+            <div>メンバ一覧</div>
+            <div>
+              { role === 'admin' ? (
+                <Button
+                  type="primary"
+                  className="ml-5"
+                  htmlType="button"
+                  enabled
+                  onClick={handleClick}
+                >
+                  メンバー招待
+                </Button>
+              ) : ''}
+            </div>
+          </div>
           <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
@@ -121,17 +136,6 @@ export default function MemberList() {
             <div>
               <div className="text-2xl flex items-center">
                 <Input placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
-                { role === 'admin' ? (
-                  <Button
-                    type="primary"
-                    className="ml-5"
-                    htmlType="button"
-                    enabled
-                    onClick={handleClick}
-                  >
-                    メンバー招待
-                  </Button>
-                ) : ''}
               </div>
             </div>
           </div>
