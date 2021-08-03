@@ -34,7 +34,14 @@ export default function AddMilestonePage() {
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (
+      !(form.isFieldTouched("name") && form.isFieldTouched("time")) ||
+      !!form.getFieldsError().filter(({ errors }) => errors.length).length
+    ) {
+      setIsModalVisible(false);
+    }else{
+      setIsModalVisible(true);
+    }
   }
 
   const handleOk = () => {
@@ -59,18 +66,21 @@ export default function AddMilestonePage() {
   }
   const onBlur = () => {
     const name = nameInput
-    getNameExitAdd(name).then((res) => 
-      {
-      if(res.data.length !== 0){
-        form.setFields([
-          {
-            name: 'name',
-            errors: ['このマイルストーン名は存在しています。'],
-          },
-       ]);
-       }
-      }
-    )
+    if(name !== ''){
+      getNameExitAdd(name).then((res) => 
+        {
+        if(res.data.length !== 0){
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+         ]);
+         }
+        }
+      )
+
+    }
      
   }
 
@@ -129,7 +139,7 @@ export default function AddMilestonePage() {
         <OtherLayout.Main>
           <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン追加</p>
 
-          <div className="pt-20">
+          <div className="pt-10">
             <Form
               form={form}
               name="addMilestone"
@@ -179,7 +189,7 @@ export default function AddMilestonePage() {
                 />
               </Form.Item>
               <Form.Item
-                className="pb-4"
+                className="pb-5"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
@@ -210,7 +220,6 @@ export default function AddMilestonePage() {
                 <div className="col-span-7 justify-self-end">
                   <Form.Item>
                     <Button
-                      type="primary"
                       onClick={showModalOfBtnCancel}
                       className="w-32"
                     >
@@ -219,25 +228,15 @@ export default function AddMilestonePage() {
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item shouldUpdate>
-                    {() => (
-                      <Button
-                        type="primary"
-                        className="w-32"
-                        disabled={
-                          !(
-                            form.isFieldTouched('name')
-                              && form.isFieldTouched('time')
-                          )
-                            || !!form
-                              .getFieldsError()
-                              .filter(({ errors }) => errors.length).length
-                        }
-                        onClick={showModal}
-                      >
-                           登録
-                      </Button>
-                    )}
+                <Form.Item>
+                    <Button
+                      type="primary"
+                      className="w-32"
+                      onClick={showModal}
+                      htmlType="submit"
+                    >
+                       登録
+                    </Button>
                   </Form.Item>
                 </div>
               </div>

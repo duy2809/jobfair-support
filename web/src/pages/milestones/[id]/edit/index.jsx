@@ -89,18 +89,21 @@ const EditMilestonePage = () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     const name = nameInput
-    getNameExitEdit(id,name).then((res) => 
-      {
-      if(res.data.length !== 0){
-        form.setFields([
-          {
-            name: 'name',
-            errors: ['このマイルストーン名は存在しています。'],
-          },
-       ]);
-       }
-      }
-    )
+    if(name !== ''){
+      getNameExitEdit(id,name).then((res) => 
+        {
+        if(res.data.length !== 0){
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+         ]);
+         }
+        }
+      )
+
+    }
      
   }
 
@@ -140,6 +143,7 @@ const EditMilestonePage = () => {
                 span: 12,
               }}
               className="space-y-12 w-1/2 justify-items-center"
+              size="large"
             >
               <Form.Item
                 label={
@@ -226,29 +230,30 @@ const EditMilestonePage = () => {
                 <p className="mb-5">このまま保存してもよろしいですか？ </p>
               </Modal>
 
-              <Form.Item
-                className=" justify-end "
-              >
-                <div className="flex  my-10 ">
-                  <CancelEditMilestone />
-
+              <div className="grid grid-cols-12 grid-rows-1 gap-x-5">
+                <div className="col-span-8 justify-self-end">
+                  <Form.Item>
+                    <CancelEditMilestone />
+                  </Form.Item>
+                </div>
+                <div>
+                  <Form.Item>
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-10 "
                       onClick={showModal}
+                      className="w-32"
                     >
                       保存
                     </Button>
-
+                  </Form.Item>
                 </div>
-              </Form.Item>
+              </div>
             </Form>
           </div>
         </OtherLayout.Main>
       </OtherLayout>
     </div>
-
   )
 }
 
