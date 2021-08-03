@@ -96,8 +96,8 @@ export default function ScheduleList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="flex w-full pb-10 justify-between">
-            <div className="text-4xl title">JFスケジュール一覧</div>
+          <div className="flex w-full justify-between">
+            <div className="text-4xl pb-10 title">JFスケジュール一覧</div>
             <div>
               { role === 'super admin' ? (
                 <Button
