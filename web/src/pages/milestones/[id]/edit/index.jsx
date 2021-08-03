@@ -241,7 +241,6 @@ const EditMilestonePage = () => {
               >
                 <p className="mb-5">このまま保存してもよろしいですか？ </p>
               </Modal>
-
               <div className="grid grid-cols-12 grid-rows-1 gap-x-5">
                 <div className="col-span-8 justify-self-end">
                   <Form.Item>

@@ -171,7 +171,7 @@ export default function AddMilestonePage() {
               wrapperCol={{ span: 6 }}
             >
               <Form.Item
-                className="pb-4"
+                className="pb-5"
                 label={
                   <p style={{ color: "#2d334a", fontSize: "18px" }}>
                     マイルストーン名
