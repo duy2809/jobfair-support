@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification, Tooltip} from 'antd'
+import { Table, Button, Slider, DatePicker, Input, Empty, Select, Tooltip } from 'antd'
 import './style.scss'
-import { SearchOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import { SearchOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
-import { getJFList, deleteJFList } from '../../api/jf-list'
+import { getJFList } from '../../api/jf-list'
 
 export default function JFList() {
-  const openNotificationSuccess = () => {
-    notification.success({
-      message: '正常に削除されました',
-    })
-  }
-
   // state of table
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
@@ -61,32 +55,6 @@ export default function JFList() {
     setTemperaryData(data)
     setOriginalData(data)
     setDataFilter(data)
-  }
-
-  // columns of tables
-
-  const confirmModle = (key) => {
-    Modal.confirm({
-      title: '削除してもよろしいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      centered: true,
-      onOk: async () => {
-        setLoading(true)
-        try {
-          await deleteJFList(key).then((response) => {
-            addDataOfTable(response)
-            openNotificationSuccess()
-          })
-        } catch (error) {
-          return Error(error.toString())
-        }
-        setLoading(false)
-      },
-      onCancel: () => { },
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
   }
 
   // columns of tables
@@ -147,9 +115,7 @@ export default function JFList() {
     await getJFList().then((response) => {
       addDataOfTable(response)
     })
-      .catch((error) => {
-        console.log(error)
-      })
+      .catch((error) => Error(error.toString()))
     setLoading(false)
   }, [itemCount])
 
