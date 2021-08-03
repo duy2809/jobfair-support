@@ -103,6 +103,7 @@ const index = () => {
       routeTo('/jobfairs')
     } else {
       Modal.confirm({
+
         title: '入力内容が保存されません。よろしいですか？',
         icon: <ExclamationCircleOutlined />,
         content: '',
