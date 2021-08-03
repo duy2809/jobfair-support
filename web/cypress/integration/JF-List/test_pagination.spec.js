@@ -23,11 +23,11 @@ describe('Test pagination', () => {
         if (arr[randIndex] <= jflist.length) {
             cy.get('@' + arr[randIndex]).click()
             cy.get('[rel="nofollow"]').should('have.length', LengthPagination(arr[randIndex]))
-            cy.get('.anticon-delete').should('have.length', arr[randIndex])
+            cy.get('.ant-table-row').should('have.length', arr[randIndex])
         } else {
             cy.get('@' + arr[randIndex]).click()
             cy.get('[rel="nofollow"]').should('have.length', LengthPagination(arr[randIndex]))
-            cy.get('.anticon-delete').should('have.length', jflist.length)
+            cy.get('.ant-table-row ').should('have.length', jflist.length)
         }
     })
     it('check pagination when data is empty', () => {

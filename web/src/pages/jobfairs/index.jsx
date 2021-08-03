@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification } from 'antd'
+import { Table, Button, Slider, DatePicker, Input, Empty, Space, Modal, Select, notification, Tooltip} from 'antd'
 import './style.scss'
 import { SearchOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -14,7 +14,7 @@ export default function JFList() {
 
   // state of table
   const [itemCount, setItemCount] = useState(10)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], showSizeChanger: false, pageSize: 10 })
+  const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
@@ -63,7 +63,7 @@ export default function JFList() {
     setDataFilter(data)
   }
 
-  // Modal of delete record
+  // columns of tables
 
   const confirmModle = (key) => {
     Modal.confirm({
@@ -79,7 +79,7 @@ export default function JFList() {
             openNotificationSuccess()
           })
         } catch (error) {
-          console.log(error)
+          return Error(error.toString())
         }
         setLoading(false)
       },
@@ -95,7 +95,7 @@ export default function JFList() {
     {
       title: 'No.',
       dataIndex: 'id',
-      key: 'No.',
+      fixed: 'left',
       width: '5%',
       render: (id) => id,
     },
@@ -103,10 +103,11 @@ export default function JFList() {
       title: 'JF名',
       width: 80,
       dataIndex: 'JF名',
-      key: '0',
       fixed: 'left',
-      render: (name, record) => <a href={`/jf-toppage/${record.idJF}`}>{name}</a>,
-      ellipsis: true,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{JF名}</a></Tooltip>,
     },
 
     {
@@ -135,23 +136,7 @@ export default function JFList() {
       dataIndex: 'action',
       fixed: 'right',
       width: 50,
-      render: (text, record) => (
-        <Space size="middle">
-          <a href={`/edit-jf/${record.idJF}`}>
-            <abbr title="編集" style={{ cursor: 'pointer' }}>
-              <EditTwoTone />
-            </abbr>
-          </a>
-          <abbr title="消去" style={{ cursor: 'pointer' }}>
-            <DeleteTwoTone onClick={() => {
-              confirmModle(record.idJF)
-            }}
-            />
-          </abbr>
-        </Space>
-      ),
     },
-
   ]
 
   // data of table get from database
@@ -262,32 +247,34 @@ export default function JFList() {
         <OtherLayout.Main>
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="flex-col space-y-9">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center">
                 <h1 className="text-3xl float-left">JF一覧</h1>
-                <Button
-                  className="float-right"
-                  href="/add-jobfair"
-                  type="primary"
-                >
-                  JF追加
-                </Button>
               </div>
               <div className="space-y-2">
-                <div className="flex space-x-3 items-center">
-                  <p>フィルタ</p>
+                <div className="flex justify-between">
+                  <div className="flex items-center space-x-3">
+                    <p>フィルタ</p>
+                    <Button
+                      onClick={hideFilter}
+                      type="primary"
+                      style={{ display: showFilter ? 'inline' : 'none' }}
+                    >
+                      非表示
+                    </Button>
+                    <Button
+                      onClick={onShowFilter}
+                      type="primary"
+                      style={{ display: showFilter ? 'none' : 'inline' }}
+                    >
+                      表示
+                    </Button>
+                  </div>
                   <Button
-                    onClick={hideFilter}
+                    className="float-right"
+                    href="/add-jobfair"
                     type="primary"
-                    style={{ display: showFilter ? 'inline' : 'none' }}
                   >
-                    非表示
-                  </Button>
-                  <Button
-                    onClick={onShowFilter}
-                    type="primary"
-                    style={{ display: showFilter ? 'none' : 'inline' }}
-                  >
-                    表示
+                    JF追加
                   </Button>
                 </div>
                 <div className="flex space-x-8 items-center">

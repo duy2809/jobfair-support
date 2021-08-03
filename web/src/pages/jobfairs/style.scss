@@ -1,12 +1,27 @@
+.ant-pagination-item:hover, 
+.ant-pagination-item > a:hover, 
+.ant-pagination-item-active > a, 
+.ant-pagination-item-active,
+.ant-pagination-item-link:hover {
+    border-color: #ffd803 !important;
+    color: #ffd803 !important;
+}
+a:hover {
+    color: #ffd803 !important;
+}
  .ant-slider-track{
-      background-color: #272343 !important;
+      background-color: #ffd803 !important;
   }
   .ant-slider-rail {
       background-color: #e3f6f5!important;
   }
   .ant-slider-handle {
-      background-color: #ffd803 !important;
+      background-color: #272343 !important;
   }
   thead[class*="ant-table-thead"] th{
       background-color: #bae8e8 !important;
+  }
+  .ant-tooltip-inner {
+    color:#272343 !important;
+    background-color: #fffffe !important;
   }
