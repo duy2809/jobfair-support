@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
+        $data = DB::table('categories')
+            ->orderBy('id', 'asc')
+            ->get();
         return Category::all();
     }
 

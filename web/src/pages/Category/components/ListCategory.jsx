@@ -15,22 +15,22 @@ import { getCategories, searchCategory } from '../../../api/category'
 export default function ListCategories() {
   const [pageS, setPageS] = useState(10)
   // const [sdata, setSdata] = useState([])
-  const [isAll, setIsAll] = useState(false)
+  const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
   const { Search } = Input
   const [searchValue, setSearchValue] = useState('')
 
   // fetch data
   useEffect(async () => {
-    setIsAll(false)
+    setReload(false)
     getCategories().then((res) => {
       setCategory(res.data)
       // console.log(res.data)
       // console.log(category)
     }).catch((error) => console.log(error.response.request.response))
-  }, [isAll])
+  }, [reload])
   // search data with key
-  async function search(key) {
+  async function fetch(key) {
     if (key) {
       searchCategory(key).then((res) => {
         const result = Object.values(res.data)
@@ -39,7 +39,7 @@ export default function ListCategories() {
         console.log(res)
       })
     } else {
-      setIsAll(true)
+      setReload(true)
     }
     setSearchValue(key)
   }
@@ -119,7 +119,7 @@ export default function ListCategories() {
               <Space direction="vertical" className="pl-12">
                 <Input
                   placeholder="カテゴリを検索"
-                  onChange={(e) => search(e.target.value)}
+                  onChange={(e) => fetch(e.target.value)}
                   style={{ width: 250, height: 40 }}
                   value={searchValue}
                   // onPressEnter={(e) => search(searchValue)}

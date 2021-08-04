@@ -31,6 +31,7 @@ const EditCategory = (props) => {
     notification.success({
       message: '変更は正常に保存されました。',
     })
+    setIsModalVisible(false)
     window.location.reload()
   }
 
@@ -47,21 +48,16 @@ const EditCategory = (props) => {
   }
 
   const handleOk = () => {
-    setIsModalVisible(false)
     const id = props.record.id
     console.log(id)
     updateCategory(id, {
       category_name: nameInput,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
-          notification.error({
-            message: 'このカテゴリー名は存在しています',
-          })
-        }
+        notification.error({
+          message: 'このカテゴリー名は存在しています',
+        })
       })
-    console.log(nameInput)
-    // window.location.reload();
   }
 
   const handleCancel = () => {
