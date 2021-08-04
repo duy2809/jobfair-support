@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/web-init', WebInit::class);
+
 Route::resource('/jobfair', 'JobfairController');
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -45,3 +46,7 @@ Route::prefix('category')->group(function () {
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
 Route::get('/milestone', 'TemplateMilestoneController@getList');
 Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
+
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');

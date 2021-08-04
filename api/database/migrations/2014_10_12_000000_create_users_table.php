@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('number_of_record');
             $table->string('chatwork_id');
             $table->unsignedInteger('phone_number');
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 
