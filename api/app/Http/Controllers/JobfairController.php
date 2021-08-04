@@ -50,8 +50,8 @@ class JobfairController extends Controller
         $id = Schedule::where('jobfair_id', $jobFair->id)->get(['id']);
         $milestones = Milestone::where('schedule_id', $request->schedule_id)->get();
         foreach ($milestones as $milestone) {
-            $new_milestone = Milestone::create($milestone->toArray());
-            $new_milestone->update(['schedule_id' => $id[0]->id]);
+            $newMilestone = Milestone::create($milestone->toArray());
+            $newMilestone->update(['schedule_id' => $id[0]->id]);
             $tasks = Task::where('milestone_id', $milestone->id)->get();
             foreach ($tasks as $task) {
                 Task::create([
@@ -63,7 +63,7 @@ class JobfairController extends Controller
                     'remind_member'         => $task->remind_member,
                     'description_of_detail' => $task->description_of_detail,
                     'relation_task_id'      => $task->relation_task_id,
-                    'milestone_id'          => $new_milestone->id,
+                    'milestone_id'          => $newMilestone->id,
                     'user_id'               => $task->user_id,
                 ]);
             }
