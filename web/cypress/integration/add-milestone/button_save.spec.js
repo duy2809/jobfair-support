@@ -7,7 +7,7 @@ describe('Check button save', () => {
     })
   
     it('check modal when click save button', () => {
-      cy.get('#addMilestone_name').type('abc')
+      cy.get('#addMilestone_name').type('abc2')
       cy.get('#addMilestone_time').type('2')
       cy.get('[type="submit"]').contains('登 録').click()
       cy.get('.ant-modal-content').should('be.visible')
@@ -19,7 +19,7 @@ describe('Check button save', () => {
     })
   
     it('check when click outside modal', () => {
-      cy.get('#addMilestone_name').type('abc')
+      cy.get('#addMilestone_name').type('abc2')
       cy.get('#addMilestone_time').type('2')
       cy.get('[type="submit"]').contains('登 録').click()
       const arr = []
@@ -39,7 +39,7 @@ describe('Check button save', () => {
     })
   
     it('check click save and click yes when milestone name is available', () => {
-      cy.get('#addMilestone_name').type('ab') // replace with a input name that available in your database
+      cy.get('#addMilestone_name').type('abc1') // replace with a input name that available in your database
       cy.get('#addMilestone_time').type('2')
       cy.get('[type="submit"]').contains('登 録').click()
       cy.get('.ant-modal-content').find('.ant-btn').last().click()
@@ -48,7 +48,7 @@ describe('Check button save', () => {
     })
   
     it('check click save and click no', () => {
-      cy.get('#addMilestone_name').type('milestone_name')
+      cy.get('#addMilestone_name').type('milestone')
       cy.get('#addMilestone_time').type('1')
       cy.get('[type="submit"]').contains('登 録').click()
       const arr = []
