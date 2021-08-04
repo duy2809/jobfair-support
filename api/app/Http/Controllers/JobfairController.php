@@ -70,7 +70,7 @@ class JobfairController extends Controller
             }
         }
 
-        return $schedule;
+        return $jobFair;
     }
 
     /**
@@ -122,23 +122,23 @@ class JobfairController extends Controller
         ]);
     }
 
-    // public function getTasks($id)
-    // {
-    //     $tasks = Jobfair::find($id)->schedule()->with([
-    //         'tasks' => function ($query) {
-    //             $query->select(['tasks.name', 'tasks.status', 'tasks.id']);
-    //         },
-    //     ])->get(['id']);
-
-    //     return response()->json([
-    //         'data' => $tasks,
-    //     ]);
-    // }
-
     public function getTasks($id)
     {
-        return Jobfair::find($id)->schedule()->with('tasks')->get();
+        $tasks = Jobfair::find($id)->schedule()->with([
+            'tasks' => function ($query) {
+                $query->select(['tasks.name', 'tasks.status', 'tasks.id']);
+            },
+        ])->get(['id']);
+
+        return response()->json([
+            'data' => $tasks,
+        ]);
     }
+
+    // public function getTasks($id)
+    // {
+    //     return Jobfair::find($id)->schedule()->with('tasks')->get();
+    // }
 
     //  public function updatedTasks($id)
     // {

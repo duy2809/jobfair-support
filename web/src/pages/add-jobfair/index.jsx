@@ -142,8 +142,10 @@ const index = () => {
       const response = await addJFAPI.addJF(data)
 
       if (response.status < 299) {
-        saveNotification()
-        routeTo(`/jf-toppage/${values.schedule_id * 1.0}`)
+        console.log(response)
+        await saveNotification()
+
+        routeTo(`/jf-toppage/${response.data.id}`)
       } else {
         setdisableBtn(false)
       }
