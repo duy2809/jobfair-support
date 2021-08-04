@@ -105,7 +105,7 @@ class TemplateMilestoneController extends Controller
         $s = $request->input('s');
         if ($request->input('s')) {
             $data = DB::table('template_milestones')
-                ->where('name', 'LIKE', '%'+$s+'%')
+                ->where('name', 'LIKE', '%' + $s + '%')
                 ->orderBy('id', 'asc')
                 ->get();
 
