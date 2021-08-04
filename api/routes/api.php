@@ -15,7 +15,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::get('/web-init', WebInit::class);
+
+Route::prefix('member')->group(function () {
+    Route::get('/', 'MemberController@index');
+});
+
 Route::resource('/jobfair', 'JobfairController');
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -32,3 +38,11 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 Route::resource('/profile', ProfileController::class);
+
+Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
+Route::get('/milestone', 'TemplateMilestoneController@getList');
+Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
+
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
