@@ -1,9 +1,17 @@
 describe('cancel test', () => {
+  let admins; let schedules
+
   before(() => {
     cy.visit('http://jobfair.local:8000/add-jobfair')
+    cy.request('GET', 'http://jobfair.local:8000/api/admins').then((response) => {
+      admins = response.body
+    })
+    cy.request('GET', 'http://jobfair.local:8000/api/schedules').then((response) => {
+      schedules = response.body
+    })
   })
 
-  it.only('availble button', () => {
+  it('availble button', () => {
     cy.get('div.ant-space-item:nth-child(1) > button:nth-child(1)').should('not.be.disabled')
     const namefield = cy.get('#name')
     namefield.click()
@@ -15,13 +23,19 @@ describe('cancel test', () => {
     cy.get('#number_of_students').type('10')
     cy.get('div.ant-space-item:nth-child(1) > button:nth-child(1)').should('not.be.disabled')
     cy.get('#jobfair_admin_id').click()
-    cy.get('div.ant-select-item:nth-child(1) > div:nth-child(1)').click()
+    cy.wait(500)
+    cy.contains(admins[0].name).click()
+    cy.wait(500)
     cy.get('#schedule_id').click()
-    cy.get('body > div:nth-child(16) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)').click()
+    cy.contains(schedules[0].name).click()
     cy.get('div.ant-space-item:nth-child(1) > button:nth-child(1)').should('not.be.disabled')
-  })
-  it('empty field', () => {
     cy.get('div.ant-space-item:nth-child(1) > button:nth-child(1)').click()
-    cy.url().should('contain', 'JF-List')
+    cy.get('.ant-modal-content').should('be.visible')
+    cy.get('.ant-modal-confirm-btns > button:nth-child(1)').click()
+    cy.url().should('contain', 'add-jobfair')
+    cy.get('div.ant-space-item:nth-child(1) > button:nth-child(1)').click()
+    cy.get('.ant-modal-content').should('be.visible')
+    cy.get('.ant-modal-confirm-btns > button:nth-child(2)').click()
+    cy.url().should('contain', 'jobfairs')
   })
 })
