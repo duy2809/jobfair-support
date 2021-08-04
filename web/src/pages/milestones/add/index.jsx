@@ -149,7 +149,7 @@ export default function AddMilestonePage() {
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: "36px" }}>
+          <p className="title mb-8" style={{ color: '#2d334a',fontSize: "36px" }}>
             マイルストーン追加
           </p>
 

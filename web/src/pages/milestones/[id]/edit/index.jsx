@@ -142,7 +142,7 @@ const EditMilestonePage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン編集</p>
+          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p>
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
 
             <Form

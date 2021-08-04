@@ -1,14 +1,25 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Otherlayout from "../../../layouts/OtherLayout";
 import { Avatar } from "antd";
 import { UserOutlined, EditFilled } from "@ant-design/icons";
+import {getProfile} from "../../../api/profile";
 
-export default function () {
+export default function Profile () {
 
-  const [avatarUser, setAvatarUser] = useState("/images/logo.png");
-  const [nameUser, setNameUser] = useState("Nguyen Van A");
-  const [chatWorkIdUser, setChatWorkIdUser] = useState(12345);
-  const [emailUser, setEmailUser] = useState("nguyenvana@gmail.com");
+  const [avatarUser, setAvatarUser] = useState('');
+  const [nameUser, setNameUser] = useState('');
+  const [chatWorkIdUser, setChatWorkIdUser] = useState('');
+  const [emailUser, setEmailUser] = useState('');
+  useEffect(async () => {
+    const temp = /[/](\d+)/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    getProfile(id).then((res) => {
+      setAvatarUser(res.data.avatar)
+      setNameUser(res.data.name)
+      setChatWorkIdUser(res.data.chatwork_id)
+      setEmailUser(res.data.email)
+    })
+  }, [])
 
   return (
     <>
