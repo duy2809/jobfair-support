@@ -50,7 +50,6 @@ class JobfairController extends Controller
         $id = Schedule::where('jobfair_id', $jobFair->id)->get(['id']);
         $milestones = Milestone::where('schedule_id', $request->schedule_id)->get();
         foreach ($milestones as $milestone) {
-
             $new_milestone = Milestone::create($milestone->toArray());
             $new_milestone->update(['schedule_id' => $id[0]->id]);
             $tasks = Task::where('milestone_id', $milestone->id)->get();
@@ -163,6 +162,7 @@ class JobfairController extends Controller
             'data' => $tasks,
         ]);
     }
+
     public function checkNameExisted(Request $request)
     {
         return User::where('name', '=', $request->name)->first();
