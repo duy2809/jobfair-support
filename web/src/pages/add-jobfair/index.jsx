@@ -111,6 +111,7 @@ const index = () => {
           routeTo('/jobfairs')
         },
         onCancel: () => {},
+        centered: true,
         okText: 'はい',
         cancelText: 'いいえ',
       })
