@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Form, Input, Button, Popconfirm, notification, Select, Modal } from 'antd'
+import { Form, Input, Button, notification, Select, Modal } from 'antd'
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 import Layout from '../../../../layouts/OtherLayout'
@@ -10,6 +10,7 @@ import { CategoryApi } from '~/api/category'
 const EditMember = ({ data }) => {
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isModalCancelVisible, setIsModalCancelVisible] = useState(false)
   const [emailInput, setEmailInput] = useState(data.user.email)
   const [nameInput, setNameInput] = useState(data.user.name)
   const router = useRouter()
@@ -71,6 +72,14 @@ const EditMember = ({ data }) => {
     setIsModalVisible(true)
   }
 
+  const showCancelModal = () => {
+    setIsModalCancelVisible(true)
+  }
+
+  const handleCancelModal = () => {
+    setIsModalCancelVisible(false)
+  }
+
   const handleChangeSelect = (value) => {
     setCategories(value)
     const result = value.map((item) => categoriesSystem.indexOf(item) + 1)
@@ -86,7 +95,7 @@ const EditMember = ({ data }) => {
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="text-5xl w-10/12 font-bold title">メンバ編集</div>
-          <Form className="w-8/12 pt-10" labelCol={{ span: 6 }} labelAlign="left" form={form}>
+          <Form className="w-8/12 pt-10" labelCol={{ span: 7 }} labelAlign="left" form={form}>
             <Form.Item
               className="mx-10"
               name="name"
@@ -128,7 +137,7 @@ const EditMember = ({ data }) => {
             </Form.Item>
 
             <Modal
-              title="マイルストーン編集"
+              title="メンバ編集"
               visible={isModalVisible}
               onOk={handleOk}
               onCancel={handleCancel}
@@ -155,23 +164,26 @@ const EditMember = ({ data }) => {
 
             <Form.Item>
               <div className="w-full flex justify-end">
-                <Popconfirm
+                <Modal
                   title="変更は保存されていません。続行してもよろしいですか？"
-                  onConfirm={handleClick}
-                  onCancel={handleCancel}
-                  okText="はい"
+                  visible={isModalCancelVisible}
+                  onOk={handleClick}
+                  onCancel={handleCancelModal}
                   cancelText="いいえ"
+                  okText="はい"
                 >
-                  <Button
-                    size="large"
-                    className="text-base"
-                    type="primary"
-                    htmlType="submit"
-                    enabled="true"
-                  >
-                    キャンセル
-                  </Button>
-                </Popconfirm>
+                  <p className="mb-5">このまま保存してもよろしいですか？ </p>
+                </Modal>
+
+                <Button
+                  size="large"
+                  className="text-base"
+                  type="primary"
+                  enabled="true"
+                  onClick={showCancelModal}
+                >
+                  キャンセル
+                </Button>
                 <Button
                   size="large"
                   className="text-base px-10 ml-4 mr-10"
