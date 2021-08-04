@@ -80,8 +80,18 @@ Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 Route::resource('/profile', ProfileController::class);
 
+<<<<<<< HEAD
 //category
 
 Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
+=======
+Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
+Route::get('/milestone', 'TemplateMilestoneController@getList');
+Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
+
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+>>>>>>> merge
