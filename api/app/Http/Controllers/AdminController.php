@@ -2,25 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Schedule;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class ScheduleController extends Controller
+class AdminController extends Controller
 {
     /**
-     * Display list schedule.
+     * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return Schedule::whereNull('jobfair_id')->get();
-    }
-
-    public function getAll()
-    {
-        return Schedule::all();
+        return User::where('role', '=', 2)->get();
     }
 
     /**
@@ -38,7 +32,6 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-
     public function store(Request $request)
     {
     }
@@ -82,28 +75,5 @@ class ScheduleController extends Controller
      */
     public function destroy($id)
     {
-    }
-
-    public function getMilestones($id)
-    {
-        return Schedule::with([
-            'milestones' => function ($query) {
-                $query->select('schedule_id', 'name');
-            },
-        ])->find($id, ['id']);
-    }
-
-    public function getTasks($id)
-    {
-        return Schedule::with([
-            'tasks' => function ($query) {
-                $query->select('tasks.name');
-            },
-        ])->find($id, ['id']);
-    }
-
-    public function search(Request $request)
-    {
-        return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
     }
 }

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jobfair;
+use App\Models\Milestone;
+use App\Models\Schedule;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class JobfairController extends Controller
@@ -27,6 +31,45 @@ class JobfairController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name'                => 'required',
+            'start_date'          => 'required|date',
+            'number_of_students'  => 'required|numeric|gte:1',
+            'number_of_companies' => 'required|numeric|gte:1',
+            'jobfair_admin_id'    => 'required|numeric',
+        ]);
+        $jobFair = Jobfair::create([
+            'name'                => $request->input('name'),
+            'start_date'          => $request->input('start_date'),
+            'number_of_students'  => $request->input('number_of_students'),
+            'number_of_companies' => $request->input('number_of_companies'),
+            'jobfair_admin_id'    => $request->input('jobfair_admin_id'),
+        ]);
+        $schedule = Schedule::find($request->schedule_id);
+        Schedule::create($schedule->toArray())->update(['jobfair_id' => $jobFair->id]);
+        $id = Schedule::where('jobfair_id', $jobFair->id)->get(['id']);
+        $milestones = Milestone::where('schedule_id', $request->schedule_id)->get();
+        foreach ($milestones as $milestone) {
+            $newMilestone = Milestone::create($milestone->toArray());
+            $newMilestone->update(['schedule_id' => $id[0]->id]);
+            $tasks = Task::where('milestone_id', $milestone->id)->get();
+            foreach ($tasks as $task) {
+                Task::create([
+                    'name'                  => $task->name,
+                    'start_time'            => $task->start_time,
+                    'end_time'              => $task->end_time,
+                    'number_of_member'      => $task->number_of_member,
+                    'status'                => $task->status,
+                    'remind_member'         => $task->remind_member,
+                    'description_of_detail' => $task->description_of_detail,
+                    'relation_task_id'      => $task->relation_task_id,
+                    'milestone_id'          => $newMilestone->id,
+                    'user_id'               => $task->user_id,
+                ]);
+            }
+        }
+
+        return $jobFair;
     }
 
     /**
@@ -118,5 +161,10 @@ class JobfairController extends Controller
         return response()->json([
             'data' => $tasks,
         ]);
+    }
+
+    public function checkNameExisted(Request $request)
+    {
+        return User::where('name', '=', $request->name)->first();
     }
 }

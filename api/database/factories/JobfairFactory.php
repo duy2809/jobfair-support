@@ -22,14 +22,12 @@ class JobfairFactory extends Factory
      */
     public function definition()
     {
-        $records = 1;
-
         return [
             'name' => $this->faker->name(),
-            'start_date' => $this->faker->dateTimeThisYear('now', null) ,
-            'number_of_students' => $records,
-            'number_of_companies' => $records,
-            'jobfair_admin_id' => User::factory(),
+            'start_date' => $this->faker->date(),
+            'number_of_students' => $this->faker->numberBetween(0, 100),
+            'number_of_companies' => $this->faker->numberBetween(0, 100),
+            'jobfair_admin_id' => User::pluck('id')->random(),
         ];
     }
 }
