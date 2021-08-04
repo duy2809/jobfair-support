@@ -17,7 +17,7 @@ class ChangeColumnToTemplateTasks extends Migration
             $table->dropColumn(['relation_task_id', 'number_of_member', 'status', 'remind_remember']);
             $table->boolean('is_day');
             $table->string('unit');
-            $table->decimal('effot', 5, 1);
+            $table->decimal('effort', 5, 1);
         });
     }
 
@@ -33,7 +33,7 @@ class ChangeColumnToTemplateTasks extends Migration
             $table->unsignedInteger('number_of_member');
             $table->unsignedSmallInteger('status');
             $table->boolean('remind_remember');
-            $table->dropColumn(['is_day', 'unit', 'effot']);
+            $table->dropColumn(['is_day', 'unit', 'effort']);
         });
     }
 }

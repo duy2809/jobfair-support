@@ -32,7 +32,7 @@ class TaskFactory extends Factory
             'description_of_detail' => $this->faker->text(),
             'relation_task_id'      => null,
             'milestone_id'          => Milestone::factory(),
-            'user_id'               => 1,
+            'user_id'               => null,
         ];
     }
 }

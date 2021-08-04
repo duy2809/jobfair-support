@@ -24,7 +24,7 @@ class CreateTasksTable extends Migration
             $table->text('description_of_detail');
             $table->unsignedInteger('relation_task_id');
             $table->unsignedBigInteger('milestone_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
             $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
         });

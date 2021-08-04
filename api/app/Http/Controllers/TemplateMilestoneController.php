@@ -17,7 +17,11 @@ class TemplateMilestoneController extends Controller
      */
     public function index()
     {
-        return TemplateMilestone::all();
+        $data = DB::table('template_milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
     }
 
     /**
@@ -29,8 +33,8 @@ class TemplateMilestoneController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|regex:/^[^\s]*$/|unique:template_milestones,name',
-            'period' => 'required|numeric|min:1|max:3000',
+            'name'    => 'required|regex:/^[^\s]*$/|unique:template_milestones,name',
+            'period'  => 'required|numeric|min:1|max:3000',
             'is_week' => 'required|numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -68,11 +72,11 @@ class TemplateMilestoneController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'regex:/^[^\s]*$/',
-            'name' => [
+            'name'    => 'regex:/^[^\s]*$/',
+            'name'    => [
                 Rule::unique('template_milestones')->whereNot('id', $id),
             ],
-            'period' => 'numeric|min:1|max:3000',
+            'period'  => 'numeric|min:1|max:3000',
             'is_week' => 'numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -89,7 +93,11 @@ class TemplateMilestoneController extends Controller
      */
     public function destroy($id)
     {
-        return TemplateMilestone::destroy($id);
+        TemplateMilestone::destroy($id);
+
+        return response()->json([
+            'success' => 'Record has been deleted successfully!',
+        ]);
     }
 
     public function getSearch(Request $request)
@@ -97,7 +105,7 @@ class TemplateMilestoneController extends Controller
         $s = $request->input('s');
         if ($request->input('s')) {
             $data = DB::table('template_milestones')
-                ->where('name', 'LIKE', '%' + $s + '%')
+                ->where('name', 'LIKE', '%'+$s+'%')
                 ->orderBy('id', 'asc')
                 ->get();
 
@@ -109,25 +117,5 @@ class TemplateMilestoneController extends Controller
             ->get();
 
         return response()->json($data);
-    }
-
-    public function getList()
-    {
-        $data = DB::table('template_milestones')
-            ->orderBy('id', 'asc')
-            ->get();
-
-        return response()->json($data);
-    }
-
-    public function destroyMilestone($id)
-    {
-        $milestones = new TemplateMilestone();
-        $milestones = TemplateMilestone::find($id);
-        $milestones->delete($id);
-
-        return response()->json([
-            'success' => 'Record has been deleted successfully!',
-        ]);
     }
 }
