@@ -56,6 +56,9 @@ const EditMember = ({ data }) => {
         notification.error({
           message: error.response.data.errors.email || error.response.data.errors.name,
         })
+      }).finally(() => {
+        setIsModalCancelVisible(false)
+        setIsModalVisible(false)
       })
   }
 
@@ -94,7 +97,7 @@ const EditMember = ({ data }) => {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-10/12 font-bold title">メンバ編集</div>
+          <div className="text-5xl w-11/12 title">メンバ編集</div>
           <Form className="w-8/12 pt-10" labelCol={{ span: 7 }} labelAlign="left" form={form}>
             <Form.Item
               className="mx-10"
