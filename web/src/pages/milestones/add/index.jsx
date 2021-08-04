@@ -101,10 +101,6 @@ export default function AddMilestonePage() {
     </Form.Item>
   )
 
-  // const onFinish = (values) => {
-  //   console.log(values)
-  // }
-
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (

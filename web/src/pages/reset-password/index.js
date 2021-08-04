@@ -33,7 +33,6 @@ const ResetPage = () => {
       token,
       password: values.confirm_password,
     }
-    // console.log(data);
     try {
       const response = await updatePassword(data)
       if (response.request.status === 200) openNotification('success', 'パスワードを正常に変更しました')

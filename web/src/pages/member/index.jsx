@@ -1,33 +1,47 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button } from 'antd'
+import { Select, Table, Input, Button, Empty } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
+import { formatDate } from '~/utils/utils'
 import './styles.scss'
 
-import { ListScheduleApi } from '~/api/schedule'
+import { MemberApi } from '~/api/member'
 
 const columns = [
   {
     title: 'No.',
-    dataIndex: 'id',
     key: 'No.',
-    width: '10%',
+    dataIndex: 'id',
     render: (id) => id,
+    width: '6%',
   },
   {
-    title: 'スケジュール',
+    title: 'メンバ名',
     dataIndex: 'name',
-    key: 'スケジュール',
-    width: '90%',
+    key: 'メンバ名',
+    width: '30%',
     render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+  },
+  {
+    title: 'メールアドレス',
+    key: 'メールアドレス',
+    dataIndex: 'email',
+    width: '50%',
+    render: (email) => email,
+  },
+  {
+    title: '参加日',
+    dataIndex: 'date',
+    key: '参加日',
+    render: (date) => formatDate(date),
   },
 ]
 
-export default function ScheduleList() {
-  const [schedules, setSchedules] = useState([])
-  const [filterSchedules, setFilterSchedules] = useState([])
+export default function MemberList() {
+  const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
+  const [filterData, setFilterData] = useState([])
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
 
@@ -48,8 +62,8 @@ export default function ScheduleList() {
   }
 
   const handleInput = (e) => {
-    const result = schedules.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
-    setFilterSchedules(result)
+    const result = members.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
+    setFilterData(result)
   }
 
   const initPagination = () => {
@@ -68,51 +82,49 @@ export default function ScheduleList() {
   const fetchData = useCallback(() => {
     setDataLoading(true)
     initPagination()
-    ListScheduleApi.getListShedule().then((res) => {
+    MemberApi.getListMember().then((res) => {
       const { data } = res
-      setSchedules(data)
-      setFilterSchedules(data)
+      setMembers(data)
+      setFilterData(data)
     }).finally(() => {
       setDataLoading(false)
     })
   })
-
   const router = useRouter()
+  const handleRow = (record) => ({ onClick: () => {
+    router.push(`/member/${record.id}`)
+  } })
   const handleClick = (e) => {
     e.preventDefault()
-    router.push('/schedule/add')
+    router.push('/member/invite')
   }
-
-  const handleRow = (record) => ({ onClick: () => {
-    router.push(`/schedule/${record.id}`)
-  } })
 
   useEffect(() => {
     fetchData()
   }, [itemCount])
   const { Option } = Select
-  const role = 'super admin'
+  const role = 'admin'
   return (
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="flex w-full justify-between">
-            <div className="text-4xl title">JFスケジュール一覧</div>
+          <div className="text-5xl w-full flex justify-between items-center title">
+            <div>メンバ一覧</div>
             <div>
-              { role === 'super admin' ? (
+              { role === 'admin' ? (
                 <Button
                   type="primary"
-                  className="px-12"
+                  className="ml-5"
                   htmlType="button"
                   enabled
                   onClick={handleClick}
                 >
-                  追加
+                  メンバー招待
                 </Button>
               ) : ''}
             </div>
           </div>
-          <div className="flex w-full justify-between">
+          <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
               <Select className="ml-5" value={itemCount} onChange={handleSelect}>
@@ -122,15 +134,15 @@ export default function ScheduleList() {
               </Select>
             </div>
             <div>
-              <div className="text-2xl ml-auto flex items-center">
-                <Input placeholder="スケジュール" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+              <div className="text-2xl flex items-center">
+                <Input placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
               </div>
             </div>
           </div>
           <Table
-            className="rounded-3xl table-styled my-5 table-striped-rows"
+            className="w-full rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
-            dataSource={filterSchedules}
+            dataSource={filterData}
             rowKey={(record) => record.id}
             scroll={{ y: 360 }}
             onRow={handleRow}

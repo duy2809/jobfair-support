@@ -16,5 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(JobfairsSeeder::class);
         $this->call(SchedulesSeeder::class);
         \App\Models\User::factory(10)->create();
+        \App\Models\TemplateMilestone::factory(50)->create();
+        \App\Models\Jobfair::factory(10)->create();
     }
 }
