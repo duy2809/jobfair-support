@@ -44,7 +44,7 @@ const LoginPage = () => {
       const response = await login(values)
       if (response.request.status === 200) openNotification('success', '正常にログインしました')
       setTimeout(() => {
-        router.push('/top-page')
+        router.push('/top')
       }, 2500)
     } catch (error) {
       if (error.request.status === 400) {
