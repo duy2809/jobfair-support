@@ -103,7 +103,6 @@ const index = () => {
       routeTo('/jobfairs')
     } else {
       Modal.confirm({
-
         title: '入力内容が保存されません。よろしいですか？',
         icon: <ExclamationCircleOutlined />,
         content: '',
@@ -121,6 +120,7 @@ const index = () => {
   const saveNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
       message: '正常に登録されました。',
       onClick: () => {},
     })
@@ -155,12 +155,14 @@ const index = () => {
       if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+          duration: 3,
           message: 'このJF名は既に使用されています。',
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+          duration: 3,
           message: '保存に失敗しました。',
           onClick: () => {},
         })
@@ -199,6 +201,7 @@ const index = () => {
     if (response.data) {
       return notification.open({
         icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+        duration: 3,
         message: 'このJF名は既に使用されています。',
         onClick: () => {},
       })
