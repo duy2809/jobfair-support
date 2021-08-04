@@ -15,7 +15,7 @@ const DefaultLayout = ({
   const main = findSlot(DefaultLayout.Main, children)
 
   return (
-    <Layout className="v-layout flex">
+    <Layout className="v-layout flex bg-white-background">
       {process.env.NODE_ENV !== 'production' && (
         <link rel="stylesheet" type="text/css" href={`/_next/static/css/styles.chunk.css?v=${Date.now()}`} />
       )}

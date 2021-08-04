@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/web-init', WebInit::class);
+
+Route::prefix('member')->group(function () {
+    Route::get('/', 'MemberController@index');
+});
+
 Route::resource('/jobfair', 'JobfairController');
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');

@@ -33,8 +33,8 @@ class UserFactory extends Factory
             'chatwork_id'      => Str::random(10),
             'phone_number'     => $this->faker->numberBetween(10000000, 100000000),
             'remember_token'   => null,
-            'updated_at'       => now(),
             'created_at'       => now(),
+            'updated_at'       => now(),
         ];
     }
 
