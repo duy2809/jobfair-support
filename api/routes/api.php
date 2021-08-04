@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::get('/web-init', WebInit::class);
 
@@ -28,6 +29,23 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
 });
+// add jf route start
+Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
+Route::resource('/jobfair', 'JobfairController');
+Route::resource('/schedules', 'ScheduleController');
+Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
+Route::get('/schedules/{id}/tasks', 'ScheduleController@getTasks');
+Route::get('/admins', 'AdminController@index');
+
+Route::group(['prefix' => 'jobfair/{id}'], function () {
+    Route::get('/milestones', 'JobfairController@getMilestones');
+    Route::get('/tasks', 'JobfairController@getTasks');
+    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
+    Route::get('/tasks/search', 'JobfairController@searchTask');
+    Route::get('/tasks/search', 'JobfairController@searchTask');
+    Route::post('/jobfair', 'JobfairController@store');
+});
+//add JF route end
 
 Route::resource('/milestone', TemplateMilestoneController::class);
 Route::resource('/milestone', MilestoneController::class);
