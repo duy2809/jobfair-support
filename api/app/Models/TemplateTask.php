@@ -23,4 +23,14 @@ class TemplateTask extends Model
     {
         return $this->morphToMany(Category::class, 'categoriable');
     }
+
+    public function afterTasks()
+    {
+        return $this->belongsToMany(self::class, 'pivot_table_template_tasks', 'before_tasks', 'after_tasks');
+    }
+
+    public function beforeTasks()
+    {
+        return $this->belongsToMany(self::class, 'pivot_table_template_tasks', 'after_tasks', 'before_tasks');
+    }
 }
