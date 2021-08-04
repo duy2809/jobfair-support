@@ -127,5 +127,43 @@ class TemplateMilestoneController extends Controller
     public function checkUniqueAdd($name)
     {
         return TemplateMilestone::where('name', '=', $name)->get();
+    }    
+    public function getSearch(Request $request)
+    {
+        $s = $request->input('s');
+        if ($request->input('s')) {
+            $data = DB::table('template_milestones')
+                ->where('name', 'LIKE', '%' + $s + '%')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            return response()->json($data);
+        }
+
+        $data = DB::table('template_milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function getList()
+    {
+        $data = DB::table('template_milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function destroyMilestone($id)
+    {
+        $milestones = new TemplateMilestone();
+        $milestones = TemplateMilestone::find($id);
+        $milestones->delete($id);
+
+        return response()->json([
+            'success' => 'Record has been deleted successfully!',
+        ]);
     }
 }
