@@ -80,7 +80,6 @@ Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 Route::resource('/profile', ProfileController::class);
 
-
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
@@ -92,6 +91,7 @@ Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
+
 
 //category
 
