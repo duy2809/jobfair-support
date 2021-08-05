@@ -44,7 +44,7 @@ export default function Profile() {
                 src={avatarUser}
               />
             </div>
-            <div className="h-96 col-span-7 border-2 border-gray-300">
+            <div className="h-80 col-span-6 border-2 border-gray-300">
               <div className="grid grid-cols-3">
                 <div className="col-start-3 pt-4 justify-self-center">
                   <div className="flex items-center gap-4 ">
@@ -58,28 +58,25 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-5 text-lg mt-14 ml-10">
-                <div className="col-span-1 mb-10 flex justify-between mr-5">
-                  <p>ユーザー名 </p>
-                  <p>:</p>
+              <div className="grid grid-cols-12 gap-x-4 gap-y-10 text-lg pt-10">
+                <div className="col-span-3 justify-self-end">
+                  <p>ユーザー名: </p>
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-9">
                   <p>{nameUser}</p>
                 </div>
 
-                <div className="col-span-1 mb-10 flex justify-between mr-5 ">
-                  <p>チャットワークID </p>
-                  <p>:</p>
+                <div className="col-span-3 justify-self-end">
+                  <p>チャットワークID: </p>
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-9">
                   <p>{chatWorkIdUser}</p>
                 </div>
 
-                <div className="col-span-1 mb-10 flex justify-between mr-5 ">
-                  <p>メール </p>
-                  <p>:</p>
+                <div className="col-span-3 justify-self-end">
+                  <p>メール: </p>
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-9">
                   <p>{emailUser}</p>
                 </div>
               </div>
