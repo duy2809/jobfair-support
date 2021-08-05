@@ -32,14 +32,14 @@ const PrjAdd = (props) => {
       category_name: category,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        // if (
-        //   JSON.parse(error.response.request.response).errors.category_name[0]
-        //     === 'The name has already been taken.'
-        // ) {
-        notification.error({
-          message: 'このカテゴリ名は存在しています',
-        })
-        // }
+        if (
+          JSON.parse(error.response.request.response).errors.category_name[0]
+            === 'The category name has already been taken.'
+        ) {
+          notification.error({
+            message: 'このカテゴリ名は存在しています',
+          })
+        }
       })
   }
 

@@ -51,10 +51,7 @@ class CategoryController extends Controller
             'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/'
         ];
         $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
-        }
-
+        $validator->validate();
         return Category::create($request->all());
     }
 
@@ -83,9 +80,7 @@ class CategoryController extends Controller
             'category_name' => 'max:255|unique:categories,category_name|regex:/^[^\s]*$/'
         ];
         $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return response()->json($validator->messages(), Response::HTTP_BAD_REQUEST);
-        }
+        $validator->validate();
         return Category::find($id)->update($request->all());
     }
 

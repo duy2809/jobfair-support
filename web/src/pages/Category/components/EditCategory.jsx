@@ -57,9 +57,14 @@ const EditCategory = (props) => {
       category_name: nameInput,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        notification.error({
-          message: 'このカテゴリー名は存在しています',
-        })
+        if (
+          JSON.parse(error.response.request.response).errors.category_name[0]
+            === 'The category name has already been taken.'
+        ) {
+          notification.error({
+            message: 'このカテゴリー名は存在しています',
+          })
+        }
       })
   }
 
