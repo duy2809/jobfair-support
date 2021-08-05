@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\CategoryDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,8 +23,8 @@ class CategoryDetailFactory extends Factory
     public function definition()
     {
         return [
-            'category_item' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
-            'category_id' => $this->faker->numberBetween(1, 5),
+            'category_item' => $this->faker->name(),
+            'category_id' => Category::factory(),
         ];
     }
 }

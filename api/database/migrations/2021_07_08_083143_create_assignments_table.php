@@ -17,7 +17,7 @@ class CreateAssignmentsTable extends Migration
             $table->id();
             $table->text('notification');
             $table->dateTime('join_date');
-            $table->dateTime('completed_date');
+            $table->dateTime('completed_date')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('task_id');

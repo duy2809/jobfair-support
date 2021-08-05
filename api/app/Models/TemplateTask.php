@@ -9,9 +9,12 @@ class TemplateTask extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $guarded = [];
+
     public function templateMilestone()
     {
-        return $this->belongsTo(TemplateMilestone::class);
+        return $this->belongsTo(TemplateMilestone::class, 'milestone_id');
     }
 
     public function templateDocuments()

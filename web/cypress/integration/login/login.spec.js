@@ -1,14 +1,14 @@
 const invalidShorterPassword = '123';
 const invalidLongerPassword = '012345678901234567890123456789';
-const validPassword = '12345678'; // TODO: change your email in db
+const validPassword = '12345678'; // TODO: change your password in db
 
 const invalidEmails = ['abc', 'abcdefg@', 'abc@example', 'abc@example.'];
 const notExistValidEmail = 'abc@example.net';
-const existValidEmail = 'harris.isadore@example.org'; // TODO: change your password in db
+const existValidEmail = 'harris.isadore@example.org'; // TODO: change your email in db
 
 describe('check login', () => {
   beforeEach(() => {
-    cy.visit('http://jobfair.local:8000/login');
+    cy.visit('/login');
     cy.wait(500);
   });
 

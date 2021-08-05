@@ -20,9 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('avatar');
             $table->unsignedTinyInteger('role');
-            $table->unsignedInteger('number_of_record');
-            $table->string('chatwork_id');
-            $table->unsignedInteger('phone_number');
+            $table->string('chatwork_id')->nullable();
             $table->dateTime('created_at');
             $table->dateTime('updated_at');
         });

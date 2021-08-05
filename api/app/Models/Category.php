@@ -9,6 +9,8 @@ class Category extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     public function tasks()
     {
         return $this->morphedByMany(Task::class, 'categoriable');
@@ -22,5 +24,10 @@ class Category extends Model
     public function users()
     {
         return $this->morphedByMany(User::class, 'categoriable');
+    }
+
+    public function categoryDetails()
+    {
+        return $this->hasMany(CategoryDetail::class);
     }
 }
