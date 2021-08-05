@@ -24,17 +24,15 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'name'             => $this->faker->name(),
-            'email'            => $this->faker->unique()->safeEmail(),
-            'password'         => Hash::make('12345678'),
-            'avatar'           => Str::random(20),
-            'role'             => $this->faker->numberBetween(1, 3),
-            'number_of_record' => $this->faker->numberBetween(1, 3),
-            'chatwork_id'      => Str::random(10),
-            'phone_number'     => $this->faker->numberBetween(10000000, 100000000),
-            'remember_token'   => null,
-            'created_at'       => now(),
-            'updated_at'       => now(),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => Hash::make('12345678'),
+            'avatar' => 'images/default.jpg',
+            'role' => $this->faker->numberBetween(1, 3),
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
         ];
     }
 
