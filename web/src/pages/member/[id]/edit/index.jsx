@@ -181,7 +181,6 @@ const EditMember = ({ data }) => {
                 <Button
                   size="large"
                   className="text-base"
-                  type="primary"
                   enabled="true"
                   onClick={showCancelModal}
                 >
