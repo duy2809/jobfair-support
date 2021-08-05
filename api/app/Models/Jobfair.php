@@ -9,6 +9,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Jobfair extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $fillable = [
+        'name',
+        'start_date',
+        'number_of_students',
+        'number_of_companies',
+        'jobfair_admin_id',
+    ];
 
     public function schedule()
     {
