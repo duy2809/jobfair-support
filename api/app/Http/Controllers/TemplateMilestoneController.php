@@ -100,7 +100,8 @@ class TemplateMilestoneController extends Controller
     public function checkUniqueAdd($name)
     {
         return TemplateMilestone::where('name', '=', $name)->get();
-    }    
+    }
+
     public function getSearch(Request $request)
     {
         $s = $request->input('s');
