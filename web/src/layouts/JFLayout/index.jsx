@@ -16,9 +16,7 @@ import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
 import './style.scss'
 
-const JfLayout = ({
-  children,
-}) => {
+const JfLayout = ({ children }) => {
   const main = findSlot(JfLayout.Main, children)
   const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(false)
@@ -44,9 +42,7 @@ const JfLayout = ({
         >
           <Menu
             style={{
-
               height: '100vh',
-
             }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
@@ -67,10 +63,10 @@ const JfLayout = ({
               </div>
             </div>
             <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
+              <Link href={`/jf-top/${idJF}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href={`/task-list/${idJF}`}>タスク</Link>
+              <Link href={`/tasks/${idJF}`}>タスク</Link>
             </Menu.Item>
             <Menu.Item key="3" icon={<BarChartOutlined />}>
               <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
@@ -93,9 +89,8 @@ const JfLayout = ({
             }}
             // style={{ margin: '24px 16px 0', overflow: 'initial' }}
             className="site-layout-background"
-
           >
-            { _get(main, 'props.children') }
+            {_get(main, 'props.children')}
           </Content>
         </Layout>
       </Layout>

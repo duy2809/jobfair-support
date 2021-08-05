@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Task::class, 'assignments');
     }
+
+    public function categories()
+    {
+        return $this->morphToMany(Category::class, 'categoriable');
+    }
 }

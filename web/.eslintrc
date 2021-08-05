@@ -93,6 +93,6 @@
     ],
     "react/destructuring-assignment": "off",
     "react/forbid-prop-types": "off",
-    "no-console": 1,
+    "no-console": 1
   }
 }
