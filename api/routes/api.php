@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,6 +71,7 @@ Route::prefix('member')->group(function () {
 
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
+});
 
 // login, logout
 
