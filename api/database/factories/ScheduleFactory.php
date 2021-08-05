@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Jobfair;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,7 +23,8 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
+            'jobfair_id' => Jobfair::factory(),
+            'name' => $this->faker->name(),
         ];
     }
 }

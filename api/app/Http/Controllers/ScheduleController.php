@@ -8,13 +8,19 @@ use Illuminate\Http\Request;
 class ScheduleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display list schedule.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         return Schedule::whereNull('jobfair_id')->get();
+    }
+
+    public function getAll()
+    {
+        return Schedule::all();
     }
 
     /**
@@ -32,6 +38,7 @@ class ScheduleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
     }
@@ -93,5 +100,10 @@ class ScheduleController extends Controller
                 $query->select('tasks.name');
             },
         ])->find($id, ['id']);
+    }
+
+    public function search(Request $request)
+    {
+        return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
     }
 }

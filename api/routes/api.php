@@ -50,6 +50,11 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::resource('/milestone', TemplateMilestoneController::class);
 Route::resource('/milestone', MilestoneController::class);
 
+Route::prefix('schedule')->group(function () {
+    Route::get('/', 'ScheduleController@getAll');
+    Route::get('/search', 'ScheduleController@search');
+});
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);

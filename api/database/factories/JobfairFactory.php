@@ -25,8 +25,8 @@ class JobfairFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'start_date' => $this->faker->date(),
-            'number_of_companies' => $this->faker->numberBetween(1, 100),
-            'number_of_students' => $this->faker->numberBetween(1, 100),
+            'number_of_students' => $this->faker->numberBetween(0, 100),
+            'number_of_companies' => $this->faker->numberBetween(0, 100),
             'jobfair_admin_id' => User::pluck('id')->random(),
         ];
     }
