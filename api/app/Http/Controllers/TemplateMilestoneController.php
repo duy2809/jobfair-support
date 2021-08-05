@@ -92,6 +92,16 @@ class TemplateMilestoneController extends Controller
         return TemplateMilestone::destroy($id);
     }
 
+    public function checkUniqueEdit($id, $name)
+    {
+        return TemplateMilestone::where('id', '<>', $id)->where('name', '=', $name)->get();
+    }
+
+    public function checkUniqueAdd($name)
+    {
+        return TemplateMilestone::where('name', '=', $name)->get();
+    }
+
     public function getSearch(Request $request)
     {
         $s = $request->input('s');

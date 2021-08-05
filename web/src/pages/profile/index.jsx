@@ -1,14 +1,26 @@
-import React, {useState} from "react";
-import Otherlayout from "../../../layouts/OtherLayout";
-import { Avatar } from "antd";
-import { UserOutlined, EditFilled } from "@ant-design/icons";
+import React, { useState, useEffect } from 'react'
+import { Avatar } from 'antd'
+import { EditFilled } from '@ant-design/icons'
+import Otherlayout from '../../layouts/OtherLayout'
+import { getProfile } from '../../api/profile'
+import { webInit } from '../../api/web-init'
 
-export default function () {
-
-  const [avatarUser, setAvatarUser] = useState("/images/logo.png");
-  const [nameUser, setNameUser] = useState("Nguyen Van A");
-  const [chatWorkIdUser, setChatWorkIdUser] = useState(12345);
-  const [emailUser, setEmailUser] = useState("nguyenvana@gmail.com");
+export default function Profile() {
+  const [avatarUser, setAvatarUser] = useState('')
+  const [nameUser, setNameUser] = useState('')
+  const [chatWorkIdUser, setChatWorkIdUser] = useState('')
+  const [emailUser, setEmailUser] = useState('')
+  useEffect(async () => {
+    webInit().then((res) => {
+      const id = res.data.auth.user.id
+      getProfile(id).then((response) => {
+        setAvatarUser(response.data.avatar)
+        setNameUser(response.data.name)
+        setChatWorkIdUser(response.data.chatwork_id)
+        setEmailUser(response.data.email)
+      })
+    }, [])
+  })
 
   return (
     <>
@@ -16,7 +28,7 @@ export default function () {
         <Otherlayout.Main>
           <p
             className="title mb-11 ml-18"
-            style={{ fontSize: "36px", marginBottom: "100px" }}
+            style={{ fontSize: '36px', marginBottom: '100px' }}
           >
             プロフィール
           </p>
@@ -25,9 +37,9 @@ export default function () {
               <Avatar
                 size={150}
                 style={{
-                  backgroundColor: "#FFD802",
-                  lineHeight: "100px",
-                  marginRight: "60px",
+                  backgroundColor: '#FFD802',
+                  lineHeight: '100px',
+                  marginRight: '60px',
                 }}
                 src={avatarUser}
               />
@@ -40,7 +52,7 @@ export default function () {
                       <EditFilled className="border-2 rounded-full py-1 px-1 border-black" />
                     </div>
                     <a src="" className="text-blue-500">
-                      プロファイル編集
+                      プロフィール編集
                     </a>
                   </div>
                 </div>
@@ -76,5 +88,5 @@ export default function () {
         </Otherlayout.Main>
       </Otherlayout>
     </>
-  );
+  )
 }

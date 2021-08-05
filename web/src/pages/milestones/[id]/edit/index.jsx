@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, Modal, notification } from 'antd'
 // import { useRouter } from 'next/router'
 import CancelEditMilestone from '../../../../components/CancelEditMilestone'
 import OtherLayout from '../../../../layouts/OtherLayout'
-import { updateMilestone, getMilestone } from '../../../../api/milestone'
+import { updateMilestone, getMilestone, getNameExitEdit } from '../../../../api/milestone'
 import './styles.scss'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
@@ -15,6 +15,7 @@ const EditMilestonePage = () => {
   const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
+  const [errorUnique, setErrorUnique] = useState(false)
 
   // fetch data
   useEffect(async () => {
@@ -60,7 +61,26 @@ const EditMilestonePage = () => {
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false && errorUnique === false) {
+      setIsModalVisible(true)
+    } else {
+      const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+      const id = `${temp[1]}`
+      const name = nameInput
+      if (name !== '') {
+        getNameExitEdit(id, name).then((res) => {
+          if (res.data.length !== 0) {
+            setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
+    }
   }
 
   const handleOk = () => {
@@ -79,6 +99,24 @@ const EditMilestonePage = () => {
           })
         }
       })
+  }
+  const onBlur = () => {
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    const name = nameInput
+    if (name !== '') {
+      getNameExitEdit(id, name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+          ])
+        }
+      })
+    }
   }
 
   const handleCancel = () => {
@@ -104,7 +142,7 @@ const EditMilestonePage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン編集</p>
+          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p>
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
 
             <Form
@@ -117,13 +155,12 @@ const EditMilestonePage = () => {
                 span: 12,
               }}
               className="space-y-12 w-1/2 justify-items-center"
+              size="large"
             >
               <Form.Item
-                // label="マイルストーン名"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
                 }
-                // className="text-4xl justify-between"
                 name="name"
                 rules={[
                   {
@@ -139,6 +176,7 @@ const EditMilestonePage = () => {
 
                       return Promise.resolve()
                     },
+
                   }),
                 ]}
               >
@@ -146,12 +184,12 @@ const EditMilestonePage = () => {
                   type="text"
                   size="large"
                   onChange={onValueNameChange}
+                  onBlur={onBlur}
                   placeholder="マイルストーン名"
                 />
               </Form.Item>
 
               <Form.Item
-                // label="期日"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
@@ -187,11 +225,7 @@ const EditMilestonePage = () => {
                   className="inputNumber"
                   type="text"
                   size="large"
-                  // onKeyPress={onNumberOnlyChange}
-                  // min='0'
-                  // onKeyDown={blockInvalidChar}
                   addonAfter={selectAfter}
-                  //   defaultValue="3"
                   onChange={onValueTimeChange}
                 />
 
@@ -207,41 +241,30 @@ const EditMilestonePage = () => {
               >
                 <p className="mb-5">このまま保存してもよろしいですか？ </p>
               </Modal>
-
-              <Form.Item
-                className=" justify-end "
-              >
-                <div className="flex  my-10 ">
-                  <CancelEditMilestone />
-
-                  {/* && timeInput <=5 */}
-                  {(nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false) ? (
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base px-10 "
-                      onClick={showModal}
-                    >
-                      保存
-                    </Button>
-                  ) : (
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base px-10 "
-                      disabled
-                    >
-                      保存
-                    </Button>
-                  )}
+              <div className="grid grid-cols-12 grid-rows-1 gap-x-5">
+                <div className="col-span-8 justify-self-end">
+                  <Form.Item>
+                    <CancelEditMilestone />
+                  </Form.Item>
                 </div>
-              </Form.Item>
+                <div>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      onClick={showModal}
+                      className="w-32"
+                    >
+                      保存
+                    </Button>
+                  </Form.Item>
+                </div>
+              </div>
             </Form>
           </div>
         </OtherLayout.Main>
       </OtherLayout>
     </div>
-
   )
 }
 
