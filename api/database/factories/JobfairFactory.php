@@ -23,7 +23,7 @@ class JobfairFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->name(),
             'start_date' => $this->faker->date(),
             'number_of_students' => $this->faker->numberBetween(0, 100),
             'number_of_companies' => $this->faker->numberBetween(0, 100),
