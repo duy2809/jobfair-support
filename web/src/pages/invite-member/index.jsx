@@ -32,6 +32,13 @@ export default function InviteMember() {
   children.push(<Option key="2">管理者</Option>)
   children.push(<Option key="3">メンバ</Option>)
 
+   const validateMessages = {
+    required: '${label}を入力してください。',
+    types: {
+      string: '',
+    }
+  }
+
   const handleCancel = () => {
     setIsModalVisible(false)
   }
@@ -79,9 +86,13 @@ export default function InviteMember() {
     <OtherLayout>
       <OtherLayout.Main>
         <div className="flex flex-col h-full items-center justify-center ">
-          <div className="text-6xl w-11/12  py-10 ">メンバ招待</div>
+          <div className="screen-name text-6xl w-11/12  py-10 ">メンバ招待</div>
           <div className=" justify-items-center w-6/12 rounded-2xl border-2 border-black">
-            <Form className="text-2xl m-auto w-full " {...layout} form={form} onFinish={handleInvite} onFinishFailed={onFinishFailed}>
+            <Form className="text-2xl m-auto w-full " {...layout} form={form} 
+            onFinish={handleInvite} 
+            onFinishFailed={onFinishFailed}
+            validateMessages={validateMessages}
+            >
               <Form.Item
                 name="email"
                 label="メールアドレス"
@@ -89,8 +100,9 @@ export default function InviteMember() {
                   {
                     type: 'email',
                     message: 'メールアドレス有効なメールではありません!',
-                    required: true,
+                    // required: true,
                   },
+                  { required: true }
                 ]}
               >
                 <Input
@@ -136,6 +148,7 @@ export default function InviteMember() {
                       <p className="mb-5">変更は保存されていません。続行してもよろしいですか？ </p>
                     </Modal>
                     <Button
+                      id="btn-cancel"
                       size="large"
                       className="ml-9 text-base px-14 w-32"
                       type="primary"
@@ -147,28 +160,24 @@ export default function InviteMember() {
                     </Button>
                   </div>
                   <div>
-                    {emailInput !== '' && roleInput !== '' ? (
-                      <Button
-                        size="large"
-                        className="ml-9 text-base px-14 w-32"
-                        type="primary"
-                        htmlType="submit"
-                        enabled="true"
-                      >
-                        招待
-                      </Button>
-                    ) : (
-                      <Button
-                        size="large"
-                        className="ml-9 text-base px-14 w-32"
-                        type="primary"
-                        htmlType="submit"
-                        disabled
-                      >
-                        招待
-                      </Button>
-
-                    )}
+                    <Button
+                      id="btn-submit"
+                      size="large"
+                      className="ml-9 text-base px-14 w-32"
+                      type="primary"
+                      htmlType="submit"
+                      disabled={
+                        !(
+                          form.isFieldTouched('email')
+                          && form.isFieldTouched('categories')
+                        )
+                        || !!form
+                          .getFieldsError()
+                          .filter(({ errors }) => errors.length).length
+                      }
+                    >
+                      招待
+                    </Button>
                   </div>
                 </div>
               </Form.Item>
