@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\TemplateMilestoneController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,8 +48,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 //add JF route end
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
-Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
 
 Route::prefix('schedule')->group(function () {

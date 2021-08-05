@@ -100,6 +100,16 @@ class TemplateMilestoneController extends Controller
         ]);
     }
 
+    public function checkUniqueEdit($id, $name)
+    {
+        return TemplateMilestone::where('id', '<>', $id)->where('name', '=', $name)->get();
+    }
+
+    public function checkUniqueAdd($name)
+    {
+        return TemplateMilestone::where('name', '=', $name)->get();
+    }
+
     public function getSearch(Request $request)
     {
         $s = $request->input('s');
@@ -117,15 +127,6 @@ class TemplateMilestoneController extends Controller
             ->get();
 
         return response()->json($data);
-    }
-
-    public function checkUniqueEdit($id, $name)
-    {
-        return TemplateMilestone::where('id', '<>', $id)->where('name', '=', $name)->get();
-    }
-
-    public function checkUniqueAdd($name)
-    {
-        return TemplateMilestone::where('name', '=', $name)->get();
+    
     }
 }
