@@ -51,7 +51,6 @@ class JobfairController extends Controller
         $schedule = Schedule::create($scheduleAttr);
 
         $schedule->update(['jobfair_id' => $jobFair->id]);
-        $id = $schedule->id;
         $milestones = $templateSchedule->milestones;
         foreach ($milestones as $milestone) {
             $milestoneAttr = $milestone->toArray();
