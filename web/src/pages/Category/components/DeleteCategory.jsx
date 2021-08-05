@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-console */
 /* eslint-disable react/react-in-jsx-scope */
-import { Modal, Space } from 'antd'
+import { Modal, Space, notification } from 'antd'
 import { ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
 
 import { deleteCategory } from '../../../api/category'
@@ -9,7 +9,14 @@ import { deleteCategory } from '../../../api/category'
 const { confirm } = Modal
 
 const DeleteCategory = (props) => {
-  const onDelete = () => props.record.id
+  const openNotificationSuccess = () => {
+    notification.success({
+      message: '変更は正常に保存されました。',
+      duration: 3,
+    })
+    setTimeout(() => { window.location.reload() }, 1000)
+  }
+
   function showDeleteConfirm() {
     confirm({
       title: '削除カテゴリ',
@@ -20,8 +27,8 @@ const DeleteCategory = (props) => {
       cancelText: 'キャンセル',
       onOk() {
         console.log('OK')
-        deleteCategory(onDelete())
-        window.location.reload()
+        deleteCategory(props.record.id)
+        openNotificationSuccess()
       },
       onCancel() {
         console.log('Cancel')

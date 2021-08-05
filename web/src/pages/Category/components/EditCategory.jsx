@@ -12,6 +12,7 @@ const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.f
 const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [nameInput, setNameInput] = useState('')
+  const [input, setInput] = useState('')
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
@@ -30,9 +31,11 @@ const EditCategory = (props) => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
+      duration: 3,
     })
     setIsModalVisible(false)
     setTimeout(() => { window.location.reload() }, 1000)
+    // window.location.reload()
   }
 
   const onValueNameChange = (e) => {
@@ -104,7 +107,7 @@ const EditCategory = (props) => {
               className="input-category"
               onChange={onValueNameChange}
               placeholder="カテゴリ名を書いてください"
-              message="この項目は必須です"
+              defaultValue={props.record.category_name}
             />
           </Form.Item>
         </Form>

@@ -43,6 +43,7 @@ export default function ListCategories() {
     }
     setSearchValue(key)
   }
+  // set reload state
 
   // table columns
   const columns = [
