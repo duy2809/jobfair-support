@@ -58,7 +58,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 //milestone
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
 
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
 Route::get('/milestone', 'TemplateMilestoneController@getList');
@@ -70,7 +69,6 @@ Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
-});
 
 // login, logout
 
