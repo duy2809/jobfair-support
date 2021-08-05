@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
         Jobfair::factory(3)->create();
         foreach (Jobfair::all() as $jobfair) {
             // random template schedule
-            $templateSchedule = Schedule::all()->random(1)->first();
+            $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
             $scheduleAttr = $templateSchedule->toArray();
             array_shift($scheduleAttr);
             $schedule = Schedule::create($scheduleAttr);

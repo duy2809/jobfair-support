@@ -330,7 +330,6 @@ const index = () => {
                     rules={[
                       {
                         validator: JFNameValidator,
-                        validateTrigger: { checkIsJFNameExisted },
                       },
 
                     ]}
@@ -340,7 +339,7 @@ const index = () => {
                       name="JFName"
                       onBlur={checkIsJFNameExisted}
                       // onFocus={checkIsJFNameExisted}
-                      placeholder="JF名入力する"
+                      placeholder="JF名を入力する"
                       maxLength={200}
                       // style={{ backgroundColor: '#e3f6f5' }}
                     />
