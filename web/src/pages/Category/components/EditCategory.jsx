@@ -32,7 +32,7 @@ const EditCategory = (props) => {
       message: '変更は正常に保存されました。',
     })
     setIsModalVisible(false)
-    window.location.reload()
+    setTimeout(() => { window.location.reload() }, 1000)
   }
 
   const onValueNameChange = (e) => {
