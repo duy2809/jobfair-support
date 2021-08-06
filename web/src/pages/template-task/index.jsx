@@ -97,14 +97,7 @@ export default function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (fix) => {
-        const tt = fix
-
-        if (fix.length >= 20) {
-          fix = `${fix.slice(1, 20)}...`
-        }
-        return <Tooltip title={tt}><a href={fix}>{fix}</a></Tooltip>
-      },
+      render: (templateTaskName, record) => <Tooltip title={templateTaskName}><a href={`/template-task-dt/${record.idTemplateTask}`}>{templateTaskName}</a></Tooltip>,
     },
     {
       title: 'カテゴリ',
