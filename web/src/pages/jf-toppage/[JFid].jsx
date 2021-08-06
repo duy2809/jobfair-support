@@ -2,19 +2,25 @@ import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 
+import { Button, Modal, notification } from 'antd'
+import {
+  ExclamationCircleOutlined,
+  CheckCircleTwoTone,
+} from '@ant-design/icons'
 import JfLayout from '../../layouts/JFLayout'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jfdata, jftask } from '../../api/jf-toppage'
+import { jfdata, jftask, deleteJF } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
+import { webInit } from '../../api/web-init'
 
 export default function jftoppage() {
   const [listTask, setlistTask] = useState([])
   const [name, setName] = useState('')
   const router = useRouter()
   const idJf = router.query.JFid
-
+  const [users, setUsers] = useState({})
   const [startDate, setStartDate] = useState()
   const [user, setuser] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
@@ -30,6 +36,14 @@ export default function jftoppage() {
       console.log(error)
     })
   }
+  const getDataUser = async () => {
+    await webInit().then((response) => {
+      setUsers(response.data.auth.user.role)
+      console.log(response.data.auth.user.name)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
   const fetchTasks = async () => {
     await jftask(idJf).then((response) => {
       setlistTask(response.data.data[0].tasks)
@@ -37,10 +51,45 @@ export default function jftoppage() {
       console.log(error)
     })
   }
+  const handleEdit = () => {
+    router.push('/template-tasts')
+  }
+  const saveNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
+      message: 'thanh cong',
+      onClick: () => {},
+    })
+  }
+  const deletetpl = async () => {
+    await deleteJF(idJf).then((response) => {
+      console.log(response.data)
+      saveNotification()
+      router.push('/template-tasts')
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  const modelDelete = () => {
+    Modal.confirm({
+      title: '削除してもよろしいですか？',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      onOk: () => {
+        deletetpl()
+      },
+      onCancel: () => {},
+      centered: true,
+      okText: 'はい',
+      cancelText: 'いいえ',
+    })
+  }
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
     fetchJF()
     fetchTasks()
+    getDataUser()
   }, [])
 
   return (
@@ -52,16 +101,22 @@ export default function jftoppage() {
               <h1>{name}</h1>
               <div className="admin__jf">
                 <div className="admin__top">
-                  <h3>{startDate}</h3>
-                  <h3>{user}</h3>
-                </div>
-                <div className="admin__top">
-                  <h3>
-                    {`企業:${numberOfStudents}`}
-                  </h3>
-                  <h3>
-                    {`学生:${numberOfCompanies}`}
-                  </h3>
+                  <div className="grid grid-cols-2">
+                    <div className="col-span-1">
+                      <h3 className="bo">{startDate}</h3>
+                      <h3>
+                        {`企業:${numberOfStudents}`}
+                      </h3>
+                    </div>
+                    <div className="col-span-1">
+                      <h3 className="bo">{user}</h3>
+                      <h3>
+                        {`学生:${numberOfCompanies}`}
+                      </h3>
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -78,7 +133,21 @@ export default function jftoppage() {
                   </div>
                 </div>
                 <div className="col-span-4">
+                  <div className="flex justify-end">
+                    <div className="search__task">
+                      <div className="button__right">
+                        { users === 2 ? (
+                          <>
+                            <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>編集</Button>
+                            <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>削除</Button>
+                          </>
+                        )
+                          : null}
+                      </div>
+                    </div>
+                  </div>
                   <div className="progress">
+
                     <div className="flex cha justify-center ...">
                       <div className="search__task">
                         <SearchSugges listTask={listTask} />

@@ -23,12 +23,7 @@ Route::prefix('member')->group(function () {
 });
 
 Route::resource('/jobfair', 'JobfairController');
-Route::group(['prefix' => 'jobfair/{id}'], function () {
-    Route::get('/milestones', 'JobfairController@getMilestones');
-    Route::get('/tasks', 'JobfairController@getTasks');
-    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
-    Route::get('/tasks/search', 'JobfairController@searchTask');
-});
+
 // add jf route start
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
@@ -41,7 +36,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
     Route::get('/tasks', 'JobfairController@getTasks');
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
-    Route::get('/tasks/search', 'JobfairController@searchTask');
     Route::get('/tasks/search', 'JobfairController@searchTask');
     Route::post('/jobfair', 'JobfairController@store');
 });
@@ -63,3 +57,11 @@ Route::post('/update-password', [ResetPasswordController::class, 'updatePassword
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+
+Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+
+//template-task
+Route::resource('/template-tasks','TemplateTaskController');
+Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
+Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
+Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
