@@ -97,13 +97,14 @@ class JobfairController extends Controller
     {
         $response = Jobfair::find($id);
         $deleteSchedule = Schedule::where('jobfair_id', $id)->first();
-        $baseSchedule = Schedule::find($request->schedule_id);
-        if ($deleteSchedule->name !== $baseSchedule->name) {
+        $templateSchedule = Schedule::find($request->schedule_id);
+        $finalSchedule = [];
+        if ($deleteSchedule->name !== $templateSchedule->name) {
             $deleteMilestone = Milestone::where('schedule_id', $deleteSchedule->id)->get();
             for ($i = 0; $i < count($deleteMilestone); $i++) {
-                $adb = Task::where('milestone_id', $deleteMilestone[$i]->id)->get();
-                for ($j = 0; $j < count($adb); $j++) {
-                    $adb[$j]->delete();
+                $temp = Task::where('milestone_id', $deleteMilestone[$i]->id)->get();
+                for ($j = 0; $j < count($temp); $j++) {
+                    $temp[$j]->delete();
                 }
             }
 
@@ -114,36 +115,36 @@ class JobfairController extends Controller
             $deleteSchedule->delete();
 
             $response->update($request->all());
-            $baseSchedule = Schedule::find($request->schedule_id);
-            $baseMilestone = Milestone::where('schedule_id', $baseSchedule->id)->get();
-            $baseTask = [];
+            $templateSchedule = Schedule::find($request->schedule_id);
+            $templateMilestone = Milestone::where('schedule_id', $templateSchedule->id)->get();
+            $templateTask = [];
             $finalSchedule = Schedule::create([
-                'name' => $baseSchedule->name,
+                'name' => $templateSchedule->name,
                 'jobfair_id' => $id,
             ]);
             $finalMilestone = [];
             $finalTask = [];
-            for ($i = 0; $i < count($baseMilestone); $i++) {
+            for ($i = 0; $i < count($templateMilestone); $i++) {
                 $temp = Milestone::create([
-                    'name' => $baseMilestone[$i]->name,
-                    'period' => $baseMilestone[$i]->period,
-                    'is_week' => $baseMilestone[$i]->is_week,
+                    'name' => $templateMilestone[$i]->name,
+                    'period' => $templateMilestone[$i]->period,
+                    'is_week' => $templateMilestone[$i]->is_week,
                     'schedule_id' => $finalSchedule->id,
                 ]);
                 array_push($finalMilestone, $temp);
-                $baseTask = Task::where('milestone_id', $baseMilestone[$i]->id)->get();
-                for ($j = 0; $j < count($baseTask); $j++) {
+                $templateTask = Task::where('milestone_id', $templateMilestone[$i]->id)->get();
+                for ($j = 0; $j < count($templateTask); $j++) {
                     $tas = Task::create([
-                        'name' => $baseTask[$j]->name,
-                        'start_time' => $baseTask[$j]->start_time,
-                        'end_time' => $baseTask[$j]->end_time,
-                        'number_of_member' => $baseTask[$j]->number_of_member,
-                        'status' => $baseTask[$j]->status,
-                        'remind_member' => $baseTask[$j]->remind_member,
-                        'description_of_detail' => $baseTask[$j]->description_of_detail,
-                        'relation_task_id' => $baseTask[$j]->relation_task_id,
+                        'name' => $templateTask[$j]->name,
+                        'start_time' => $templateTask[$j]->start_time,
+                        'end_time' => $templateTask[$j]->end_time,
+                        'number_of_member' => $templateTask[$j]->number_of_member,
+                        'status' => $templateTask[$j]->status,
+                        'remind_member' => $templateTask[$j]->remind_member,
+                        'description_of_detail' => $templateTask[$j]->description_of_detail,
+                        'relation_task_id' => $templateTask[$j]->relation_task_id,
                         'milestone_id' => $temp->id,
-                        'user_id' => $baseTask[$j]->user_id,
+                        'user_id' => $templateTask[$j]->user_id,
                     ]);
                     array_push($finalTask, $tas);
                 }
@@ -152,9 +153,8 @@ class JobfairController extends Controller
             $response->update($request->all());
             $finalSchedule = Schedule::where('jobfair_id', $id)->first();
         }
-
         return [
-            'data' => 'suceess',
+            'data' => ['Jobfair' => $response,'Schedule' => $finalSchedule],
         ];
     }
 
