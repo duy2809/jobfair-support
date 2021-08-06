@@ -117,7 +117,7 @@ class JobfairController extends Controller
             $response->update($request->all());
             $baseSchedule = Schedule::find($request->schedule_id);
             $baseMilestone = Milestone::where('schedule_id', $baseSchedule->id)->get();
-            $base_task = [];
+            $baseTask = [];
             $finalSchedule = Schedule::create([
                 'name' => $baseSchedule->name,
                 'jobfair_id' => $id,
@@ -132,19 +132,19 @@ class JobfairController extends Controller
                     'schedule_id' => $finalSchedule->id,
                 ]);
                 array_push($finalMilestone, $temp);
-                $base_task = Task::where('milestone_id', $baseMilestone[$i]->id)->get();
-                for ($j = 0; $j < count($base_task); $j++) {
+                $baseTask = Task::where('milestone_id', $baseMilestone[$i]->id)->get();
+                for ($j = 0; $j < count($baseTask); $j++) {
                     $tas = Task::create([
-                        'name' => $base_task[$j]->name,
-                        'start_time' => $base_task[$j]->start_time,
-                        'end_time' => $base_task[$j]->end_time,
-                        'number_of_member' => $base_task[$j]->number_of_member,
-                        'status' => $base_task[$j]->status,
-                        'remind_member' => $base_task[$j]->remind_member,
-                        'description_of_detail' => $base_task[$j]->description_of_detail,
-                        'relation_task_id' => $base_task[$j]->relation_task_id,
+                        'name' => $baseTask[$j]->name,
+                        'start_time' => $baseTask[$j]->start_time,
+                        'end_time' => $baseTask[$j]->end_time,
+                        'number_of_member' => $baseTask[$j]->number_of_member,
+                        'status' => $baseTask[$j]->status,
+                        'remind_member' => $baseTask[$j]->remind_member,
+                        'description_of_detail' => $baseTask[$j]->description_of_detail,
+                        'relation_task_id' => $baseTask[$j]->relation_task_id,
                         'milestone_id' => $temp->id,
-                        'user_id' => $base_task[$j]->user_id,
+                        'user_id' => $baseTask[$j]->user_id,
                     ]);
                     array_push($finalTask, $tas);
                 }
