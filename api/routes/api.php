@@ -20,11 +20,7 @@ Route::get('/web-init', WebInit::class);
 
 Route::resource('/jobfair', 'JobfairController');
 
-
-
 // add jf route start
-
-
 
 // jobfair
 
@@ -78,7 +74,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
-
 
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
