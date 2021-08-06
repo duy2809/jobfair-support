@@ -10,4 +10,5 @@ class CategoryDetail extends Model
     public $timestamps = false;
 
     use HasFactory;
+    public $timestamps = false;
 }

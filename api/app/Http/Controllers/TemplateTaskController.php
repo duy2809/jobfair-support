@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
 
+
 class TemplateTaskController extends Controller
 {
     /**
@@ -16,8 +17,8 @@ class TemplateTaskController extends Controller
     public function index()
     {
         $templateTasks = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])
-            ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id']);
-
+        ->orderBy('template_tasks.created_at', 'DESC')
+        ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
         return response()->json($templateTasks);
     }
 
@@ -39,6 +40,7 @@ class TemplateTaskController extends Controller
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
         }
 
+
         return response()->json(['message' => 'Save Successfully'], 200);
     }
 
@@ -51,7 +53,6 @@ class TemplateTaskController extends Controller
     public function show($id)
     {
         $templateTask = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])->find($id);
-
         return response()->json($templateTask);
     }
 
@@ -91,7 +92,6 @@ class TemplateTaskController extends Controller
         $templateTasks->beforeTasks()->detach();
         $templateTasks->afterTasks()->detach();
         $templateTasks->delete();
-
         return response()->json(['message' => 'Delete Successfully'], 200);
     }
 
@@ -116,3 +116,4 @@ class TemplateTaskController extends Controller
         return response()->json($afterTasks);
     }
 }
+

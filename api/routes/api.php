@@ -79,7 +79,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
-
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
@@ -98,7 +97,6 @@ Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks')
 Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
-
 
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);

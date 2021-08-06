@@ -1,0 +1,57 @@
+.ant-pagination-item:hover, 
+.ant-pagination-item > a:hover, 
+.ant-pagination-item-active > a, 
+.ant-pagination-item-active,
+.ant-pagination-item-link:hover {
+    border-color: #ffd803 !important;
+    color: #ffd803 !important;
+}
+a:hover {
+    color: #ffd803 !important;
+}
+ .ant-slider-track{
+      background-color: #ffd803 !important;
+  }
+  .ant-slider-rail {
+      background-color: #e3f6f5!important;
+  }
+  .ant-slider-handle {
+      background-color: #272343 !important;
+  }
+  thead[class*="ant-table-thead"] th{
+      background-color: #bae8e8 !important;
+  }
+  .ant-tooltip-inner {
+    color:#272343 !important;
+    background-color: #fffffe !important;
+  }
+  .form {
+      display: flex;
+      flex-direction:row;
+  }
+  select option[value="plab"] {
+    color: #fffffe;
+  }
+  .search {
+    background-color: white;
+    width: 20%;
+    float: left;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding:2px 0px 2px 5px;
+    margin-right: 10px;
+    select {
+        border: none;
+        width: 100%;
+        background-color: #fffffe;
+    }
+    select:visited,select:focus,select:hover {
+        outline: none;
+
+    }
+  }
+  
+  input.form-search:visited,input.form-search:focus,input.form-search:visited {
+    box-shadow: none;
+    outline: none;
+  }
