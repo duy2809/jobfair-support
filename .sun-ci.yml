@@ -146,7 +146,7 @@ jobs:
       MIX_GA_ID: UA-88817199-2043
     <<: *docker-build
     only: *develop
-    # except: *pull-request
+    except: *pull-request
 
   - name: Production build
     stage: build
@@ -161,7 +161,7 @@ jobs:
       MIX_GA_ID: UA-88817199-2043
     <<: *docker-build
     only: *master
-    # except: *pull-request
+    except: *pull-request
 
   - name: Staging deploy
     stage: deploy
@@ -172,7 +172,7 @@ jobs:
     - export DEPLOY_SERVER_USER="$STAGING_SERVER_USER"
     <<: *deploy
     only: *develop
-    # except: *pull-request
+    except: *pull-request
 
   - name: Production deploy
     stage: deploy
@@ -183,4 +183,4 @@ jobs:
     - export DEPLOY_SERVER_USER="$PRODUCTION_SERVER_USER"
     <<: *deploy
     only: *master
-    # except: *pull-request
+    except: *pull-request
