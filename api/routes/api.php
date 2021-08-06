@@ -21,6 +21,7 @@ Route::get('/web-init', WebInit::class);
 Route::resource('/jobfair', 'JobfairController');
 
 
+
 // add jf route start
 
 
@@ -96,4 +97,3 @@ Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks')
 Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
-
