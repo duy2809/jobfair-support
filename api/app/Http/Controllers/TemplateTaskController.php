@@ -104,15 +104,15 @@ class TemplateTaskController extends Controller
 
     public function getBeforeTasks($id)
     {
-        $before_tasks = TemplateTask::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+        $beforeTasks = TemplateTask::with('beforeTasks:id,name')->find($id, ['id', 'name']);
 
-        return response()->json($before_tasks);
+        return response()->json($beforeTasks);
     }
 
     public function getAfterTasks($id)
     {
-        $after_tasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
+        $afterTasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
 
-        return response()->json($after_tasks);
+        return response()->json($afterTasks);
     }
 }
