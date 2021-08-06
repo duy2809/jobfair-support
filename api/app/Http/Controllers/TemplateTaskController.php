@@ -39,6 +39,7 @@ class TemplateTaskController extends Controller
         if (!empty($request->afterTasks)) {
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
         }
+
         return response()->json(['message' => 'Save Successfully'], 200);
     }
 
@@ -105,6 +106,7 @@ class TemplateTaskController extends Controller
     public function getBeforeTasks($id)
     {
         $beforeTasks = TemplateTask::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+
         return response()->json($beforeTasks);
     }
 
@@ -115,5 +117,3 @@ class TemplateTaskController extends Controller
         return response()->json($afterTasks);
     }
 }
-
-
