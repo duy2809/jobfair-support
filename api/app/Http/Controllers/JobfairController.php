@@ -149,7 +149,8 @@ class JobfairController extends Controller
                     array_push($finalTask, $tas);
                 }
             }
-        } else {
+        } 
+        else {
             $response->update($request->all());
             $finalSchedule = Schedule::where('jobfair_id', $id)->first();
         }
@@ -232,7 +233,7 @@ class JobfairController extends Controller
 
     public function checkNameExisted(Request $request)
     {
-        return User::where('name', '=', $request->name)->first();
+        return Jobfair::where('name', '=', $request->name)->get();
     }
 }
 
