@@ -236,3 +236,4 @@ class JobfairController extends Controller
         return User::where('name', '=', $request->name)->first();
     }
 }
+
