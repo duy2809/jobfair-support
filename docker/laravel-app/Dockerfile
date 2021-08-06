@@ -18,6 +18,8 @@ WORKDIR /srv/jfs
 COPY . .
 
 # Dump autoload & isolate autoload files so the vendor cache won't be invalidated next time
+RUN ls
+
 RUN ln -s /composer/vendor \
     && composer dump-autoload --optimize --no-dev \
     && rm vendor \
