@@ -91,7 +91,7 @@ export default function TemplateTaskList() {
       render: (id) => id,
     },
     {
-      title: 'テンプレートタスク一名',
+      title: 'テンプレートタスク名',
       width: 80,
       dataIndex: 'templateTaskName',
       fixed: 'left',
@@ -186,14 +186,14 @@ export default function TemplateTaskList() {
   }
 
   return (
-    <div className="TemplateTaskList">
-      <OtherLayout>
-        <OtherLayout.Main>
+    <OtherLayout>
+      <OtherLayout.Main>
+        <div className="TemplateTaskList">
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
               <div className="flex-col space-y-9">
                 <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスク一覧</h1>
+                  <h1 className="text-3xl float-left">テンプレートタスク覧</h1>
                 </div>
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-4 w-9/12">
@@ -243,8 +243,8 @@ export default function TemplateTaskList() {
               locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
             />
           </div>
-        </OtherLayout.Main>
-      </OtherLayout>
-    </div>
+        </div>
+      </OtherLayout.Main>
+    </OtherLayout>
   )
 }

@@ -198,7 +198,7 @@ const index = () => {
     const name = form.getFieldValue('name')
     const response = await addJFAPI.isJFExisted({ name })
 
-    if (response.data) {
+    if (response.data.length) {
       return notification.open({
         icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
         duration: 3,

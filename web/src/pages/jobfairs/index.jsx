@@ -75,7 +75,7 @@ export default function JFList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-top/${record.idJF}`}>{JF名}</a></Tooltip>,
+      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{JF名}</a></Tooltip>,
     },
 
     {
@@ -202,9 +202,9 @@ export default function JFList() {
   }
 
   return (
-    <div className="JFList">
-      <OtherLayout>
-        <OtherLayout.Main>
+    <OtherLayout>
+      <OtherLayout.Main>
+        <div className="JFList">
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="flex-col space-y-9">
               <div className="flex items-center">
@@ -323,8 +323,8 @@ export default function JFList() {
               locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
             />
           </div>
-        </OtherLayout.Main>
-      </OtherLayout>
-    </div>
+        </div>
+      </OtherLayout.Main>
+    </OtherLayout>
   )
 }
