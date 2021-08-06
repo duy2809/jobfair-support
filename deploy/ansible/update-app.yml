@@ -32,7 +32,7 @@
     shell: >
       docker service update {{ item.service }} --image={{ item.image }} --with-registry-auth
     loop:
-    - service: jobfair_webs
+    - service: jobfair_web
       image: "{{ webserver_image }}"
     - service: jobfair_api
       image: "{{ apiserver_image }}"
