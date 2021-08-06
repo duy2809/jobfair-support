@@ -96,43 +96,43 @@ class JobfairController extends Controller
     public function update(Request $request, $id)
     {
         $response = Jobfair::find($id);
-        $delete_schedule = Schedule::where('jobfair_id', $id)->first();
-        $base_schedule = Schedule::find($request->schedule_id);
-        $final_schedule = [];
-        if ($delete_schedule->name !== $base_schedule->name) {
-            $delete_milestone = Milestone::where('schedule_id', $delete_schedule->id)->get();
-            for ($i = 0; $i < count($delete_milestone); $i++) {
-                $adb = Task::where('milestone_id', $delete_milestone[$i]->id)->get();
+        $deleteSchedule = Schedule::where('jobfair_id', $id)->first();
+        $baseSchedule = Schedule::find($request->schedule_id);
+        $finalSchedule = [];
+        if ($deleteSchedule->name !== $baseSchedule->name) {
+            $deleteMilestone = Milestone::where('schedule_id', $deleteSchedule->id)->get();
+            for ($i = 0; $i < count($deleteMilestone); $i++) {
+                $adb = Task::where('milestone_id', $deleteMilestone[$i]->id)->get();
                 for ($j = 0; $j < count($adb); $j++) {
                     $adb[$j]->delete();
                 }
             }
 
-            for ($i = 0; $i < count($delete_milestone); $i++) {
-                $delete_milestone[$i]->delete();
+            for ($i = 0; $i < count($deleteMilestone); $i++) {
+                $deleteMilestone[$i]->delete();
             }
 
-            $delete_schedule->delete();
+            $deleteSchedule->delete();
 
             $response->update($request->all());
-            $base_schedule = Schedule::find($request->schedule_id);
-            $base_milestone = Milestone::where('schedule_id', $base_schedule->id)->get();
+            $baseSchedule = Schedule::find($request->schedule_id);
+            $baseMilestone = Milestone::where('schedule_id', $baseSchedule->id)->get();
             $base_task = [];
-            $final_schedule = Schedule::create([
-                'name' => $base_schedule->name,
+            $finalSchedule = Schedule::create([
+                'name' => $baseSchedule->name,
                 'jobfair_id' => $id,
             ]);
-            $final_milestone = [];
-            $final_task = [];
-            for ($i = 0; $i < count($base_milestone); $i++) {
+            $finalMilestone = [];
+            $finalTask = [];
+            for ($i = 0; $i < count($baseMilestone); $i++) {
                 $temp = Milestone::create([
-                    'name' => $base_milestone[$i]->name,
-                    'period' => $base_milestone[$i]->period,
-                    'is_week' => $base_milestone[$i]->is_week,
-                    'schedule_id' => $final_schedule->id,
+                    'name' => $baseMilestone[$i]->name,
+                    'period' => $baseMilestone[$i]->period,
+                    'is_week' => $baseMilestone[$i]->is_week,
+                    'schedule_id' => $finalSchedule->id,
                 ]);
-                array_push($final_milestone, $temp);
-                $base_task = Task::where('milestone_id', $base_milestone[$i]->id)->get();
+                array_push($finalMilestone, $temp);
+                $base_task = Task::where('milestone_id', $baseMilestone[$i]->id)->get();
                 for ($j = 0; $j < count($base_task); $j++) {
                     $tas = Task::create([
                         'name' => $base_task[$j]->name,
@@ -146,12 +146,12 @@ class JobfairController extends Controller
                         'milestone_id' => $temp->id,
                         'user_id' => $base_task[$j]->user_id,
                     ]);
-                    array_push($final_task, $tas);
+                    array_push($finalTask, $tas);
                 }
             }
         } else {
             $response->update($request->all());
-            $final_schedule = Schedule::where('jobfair_id', $id)->first();
+            $finalSchedule = Schedule::where('jobfair_id', $id)->first();
         }
 
         return [
