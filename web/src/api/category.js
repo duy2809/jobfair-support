@@ -10,3 +10,5 @@ const getListCategory = () => instance.get('/category')
 export const CategoryApi = {
   getListCategory,
 }
+export const checkUniqueAdd = async (name) => instance.get(`/category/checkDuplicate/${name}`)
+export const checkUniqueEdit = async (id, name) => instance.get(`/category/checkUniqueEdit/${id}/${name}`)

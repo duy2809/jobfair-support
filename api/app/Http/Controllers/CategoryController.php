@@ -94,4 +94,12 @@ class CategoryController extends Controller
     {
         return Category::destroy($id);
     }
+    public function checkDuplicate($name)
+    {
+        return Category::where('category_name', '=', $name)->get();
+    }
+    public function checkUniqueEdit($id, $name)
+    {
+        return Category::where('id', '<>', $id)->where('category_name', '=', $name)->get();
+    }
 }

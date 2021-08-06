@@ -84,3 +84,7 @@
 .ant-btn{
     color: #272343;
 }
+// add form
+.ant-form-item-required::after{
+    display: none;
+}
