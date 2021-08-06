@@ -191,7 +191,7 @@ export default function TemplateTaskList() {
         <OtherLayout.Main>
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
-              <div className="flex-col space-y-5">
+              <div className="flex-col space-y-9">
                 <div className="flex items-center">
                   <h1 className="text-3xl float-left">テンプレートタスク一覧</h1>
                 </div>
@@ -222,14 +222,16 @@ export default function TemplateTaskList() {
                     <Option value={50}>50</Option>
                   </Select>
                 </div>
-                <Input
-                  className="w-1/4 float-right"
-                  allowClear="true"
-                  prefix={<SearchOutlined />}
-                  placeholder="JF名, 管理者"
-                  onChange={onSearch}
-                  value={valueSearch}
-                />
+                <div>
+                  <Input
+                    className="float-right"
+                    allowClear="true"
+                    prefix={<SearchOutlined />}
+                    placeholder="JF名, 管理者"
+                    onChange={onSearch}
+                    value={valueSearch}
+                  />
+                </div>
               </div>
             </div>
             <Table
