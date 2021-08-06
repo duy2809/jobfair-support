@@ -56,8 +56,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::resource('/milestone', TemplateMilestoneController::class);
 
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@getList');
-Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
@@ -92,3 +90,7 @@ Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks')
 Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
+
+Route::put('/profile/{id}/update_info', 'ProfileController@updateUserInfo');
+Route::post('/profile/{id}/update_password', 'ProfileController@updatePassword');
+Route::post('/profile/{id}/update_avatar', 'ProfileController@updateAvatar');
