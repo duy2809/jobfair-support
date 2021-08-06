@@ -57,6 +57,7 @@ export default function TemplateTaskList() {
     }
     setTemperaryData(data)
     setOriginalData(data)
+    setDataFilter(data)
   }
 
   const addOptionCategory = (response) => {
