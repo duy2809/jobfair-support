@@ -128,6 +128,4 @@ class TemplateMilestoneController extends Controller
 
         return response()->json($data);
     }
-
-    
 }

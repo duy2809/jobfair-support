@@ -29,10 +29,8 @@ class ProfileController extends Controller
             'id' => $id,
         ], $rules);
         $validator->validate();
-        $contents = Storage::download('image/avatars/1.jpg');
 
         return User::find($id);
-        // return $contents;
     }
 
     public function avatar($id)
