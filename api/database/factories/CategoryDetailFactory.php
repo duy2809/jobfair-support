@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use App\Models\CategoryDetail;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryDetailFactory extends Factory
@@ -29,4 +28,3 @@ class CategoryDetailFactory extends Factory
         ];
     }
 }
-

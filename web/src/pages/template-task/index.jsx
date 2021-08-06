@@ -1,13 +1,10 @@
-
-
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Select, Tooltip } from 'antd'
+import { Table, Input, Empty, Select, Tooltip, Button } from 'antd'
 import './style.scss'
 import { SearchOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getTaskList, getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { filter, set } from 'lodash'
 
 export default function TemplateTaskList() {
   // state of table
@@ -66,7 +63,7 @@ export default function TemplateTaskList() {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>
+        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
       )
     }
     setOptionCategory(option)
@@ -76,7 +73,7 @@ export default function TemplateTaskList() {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].name}>{response.data[i].name}</Option>
+        <Option key={response.data[i].name}>{response.data[i].name}</Option>,
       )
     }
     setOptionMileStone(option)
@@ -101,25 +98,25 @@ export default function TemplateTaskList() {
         showTitle: false,
       },
       render: (fix) => {
-        let tt = fix
+        const tt = fix
 
         if (fix.length >= 20) {
-          fix = fix.slice(1, 20) + '...';
+          fix = `${fix.slice(1, 20)}...`
         }
-        return <Tooltip title={tt}><a href={fix}>{fix}</a></Tooltip>;
+        return <Tooltip title={tt}><a href={fix}>{fix}</a></Tooltip>
       },
     },
     {
       title: 'カテゴリ',
       width: 100,
       dataIndex: 'category_name',
-      fixed: 'left'
+      fixed: 'left',
     },
     {
       title: 'マイルストーン',
       dataIndex: 'milestone_name',
       width: 100,
-    }
+    },
   ]
 
   // data of table get from database
@@ -181,7 +178,7 @@ export default function TemplateTaskList() {
     if (!value) {
       setMilestone('')
       const filteredData = originalData.filter((templateTask) => (templateTask.templateTaskName.toLowerCase().includes(valueSearch.toLowerCase()))
-      && templateTask.category_name.includes(category))
+        && templateTask.category_name.includes(category))
       setTemperaryData(filteredData)
       setDataFilter(filteredData)
       return
@@ -199,36 +196,47 @@ export default function TemplateTaskList() {
       <OtherLayout>
         <OtherLayout.Main>
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
-            <div className="flex-col space-y-9">
-              <div className="flex items-center">
-                <h1 className="text-3xl float-left">テンプレートタスク一覧</h1>
+            <div className="space-y-5">
+              <div className="flex-col space-y-5">
+                <div className="flex items-center">
+                  <h1 className="text-3xl float-left">テンプレートタスク一覧</h1>
+                </div>
+                <div className="flex justify-between">
+                  <div className="flex items-center space-x-4 w-9/12">
+                    <Select className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
+                      {optionCategory}
+                    </Select>
+                    <Select className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
+                      {optionMilestone}
+                    </Select>
+                  </div>
+                  <Button
+                    className="flex float-right"
+                    href="/add-template-task"
+                    type="primary"
+                  >
+                    追加
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <Select style={{ width: '15%' }} placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
-                  {optionCategory}
-                </Select>
-                <Select style={{ width: '15%' }} placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
-                  {optionMilestone}
-                </Select>
+              <div className="flex items-center justify-between">
+                <div>
+                  <span>表示件数: </span>
+                  <Select value={itemCount} onChange={handleSelect}>
+                    <Option value={10}>10</Option>
+                    <Option value={25}>25</Option>
+                    <Option value={50}>50</Option>
+                  </Select>
+                </div>
+                <Input
+                  className="w-1/4 float-right"
+                  allowClear="true"
+                  prefix={<SearchOutlined />}
+                  placeholder="JF名, 管理者"
+                  onChange={onSearch}
+                  value={valueSearch}
+                />
               </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <span>表示件数: </span>
-                <Select value={itemCount} onChange={handleSelect}>
-                  <Option value={10}>10</Option>
-                  <Option value={25}>25</Option>
-                  <Option value={50}>50</Option>
-                </Select>
-              </div>
-              <Input
-                className="w-1/4 float-right"
-                allowClear="true"
-                prefix={<SearchOutlined />}
-                placeholder="JF名, 管理者"
-                onChange={onSearch}
-                value={valueSearch}
-              />
             </div>
             <Table
               columns={columns}
@@ -241,6 +249,6 @@ export default function TemplateTaskList() {
           </div>
         </OtherLayout.Main>
       </OtherLayout>
-    </div >
+    </div>
   )
 }

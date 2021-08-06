@@ -6,7 +6,6 @@ use App\Models\TemplateMilestone;
 use App\Models\TemplateTask;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-
 class TemplateTaskFactory extends Factory
 {
     /**
@@ -34,4 +33,3 @@ class TemplateTaskFactory extends Factory
         ];
     }
 }
-

@@ -8,3 +8,4 @@ export const deleteTptt = (id) => axios.delete(`/template-tasks/${id}`)
 export const getTaskList = () => axios.get('/template-tasks')
 export const getCategories = () => axios.get('/categories-template-tasks')
 
+
