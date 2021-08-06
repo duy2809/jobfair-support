@@ -10,10 +10,7 @@ class Category extends Model
     use HasFactory;
 
     public $timestamps = false;
-<<<<<<< HEAD
     protected $fillable = ['category_name'];
-=======
->>>>>>> 3953a14f6b75df6f204f07170c62433396037a4c
 
     public function tasks()
     {
