@@ -58,7 +58,7 @@ export default function jftoppage() {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
-      message: 'thanh cong',
+      message: '正常に削除されました',
       onClick: () => {},
     })
   }
