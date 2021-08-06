@@ -1,0 +1,52 @@
+.container {
+  margin-top: 5rem;
+  display: flex;
+  // justify-content: space-between;
+  margin-left: 9rem;
+  p {
+    margin: auto;
+  }
+  .ant-btn {
+    background-color: #ECECEC;
+    border-color: #BBB;
+  }
+  
+  .ant-btn:hover {
+    color: #ffd803;
+    background: #fff;
+    border-color: #ffd803;
+  }
+  
+}
+
+.container-form {
+  margin: auto; 
+  height: 7.5cm;
+  width: 20cm;
+  border: 2px solid #ccc!important;
+  margin-left: 4rem;
+}
+
+.container-btn {
+  // margin-left: 53rem;
+  margin-top: 10px;
+  display: flex;
+  width: 85%;
+.ant-btn:hover {
+  color: #ffd803;
+  background: #fff;
+  border-color: #ffd803;
+}
+
+.ant-btn {
+  border-color: #BBB;
+  color: black;
+  border-radius: 5px;
+  width: auto;
+}
+
+p {
+  margin: auto;
+}
+}
+

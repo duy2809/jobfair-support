@@ -1,0 +1,28 @@
+.avatar{
+img,
+button {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  border: none;
+  background: #fef289;
+  color: #000;
+}
+.ant-upload-list-item-info {
+  display: none;
+}
+img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+}
