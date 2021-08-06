@@ -98,7 +98,6 @@ class JobfairController extends Controller
         $response = Jobfair::find($id);
         $deleteSchedule = Schedule::where('jobfair_id', $id)->first();
         $baseSchedule = Schedule::find($request->schedule_id);
-        $finalSchedule = [];
         if ($deleteSchedule->name !== $baseSchedule->name) {
             $deleteMilestone = Milestone::where('schedule_id', $deleteSchedule->id)->get();
             for ($i = 0; $i < count($deleteMilestone); $i++) {
