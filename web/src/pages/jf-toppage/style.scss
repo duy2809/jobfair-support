@@ -12,10 +12,10 @@
         }
         button{
            position: absolute;
-           top: -15px;
+           top: -20px;
            right: 20%;    
             margin-left: 10px;
-            
+            height: 42px;
           }
     }
     
@@ -39,9 +39,16 @@
         }
         .admin__top{
             display: flex;
+            .bo{
+                
+                border: 1px solid #2d334a;
+                padding: 0 20px;
+            }
             h3{
+                text-align: center;
                 color: #2d334a;
                 padding-left: 10px;
+               
             }
         }
     }
@@ -53,10 +60,14 @@
     }
     .status__global{
     margin-left: 50px;
-    margin-top: 50px;
+    // margin-top: 50px;
     width: 100%;
     }
+    .button__edit{
+        margin-right: 10px;
+    }
     .progress{
+        margin-top: 50px;
         .search__task{
             input{
                 border: 1px solid rgb(204, 203, 203);

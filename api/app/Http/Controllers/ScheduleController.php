@@ -106,4 +106,13 @@ class ScheduleController extends Controller
     {
         return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
     }
+
+    public function getScheduleb($id)
+    {
+        $schedule = Schedule::where('jobfair_id', '=', $id)->get();
+
+        return response()->json([
+            'data' => $schedule,
+        ]);
+    }
 }
