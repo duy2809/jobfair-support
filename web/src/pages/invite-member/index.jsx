@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Modal, notification, Select } from 'antd'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../layouts/OtherLayout'
 import 'antd/dist/antd.css'
 import './styles.scss'
-import { sendInviteLink } from '~/api/invite-member'
+import { sendInviteLink } from '~/api/member'
 
 export default function InviteMember() {
   const [emailInput, setEmailInput] = useState('')
@@ -12,6 +12,12 @@ export default function InviteMember() {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const router = useRouter()
   const [form] = Form.useForm()
+  const [, forceUpdate] = useState({})
+
+  // Disable button when reload page
+  useEffect(() => {
+    forceUpdate({})
+  }, [])
 
   const onValueEmailChange = (e) => {
     setEmailInput(e.target.value)
@@ -32,11 +38,15 @@ export default function InviteMember() {
   children.push(<Option key="2">管理者</Option>)
   children.push(<Option key="3">メンバ</Option>)
 
-   const validateMessages = {
+  /* eslint-disable no-template-curly-in-string */
+  const validateMessages = {
     required: '${label}を入力してください。',
     types: {
-      string: '',
-    }
+      email: '',
+    },
+    email: {
+      message: '${message}',
+    },
   }
 
   const handleCancel = () => {
@@ -82,27 +92,26 @@ export default function InviteMember() {
       }
     }
   }
+
   return (
     <OtherLayout>
       <OtherLayout.Main>
         <div className="flex flex-col h-full items-center justify-center ">
           <div className="screen-name text-6xl w-11/12  py-10 ">メンバ招待</div>
           <div className=" justify-items-center w-6/12 rounded-2xl border-2 border-black">
-            <Form className="text-2xl m-auto w-full " {...layout} form={form} 
-            onFinish={handleInvite} 
-            onFinishFailed={onFinishFailed}
-            validateMessages={validateMessages}
+            <Form
+              className="text-2xl m-auto w-full "
+              {...layout}
+              form={form}
+              onFinish={handleInvite}
+              onFinishFailed={onFinishFailed}
+              validateMessages={validateMessages}
             >
               <Form.Item
                 name="email"
                 label="メールアドレス"
                 rules={[
-                  {
-                    type: 'email',
-                    message: 'メールアドレス有効なメールではありません!',
-                    // required: true,
-                  },
-                  { required: true }
+                  { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!'}
                 ]}
               >
                 <Input
@@ -160,24 +169,29 @@ export default function InviteMember() {
                     </Button>
                   </div>
                   <div>
-                    <Button
-                      id="btn-submit"
-                      size="large"
-                      className="ml-9 text-base px-14 w-32"
-                      type="primary"
-                      htmlType="submit"
-                      disabled={
-                        !(
-                          form.isFieldTouched('email')
-                          && form.isFieldTouched('categories')
-                        )
-                        || !!form
-                          .getFieldsError()
-                          .filter(({ errors }) => errors.length).length
-                      }
-                    >
-                      招待
-                    </Button>
+                    <Form.Item shouldUpdate>
+                      {() => (
+                        <div className="flex justify-center">
+                          <Button
+                            id="btn-submit"
+                            type="primary"
+                            htmlType="submit"
+                            className="text-base px-14"
+                            disabled={
+                              !!form
+                                .getFieldsError()
+                                .filter(({ errors }) => errors.length).length
+                              || !(
+                                form.isFieldTouched('email')
+                                && form.isFieldTouched('categories')
+                              )
+                            }
+                          >
+                            招待
+                          </Button>
+                        </div>
+                      )}
+                    </Form.Item>
                   </div>
                 </div>
               </Form.Item>
