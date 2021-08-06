@@ -30,7 +30,7 @@ Route::resource('/jobfair', 'JobfairController');
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
->>>>>>> develop
+
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
 
@@ -90,7 +90,7 @@ Route::resource('/template-tasks','TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
-=======
+
 //category
 
 Route::prefix('category')->group(function () {
