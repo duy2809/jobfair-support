@@ -100,7 +100,7 @@ Route::prefix('category')->group(function () {
 
 
 Route::resource('/profile', ProfileController::class);
-Route::resource('/profile/avatar', [ProfileController::class, 'getAvatar']);
+// Route::resource('/profile/avatar', [ProfileController::class, 'getAvatar']);
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
