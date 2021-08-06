@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 
 class JobfairController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -169,6 +168,7 @@ class JobfairController extends Controller
     public function destroy($id)
     {
         Jobfair::destroy($id);
+
         return response()->json(['message' => 'Deleted Successfully'], 200);
     }
 

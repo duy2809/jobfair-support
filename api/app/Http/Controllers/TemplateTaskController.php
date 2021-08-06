@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\TemplateTask;
 use App\Models\Category;
+use App\Models\TemplateTask;
+use Illuminate\Http\Request;
+
 class TemplateTaskController extends Controller
 {
     /**
@@ -16,6 +17,7 @@ class TemplateTaskController extends Controller
     {
         $templateTasks = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])
             ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id']);
+
         return response()->json($templateTasks);
     }
 
@@ -29,10 +31,14 @@ class TemplateTaskController extends Controller
     {
         $newTemplateTask = TemplateTask::create($request->all());
         $newTemplateTask->categories()->attach($request->category_id);
-        if(!empty($request->beforeTasks))
+        if (!empty($request->beforeTasks)) {
             $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
-        if(!empty($request->afterTasks))
+        }
+
+        if (!empty($request->afterTasks)) {
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
+        }
+
         return response()->json(['message' => 'Save Successfully'], 200);
     }
 
@@ -45,6 +51,7 @@ class TemplateTaskController extends Controller
     public function show($id)
     {
         $templateTask = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])->find($id);
+
         return response()->json($templateTask);
     }
 
@@ -60,12 +67,15 @@ class TemplateTaskController extends Controller
         $templateTask = TemplateTask::find($id);
         $templateTask->update($request->all());
         $templateTask->categories()->sync($request->category_id);
-        if(!empty($request->beforeTasks))
+        if (!empty($request->beforeTasks)) {
             $templateTask->beforeTasks()->sync($request->beforeTasks);
-        if(!empty($request->afterTasks))
-            $templateTask->afterTasks()->sync($request->afterTasks);
-        return response()->json(['message' => 'Edit Successfully'], 200);
+        }
 
+        if (!empty($request->afterTasks)) {
+            $templateTask->afterTasks()->sync($request->afterTasks);
+        }
+
+        return response()->json(['message' => 'Edit Successfully'], 200);
     }
 
     /**
@@ -81,21 +91,28 @@ class TemplateTaskController extends Controller
         $templateTasks->beforeTasks()->detach();
         $templateTasks->afterTasks()->detach();
         $templateTasks->delete();
+
         return response()->json(['message' => 'Delete Successfully'], 200);
     }
 
-    public function getCategoriesTasks() {
+    public function getCategoriesTasks()
+    {
         $categories = Category::has('templateTasks')->get();
+
         return response()->json($categories);
     }
 
-    public function getBeforeTasks($id) {
-        $before_tasks = TemplateTask::with('beforeTasks:id,name')->find($id,['id','name']);
+    public function getBeforeTasks($id)
+    {
+        $before_tasks = TemplateTask::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+
         return response()->json($before_tasks);
     }
 
-    public function getAfterTasks($id) {
-        $after_tasks = TemplateTask::with('afterTasks:id,name')->find($id,['id','name']);
+    public function getAfterTasks($id)
+    {
+        $after_tasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
+
         return response()->json($after_tasks);
     }
 }
