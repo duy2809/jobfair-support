@@ -60,7 +60,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::resource('/milestone', TemplateMilestoneController::class);
 
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@getList');
+// Route::get('/milestone', 'TemplateMilestoneController@getList');
 Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member

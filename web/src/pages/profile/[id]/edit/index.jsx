@@ -8,8 +8,6 @@ import CancelEditProfile from '../../UI/button/CancelEditProfile'
 import './styles.scss'
 
 const EditProfilePage = () => {
-  let idProfile;
-  const [id, setId] = useState()
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [idChatWorkInput, setIdChatWordInput] = useState('')
@@ -36,8 +34,6 @@ const EditProfilePage = () => {
     try{
      const temp = /[/](\d+)[/]/.exec(window.location.pathname)
       const id = `${temp[1]}`
-      setId(id)
-      console.log(idProfile)
       const result = await getUser(id)
       setNameInput(result.name)
       setIdChatWordInput(result.chatwork_id)
@@ -284,7 +280,7 @@ const EditProfilePage = () => {
           </div>
         </div>
         <div className="container-btn justify-end">
-        <CancelEditProfile onId={id}/>
+        <CancelEditProfile />
         {(nameInput !== '' && emailInput !== '' && idChatWorkInput !== '' && isDisable === false) ? (
           <Button
             type="primary"

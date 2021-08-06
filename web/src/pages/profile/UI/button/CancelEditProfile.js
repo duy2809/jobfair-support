@@ -2,7 +2,7 @@ import { Modal, Button } from 'antd'
 import React, {useState} from 'react'
 import { useRouter } from 'next/router'
 
-const CancelEditProfile = (props) => {
+const CancelEditProfile = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const router = useRouter()
   const showModal = () => {
@@ -11,7 +11,7 @@ const CancelEditProfile = (props) => {
 
   const handleOk = () => {
     setIsModalVisible(false)
-    router.push(`/profile/${props.onId}`)
+    router.push('/profile/')
   }
 
   const handleCancel = () => {
