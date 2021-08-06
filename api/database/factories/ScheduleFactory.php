@@ -22,7 +22,8 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
+            'jobfair_id' => null,
+            'name' => $this->faker->name(),
         ];
     }
 }

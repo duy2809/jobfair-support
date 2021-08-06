@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Checkbox, Modal, notification } from 'antd'
 import { useRouter } from 'next/router'
+import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
+import './style.scss'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -42,7 +44,7 @@ const LoginPage = () => {
       const response = await login(values)
       if (response.request.status === 200) openNotification('success', '正常にログインしました')
       setTimeout(() => {
-        router.push('/top-page')
+        router.push('/top')
       }, 2500)
     } catch (error) {
       if (error.request.status === 400) {
@@ -92,71 +94,26 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center pt-10 bg-white">
-      <img src="./logo.png" className="w-24" alt="logo" />
-      <p className="text-3xl my-8">Jobfair サポート</p>
-      <Form
-        form={form}
-        name="login"
-        initialValues={{
-          remember: false,
-        }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        layout="vertical"
-        className="w-96"
-        validateMessages={validateMessages}
-      >
-        <Form.Item
-          label="メールアドレス"
-          name="email"
-          rules={[{ required: true }, { type: 'email' }]}
-        >
-          <Input
-            type="email"
-            placeholder="メールアドレスを入力してください。"
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="パスワード"
-          name="password"
-          rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
-        >
-          <Input.Password placeholder="パスワードを入力してください。" />
-        </Form.Item>
-
-        <Form.Item name="remember" valuePropName="checked">
-          <div className="flex justify-between item-center">
-            <Checkbox>ログインしたままにする</Checkbox>
-            <a className="text-blue-600" onClick={showModal}>
-              パスワードをお忘れの方
-            </a>
-          </div>
-        </Form.Item>
-
-        <Modal
-          title="パスワード変更"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-          cancelText="キャンセル"
-          okButtonProps={{
-            disabled: isDisableOk,
-          }}
-        >
+    <Layout>
+      <Layout.Main>
+        <div className="h-screen flex flex-col items-center pt-10 bg-white">
+          <img src="./logo.png" className="w-24" alt="logo" />
+          <p className="text-3xl my-8">Jobfair サポート</p>
           <Form
-            form={form2}
-            name="reset-password"
+            form={form}
+            name="login"
+            initialValues={{
+              remember: false,
+            }}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             layout="vertical"
-            onValuesChange={onChangeDisableOk}
+            className="w-96"
             validateMessages={validateMessages}
           >
             <Form.Item
               label="メールアドレス"
-              name="reset-email"
+              name="email"
               rules={[{ required: true }, { type: 'email' }]}
             >
               <Input
@@ -164,32 +121,82 @@ const LoginPage = () => {
                 placeholder="メールアドレスを入力してください。"
               />
             </Form.Item>
-          </Form>
-        </Modal>
 
-        <Form.Item shouldUpdate>
-          {() => (
-            <div className="flex justify-center">
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="text-base px-14"
-                disabled={
-                  !(
-                    form.isFieldTouched('email')
-                    && form.isFieldTouched('password')
-                  )
-                  || !!form.getFieldsError().filter(({ errors }) => errors.length)
-                    .length
-                }
+            <Form.Item
+              label="パスワード"
+              name="password"
+              rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
+            >
+              <Input.Password placeholder="パスワードを入力してください。" />
+            </Form.Item>
+
+            <Form.Item name="remember" valuePropName="checked">
+              <div className="flex justify-between item-center">
+                <Checkbox>ログインしたままにする</Checkbox>
+                <a className="text-blue-600" onClick={showModal}>
+                  パスワードをお忘れの方
+                </a>
+              </div>
+            </Form.Item>
+
+            <Modal
+              title="パスワード変更"
+              visible={isModalVisible}
+              onOk={handleOk}
+              onCancel={handleCancel}
+              cancelText="キャンセル"
+              okButtonProps={{
+                disabled: isDisableOk,
+              }}
+            >
+              <Form
+                form={form2}
+                name="reset-password"
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                layout="vertical"
+                onValuesChange={onChangeDisableOk}
+                validateMessages={validateMessages}
               >
-                ログイン
-              </Button>
-            </div>
-          )}
-        </Form.Item>
-      </Form>
-    </div>
+                <Form.Item
+                  label="メールアドレス"
+                  name="reset-email"
+                  rules={[{ required: true }, { type: 'email' }]}
+                >
+                  <Input
+                    type="email"
+                    placeholder="メールアドレスを入力してください。"
+                  />
+                </Form.Item>
+              </Form>
+            </Modal>
+
+            <Form.Item shouldUpdate>
+              {() => (
+                <div className="flex justify-center">
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="text-base px-14"
+                    disabled={
+                      !(
+                        form.isFieldTouched('email')
+                        && form.isFieldTouched('password')
+                      )
+                      || !!form
+                        .getFieldsError()
+                        .filter(({ errors }) => errors.length).length
+                    }
+                  >
+                    ログイン
+                  </Button>
+                </div>
+              )}
+            </Form.Item>
+          </Form>
+        </div>
+      </Layout.Main>
+    </Layout>
   )
 }
 
