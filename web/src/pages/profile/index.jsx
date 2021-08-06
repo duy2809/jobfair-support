@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Avatar } from 'antd'
 import { EditFilled } from '@ant-design/icons'
 import Otherlayout from '../../layouts/OtherLayout'
-import { getProfile } from '../../api/profile'
+import { getProfile, getAvatar } from '../../api/profile'
 import { webInit } from '../../api/web-init'
 
 export default function Profile() {
@@ -10,17 +10,21 @@ export default function Profile() {
   const [nameUser, setNameUser] = useState('')
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
   const [emailUser, setEmailUser] = useState('')
-  useEffect(async () => {
-    webInit().then((res) => {
-      const id = res.data.auth.user.id
-      getProfile(id).then((response) => {
-        setAvatarUser(response.data.avatar)
-        setNameUser(response.data.name)
-        setChatWorkIdUser(response.data.chatwork_id)
-        setEmailUser(response.data.email)
-      })
-    }, [])
-  })
+  // useEffect(async () => {
+  //   webInit().then((res) => {
+  //     // console.log(res)
+  //     const id = res.data.auth.user.id
+  //     getProfile(id).then((response) => {
+  //       // setAvatarUser(response)
+  //       setNameUser(response.data.name)
+  //       setChatWorkIdUser(response.data.chatwork_id)
+  //       setEmailUser(response.data.email)
+  //     })
+  //     getAvatar().then((avatar)=>{
+  //       setAvatarUser(avatar)
+  //     })
+  //   }, [])
+  // })
 
   return (
     <>
@@ -41,7 +45,8 @@ export default function Profile() {
                   lineHeight: '100px',
                   marginRight: '60px',
                 }}
-                src={avatarUser}
+                // src={avatarUser}
+                src="/api/profile/avatar"
               />
             </div>
             <div className="h-80 col-span-6 border-2 border-gray-300">
@@ -51,7 +56,7 @@ export default function Profile() {
                     <div>
                       <EditFilled className="border-2 rounded-full py-1 px-1 border-black" />
                     </div>
-                    <a src="" className="text-blue-500">
+                    <a href="profile/edit" className="text-blue-500">
                       プロフィール編集
                     </a>
                   </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Storage;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,10 +33,19 @@ class ProfileController extends Controller
             'id' => $id,
         ], $rules);
         $validator->validate();
+        // $contents = Storage::download('image/avatars/1.jpg');
+        // $exists = Storage::disk('public')->exists('1.jpg');
+        // $test = Storage::disk('public')->url('app/public/1.jpg');
+        // $path = storage_path('app/public/1.jpg');
+        
 
         return User::find($id);
+        // return $contents;
     }
 
+    public function getAvatar(){
+        return Storage::download(Auth::user()->avatar, 'avatar');
+    }
     /**
      * Remove the specified resource from storage.
      *
