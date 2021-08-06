@@ -27,6 +27,8 @@ node_modules
 
 # Composer
 vendor
+/api/vendor
+
 
 # Logs
 */**/*.log
@@ -36,6 +38,7 @@ tests
 coverage
 phpunit.xml
 .phpunit.result.cache
+
 tests
 jest.config.js
 
