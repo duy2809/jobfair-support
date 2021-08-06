@@ -159,7 +159,7 @@ const EditMilestonePage = () => {
             >
               <Form.Item
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>マイルストーン名</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>マイルストーン名</p>
                 }
                 name="name"
                 rules={[
@@ -191,7 +191,7 @@ const EditMilestonePage = () => {
 
               <Form.Item
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>期日</p>
                 }
                 name="time"
                 rules={[

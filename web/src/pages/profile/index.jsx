@@ -10,21 +10,20 @@ export default function Profile() {
   const [nameUser, setNameUser] = useState('')
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
   const [emailUser, setEmailUser] = useState('')
-  // useEffect(async () => {
-  //   webInit().then((res) => {
-  //     // console.log(res)
-  //     const id = res.data.auth.user.id
-  //     getProfile(id).then((response) => {
-  //       // setAvatarUser(response)
-  //       setNameUser(response.data.name)
-  //       setChatWorkIdUser(response.data.chatwork_id)
-  //       setEmailUser(response.data.email)
-  //     })
-  //     getAvatar().then((avatar)=>{
-  //       setAvatarUser(avatar)
-  //     })
-  //   }, [])
-  // })
+  useEffect(async () => {
+    webInit().then((res) => {
+      const id = res.data.auth.user.id
+      getProfile(id).then((response) => {
+        setNameUser(response.data.name)
+        setChatWorkIdUser(response.data.chatwork_id)
+        setEmailUser(response.data.email)
+      })
+      getAvatar(id).then(() => {
+        const link = `api/avatar/${id}`
+        setAvatarUser(link)
+      })
+    }, [])
+  })
 
   return (
     <>
@@ -45,8 +44,7 @@ export default function Profile() {
                   lineHeight: '100px',
                   marginRight: '60px',
                 }}
-                // src={avatarUser}
-                src="/api/profile/avatar"
+                src={avatarUser}
               />
             </div>
             <div className="h-80 col-span-6 border-2 border-gray-300">
@@ -65,24 +63,24 @@ export default function Profile() {
 
               <div className="grid grid-cols-12 gap-x-4 gap-y-10 text-lg pt-10">
                 <div className="col-span-3 justify-self-end">
-                  <p>ユーザー名: </p>
+                  <p style={{ margin: 0 }}>ユーザー名: </p>
                 </div>
                 <div className="col-span-9">
-                  <p>{nameUser}</p>
+                  <p style={{ margin: 0 }}>{nameUser}</p>
                 </div>
 
                 <div className="col-span-3 justify-self-end">
-                  <p>チャットワークID: </p>
+                  <p style={{ margin: 0 }}>チャットワークID: </p>
                 </div>
                 <div className="col-span-9">
-                  <p>{chatWorkIdUser}</p>
+                  <p style={{ margin: 0 }}>{chatWorkIdUser}</p>
                 </div>
 
                 <div className="col-span-3 justify-self-end">
-                  <p>メール: </p>
+                  <p style={{ margin: 0 }}>メール: </p>
                 </div>
                 <div className="col-span-9">
-                  <p>{emailUser}</p>
+                  <p style={{ margin: 0 }}>{emailUser}</p>
                 </div>
               </div>
             </div>

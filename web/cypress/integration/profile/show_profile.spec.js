@@ -4,7 +4,7 @@ const existValidEmail = 'schamberger.beryl@example.com'; // TODO: change your em
 describe('User Profile Test', () => {
   const expectTextColor = Color('#2d334a').string() 
     it('Visits Jobfair Support Profile', () => {
-      cy.visit('/login');
+      cy.visit('http://jobfair.local:8000/login');
       cy.get('#login_email').type(existValidEmail);
       cy.get('#login_password').type(validPassword);
       cy.get('.ant-btn')
@@ -23,7 +23,7 @@ describe('User Profile Test', () => {
         cy.get('.col-span-3').find('p').contains('ユーザー名: ')
         cy.get('.col-span-3').find('p').contains('チャットワークID: ')
         cy.get('.col-span-3').find('p').contains('メール: ')
-        cy.get('.col-start-3').find('a').contains('プロフィール編集').should('have.attr', 'href')
+        cy.get('.col-start-3').find('a').contains('プロフィール編集').should('have.attr', 'href','profile/edit')
 
     })
 
