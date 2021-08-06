@@ -5,6 +5,7 @@ import Otherlayout from '../../../../layouts/OtherLayout'
 import Avatar from '../../UI/avatar/Avatar'
 import ButtonChangePassword from '../../UI/button/ButtonChangePassword'
 import CancelEditProfile from '../../UI/button/CancelEditProfile'
+import { updatePassword, updateInfo, updateAvatar, getAllProfile, getProfile } from '../../../../api/profile'
 import './styles.scss'
 
 const EditProfilePage = () => {
@@ -34,15 +35,15 @@ const EditProfilePage = () => {
     try{
      const temp = /[/](\d+)[/]/.exec(window.location.pathname)
       const id = `${temp[1]}`
-      const result = await getUser(id)
-      setNameInput(result.name)
-      setIdChatWordInput(result.chatwork_id)
-      setEmailInput(result.email)
-      setImage(result.avatar)
+      const result = await getProfile(id)
+      const data = result.data
+      setNameInput(data.name)
+      setIdChatWordInput(data.chatwork_id)
+      setEmailInput(data.email)
       form.setFieldsValue({
-        name: result.name,
-        chatwork: result.chatwork_id,
-        email: result.email,
+        name: data.name,
+        chatwork: data.chatwork_id,
+        email: data.email,
         })
     }catch (err) {
       console.error(err)
@@ -51,8 +52,9 @@ const EditProfilePage = () => {
 
   const fetchData = async (nameInput) => {
     try {
-      const res = await getAllUser()
-      const data = res.data.map((item) => item.name)
+      const res = await getAllProfile()
+      const data = res.data
+      data = res.data.map((item) => item.name)
       const name = data.find((item) => item === nameInput)
       if(name) {
         setIsDisable(true)
@@ -83,18 +85,17 @@ const EditProfilePage = () => {
       duration: 0,
 
     })
-    setTimeout(() => { router.push(`/profile/${idProfile}`) }, 1000)
+    setTimeout(() => { router.push(`/profile`) }, 1000)
   }
 
   const handleOk = () => {
     setIsModalVisible(false)
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
-    updateProfile(id, {
+    updateInfo(id, {
       name: nameInput,
       email: emailInput,
       chatwork_id: idChatWorkInput,
-      avatar: image,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
         console.error(error); 
@@ -139,6 +140,7 @@ const EditProfilePage = () => {
           <div className="container-form">
             <div className="flex my-8 mx-8">
               <Form
+                form={form}
                 name="basic"
                 labelCol={{
                   span: 8,

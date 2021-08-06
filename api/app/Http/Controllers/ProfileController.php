@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Storage;
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 
 use Illuminate\Http\File;
@@ -44,11 +44,22 @@ class ProfileController extends Controller
         // $exists = Storage::disk('public')->exists('1.jpg');
         // $test = Storage::disk('public')->url('app/public/1.jpg');
         // $path = storage_path('app/public/1.jpg');
-        
 
         return User::find($id);
-        // return $contents;
     }
+
+    public function avatar($id)
+    {
+        // return Storage::download(Auth::user()->avatar,'avatar');
+        $avatar = User::find($id)->avatar;
+
+        return Storage::download($avatar);
+
+        // return Storage::download($link);
+        // return User::find($id)->avatar;
+        // return Auth::user();
+    }
+
 
     public function getAvatar(){
         return Storage::download(Auth::user()->avatar, 'avatar');
