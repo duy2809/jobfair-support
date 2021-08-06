@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
-//use Intervention\Image\ImageServiceProvider;
+
 
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
@@ -71,7 +71,6 @@ class UserController extends Controller
         $validator->validated();
         $user = User::find($id);
         $user->update($request->all());
-        
         return response()->json(['message' => 'Updated successfully']);
     }
 
@@ -102,19 +101,31 @@ class UserController extends Controller
     	    $user = User::find($id);
 
             $rules = [
+                'name' => 'string',
+                'email' => 'email|unique:users,email',   
+                'chatwork_id' => 'string',
                 'avatar' => 'required|mimes:jpg,png|max:4096',
             ];
-        
+
+            $validator = Validator::make($request->all(), $rules);
+            $validator->validated();
+            
+            //dd($request);
+
             $avatar = $user->id . '.' . $request->avatar->extension();
             $load = $request->file('avatar')->storeAs('public/image/avatars', $avatar);
 
             $path = "/image/avatars/$avatar";
-            $user->avatar = $path;
-            $user->update();
-        
-    	    return response()->json([
+            $request->avatar = $path;
+            //dd($request);
+            $user->update([
+                'name' => $request->name,
+            ]);
+            
+            return $user;
+    	    /* return response()->json([
                 'message' => 'Success',
-            ]); 
+            ]);  */
         } 
         
         return response()->json(['message' => 'Failed']);
