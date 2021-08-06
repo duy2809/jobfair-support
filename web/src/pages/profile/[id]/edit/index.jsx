@@ -5,7 +5,8 @@ import Otherlayout from '../../../../layouts/OtherLayout'
 import Avatar from '../../UI/avatar/Avatar'
 import ButtonChangePassword from '../../UI/button/ButtonChangePassword'
 import CancelEditProfile from '../../UI/button/CancelEditProfile'
-import { updatePassword, updateInfo, updateAvatar, getAllProfile, getProfile } from '../../../../api/profile'
+import { updatePassword, updateInfo, updateAvatar, getAllProfile, getProfile, getAvatar } from '../../../../api/profile'
+import { webInit } from '../../../../api/web-init'
 import './styles.scss'
 
 const EditProfilePage = () => {
@@ -15,9 +16,19 @@ const EditProfilePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [form] = Form.useForm()
   const [image, setImage] = useState()
+  const [avatarUser, setAvatarUser] = useState()
   const [preview, setPreview] = useState()
   const [isDisable, setIsDisable] = useState(false)
   const router = useRouter()
+
+  webInit().then((res) => {
+    const id = res.data.auth.user.id
+    console.log(id)
+    getAvatar(id).then(() => {
+      const link = `/api/avatar/${id}`
+      setAvatarUser(link)
+    })
+  }, [])
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
@@ -53,8 +64,7 @@ const EditProfilePage = () => {
   const fetchData = async (nameInput) => {
     try {
       const res = await getAllProfile()
-      const data = res.data
-      data = res.data.map((item) => item.name)
+      const data = res.data.map((item) => item.email)
       const name = data.find((item) => item === nameInput)
       if(name) {
         setIsDisable(true)
@@ -134,7 +144,7 @@ const EditProfilePage = () => {
         <p className="title mb-8" style={{ fontSize: '36px' }}>プロフィール編集</p>
         <div className="container">
           <div className="grid justify-items-center">
-            <Avatar preview={preview} setImage={setImage}/>
+            <Avatar preview={preview} setImage={setImage} avatar={avatarUser}/>
             <ButtonChangePassword />
           </div>
           <div className="container-form">

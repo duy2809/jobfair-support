@@ -3,16 +3,19 @@ import React, { useRef } from 'react';
 import { notification } from 'antd';
 import './style.scss'
 
-const Avatar = ({ preview, setImage }) => {
+const Avatar = ({ preview, setImage, avatar }) => {
   const fileInputRef = useRef();
 
   const changeImageHandler = (e) => {
-    const file = e.target.files[0];
-    if (file?.size > 4194304) {
+    const file = e.taperget.files[0];
+    const fileType = file.name.split('.')[file.name.split('.')-1]
+
+    if (file?.size > 4194304 || (fileType !== 'jpg' && fileType !== 'png')) {
+      
       notification.error({
-        message: 'サイズ4MB未満の画像を選択してください',
+        message: '.jpg, .png, サイズ4MB未満の画像を選択してください',
         duration: 2,
-      });
+      });   
       return;
     }
     if (file && file.type.substr(0, 5) === 'image') {
@@ -40,9 +43,9 @@ const Avatar = ({ preview, setImage }) => {
         />
       ) : (
         <img
-          src='/images/profile/avatar/1.png'
+          src=''
           className="avatar-img"
-          // src='/images/alexad.jpg'
+          src={`${avatar}`}
           onClick={(e) => {
             e.preventDefault();
             fileInputRef.current.click();
