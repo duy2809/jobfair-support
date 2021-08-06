@@ -22,12 +22,8 @@ storage/*.key
 storage/framework/*/*
 storage/logs/*
 
-# node_modules
-node_modules
-
 # Composer
-**/**/**/vendor
-
+vendor
 
 # Logs
 */**/*.log
@@ -38,13 +34,8 @@ coverage
 phpunit.xml
 .phpunit.result.cache
 
-tests
-jest.config.js
-
 # Linters
 phpcs.xml
-.eslintrc
-.eslintignore
 
 # Docs
 README.md
