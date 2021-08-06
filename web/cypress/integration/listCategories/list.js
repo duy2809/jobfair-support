@@ -64,9 +64,16 @@ describe('check list', () => {
 })
 
 describe('check edit button', () => {
+  let initialData = ''
   it('check button existed', () => {
     cy.get('.anticon.anticon-edit').should('be.visible')
+    cy.contains('td', '1').parent().within((tr) => {
+      cy.get('td:nth-child(2)').then(($span) => {
+        initialData = $span.text()
+      })
+    })
   })
+
   it('check edit modal', () => {
     cy.contains('td', '1').parent().within((tr) => {
       cy.get('.anticon.anticon-edit').click()
@@ -74,22 +81,38 @@ describe('check edit button', () => {
     cy.get('.ant-modal-content').should('be.visible')
     cy.get('.ant-modal-title').should('contain', '編集カテゴリ')
     cy.get('.ant-modal-body').within(() => {
-      cy.get('input[placeholder*="カテゴリ名を書いてください"]').clear()
-      cy.get('input[placeholder*="カテゴリ名を書いてください"]')
+      cy.get('input[placeholder*="カテゴリ名を書いてください"]').should('have.value', initialData)
     })
     cy.get('.ant-modal-content').within(() => {
-      cy.get('.ant-btn').first().should('be.visible').contains('キャンセル')
       cy.get('.ant-btn').last().should('be.visible').contains('保 存')
-      // check for empty input
-      // cy.get('.ant-btn').last().click({ force: true })
-      // cy.get('.ant-form-item-explain-error').then((message) => {
-      //   cy.wrap(message).should('contain', '新しいパスワードを入力してください')
-      // })
+      cy.get('.ant-btn').first().should('be.visible').contains('キャンセル')
+        .click({ force: true })
+    })
+    cy.get('.ant-modal-content').should('not.visible')
+  })
+
+  it('check invalid input', () => {
+    cy.contains('td', '1').parent().within((tr) => {
+      cy.get('.anticon.anticon-edit').click()
+    })
+    cy.get('.ant-modal-body').within(() => {
+      cy.get('input[value*="default"]').clear().type('a d c_./ad123+*')
+    })
+    cy.get('.ant-form-item-explain-error').then((message) => {
+      cy.wrap(message).should('contain', 'カテゴリー名はスペースが含まれていません。')
+    })
+    cy.get('.ant-modal-body').within(() => {
+      cy.get('input[value*="a d c_./ad123+*"]').clear()
+      cy.get('.ant-form-item-explain-error').then((message) => {
+        cy.wrap(message).should('contain', 'この項目は必須です。')
+      })
+    })
+    cy.get('.ant-modal-content').within(() => {
       cy.get('.ant-btn').first().click({ force: true })
     })
   })
+
   it('check duplicate edit process', () => {
-    let initialData = ''
     cy.contains('td', '2').parent().within((tr) => {
       cy.get('td:nth-child(2)').then(($span) => {
         initialData = $span.text()
@@ -102,7 +125,7 @@ describe('check edit button', () => {
       cy.get('input[placeholder*="カテゴリ名を書いてください"]').type(initialData)
     })
     cy.get('.ant-modal-content').within(() => {
-      cy.get('.ant-btn').last().click({ force: true }).wait(1000)
+      cy.get('.ant-btn').last().click({ force: true }).wait(500)
     })
     cy.get('.ant-notification-notice-message').should('be.visible').should('contain', 'このカテゴリー名は存在しています')
     cy.get('.ant-modal-content').within(() => {
@@ -111,6 +134,7 @@ describe('check edit button', () => {
   })
 
   it('check normal edit process', () => {
+    cy.reload()
     cy.contains('td', '1').parent().within((tr) => {
       cy.get('.anticon.anticon-edit').click()
     })
@@ -120,7 +144,7 @@ describe('check edit button', () => {
     cy.get('.ant-modal-content').within(() => {
       cy.get('.ant-btn').last().click({ force: true })
     })
-    cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '変更は正常に保存されました。').wait(2000)
+    cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '変更は正常に保存されました。').wait(1000)
     cy.get('.ant-modal-content').should('not.exist')
     cy.get('.ant-table-container').contains('td.ant-table-cell', 'a_b+c123@d')
     // set default for another test
@@ -179,8 +203,10 @@ describe('check pagination', () => {
 
 describe('check add button', () => {
   it('check if button exited', () => {
+    cy.reload()
     cy.get('[type="button"]').should('be.visible').contains('追 加')
   })
+
   it('check modal add', () => {
     cy.get('[type="button"]').first().click()
     cy.get('.ant-modal-content').should('be.visible')
@@ -189,8 +215,27 @@ describe('check add button', () => {
       cy.get('input[placeholder*="カテゴリ名を書いてください"]')
     })
     cy.get('.ant-modal-content').within(() => {
-      cy.get('.ant-btn').first().should('be.visible').contains('キャンセル')
       cy.get('.ant-btn').last().should('be.visible').contains('登 録')
+      cy.get('.ant-btn').first().should('be.visible').contains('キャンセル')
+        .click({ force: true })
+    })
+  })
+
+  it('check invalid input', () => {
+    cy.get('[type="button"]').first().click()
+    cy.get('.ant-modal-body').within(() => {
+      cy.get('input[placeholder*="カテゴリ名を書いてください"]').clear().type('a d c_./ad123+*')
+    })
+    cy.get('.ant-form-item-explain-error').then((message) => {
+      cy.wrap(message).should('contain', 'カテゴリ名はスペースが含まれていません。')
+    })
+    cy.get('.ant-modal-body').within(() => {
+      cy.get('input[value*="a d c_./ad123+*"]').clear()
+      cy.get('.ant-form-item-explain-error').then((message) => {
+        cy.wrap(message).should('contain', 'この項目は必須です。')
+      })
+    })
+    cy.get('.ant-modal-content').within(() => {
       cy.get('.ant-btn').first().click({ force: true })
     })
   })
@@ -216,6 +261,7 @@ describe('check add button', () => {
   })
 
   it('check normal add process', () => {
+    cy.reload()
     cy.get('[type="button"]').first().click()
     cy.get('.ant-modal-body').within(() => {
       cy.get('input[placeholder*="カテゴリ名を書いてください"]').clear().type(categoryName())
@@ -235,6 +281,7 @@ describe('check add button', () => {
     cy.get('.ant-table-container').contains('td.ant-table-cell', 'newAdd+-*/@._')
   })
 })
+
 describe('check delete button', () => {
   it('check button existed', () => {
     cy.get('.anticon.anticon-delete').should('be.visible')
@@ -256,9 +303,9 @@ describe('check delete button', () => {
       cy.get('.anticon.anticon-delete').click().wait(1000)
     })
     cy.get('.ant-modal-content').within(() => {
-      cy.get('.ant-btn').last().click({ force: true }).wait(1000)
+      cy.get('.ant-btn').last().click({ force: true })
     })
-    // cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '')
+    cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '変更は正常に保存されました。').wait(1000)
     cy.get('.ant-pagination-item').last().click()
     cy.get('.ant-table-row').last().should('not.contain', 'newAdd+-*/@._')
   })
