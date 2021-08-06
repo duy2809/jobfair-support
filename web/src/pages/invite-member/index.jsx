@@ -20,6 +20,7 @@ export default function InviteMember() {
   }, [])
 
   const onValueEmailChange = (e) => {
+    document.getElementById('errorEmail').setAttribute('hidden', true)
     setEmailInput(e.target.value)
   }
   const onValueRoleChange = (value) => {
@@ -85,10 +86,11 @@ export default function InviteMember() {
       }
     } catch (error) {
       if (error.request.status === 400) {
-        openNotification(
-          'error',
-          'このメールは既に存在しました',
-        )
+        document.getElementById('errorEmail').removeAttribute('hidden')
+        // openNotification(
+        //   'error',
+        //   'このメールは既に存在しました',
+        // )
       }
     }
   }
@@ -107,19 +109,22 @@ export default function InviteMember() {
               onFinishFailed={onFinishFailed}
               validateMessages={validateMessages}
             >
-              <Form.Item
-                name="email"
-                label="メールアドレス"
-                rules={[
-                  { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!'}
-                ]}
-              >
-                <Input
-                  size="large"
-                  onChange={onValueEmailChange}
-                  types="email"
-                  initialValues={emailInput}
-                />
+              <Form.Item>
+                <Form.Item
+                  name="email"
+                  label="メールアドレス"
+                  rules={[
+                    { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!' },
+                  ]}
+                >
+                  <Input
+                    size="large"
+                    onChange={onValueEmailChange}
+                    types="email"
+                    initialValues={emailInput}
+                  />
+                </Form.Item>
+                <span id="errorEmail" hidden style={{ color: 'red'}}>このメールは既に存在しました</span>
               </Form.Item>
               <Form.Item
                 name="categories"
@@ -183,8 +188,7 @@ export default function InviteMember() {
                                 .filter(({ errors }) => errors.length).length
                               || !(
                                 form.isFieldTouched('email')
-                                && form.isFieldTouched('categories')
-                              )
+                                && form.isFieldTouched('categories'))
                             }
                           >
                             招待
