@@ -6,7 +6,6 @@ use App\Models\Jobfair;
 use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class JobfairController extends Controller
@@ -99,7 +98,8 @@ class JobfairController extends Controller
         $deleteSchedule = Schedule::where('jobfair_id', $id)->first();
         $templateSchedule = Schedule::find($request->schedule_id);
         $finalSchedule = [];
-        if ($deleteSchedule->name !== $templateSchedule->name) {
+        if ($deleteSchedule->name !== $templateSchedule->name) 
+        {
             $deleteMilestone = Milestone::where('schedule_id', $deleteSchedule->id)->get();
             for ($i = 0; $i < count($deleteMilestone); $i++) {
                 $temp = Task::where('milestone_id', $deleteMilestone[$i]->id)->get();
@@ -124,7 +124,8 @@ class JobfairController extends Controller
             ]);
             $finalMilestone = [];
             $finalTask = [];
-            for ($i = 0; $i < count($templateMilestone); $i++) {
+            for ($i = 0; $i < count($templateMilestone); $i++) 
+            {
                 $temp = Milestone::create([
                     'name' => $templateMilestone[$i]->name,
                     'period' => $templateMilestone[$i]->period,
@@ -133,7 +134,8 @@ class JobfairController extends Controller
                 ]);
                 array_push($finalMilestone, $temp);
                 $templateTask = Task::where('milestone_id', $templateMilestone[$i]->id)->get();
-                for ($j = 0; $j < count($templateTask); $j++) {
+                for ($j = 0; $j < count($templateTask); $j++) 
+                {
                     $tas = Task::create([
                         'name' => $templateTask[$j]->name,
                         'start_time' => $templateTask[$j]->start_time,
@@ -149,7 +151,7 @@ class JobfairController extends Controller
                     array_push($finalTask, $tas);
                 }
             }
-        } 
+        }
         else {
             $response->update($request->all());
             $finalSchedule = Schedule::where('jobfair_id', $id)->first();
@@ -236,4 +238,3 @@ class JobfairController extends Controller
         return Jobfair::where('name', '=', $request->name)->get();
     }
 }
-
