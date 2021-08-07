@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Form, Input, Button, Modal, notification } from 'antd'
-import Otherlayout from '../../../../layouts/OtherLayout'
-import Avatar from '../../UI/avatar/Avatar'
-import ButtonChangePassword from '../../UI/button/ButtonChangePassword'
-import CancelEditProfile from '../../UI/button/CancelEditProfile'
-import { updatePassword, updateInfo, updateAvatar, getAllProfile, getProfile, getAvatar } from '../../../../api/profile'
-import { webInit } from '../../../../api/web-init'
+import Otherlayout from '../../../layouts/OtherLayout'
+import Avatar from '../UI/avatar/Avatar'
+import ButtonChangePassword from '../UI/button/ButtonChangePassword'
+import CancelEditProfile from '../UI/button/CancelEditProfile'
+import { updatePassword, updateInfo, updateAvatar, getAllProfile, getProfile, getAvatar } from '../../../api/profile'
+import { webInit } from '../../../api/web-init'
 import './styles.scss'
 
 const EditProfilePage = () => {
+  let userId;
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [idChatWorkInput, setIdChatWordInput] = useState('')
@@ -23,7 +24,6 @@ const EditProfilePage = () => {
 
   webInit().then((res) => {
     const id = res.data.auth.user.id
-    console.log(id)
     getAvatar(id).then(() => {
       const link = `/api/avatar/${id}`
       setAvatarUser(link)
@@ -39,13 +39,13 @@ const EditProfilePage = () => {
     } else {
       setPreview(null);
     }
-    console.log(image)
   }, [image]);
 
   useEffect(async () => {
     try{
-     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-      const id = `${temp[1]}`
+      const resId = await webInit()
+      const id = resId.data.auth.user.id
+      userId = id
       const result = await getProfile(id)
       const data = result.data
       setNameInput(data.name)
@@ -63,10 +63,14 @@ const EditProfilePage = () => {
 
   const fetchData = async (nameInput) => {
     try {
+      const resId = await webInit()
+      const id = resId.data.auth.user.id
+      const resCur = await getProfile(id)
+      const emailCur = resCur.data.email
       const res = await getAllProfile()
       const data = res.data.map((item) => item.email)
-      const name = data.find((item) => item === nameInput)
-      if(name) {
+      const email = data.find((item) => item === nameInput)
+      if(email && email !== emailCur) {
         setIsDisable(true)
         form.setFields([
           {
@@ -83,7 +87,7 @@ const EditProfilePage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchData(emailInput)
-    }, 600)
+    }, 100)
     return () => {
       clearTimeout(timer)
     }
@@ -95,21 +99,23 @@ const EditProfilePage = () => {
       duration: 0,
 
     })
-    setTimeout(() => { router.push(`/profile`) }, 1000)
+    setTimeout(() => { router.push('/profile') }, 1000)
   }
 
-  const handleOk = () => {
-    setIsModalVisible(false)
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
-    updateInfo(id, {
-      name: nameInput,
-      email: emailInput,
-      chatwork_id: idChatWorkInput,
-    }).then(() => openNotificationSuccess())
-      .catch((error) => {
-        console.error(error); 
+  const handleOk = async () => {
+    try {
+      setIsModalVisible(false)
+      const data = await webInit()
+      const id = data.data.auth.user.id
+      updateInfo(id, {
+        name: nameInput,
+        email: emailInput,
+        chatwork_id: idChatWorkInput,
       })
+      openNotificationSuccess()
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   const showModal = () => {
@@ -180,7 +186,7 @@ const EditProfilePage = () => {
                             ),
                           )
                         }
-                        if(/[!@#$%^&*()_+\-=\[\]{};':"\\/|,.<>]/.test(value)){
+                        if(/[!@#$%^&*()_+\-=\[\]{};':"\\/|,<>]/.test(value)){
                           setIsDisable(true)
                           return Promise.reject(
                             new Error(
