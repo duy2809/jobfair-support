@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
+
+Route::resource('/jobfair', 'JobfairController');
+
 // add jf route start
 
 // jobfair

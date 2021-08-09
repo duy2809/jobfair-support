@@ -1,0 +1,43 @@
+.add-template-task-page {
+  /* https://www.happyhues.co/palettes/14 */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: #272343;
+  }
+  p {
+    color: #2d334a;
+  }
+  .ant-form-horizontal .ant-form-item-label {
+    text-align: start;
+  }
+
+  .ant-form-item-control-input,
+  .ant-form-item-explain.ant-form-item-explain-error {
+    width: 100%;
+    padding-left: 20px;
+  }
+  .center-container {
+    width: 66%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .space-items-special {
+    .ant-space-item:nth-child(2) {
+      width: 100%;
+    }
+    .ant-space-item:nth-child(1) {
+      width: 33%;
+    }
+  }
+  .special-selector {
+    // min-width: 200px;
+  }
+  .slash-devider {
+    padding: 0 5px;
+  }
+}
