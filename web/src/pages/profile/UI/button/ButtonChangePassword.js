@@ -66,74 +66,74 @@ const ButtonChangePassword = () => {
   }
 
   return (
-        <div>
-          <Button type="primary" shape="round" size="large" onClick={() => setIsModalVisible(true)}>
-          パスワード変更する
-          </Button>
-          <Modal
-            title="パスワード変更"
-            visible={isModalVisible}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            centered
-            okText="保存"
-            cancelText="キャンセル"
-            okButtonProps={{
-              disabled: isDisableOk,
-              loading: isPasswordOkLoading,
-            }}
+    <div>
+      <Button type="primary" shape="round" size="large" onClick={() => setIsModalVisible(true)}>
+        パスワード変更する
+      </Button>
+      <Modal
+        title="パスワード変更"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        centered
+        okText="保存"
+        cancelText="キャンセル"
+        okButtonProps={{
+          disabled: isDisableOk,
+          loading: isPasswordOkLoading,
+        }}
+      >
+
+        <Form
+          form={form}
+          name="reset_password"
+          layout="vertical"
+          onValuesChange={onChangeDisableOk}
+          validateMessages={validateMessages}
+        >
+          <Form.Item
+            label="現在のパスワード"
+            name="current_password"
+            rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
           >
+            <Input.Password placeholder="現在のパスワードを入力してください。" />
+          </Form.Item>
 
-            <Form
-              form={form}
-              name="reset_password"
-              layout="vertical"
-              onValuesChange={onChangeDisableOk}
-              validateMessages={validateMessages}
-            >
-              <Form.Item
-                label="現在のパスワード"
-                name="current_password"
-                rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
-              >
-                <Input.Password placeholder="現在のパスワードを入力してください。" />
-              </Form.Item>
+          <Form.Item
+            label="新しいパスワード"
+            name="password"
+            rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
+          >
+            <Input.Password placeholder="新しいパスワードを入力してください。" />
+          </Form.Item>
 
-              <Form.Item
-                label="新しいパスワード"
-                name="password"
-                rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
-              >
-                <Input.Password placeholder="新しいパスワードを入力してください。" />
-              </Form.Item>
+          <Form.Item
+            label="パスワード確認用"
+            name="confirm_password"
+            dependencies={['password']}
+            rules={[
+              { required: true },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (value !== '' && getFieldValue('password') !== value) {
+                    return Promise.reject(
+                      new Error(
+                        '新しいパスワードとパスワード確認用が一致しません。',
+                      ),
+                    )
+                  }
 
-              <Form.Item
-                label="パスワード確認用"
-                name="confirm_password"
-                dependencies={['password']}
-                rules={[
-                  { required: true },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (value !== '' && getFieldValue('password') !== value) {
-                        return Promise.reject(
-                          new Error(
-                            '新しいパスワードとパスワード確認用が一致しません。',
-                          ),
-                        )
-                      }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="パスワード確認用を入力してください。" />
+          </Form.Item>
+        </Form>
 
-                      return Promise.resolve()
-                    },
-                  }),
-                ]}
-              >
-                <Input.Password placeholder="パスワード確認用を入力してください。" />
-              </Form.Item>
-            </Form>
-
-          </Modal>
-        </div>
+      </Modal>
+    </div>
   )
 }
 
