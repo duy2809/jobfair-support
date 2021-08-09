@@ -49,15 +49,13 @@ export default function ListCategories() {
   const columns = [
     {
       title: 'No',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'key',
       width: '10%',
-      render: (id) => id,
     },
     {
       key: '2',
       title: 'カテゴリー名',
-      dataIndex: 'category_name',
+      dataIndex: 'name',
       width: '60%',
       sorter: (record1, record2) => record1.category_name > record2.category_name,
     },
@@ -78,14 +76,14 @@ export default function ListCategories() {
     },
   ]
 
-  // const data = []
-  // for (let i = 0; i < sdata.length; i += 1) {
-  //   data.push({
-  //     key: i,
-  //     id: sdata[i].id,
-  //     title: sdata[i].title,
-  //   })
-  // }
+  const data = []
+  for (let i = 0; i < category.length; i += 1) {
+    data.push({
+      key: i + 1,
+      id: category[i].id,
+      name: category[i].category_name,
+    })
+  }
 
   function setPageSize(selectObject) {
     setPageS(selectObject.value)
@@ -133,7 +131,7 @@ export default function ListCategories() {
         </div>
         <Table
           columns={columns}
-          dataSource={category}
+          dataSource={data}
           pagination={{ pageSize: pageS }}
           scroll={{ y: 510 }}
         />

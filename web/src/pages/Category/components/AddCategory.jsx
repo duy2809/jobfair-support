@@ -7,20 +7,22 @@ import { Modal, Button, notification, Form } from 'antd'
 import '../style.scss'
 import { addCategory, checkUniqueAdd } from '../../../api/category'
 
-const PrjAdd = (props) => {
+const AddCategory = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [category, setCategory] = useState({ })
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
-  const [category, setCategory] = useState({ })
-  const [errorUnique, setErrorUnique] = useState(false)
   const [checkSpace, setcheckSpace] = useState(false)
+  const [errorUnique, setErrorUnique] = useState(true)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
+
   const showModal = () => {
     setIsModalVisible(true)
   }
+
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
@@ -34,23 +36,30 @@ const PrjAdd = (props) => {
       category_name: category,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        if (
-          JSON.parse(error.response.request.response).errors.category_name[0]
-            === 'The category name has already been taken.'
-        ) {
-          notification.error({
-            message: 'このカテゴリ名は存在しています',
-          })
-        }
+        notification.error({
+          message: 'このカテゴリ名は存在しています',
+        })
       })
   }
-  // on Blur
-  const onBlur = () => {
-    const name = category
-    if (name !== '') {
-      checkUniqueAdd(name).then((res) => {
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
+
+  // add
+  const onValueNameChange = (e) => {
+    // setErrorUnique(false)
+    setcheckSpace(false)
+    setCategory(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
+    if (e.target.value !== '') {
+      checkUniqueAdd(e.target.value).then((res) => {
         if (res.data.length !== 0) {
           setErrorUnique(true)
+          console.log('duplicated')
+          console.log(form.getFieldValue('name'))
           form.setFields([
             {
               name: 'name',
@@ -61,28 +70,10 @@ const PrjAdd = (props) => {
       })
     }
   }
-  // add
-  const onValueNameChange = (e) => {
-    setcheckSpace(false)
-    setCategory(e.target.value)
-    form.setFieldsValue({
-      name: toHalfWidth(e.target.value),
-    })
-  }
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-  // set Error
-  const check = () => function checkError(value) {
-    checkUniqueAdd(value).then((res) => {
-      if (res.data.length !== 0) {
-        return true
-      } return false
-    })
-  }
+
   return (
     <>
-      <Button type="primary" onClick={showModal} className="add-btn">
+      <Button type="primary" onClick={showModal} className="add-btn text-base">
         追加
       </Button>
       <Modal
@@ -110,13 +101,6 @@ const PrjAdd = (props) => {
                     setcheckSpace(true)
                     return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                   }
-                  if (value !== '') {
-                    // checkError(value)
-                    if (check.checkError(value)) {
-                      console.log(errorUnique)
-                      return Promise.reject(new Error('このカテゴリ名は存在しています'))
-                    }
-                  }
                   return Promise.resolve()
                 },
               }),
@@ -124,7 +108,6 @@ const PrjAdd = (props) => {
           >
             <input
               type="text"
-              onBlur={onBlur}
               placeholder="カテゴリ名を書いてください"
               className="input-category"
               required="required"
@@ -137,4 +120,4 @@ const PrjAdd = (props) => {
   )
 }
 
-export default PrjAdd
+export default AddCategory

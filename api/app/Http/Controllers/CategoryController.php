@@ -22,7 +22,7 @@ class CategoryController extends Controller
             ->select('*')
             ->orderBy('categories.updated_at', 'desc')
             ->get();
-        return $data;
+        return response()->json($data);
     }
 
     public function search($key)

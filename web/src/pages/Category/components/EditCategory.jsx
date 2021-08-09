@@ -5,23 +5,22 @@ import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
-import { updateCategory, getCategories } from '../../../api/category'
+import { updateCategory, getCategories, checkUniqueEdit } from '../../../api/category'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
 const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [nameInput, setNameInput] = useState('')
-  const [input, setInput] = useState('')
+  const [nameInput, setNameInput] = useState({})
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
+  const [errorUnique, setErrorUnique] = useState(true)
 
   useEffect(async () => {
     const id = props.record.id
-    getCategories().then((res) => {
+    getCategories(id).then((res) => {
       setNameInput(res.data.name)
-
       form.setFieldsValue({
         name: res.data.name,
       })
@@ -35,7 +34,6 @@ const EditCategory = (props) => {
     })
     setIsModalVisible(false)
     setTimeout(() => { window.location.reload() }, 1000)
-    // window.location.reload()
   }
 
   const onValueNameChange = (e) => {
@@ -44,27 +42,37 @@ const EditCategory = (props) => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
+
+    if (e.target.value !== '') {
+      checkUniqueEdit(e.target.value).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
+          console.log('duplicated')
+          console.log(form.getFieldValue('name'))
+          form.setFields([
+            {
+              name: 'name',
+              errors: [new Error('このカテゴリ名は存在しています。')],
+            },
+          ])
+        }
+      })
+    }
   }
 
-  const showModal = () => {
+  const showModal = (e) => {
     setIsModalVisible(true)
   }
 
   const handleOk = () => {
     const id = props.record.id
-    console.log(id)
     updateCategory(id, {
       category_name: nameInput,
     }).then(() => openNotificationSuccess())
       .catch((error) => {
-        if (
-          JSON.parse(error.response.request.response).errors.category_name[0]
-            === 'The category name has already been taken.'
-        ) {
-          notification.error({
-            message: 'このカテゴリー名は存在しています',
-          })
-        }
+        notification.error({
+          message: 'このカテゴリ名は存在しています',
+        })
       })
   }
 
@@ -85,9 +93,9 @@ const EditCategory = (props) => {
       >
         <Form>
           <Form.Item
-            // label={
-            //   <p style={{ color: '#2d334a', fontSize: '14px' }}>カテゴリー名</p>
-            // }
+            label={
+              <p> </p>
+            }
             name="name"
             rules={[
               {
@@ -98,9 +106,8 @@ const EditCategory = (props) => {
                 validator(_, value) {
                   if (specialCharRegex.test(value)) {
                     setcheckSpace(true)
-                    return Promise.reject(new Error('カテゴリー名はスペースが含まれていません。'))
+                    return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                   }
-
                   return Promise.resolve()
                 },
               }),
@@ -112,7 +119,7 @@ const EditCategory = (props) => {
               className="input-category"
               onChange={onValueNameChange}
               placeholder="カテゴリ名を書いてください"
-              defaultValue={props.record.category_name}
+              defaultValue={props.record.name}
             />
           </Form.Item>
         </Form>
