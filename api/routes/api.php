@@ -18,9 +18,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 
+Route::resource('/jobfair', 'JobfairController');
+
 // add jf route start
-
-
 
 // jobfair
 
@@ -75,13 +75,18 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+
+Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+
 //template-task
 
 Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
-
 
 //category
 
