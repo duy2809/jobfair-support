@@ -54,7 +54,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 //milestone
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
 
 //member

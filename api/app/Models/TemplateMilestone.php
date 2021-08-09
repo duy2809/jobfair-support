@@ -15,6 +15,6 @@ class TemplateMilestone extends Model
 
     public function templateTasks()
     {
-        return $this->hasMany(TemplateTask::class);
+        return $this->hasMany(TemplateTask::class, 'milestone_id');
     }
 }
