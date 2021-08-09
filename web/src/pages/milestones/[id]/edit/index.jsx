@@ -47,6 +47,7 @@ const EditMilestonePage = () => {
 
   const onValueNameChange = (e) => {
     setcheckSpace(false)
+    setErrorUnique(false)
     setNameInput(e.target.value)
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),

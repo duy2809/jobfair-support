@@ -46,7 +46,7 @@ export default function AddMilestonePage() {
       if (name !== '') {
         getNameExitAdd(name).then((res) => {
           if (res.data.length !== 0) {
-            setErrorUnique(true)
+            // setErrorUnique(true)
             form.setFields([
               {
                 name: 'name',
@@ -99,6 +99,7 @@ export default function AddMilestonePage() {
   }
 
   const onValueNameChange = (e) => {
+    setErrorUnique(false)
     setNameInput(e.target.value)
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
