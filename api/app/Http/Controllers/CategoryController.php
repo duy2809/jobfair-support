@@ -19,9 +19,10 @@ class CategoryController extends Controller
     public function index()
     {
         $data = DB::table('categories')
-            ->orderBy('id', 'asc')
+            ->select('*')
+            ->orderBy('categories.updated_at', 'desc')
             ->get();
-        return Category::all();
+        return $data;
     }
 
     public function search($key)

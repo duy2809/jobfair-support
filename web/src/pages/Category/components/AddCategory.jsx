@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
@@ -11,14 +12,13 @@ const PrjAdd = (props) => {
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
   const [category, setCategory] = useState({ })
-  const [errorUnique, setErrorUnique] = useState(true)
+  const [errorUnique, setErrorUnique] = useState(false)
   const [checkSpace, setcheckSpace] = useState(false)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
   const showModal = () => {
-    setErrorUnique(true)
     setIsModalVisible(true)
   }
   const openNotificationSuccess = () => {
@@ -72,7 +72,14 @@ const PrjAdd = (props) => {
   const handleCancel = () => {
     setIsModalVisible(false)
   }
-
+  // set Error
+  const check = () => function checkError(value) {
+    checkUniqueAdd(value).then((res) => {
+      if (res.data.length !== 0) {
+        return true
+      } return false
+    })
+  }
   return (
     <>
       <Button type="primary" onClick={showModal} className="add-btn">
@@ -104,16 +111,11 @@ const PrjAdd = (props) => {
                     return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                   }
                   if (value !== '') {
-                    console.log(errorUnique)
-                    checkUniqueAdd(value).then((res) => {
-                      if (res.data.length !== 0) {
-                        setErrorUnique(false)
-                      } else { setErrorUnique(true) }
-                    })
-                  }
-                  if (!errorUnique) {
-                    console.log(errorUnique)
-                    return Promise.reject(new Error('このカテゴリ名は存在しています')) 
+                    // checkError(value)
+                    if (check.checkError(value)) {
+                      console.log(errorUnique)
+                      return Promise.reject(new Error('このカテゴリ名は存在しています'))
+                    }
                   }
                   return Promise.resolve()
                 },
