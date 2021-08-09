@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Avatar } from 'antd'
 import { EditFilled } from '@ant-design/icons'
+import { ReactReduxContext } from 'react-redux'
 import Otherlayout from '../../layouts/OtherLayout'
 import { getProfile, getAvatar } from '../../api/profile'
-import { webInit } from '../../api/web-init'
 
 export default function Profile() {
   const [avatarUser, setAvatarUser] = useState('')
@@ -11,9 +11,14 @@ export default function Profile() {
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
   const [emailUser, setEmailUser] = useState('')
 
-  useEffect(async () => {
-    webInit().then((res) => {
-      const id = res.data.auth.user.id
+  const { store } = useContext(ReactReduxContext)
+
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      const id = user.get('id')
       getProfile(id).then((response) => {
         setNameUser(response.data.name)
         setChatWorkIdUser(response.data.chatwork_id)
@@ -23,8 +28,8 @@ export default function Profile() {
         const link = `api/avatar/${id}`
         setAvatarUser(link)
       })
-    }, [])
-  })
+    }
+  }, [user])
 
   return (
     <>
