@@ -42,23 +42,23 @@ describe('Mixed Filter and hide button test', () => {
                   var bar_attribute = 'left: ' + minStudents + '%; right: auto; width: ' + 100 - minStudents + '%;';
 
                   if (minStudents > 50) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                        cy.get('.ant-slider-handle').eq(0)
                               .invoke('attr', 'style', 'left: 50%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '50').click()
                   }
 
                   if (minStudents > 75) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                        cy.get('.ant-slider-handle').eq(0)
                               .invoke('attr', 'style', 'left: 75%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '75').click()
                   }
 
                   if (minStudents > 87) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                        cy.get('.ant-slider-handle').eq(0)
                               .invoke('attr', 'style', 'left: 87%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '87').click()
                   }
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', slider_atribute).invoke('attr', 'aria-valuenow', minStudents).click()
 
                   cy.get('.ant-table-row').should('have.length', countJF)
@@ -78,23 +78,17 @@ describe('Mixed Filter and hide button test', () => {
                   bar_attribute = 'left: ' + maxStudents + '%; right: auto; width: ' + 100 - maxStudents + '%;';
 
                   if (maxStudents > 50) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                        cy.get('.ant-slider-handle').eq(0)
                               .invoke('attr', 'style', 'left: 50%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '50').click()
                   }
 
                   if (maxStudents > 75) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                        cy.get('.ant-slider-handle').eq(0)
                               .invoke('attr', 'style', 'left: 75%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '75').click()
                   }
-
-                  if (maxStudents > 87) {
-                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
-                              .invoke('attr', 'style', 'left: 87%; right: auto; transform: translateX(-50%);')
-                              .invoke('attr', 'aria-valuenow', '87').click()
-                  }
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', slider_atribute).invoke('attr', 'aria-valuenow', maxStudents).click()
 
                   countJF = jflist.reduce((count, jfobject) => {
@@ -112,7 +106,7 @@ describe('Mixed Filter and hide button test', () => {
                   cy.get('.ant-table-row').should('have.length', countJF)
                   cy.get('button.ant-btn:nth-child(3)').click()
                   cy.wait(1000)
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 0%; right: auto; transform: translateX(-50%);').click()
                   cy.get('.ant-picker-input > input:nth-child(1)').clear({ force: true })
             }
@@ -128,23 +122,23 @@ describe('Mixed Filter and hide button test', () => {
             var bar_attribute = 'left: ' + minStudents + '%; right: auto; width: ' + 100 - minStudents + '%;';
 
             if (minStudents > 50) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 50%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '50').click()
             }
 
             if (minStudents > 75) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 75%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '75').click()
             }
 
             if (minStudents > 87) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 87%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '87').click()
             }
-            cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+            cy.get('.ant-slider-handle').eq(0)
                   .invoke('attr', 'style', slider_atribute).invoke('attr', 'aria-valuenow', minStudents).click()
             var countJF = jflist.reduce((count, jfobject) => {
                   if (jfobject.number_of_students >= minStudents) {
@@ -180,23 +174,23 @@ describe('Mixed Filter and hide button test', () => {
             bar_attribute = 'left: ' + maxStudents + '%; right: auto; width: ' + 100 - maxStudents + '%;';
 
             if (maxStudents > 50) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 50%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '50').click()
             }
 
             if (maxStudents > 75) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 75%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '75').click()
             }
 
             if (maxStudents > 87) {
-                  cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                  cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', 'left: 87%; right: auto; transform: translateX(-50%);')
                         .invoke('attr', 'aria-valuenow', '87').click()
             }
-            cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+            cy.get('.ant-slider-handle').eq(0)
                   .invoke('attr', 'style', slider_atribute).invoke('attr', 'aria-valuenow', maxStudents).click()
 
             countJF = jflist.reduce((count, jfobject) => {
@@ -220,7 +214,7 @@ describe('Mixed Filter and hide button test', () => {
             cy.get('.ant-empty-description').should('contain', '該当結果が見つかりませんでした')
             cy.get('.ant-picker-input > input:nth-child(1)').click()
             cy.get('.ant-picker-clear').click()
-            cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+            cy.get('.ant-slider-handle').eq(0)
                   .invoke('attr', 'style', 'left: 0%; right: auto; transform: translateX(-50%);').click()
 
 

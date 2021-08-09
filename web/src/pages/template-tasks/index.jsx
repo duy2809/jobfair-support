@@ -92,7 +92,7 @@ export default function TemplateTaskList() {
     },
     {
       title: 'テンプレートタスク名',
-      width: 80,
+      width: 35,
       dataIndex: 'templateTaskName',
       fixed: 'left',
       ellipsis: {
