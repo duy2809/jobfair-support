@@ -88,6 +88,11 @@ describe('Mixed Filter and hide button test', () => {
                               .invoke('attr', 'style', 'left: 75%; right: auto; transform: translateX(-50%);')
                               .invoke('attr', 'aria-valuenow', '75').click()
                   }
+                  if (maxStudents > 87) {
+                        cy.get('div.space-y-2:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(4)')
+                              .invoke('attr', 'style', 'left: 87%; right: auto; transform: translateX(-50%);')
+                              .invoke('attr', 'aria-valuenow', '87').click()
+                  }
                   cy.get('.ant-slider-handle').eq(0)
                         .invoke('attr', 'style', slider_atribute).invoke('attr', 'aria-valuenow', maxStudents).click()
 
