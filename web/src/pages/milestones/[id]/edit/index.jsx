@@ -42,7 +42,7 @@ const EditMilestonePage = () => {
       duration: 0,
 
     })
-    setTimeout(() => { window.location.href = '/milestones' }, 1000)
+    setTimeout(() => { window.location.href = '/milestones' }, 3000)
   }
 
   const onValueNameChange = (e) => {
