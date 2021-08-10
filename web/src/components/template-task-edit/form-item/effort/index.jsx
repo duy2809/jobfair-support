@@ -16,6 +16,20 @@ const Effort = ({
   setUnit,
   setIsDay,
 }) => {
+  const numberInputValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'));
+    }
+    if (isNaN(Number(value))) {
+      return Promise.reject(new Error('Input must be a validate number'));
+    }
+    if (Number(value) <= 0) {
+      return Promise.reject(new Error('0以上の半角の整数で入力してください'));
+    }
+
+    return Promise.resolve();
+  };
+
   const specialCharRegex = new RegExp('[ 　]');
   const onValueNameChange = (e) => {
     setCheckSpace(false);
@@ -58,8 +72,9 @@ const Effort = ({
       className='text-4xl justify-between'
       rules={[
         {
-          required: true,
-          message: 'この項目は必須です。',
+          // required: true,
+          // message: 'この項目は必須です。',
+          validator: numberInputValidator,
         },
 
         // {

@@ -68,14 +68,20 @@ const ItemMultipleDropdown = ({
       >
         {options.map((item) => {
           // let shortItemName = item.name.slice();
-          // if (item.name.length > 20) {
-          //   shortItemName = item.name.slice(0, 20) + '...';
-          // }
-          return (
-            <Option key={item.id} value={item.name}>
-              {item.name}
-            </Option>
-          );
+          if (item.name.length > 20) {
+            // shortItemName = item.name.slice(0, 20) + '...';
+            return (
+              <Option key={item.id} value={item.name}>
+                {item.name.slice(0, 20) + '...'}
+              </Option>
+            );
+          } else {
+            return (
+              <Option key={item.id} value={item.name}>
+                {item.name}
+              </Option>
+            );
+          }
         })}
       </Select>
     </Form.Item>
@@ -111,9 +117,7 @@ function tagRender(props) {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        <Tooltip>
-          <a href='#'>{label}</a>
-        </Tooltip>
+        <a href='#'>{label}</a>
       </Tag>
     );
   }
