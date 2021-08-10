@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, List, Avatar, Input, Checkbox, Button } from 'antd'
+import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
@@ -25,7 +25,8 @@ export default function Navbar() {
       </Menu.Item>
     </Menu>
   )
-
+  
+  //get noti
   const data = [
     {
       'name' : 'a-san',
@@ -42,12 +43,34 @@ export default function Navbar() {
       'action': 'add JF',
       'time': '11:12:20',
     },
+    {
+      'name' : 'a-san',
+      'action': 'add JF',
+      'time': '11:12:20',
+    },
+    {
+      'name' : 'a-san',
+      'action': 'add JF',
+      'time': '11:12:20',
+    },
   ];
 
+  // select user
+  const { Option } = Select;
+  const children = [];
+  for (let i = 10; i < 36; i++) {
+    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+  }
+  function handleChange(value) {
+    console.log(`Selected: ${value}`);
+  }
+
+  // choose noti unread
   function onChange(e) {
     console.log(`checked = ${e.target.checked}`);
   }
 
+  // o-c noti
   const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = () => {
@@ -62,15 +85,22 @@ export default function Navbar() {
         <div className="noti-header">
           <div>通知</div>
           <div className='noti-input'>
-            <Input  placeholder="User's name" />
+            <Select size={100} defaultValue="a1" onChange={handleChange} >
+              {children}
+            </Select>
           </div>
           
-          <Checkbox className='' onChange={onChange}>Checkbox</Checkbox>
+          <Checkbox className='' onChange={onChange}>未読のみ表示</Checkbox>
           <Button
-          //type="primary"
+          type="link"
           icon={<CloseOutlined />}
           onClick={handleVisibleChange}
-        />
+          />
+        </div>
+      }
+      footer={
+        <div className='noti-footer'>
+          <Checkbox className='' onChange={onChange}>すべて既読にする</Checkbox>
         </div>
       }
       bordered
@@ -142,7 +172,7 @@ export default function Navbar() {
             <div className="cursor-pointer">
               <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
               <span className="relative text-lg number-notifications -top-2 right-2">
-                6
+                {data.length}
               </span>
             </div>
           </Dropdown>

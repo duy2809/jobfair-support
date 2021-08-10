@@ -20,6 +20,7 @@
     .noti-header{
         display: flex;
         justify-items: center;
+        align-items: center;
         margin: auto;
     }
 
@@ -28,6 +29,11 @@
         margin: auto;
         // margin-left: 20px;
         // margin-right: 20px;
+    }
+
+    .noti-footer{
+        display: flex;
+        flex-direction: row-reverse;
     }
 
 }
