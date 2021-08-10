@@ -22,7 +22,11 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
+<<<<<<< HEAD
             'category_name' => preg_replace('/\s/', '_', $this->faker->unique()->name())
+=======
+            'category_name' => $this->faker->name(),
+>>>>>>> dbe558e882a3fd0524591086e0c59c081abaa7ad
         ];
     }
 }

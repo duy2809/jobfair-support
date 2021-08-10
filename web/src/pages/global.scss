@@ -1,0 +1,117 @@
+body {
+  font-size: 16px;
+  margin: 0 auto;
+
+  p,
+  span,
+  ul,
+  li,
+  a {
+    font-size: 16px;
+    color: #272343;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #ffd803;
+  }
+
+  ul,
+  li {
+    list-style: none;
+  }
+
+  h1 {
+    font-size: 40px;
+    margin-left: 40px;
+    margin-bottom: 50px;
+    color: #272343;
+  }
+
+  //button
+  .ant-btn-primary {
+    border-color: #ffd803 !important;
+    background-color: #ffd803 !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.85);
+    }
+  }
+  .ant-btn:hover,
+  .ant-btn:focus {
+    color: #ffd803;
+    background: #fff;
+    border-color: #ffd803;
+  }
+
+  //input
+  .ant-input {
+    color: #272343;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 15px;
+    border: 1.2px solid rgb(172, 169, 169);
+  }
+
+  .ant-input:hover,
+  .ant-input:focus {
+    border: #ffd803 solid 1.2px;
+  }
+
+  .ant-input::placeholder {
+    color: #afadb1;
+  }
+
+  .input {
+    padding: 10px;
+    max-width: 30%;
+  }
+
+  //Tooltip
+  .ant-tooltip-inner {
+    color: #272343 !important;
+    background-color: #fffffe !important;
+  }
+
+  //date
+  .ant-picker:hover,
+  .ant-picker-focused {
+    border-color: #ffd803;
+    border-right-width: 1px !important;
+  }
+
+  //Pagination
+  .ant-pagination-item:hover,
+  .ant-pagination-item>a:hover,
+  .ant-pagination-item-active>a,
+  .ant-pagination-item-active,
+  .ant-pagination-item-link:hover {
+    border-color: #ffd803 !important;
+    color: #ffd803 !important;
+
+    .ant-pagination-item-link-icon {
+      color: #ffd803 !important;
+    }
+  }
+
+  //select
+  .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+    border-color: #ffd803;
+    border-right-width: 1px !important;
+  }
+
+  .ant-select:hover,
+  .ant-select-focused {
+    border-color: #ffd803;
+    border-right-width: 1px !important;
+  }
+
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: #ffd803;
+
+  }
+}

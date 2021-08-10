@@ -8,7 +8,7 @@ import {
   notification,
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
-import { addMilestone } from '../../../api/milestone'
+import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
 export default function AddMilestonePage() {
   const [form] = Form.useForm()
@@ -18,6 +18,7 @@ export default function AddMilestonePage() {
   const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
+  const [errorUnique, setErrorUnique] = useState(false)
 
   const { Option } = Select
 
@@ -28,13 +29,36 @@ export default function AddMilestonePage() {
   const openNotificationSuccess = () => {
     notification.success({
       message: '正常に保存されました。',
-
     })
-    setTimeout(() => { window.location.href = '/milestones' }, 1000)
+    setTimeout(() => {
+      window.location.href = '/milestones'
+    }, 3000)
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (
+      !(form.isFieldTouched('name') && form.isFieldTouched('time'))
+      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      || errorUnique === true
+    ) {
+      setIsModalVisible(false)
+      const name = nameInput
+      if (name !== '') {
+        getNameExitAdd(name).then((res) => {
+          if (res.data.length !== 0) {
+            // setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
+    } else {
+      setIsModalVisible(true)
+    }
   }
 
   const handleOk = () => {
@@ -57,8 +81,25 @@ export default function AddMilestonePage() {
         }
       })
   }
+  const onBlur = () => {
+    const name = nameInput
+    if (name !== '') {
+      getNameExitAdd(name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+          ])
+        }
+      })
+    }
+  }
 
   const onValueNameChange = (e) => {
+    setErrorUnique(false)
     setNameInput(e.target.value)
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
@@ -101,19 +142,17 @@ export default function AddMilestonePage() {
     </Form.Item>
   )
 
-  // const onFinish = (values) => {
-  //   console.log(values)
-  // }
-
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>マイルストーン追加</p>
+          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px', margin: 0 }}>
+            マイルストーン追加
+          </p>
 
-          <div className="pt-20">
+          <div className="pt-10">
             <Form
               form={form}
               name="addMilestone"
@@ -126,9 +165,9 @@ export default function AddMilestonePage() {
               wrapperCol={{ span: 6 }}
             >
               <Form.Item
-                className="pb-4"
+                className="pb-5"
                 label={(
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>
+                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>
                     マイルストーン名
                   </p>
                 )}
@@ -157,12 +196,13 @@ export default function AddMilestonePage() {
               >
                 <Input
                   className="w-full"
+                  onBlur={onBlur}
                   onChange={onValueNameChange}
                   placeholder="マイルストーン名"
                 />
               </Form.Item>
               <Form.Item
-                className="pb-4"
+                className="pb-5"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
                 }
@@ -193,7 +233,6 @@ export default function AddMilestonePage() {
                 <div className="col-span-7 justify-self-end">
                   <Form.Item>
                     <Button
-                      type="primary"
                       onClick={showModalOfBtnCancel}
                       className="w-32"
                     >
@@ -202,25 +241,15 @@ export default function AddMilestonePage() {
                   </Form.Item>
                 </div>
                 <div>
-                  <Form.Item shouldUpdate>
-                    {() => (
-                      <Button
-                        type="primary"
-                        className="w-32"
-                        disabled={
-                          !(
-                            form.isFieldTouched('name')
-                              && form.isFieldTouched('time')
-                          )
-                            || !!form
-                              .getFieldsError()
-                              .filter(({ errors }) => errors.length).length
-                        }
-                        onClick={showModal}
-                      >
-                           登録
-                      </Button>
-                    )}
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      className="w-32"
+                      onClick={showModal}
+                      htmlType="submit"
+                    >
+                      登録
+                    </Button>
                   </Form.Item>
                 </div>
               </div>

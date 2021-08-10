@@ -15,7 +15,7 @@ class CreateJobfairsTable extends Migration
     {
         Schema::create('jobfairs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->date('start_date');
             $table->unsignedInteger('number_of_students');
             $table->unsignedInteger('number_of_companies');

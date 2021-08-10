@@ -11,6 +11,8 @@ class Schedule extends Model
 
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function templateMilestones()
     {
         return $this->hasMany(TemplateMilestone::class);
