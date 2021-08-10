@@ -359,6 +359,7 @@ const index = () => {
                   >
                     <DatePicker
                       help="Please select the correct date"
+                      className="py-2"
                       // style={{ backgroundColor: '#e3f6f5' }}
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
@@ -426,7 +427,11 @@ const index = () => {
                       },
                     ]}
                   >
-                    <Select className="addJF-selector" placeholder="管理者を選択">
+                    <Select
+                      size="large"
+                      className="addJF-selector"
+                      placeholder="管理者を選択"
+                    >
                       {listAdminJF.map((element) => (
                         <Select.Option key={element.id} value={element.id}>
                           {element.name}
@@ -448,6 +453,7 @@ const index = () => {
                     ]}
                   >
                     <Select
+                      size="large"
                       className="addJF-selector"
                       placeholder="JF-スケジュールを選択"
                       onSelect={onScheduleSelect}
@@ -462,7 +468,7 @@ const index = () => {
 
                   {/* list milestones */}
                   <Form.Item label=" ">
-                    マイルストーン一覧
+                    <span className="label">マイルストーン一覧</span>
                     <List
                       className="demo-infinite-container"
                       bordered
@@ -482,7 +488,7 @@ const index = () => {
 
                   {/* list task */}
                   <Form.Item label=" ">
-                    タスク一賜
+                    <span className="label">タスク一賜</span>
                     <List
                       className="demo-infinite-container"
                       bordered

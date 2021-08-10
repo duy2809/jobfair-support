@@ -6,7 +6,7 @@ import {
 import {
   Button, Form,
   Input, Modal,
-
+  Tooltip,
   notification,
   Select,
   Tag,
@@ -27,20 +27,30 @@ const index = () => {
   const [listCatergories, setlistCatergories] = useState([])
   const [listMilestones, setlistMilestones] = useState([])
   const [templateTasks, settemplateTasks] = useState([])
+  const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
-
+  const [selectedOptions, setSelectedOptions] = useState([])
   const [numberInput, setnumberInput] = useState()
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
   // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
   const router = useRouter()
+  const unitData = [
+    { id: 1, name: '学生数' },
+    { id: 2, name: '企業数' },
+    { id: 3, name: 'None' },
+  ]
 
+  const isDayData = [
+    { id: 0, name: '時間' },
+    { id: 1, name: '日' },
+  ]
   // check if all input is empty.
   const checkIsFormInputEmpty = () => {
     // get all input values .
     const inputValues = form.getFieldsValue()
     //  return type :[]
-    const inputs = Object.values(inputValues)
+    const inputs = 'Object'.values(inputValues)
 
     for (let i = 0; i < inputs.length; i += 1) {
       const element = inputs[i]
@@ -51,11 +61,15 @@ const index = () => {
     return true
   }
   const convertTaskToOptions = (tasks) => {
-    console.log(tasks)
+    const options = []
+    Object.values(tasks).forEach((element) => {
+      const dummyObj = { value: '' }
+      dummyObj.value = element.name
+      options.push(dummyObj)
+    })
+    return options
   }
   useEffect(() => {
-    // Extensions.unSaveChangeConfirm(true)
-
     const fetchAPI = async () => {
       try {
         // TODO: optimize this one by using axios.{all,spread}
@@ -65,8 +79,7 @@ const index = () => {
         setlistCatergories(Array.from(categories.data))
         setlistMilestones(Array.from(milestones.data))
         settemplateTasks(Array.from(tasks.data))
-
-        // Extensions.unSaveChangeConfirm(true)
+        setSelectedOptions(convertTaskToOptions(tasks.data))
         return null
       } catch (error) {
         return Error(error.toString())
@@ -83,12 +96,11 @@ const index = () => {
 
   const autoConvertHalfwidth = (event) => {
     // const ans = parseInt(Extensions.toHalfWidth(event.target.value), 10)
-    if (Extensions.isFullWidth(event.target.value)) {
-      const ans = Extensions.toHalfWidth(event.target.value)
-      console.log(ans * 1)
-      if (ans * 1) {
-        setnumberInput(ans)
-      }
+    const inputRef = event.target.id
+    const dummyObject = {}
+    dummyObject[inputRef] = Extensions.toHalfWidth(event.target.value)
+    if (inputRef) {
+      form.setFieldsValue(dummyObject)
     }
   }
   // route function handle all route in this page.
@@ -116,7 +128,7 @@ const index = () => {
         content: '',
         onOk: () => {
           onFormReset()
-          routeTo('/jobfairs')
+          routeTo('/')
         },
         onCancel: () => {},
         okText: 'はい',
@@ -125,7 +137,7 @@ const index = () => {
     }
   }
   //  open success notification after add jobfair button clicked .
-  const saveNotification = () => {
+  const successNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
@@ -137,21 +149,23 @@ const index = () => {
   // handle user click add job fair.
   const onFinishSuccess = async (values) => {
     try {
-      Extensions.unSaveChangeConfirm(false)
       const data = {
-        name: values.name.toString(),
-        schedule_id: values.schedule_id * 1.0,
-        start_date: values.start_date.format(Extensions.dateFormat),
-        number_of_students: values.number_of_students * 1.0,
-        number_of_companies: values.number_of_companies * 1.0,
-        jobfair_admin_id: values.jobfair_admin_id * 1.0,
+        name: values.template_name,
+        description_of_detail: values.detail,
+        milestone_id: values.milestone_id,
+        is_day: values.isDay,
+        effort: values.effort * 1.0,
+        category_id: values.category_id,
+        beforeTasks: values.beforeTasks,
+        afterTasks: values.afterTasks,
       }
+      console.log(data)
       setdisableBtn(true)
-      const response = await addTemplateTasksAPI.addJF(data)
+      const response = await addTemplateTasksAPI.addTemplateTask(data)
 
       if (response.status < 299) {
-        await saveNotification()
-        routeTo(`/jf-toppage/${response.data.id}`)
+        await successNotification()
+        // routeTo(`/jf-toppage/${response.data.id}`)
       } else {
         setdisableBtn(false)
       }
@@ -159,30 +173,9 @@ const index = () => {
       return response
     } catch (error) {
       setdisableBtn(false)
-      const isDuplicate = JSON.parse(error.request.response).message
-      if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
-        notification.open({
-          icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-          duration: 3,
-          message: 'このJF名は既に使用されています。',
-          onClick: () => {},
-        })
-      } else {
-        notification.open({
-          icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-          duration: 3,
-          message: '保存に失敗しました。',
-          onClick: () => {},
-        })
-      }
       return error
     }
   }
-
-  // handle when ever selector change.
-  // const onmilestoneselect = (_, event) => {
-  //   const scheduleId = event.key
-  // }
 
   /* Validator of all input. */
   const templateTaskNameValidator = (_, value) => {
@@ -215,6 +208,7 @@ const index = () => {
     return Promise.resolve()
   }
   const numberInputValidator = (_, value) => {
+    console.log(value)
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
     }
@@ -237,25 +231,53 @@ const index = () => {
   }
   /* Validator of all input end */
 
-  function tagRender(props) {
+  const tagRender = (props) => {
     const { label, value, closable, onClose } = props
     const onPreventMouseDown = (event) => {
       event.preventDefault()
       event.stopPropagation()
     }
-    console.log(props)
     return (
       <Tag
         color={value}
         onMouseDown={onPreventMouseDown}
         closable={closable}
         onClose={onClose}
-        style={{ marginRight: 3 }}
+        style={{ marginRight: 3, paddingTop: '4px', marginBottom: '4px' }}
       >
-        <a href="">{label}</a>
+        <Tooltip title={label}>
+          <span
+            onClick={(e) => {
+              // router.push()
+            }}
+            className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            style={{ maxWidth: '20ch' }}
+          >
+            <a href="" className="my-1">{label}</a>
+          </span>
+
+        </Tooltip>
       </Tag>
     )
   }
+  const isTemplateTaskExisted = async () => {
+    try {
+      const templateTaskName = form.getFieldValue('template-name')
+      console.log(form.getFieldsValue())
+      const response = await addTemplateTasksAPI.isTemplateTaskExisted(templateTaskName)
+      if (response.data.length) {
+        return document.getElementById('error-msg').removeAttribute('hidden')
+      }
+      return null
+    } catch (error) {
+      console.log(error)
+      return null
+    }
+  }
+  // const filterSelectedTasks = (data) => {
+  //   const filteredOptions = templateTasks.filter((o) => !data.includes(o))
+  //   console.log(filteredOptions)
+  // }
 
   return (
     <OtherLayout>
@@ -263,12 +285,13 @@ const index = () => {
         <div className="add-template-task-page">
           <div className="container mx-auto flex-1 justify-center px-4  pb-20">
             {/* page title */}
-            <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1>
+            {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
+            <h1>テンプレートタスク追加 </h1>
             <div>
               <div className="container mt-20">
                 <div className="grid justify-items-center">
                   <Form
-                    className="place-self-center w-3/4"
+                    className="place-self-center add-template-form"
                     form={form}
                     labelCol={{
                       span: 6,
@@ -285,27 +308,27 @@ const index = () => {
                     {/* template task name */}
                     <Form.Item
                       label="タスクテンプレート名"
-                      name="template-name"
                       required
-                      // hasFeedback
-                      rules={[
-                        {
-                          validator: templateTaskNameValidator,
-                        },
-
-                      ]}
                     >
+                      <Form.Item
+                        name="template_name"
+                        noStyle
+                        rules={[
+                          {
+                            validator: templateTaskNameValidator,
+                          },
+                        ]}
+                      >
+                        <Input
+                          type="text"
+                          onBlur={isTemplateTaskExisted}
+                          placeholder="タスクテンプレート名を入力する"
+                          maxLength={200}
+                        />
 
-                      <Input
-                        type="text"
-                        // name="template-name"
-                        placeholder="タスクテンプレート名を入力する"
-                        maxLength={200}
-                      />
-                      <p className="text-red-600" />
-                      {/* <HelpBlock>
-                        <p className="text-danger">{this.state.lastNameErr}</p>
-                      </HelpBlock> */}
+                      </Form.Item>
+
+                      <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
                     </Form.Item>
 
                     {/* category */}
@@ -313,7 +336,7 @@ const index = () => {
                       required
                       // hasFeedback
                       label="カテゴリー"
-                      name="category"
+                      name="category_id"
                       rules={[
                         {
                           validator: categoryValidator,
@@ -321,7 +344,10 @@ const index = () => {
                       ]}
                     >
                       <Select
+                        size="large"
                         showArrow
+                        allowClear
+                        className="addJF-selector p-1"
                         placeholder="カテゴリー"
                       >
                         {listCatergories.map((element) => (
@@ -330,9 +356,6 @@ const index = () => {
                           </Select.Option>
                         ))}
                       </Select>
-                      {/* <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',']}>
-                        {children}
-                      </Select> */}
 
                     </Form.Item>
 
@@ -340,7 +363,7 @@ const index = () => {
                     <Form.Item
                       required
                       // hasFeedback
-                      name="milestone"
+                      name="milestone_id"
                       label="マイルストーン"
                       rules={[
                         {
@@ -350,7 +373,9 @@ const index = () => {
                     >
                       <Select
                         showArrow
-                        className="addJF-selector"
+                        allowClear
+                        size="large"
+                        className="addJF-selector p-1"
                         placeholder="JF-スケジュールを選択"
                       >
                         {listMilestones.map((element) => (
@@ -364,72 +389,109 @@ const index = () => {
                     {/* relation */}
                     <Form.Item
                       label="リレーション"
-                      className=""
-                      name="relation"
                     >
-                      <p className="mt-2">前のタスク:</p>
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        tagRender={tagRender}
-                        style={{ width: '100%' }}
-                        options={convertTaskToOptions(templateTasks)}
-                      />
-
+                      <p className="">前のタスク:</p>
+                      <Form.Item noStyle name="beforeTasks">
+                        <Select
+                          mode="multiple"
+                          showArrow
+                          allowClear
+                          tagRender={tagRender}
+                          className="w-100"
+                          placeholder="リレーション"
+                          // onChange={}
+                        >
+                          {templateTasks.map((element) => (
+                            <Select.Option key={element.id} value={element.id}>
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
                       <p className="mt-7">後のタスク:</p>
-                      <Select
-                        showArrow
-                        showSearch={false}
-                        allowClear
-                        mode="multiple"
-                        placeholder="リレーション"
-                      />
+                      <Form.Item noStyle name="afterTasks">
+                        <Select
+                          showArrow
+                          showSearch={false}
+                          allowClear
+                          tagRender={tagRender}
+                          mode="multiple"
+                          placeholder="リレーション"
+
+                        >
+                          {templateTasks.map((element) => (
+                            <Select.Option key={element.id} value={element.id}>
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
 
                     </Form.Item>
 
-                    {/* Kōsū - effort */}
+                    {/* Kōsū - effort  */}
                     <Form.Item
                       label="工数"
-                      name="effort"
                       required
-                      rules={[
-                        {
-                          validator: numberInputValidator,
-                        },
-                      ]}
+
                     >
                       <Space className="space-items-special flex justify-between ">
-                        <div className="w-1/2 max-w-xs flex-grow mb-1">
-                          <Input
-                            className="h-1/2"
-                            style={{ padding: '6px', minWidth: '53px' }}
-                            type="text"
-                            size="large"
+                        <div className="w-1/2 max-w-xs flex-grow ">
+                          <Form.Item
+                            noStyle
                             name="effort"
-                            min={1}
-                            value={numberInput}
-                            onChange={autoConvertHalfwidth}
-
-                          />
+                            rules={[
+                              {
+                                validator: numberInputValidator,
+                              },
+                            ]}
+                          >
+                            <Input
+                              className="h-1/2 py-1"
+                              style={{ padding: '9px', minWidth: '53px' }}
+                              type="text"
+                              size="large"
+                              min={1}
+                              value={0}
+                              onChange={autoConvertHalfwidth}
+                            />
+                          </Form.Item>
                         </div>
                         {/* ----------------- */}
                         <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                          <Select
-                            required
-                            className="special-selector w-100 "
-                            showArrow
-                            showSearch={false}
-                            placeholder="時間"
-                            // options={options}
-                          />
+                          <Form.Item noStyle name="isDay">
+                            <Select
+                              required
+                              className="special-selector w-100 "
+                              showArrow
+                              size="large"
+                              showSearch={false}
+                              placeholder="時間"
+                            >
+                              {isDayData.map((element) => (
+                                <Select.Option key={element.id} value={element.id}>
+                                  {element.name}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
                           <p className="slash-devider text-3xl font-extrabold"> / </p>
-                          <Select
-                            required
-                            className="special-selector"
-                            showArrow
-                            showSearch={false}
-                            placeholder="学生数"
-                          />
+                          <Form.Item noStyle name="unit">
+                            <Select
+                              required
+                              size="large"
+                              className="special-selector"
+                              showArrow
+                              showSearch={false}
+                              placeholder="学生数"
+                            >
+                              {unitData.map((element) => (
+                                <Select.Option key={element.id} value={element.id}>
+                                  {element.name}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
                         </div>
                       </Space>
 

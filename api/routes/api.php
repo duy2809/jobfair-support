@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TemplateTaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -87,6 +88,7 @@ Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
+Route::get('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
 
 //category
 

@@ -116,4 +116,9 @@ class TemplateTaskController extends Controller
 
         return response()->json($afterTasks);
     }
+
+    public function checkNameExisted(Request $request)
+    {
+        return TemplateTask::where('name', '=', $request->name)->get();
+    }
 }
