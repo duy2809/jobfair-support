@@ -1,6 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown } from 'antd'
+import { Menu, Dropdown, List, Avatar, Input, Checkbox } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
@@ -25,22 +25,67 @@ export default function Navbar() {
       </Menu.Item>
     </Menu>
   )
+
+  const data = [
+    {
+      'name' : 'a-san',
+      'action': 'add JF',
+      'time': '11:12:20',
+    },
+    {
+      'name' : 'a',
+      'action': 'add JF',
+      'time': '11:12:20',
+    },
+    {
+      'name' : 'a',
+      'action': 'add JF',
+      'time': '11:12:20',
+    },
+  ];
+
+  function onChange(e) {
+    console.log(`checked = ${e.target.checked}`);
+  }
+
+  const [visible, setVisible] = useState(false)
+
+  const handleVisibleChange = () => {
+    setVisible(!visible);
+  };
+
   const notifications = (
-    <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
-      <Menu.Item key="0">
-        <Link href="/">
-          <a>通知 1</a>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Link href="/">
-          <a>通知 2</a>
-        </Link>
-      </Menu.Item>
-    </Menu>
+    <div className="noti w-96 border-2 rounded-2xl bg-white">
+      <List
+      size="small"
+      header={
+        <div className="noti-header">
+          <div>通知</div>
+          <div className='noti-input'>
+            <Input  placeholder="Basic usage" />
+          </div>
+          
+          <Checkbox className='' onChange={onChange}>Checkbox</Checkbox>
+        </div>
+        
+      }
+      bordered
+      dataSource={data}
+      renderItem={item => <List.Item>
+        <List.Item.Meta
+          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+          title={<a href="https://ant.design">{item.name} ha ....{item.action}</a>}
+        />
+        <div>
+          {item.time}
+        </div>
+      </List.Item>}
+    />
+    </div>
+    
   )
   const userInformations = (
-    <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
+    <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2 bg-gray-600">
       <Menu.Item key="0">
         <Link href="/profile">
           <a>プロフィール表示</a>
@@ -87,9 +132,9 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex px-16 items-center">
-        <div className="px-4">
-          <Dropdown overlay={notifications} trigger={['click']}>
+      <div className="flex px-16 items-end">
+        <div className="px-4 px">
+          <Dropdown overlay={notifications} onVisibleChange={handleVisibleChange} /* trigger={['hover']} */ visible={visible} placement="bottomCenter">
             <div className="cursor-pointer">
               <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
               <span className="relative text-lg number-notifications -top-2 right-2">
