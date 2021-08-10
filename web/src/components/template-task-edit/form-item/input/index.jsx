@@ -14,7 +14,6 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
     let temp = {};
     temp[name] = toHalfWidth(e.target.value);
     form.setFieldsValue(temp);
-    console.log(form.getFieldsValue('unit'));
   };
   return (
     <Form.Item

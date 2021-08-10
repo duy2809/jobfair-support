@@ -9,7 +9,6 @@ const toHalfWidth = (v) =>
   );
 const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
   const [fieldName, setFieldName] = useState('');
-  // const specialCharRegex = new RegExp('[ 　]');
   const onValueNameChange = (value) => {
     setCheckSpace(false);
     setInput((prevState) => (prevState = value));
@@ -48,11 +47,7 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
       <Select onChange={onValueNameChange} placeholder={label}>
         {data.map((item) => {
           return (
-            <Option
-              key={item.id}
-              value={item[fieldName]}
-              title={item[fieldName]}
-            >
+            <Option key={item.id} value={item[fieldName]}>
               {item[fieldName]}
             </Option>
           );
