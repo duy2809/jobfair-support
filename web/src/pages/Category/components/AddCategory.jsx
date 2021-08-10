@@ -35,6 +35,7 @@ const AddCategory = (props) => {
     })
     // setTimeout(() => { window.location.reload() }, 1000)
     setReloadPage()
+    console.log('success')
   }
 
   const handleOk = () => {

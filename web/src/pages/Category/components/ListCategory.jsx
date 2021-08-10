@@ -50,7 +50,7 @@ export default function ListCategories() {
   // table columns
   const columns = [
     {
-      title: 'No',
+      title: 'No.',
       dataIndex: 'key',
       width: '10%',
     },
