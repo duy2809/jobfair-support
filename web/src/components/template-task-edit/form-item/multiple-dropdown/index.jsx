@@ -3,13 +3,6 @@ import { Form, Select, Tag, Tooltip } from 'antd';
 import './style.scss';
 const { Option } = Select;
 
-// const toHalfWidth = (v) =>
-//   v.forEach((item) =>
-//     item.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-//       String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-//     )
-//   );
-
 const toHalfWidth = (v) => {
   let newArr = [];
   for (let i = 0; i < v.length; i++) {
