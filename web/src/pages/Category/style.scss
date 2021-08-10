@@ -1,6 +1,4 @@
-// @tailwind base;
-// @tailwind components;
-// @tailwind utilities;
+.listCategory{
 // list
 .ant-spin-container{
     padding-top: 2rem;
@@ -37,14 +35,6 @@
 .ant-pagination-options-size-changer.ant-select{
     display: none;
 }
-.ant-pagination-item:hover,
-.ant-pagination-item > a:hover,
-.ant-pagination-item-link:hover,
-.ant-pagination-item-active,
-.ant-pagination-item-active > a {
-  border-color: #ffd803 !important;
-  color: #ffd803 !important;
-}
 
 .ant-table-container{
     position: relative;
@@ -57,34 +47,14 @@
     right: 3rem;
 }
 
-.ant-btn-primary{
-    width: 6rem;
-    background-color: #ffd803;
-    border: 1px solid #ffd803;
-}
-
-.ant-btn-primary:hover {
-    background-color: #ffd803;
-    border-color: #272343;
-    color: #272343;
-}
-
-.add-btn:hover {
-    background-color: #ffd803;
-    border-color: #272343;
-    color: #272343;
-}
-
 .input-category{
     height: 36px;
     width: -webkit-fill-available;
     padding-left: 6px;
 }   
 
-.ant-btn{
-    color: #272343;
-}
 // add form
 .ant-form-item-required::after{
     display: none;
+}
 }
