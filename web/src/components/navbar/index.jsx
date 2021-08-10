@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, List, Avatar, Input, Checkbox } from 'antd'
-import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
+import { Menu, Dropdown, List, Avatar, Input, Checkbox, Button } from 'antd'
+import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
 
@@ -62,12 +62,16 @@ export default function Navbar() {
         <div className="noti-header">
           <div>通知</div>
           <div className='noti-input'>
-            <Input  placeholder="Basic usage" />
+            <Input  placeholder="User's name" />
           </div>
           
           <Checkbox className='' onChange={onChange}>Checkbox</Checkbox>
+          <Button
+          //type="primary"
+          icon={<CloseOutlined />}
+          onClick={handleVisibleChange}
+        />
         </div>
-        
       }
       bordered
       dataSource={data}
