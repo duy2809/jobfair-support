@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import _get from 'lodash/get'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
+import '../../pages/global.scss'
 
 const { Content } = Layout
 const Otherlayout = ({ children }) => {
@@ -13,9 +14,7 @@ const Otherlayout = ({ children }) => {
     <div className="otherlayout">
       <Layout>
         <Layout className="site-layout">
-
           <Navbar />
-
           <Content
             style={{
               margin: '45px 16px',

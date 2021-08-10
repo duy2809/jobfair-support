@@ -1,6 +1,6 @@
 describe('check button cancel', () => {
   beforeEach(() => {
-    cy.visit('http://jobfair.local:8000/milestones/10/edit')
+    cy.visit('http://jobfair.local:8000/milestones/1/edit')
     cy.wait(500)
   })
 
