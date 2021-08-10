@@ -135,7 +135,6 @@ class DatabaseSeeder extends Seeder
             'jobfair_admin_id' => $JFadmin->id,
         ]); // first JF assign to $JFadmin
         foreach (Jobfair::all() as $jobfair) {
-
             // random template schedule
             $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
             $scheduleAttr = $templateSchedule->toArray();
