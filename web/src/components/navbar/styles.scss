@@ -13,3 +13,20 @@
     border-radius: 50%;
     background-color: #ffd803;
 } 
+
+.noti {
+    width: 600px;
+    
+    .noti-header{
+        display: flex;
+        justify-items: center;
+    }
+
+    .noti-input{
+        width: 300px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+}
+
