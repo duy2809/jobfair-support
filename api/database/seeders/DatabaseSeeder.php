@@ -13,6 +13,8 @@ use App\Models\TemplateTask;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +25,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // first 3 users in 3 role
+        $admin = User::create([
+            'name' => 'Sun Asterisk',
+            'email' => 'jobfair@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 1,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        $JFadmin = User::create([
+            'name' => 'JF Admin',
+            'email' => 'AnAdmin@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 2,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        $member = User::create([
+            'name' => 'Member',
+            'email' => 'AMember@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 3,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
         // milestones data
         $milestones = [
             [
@@ -91,7 +130,12 @@ class DatabaseSeeder extends Seeder
 
         //create 3 jobfairs
         Jobfair::factory(3)->create();
+
+        Jobfair::all()->first()->update([
+            'jobfair_admin_id' => $JFadmin->id,
+        ]); // first JF assign to $JFadmin
         foreach (Jobfair::all() as $jobfair) {
+
             // random template schedule
             $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
             $scheduleAttr = $templateSchedule->toArray();
