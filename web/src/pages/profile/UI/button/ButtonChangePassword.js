@@ -116,7 +116,7 @@ const ButtonChangePassword = () => {
           </Form.Item>
 
           <Form.Item
-            label="パスワード確認用"
+            label="新しいパスワード(再確認)"
             name="confirm_password"
             dependencies={['password']}
             rules={[

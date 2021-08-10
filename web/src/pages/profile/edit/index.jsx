@@ -291,7 +291,7 @@ const EditProfilePage = () => {
                         validator(_, value) {
                           if (specialCharRegex.test(value)) {
                             setIsDisable(true)
-                            return Promise.reject(new Error('スペースを入力しないでください'))
+                            return Promise.reject(new Error('スペースを入力しないでください。'))
                           }
                           if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)) {
                             setIsDisable(true)
@@ -331,7 +331,7 @@ const EditProfilePage = () => {
                             setIsDisable(true)
                             return Promise.reject(
                               new Error(
-                                '特殊文字を入力しないでください。',
+                                'メールアドレスの形式が正しくありません。',
                               ),
                             )
                           }

@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
-
-use Illuminate\Http\File;
 
 class ProfileController extends Controller
 {
@@ -60,11 +58,10 @@ class ProfileController extends Controller
         // return Auth::user();
     }
 
-
-    public function getAvatar(){
+    public function getAvatar()
+    {
         return Storage::download(Auth::user()->avatar, 'avatar');
     }
-
 
     public function updateUserInfo(Request $request, $id)
     {
@@ -76,7 +73,7 @@ class ProfileController extends Controller
                 'email',
                 Rule::unique('users')->whereNot('id', $id),
 
-            ],   
+            ],
             'chatwork_id' => 'required|string',
         ];
 
@@ -96,22 +93,23 @@ class ProfileController extends Controller
         ]);
 
         $user = User::find($id);
-        if (Hash::check($request->current_password, $user->password)){
+        if (Hash::check($request->current_password, $user->password)) {
             $user->update([
-                'password' =>bcrypt($request->password)
+                'password' => bcrypt($request->password),
             ]);
         } else {
             return response()->json(['message' => 'Current password incorrect']);
         }
-        
+
         return response()->json(['message' => 'Password has been successfully changed']);
     }
 
-    public function updateAvatar(Request $request, $id){
-        if($request->hasFile('avatar')){
+    public function updateAvatar(Request $request, $id)
+    {
+        if ($request->hasFile('avatar')) {
             //$test = $request->file('avatar');
             //dd([$test, $request->file('avatar')->storeAs('public/image/avatars', $id . '.' . $request->avatar->extension())]);
-    	    $user = User::find($id);
+            $user = User::find($id);
 
             $rules = [
                 'avatar' => 'required|mimes:jpg,png|max:4096',
@@ -119,26 +117,24 @@ class ProfileController extends Controller
 
             $validator = Validator::make($request->all(), $rules);
             $validator->validated();
-            
+
             //dd($request);
 
             $avatar = $user->id . '.' . $request->avatar->extension();
-            $load = $request->file('avatar')->storeAs('/image/avatars', $avatar);
+            $load = $request->file('avatar')->storeAs('public/image/avatars', $avatar);
 
-            $path = "/image/avatars/$avatar";
+            $path = "public/image/avatars/$avatar";
             $request->avatar = $path;
             //dd($request);
             $user->update();
-            
+
             //return $user;
-    	    return response()->json($path); 
-        } 
-        
+            return response()->json($path);
+        }
+
         return response()->json(['message' => 'Failed']);
 
     }
-
-
 
     /**
      * Remove the specified resource from storage.
