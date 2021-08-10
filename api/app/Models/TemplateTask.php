@@ -9,6 +9,7 @@ class TemplateTask extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['name', 'description_of_detail', 'milestone_id', 'is_day', 'unit', 'effot'];
     public $timestamps = false;
     protected $guarded = [];
 
