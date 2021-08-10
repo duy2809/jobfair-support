@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // first 3 users in 3 role
-        $admin = User::create([
+        User::create([
             'name' => 'Sun Asterisk',
             'email' => 'jobfair@sun-asterisk.com',
             'password' => Hash::make('12345678'),
@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
         ]);
 
-        $member = User::create([
+        User::create([
             'name' => 'Member',
             'email' => 'AMember@sun-asterisk.com',
             'password' => Hash::make('12345678'),
