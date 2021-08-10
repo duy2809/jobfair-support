@@ -94,112 +94,115 @@ export default function InviteMember() {
       }
     }
   }
-
+  // flex flex-col h-full items-center justify-center
   return (
     <OtherLayout>
       <OtherLayout.Main>
-        <div className="flex flex-col h-full items-center justify-center ">
-          <div className="screen-name text-6xl w-11/12  py-10 ">メンバ招待</div>
-          <div className=" justify-items-center w-6/12 rounded-2xl border-2 border-black">
-            <Form
-              className="text-2xl m-auto w-full "
-              {...layout}
-              form={form}
-              onFinish={handleInvite}
-              onFinishFailed={onFinishFailed}
-              validateMessages={validateMessages}
-            >
-              <Form.Item>
+        <div className="invite-member-page">
+          <div className="container mx-auto flex-1 justify-center px-4  pb-20">
+            <h1 className="text-3xl">メンバ招待</h1>
+            <div className="flex justify-items-center w-6/12 rounded-2xl border-2 border-black" style={{ margin: '0 auto' }}>
+              <Form
+                className="text-2xl m-auto w-full "
+                {...layout}
+                form={form}
+                onFinish={handleInvite}
+                onFinishFailed={onFinishFailed}
+                validateMessages={validateMessages}
+              >
+                <Form.Item>
+                  <Form.Item
+                    name="email"
+                    label="メールアドレス"
+                    rules={[
+                      { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!' },
+                    ]}
+                  >
+                    <Input
+                      size="large"
+                      onChange={onValueEmailChange}
+                      types="email"
+                      className="fix-input"
+                      initialValues={emailInput}
+
+                    />
+                  </Form.Item>
+                  <span id="errorEmail" hidden style={{ color: 'red' }}>このメールは既に存在しました</span>
+                </Form.Item>
                 <Form.Item
-                  name="email"
-                  label="メールアドレス"
+                  name="categories"
+                  label="役割"
                   rules={[
-                    { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!' },
+                    {
+                      required: true,
+                    },
                   ]}
                 >
-                  <Input
+                  <Select
+                    showSearch
+                    mode="tag"
+                    className="fix-input"
+                    placeholder="カテゴリを選んでください"
                     size="large"
-                    onChange={onValueEmailChange}
-                    types="email"
-                    initialValues={emailInput}
-                  />
+                    onChange={onValueRoleChange}
+                    initialValues={roleInput}
+                  >
+                    {children}
+                  </Select>
                 </Form.Item>
-                <span id="errorEmail" hidden style={{ color: 'red'}}>このメールは既に存在しました</span>
-              </Form.Item>
-              <Form.Item
-                name="categories"
-                label="役割"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select
-                  showSearch
-                  mode="tag"
-                  style={{ width: '100%' }}
-                  placeholder="カテゴリを選んでください"
-                  size="large"
-                  onChange={onValueRoleChange}
-                  initialValues={roleInput}
-                >
-                  {children}
-                </Select>
-              </Form.Item>
-              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                <div className="flex justify-center items-center w-10/12 ">
-                  <div className="flex ml-5">
-                    <Modal
-                      centered="true"
-                      visible={isModalVisible}
-                      onCancel={handleCancel}
-                      onOk={handleClick}
-                      width={600}
-                      okText="はい"
-                      cancelText="いいえ"
-                    >
-                      <p className="mb-5">変更は保存されていません。続行してもよろしいですか？ </p>
-                    </Modal>
-                    <Button
-                      id="btn-cancel"
-                      size="large"
-                      className="ml-9 text-base px-14 w-32"
-                      type="primary"
-                      htmlType="submit"
-                      enabled="true"
-                      onClick={showModal}
-                    >
-                      キャンセル
-                    </Button>
-                  </div>
-                  <div>
-                    <Form.Item shouldUpdate>
-                      {() => (
-                        <div className="flex justify-center">
-                          <Button
-                            id="btn-submit"
-                            type="primary"
-                            htmlType="submit"
-                            className="text-base px-14"
-                            disabled={
-                              !!form
-                                .getFieldsError()
-                                .filter(({ errors }) => errors.length).length
+                <Form.Item>
+                  <div className="flex justify-end mt-5">
+                    <div className="mr-3 ">
+                      <Modal
+                        centered="true"
+                        visible={isModalVisible}
+                        onCancel={handleCancel}
+                        onOk={handleClick}
+                        width={600}
+                        okText="はい"
+                        cancelText="いいえ"
+                      >
+                        <p className="mb-5">変更は保存されていません。続行してもよろしいですか？ </p>
+                      </Modal>
+                      <Button
+                        id="btn-cancel"
+                        className="ml-9 text-base px-14 w-32"
+                        type="primary"
+                        htmlType="submit"
+                        enabled="true"
+                        onClick={showModal}
+                      >
+                        キャンセル
+                      </Button>
+                    </div>
+                    <div>
+                      <Form.Item shouldUpdate>
+                        {() => (
+                          <div className="flex justify-center">
+                            <Button
+                              id="btn-submit"
+                              type="primary"
+                              htmlType="submit"
+                              className="text-base "
+                              disabled={
+                                !!form
+                                  .getFieldsError()
+                                  .filter(({ errors }) => errors.length).length
                               || !(
                                 form.isFieldTouched('email')
                                 && form.isFieldTouched('categories'))
-                            }
-                          >
-                            招待
-                          </Button>
-                        </div>
-                      )}
-                    </Form.Item>
+                              }
+                            >
+                              招待
+                            </Button>
+                          </div>
+                        )}
+                      </Form.Item>
+                    </div>
                   </div>
-                </div>
-              </Form.Item>
-            </Form>
+                </Form.Item>
+              </Form>
+            </div>
           </div>
         </div>
       </OtherLayout.Main>

@@ -1,34 +1,52 @@
-.ant-btn-primary {
+.invite-member-page {
+  .ant-btn-primary {
     color: #272343;
     background: #ffd803;
     border-color: #ffd803;
     box-shadow: shadow-2xl;
-    text-shadow:shadow-2xl;
-    
-}
-.ant-btn-primary:hover, .ant-btn-primary:focus {
+    text-shadow: shadow-2xl;
+  }
+  .ant-btn-primary:hover,
+  .ant-btn-primary:focus {
     color: #272343;
     background: #ffd803;
     border-color: #ffd803;
-    
+  }
 
-}
-
-.ant-layout, .ant-layout * {
+  .ant-layout,
+  .ant-layout * {
     box-sizing: rounded-5;
-}
-
-.ant-form label {
-    font-size: 25px;
-}
-.ant-form {
+  }
+  .ant-form-item-label > label {
+    font-size: 19px;
+  }
+  .ant-form {
     box-sizing: border-box;
-    margin-bottom: 0;
-    padding: 96px;
+
+    padding: 45px;
     color: rgba(0, 0, 0, 0.85);
     font-size: 14px;
     font-variant: tabular-nums;
     line-height: 1.5715;
     list-style: none;
     font-feature-settings: 'tnum';
+    margin-bottom: 0;
+    padding-bottom: 20px;
+  }
+  .ant-form-item {
+    margin: 0;
+  }
+  .ant-form-item-control {
+    margin-bottom: 20px;
+  }
+  .ant-form-horizontal .ant-form-item-label {
+    text-align: end;
+  }
+  .fix-input {
+    min-width: 300px;
+    margin: 0;
+  }
+  //   .fix-input:nth-child(1) {
+  //     margin-left: 10px;
+  //   }
 }
