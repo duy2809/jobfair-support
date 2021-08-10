@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Select, Tag } from 'antd';
+import { Form, Select, Tag, Tooltip } from 'antd';
 import './style.scss';
 const { Option } = Select;
 
@@ -67,40 +67,17 @@ const ItemMultipleDropdown = ({
         tagRender={tagRender}
       >
         {options.map((item) => {
-          let shortItemName = item.name.slice();
-          if (item.name.length > 20) {
-            shortItemName = item.name.slice(0, 20) + '...';
-          }
+          // let shortItemName = item.name.slice();
+          // if (item.name.length > 20) {
+          //   shortItemName = item.name.slice(0, 20) + '...';
+          // }
           return (
-            <Option key={item.id} value={item.name} title={item.name}>
+            <Option key={item.id} value={item.name}>
               {item.name}
             </Option>
           );
         })}
       </Select>
-      {/* <Select
-        mode='multiple'
-        showArrow
-        tagRender={tagRender}
-        className='overflow-hidden'
-        maxTagCount='responsive'
-        defaultValue={selectedItems.map((item) => item.name)}
-        onChange={onValueNameChange}
-        style={{ width: '100%', marginTop: '1.25rem' }}
-        options={options}
-      >
-        {options.map((item) => {
-          let shortItemName = item.name.slice();
-          if (item.name.length > 20) {
-            shortItemName = item.name.slice(0, 20) + '...';
-          }
-          return (
-            <Option key={item.id} value={item.name} title={item.name}>
-              {item.name}
-            </Option>
-          );
-        })}
-      </Select> */}
     </Form.Item>
   );
 };
@@ -111,17 +88,35 @@ function tagRender(props) {
     event.preventDefault();
     event.stopPropagation();
   };
-  return (
-    <Tag
-      color={value}
-      onMouseDown={onPreventMouseDown}
-      closable={closable}
-      onClose={onClose}
-      style={{ marginRight: 3 }}
-    >
-      <a href='#'>{label}</a>
-    </Tag>
-  );
+  if (label.length > 20) {
+    return (
+      <Tag
+        color={value}
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        <Tooltip title={label}>
+          <a href='#'>{label}</a>
+        </Tooltip>
+      </Tag>
+    );
+  } else {
+    return (
+      <Tag
+        color={value}
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        <Tooltip>
+          <a href='#'>{label}</a>
+        </Tooltip>
+      </Tag>
+    );
+  }
 }
 
 export default ItemMultipleDropdown;

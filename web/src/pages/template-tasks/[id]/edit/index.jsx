@@ -97,7 +97,6 @@ const EditTemplateTaskPage = () => {
       setPrevTasks((prevState) => (prevState = res.data.before_tasks));
       let value = [];
       res.data.before_tasks.forEach((item) => value.push(item.name));
-      // setTasks((prevState) => prevState.concat(res.data.before_tasks));
       form.setFieldsValue({
         prevTasks: value,
       });
@@ -109,7 +108,6 @@ const EditTemplateTaskPage = () => {
       setNextTasks(res.data.after_tasks);
       let value = [];
       res.data.after_tasks.forEach((item) => value.push(item.name));
-      // setTasks((prevState) => prevState.concat(res.data.after_tasks));
       form.setFieldsValue({
         nextTasks: value,
       });
@@ -125,11 +123,11 @@ const EditTemplateTaskPage = () => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 0,
+      duration: 3,
     });
-    // setTimeout(() => {
-    //   window.location.href = '/template-tasks';
-    // }, 3000);
+    setTimeout(() => {
+      window.location.href = '/template-tasks';
+    }, 3000);
   };
 
   useEffect(async () => {
@@ -161,34 +159,10 @@ const EditTemplateTaskPage = () => {
     setIsModalVisible(false);
     const temp = /[/](\d+)[/]/.exec(window.location.pathname);
     const id = `${temp[1]}`;
-    const newCategories = [
-      {
-        id: categoryId,
-        category_name: categoryInput,
-      },
-    ];
-    const newTemplate_milestone = {
-      id: milestoneId,
-      name: milestoneInput,
-    };
-    console.log(templateTaskNameInput);
-    console.log(description);
-    console.log(milestoneId);
-    console.log(isDay);
-    console.log(unit);
-    console.log(effortNumber);
-    console.log(newCategories);
-    console.log(newTemplate_milestone);
-    console.log(milestoneId);
-    console.log(categoryId);
-    console.log(prevTasks);
-    console.log(nextTasks);
     let submitPrevTasks = [];
     let submitNextTasks = [];
     prevTasks.forEach((item) => submitPrevTasks.push(item.id));
     nextTasks.forEach((item) => submitNextTasks.push(item.id));
-    console.log(submitPrevTasks);
-    console.log(submitNextTasks);
     updateTemplateTask(id, {
       name: templateTaskNameInput,
       description_of_detail: description,
@@ -202,18 +176,17 @@ const EditTemplateTaskPage = () => {
     })
       .then(() => openNotificationSuccess())
       .catch((error) => {
-        // if (
-        //   JSON.parse(error.response.request.response).errors.name[0] ===
-        //   'The name has already been taken.'
-        // ) {
-        //   notification.error({
-        //     message: 'このマイルストーン名は存在しています',
-        //   });
-        // }
-        console.log(error);
-        notification.error({
-          message: 'Error',
-        });
+        if (
+          JSON.parse(error.response.request.response).message == 'Edit Failed'
+        ) {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+            duration: 3,
+          });
+        }
+        // notification.error({
+        //   message: 'Error',
+        // });
       });
     // window.location.href = '/template-tasks/' + id;
   };

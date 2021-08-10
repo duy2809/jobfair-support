@@ -26,7 +26,7 @@ const Effort = ({
   };
   const onValueIsDayChange = (value) => {
     setCheckSpace(false);
-    setInput(
+    setIsDay(
       (prevState) => (prevState = isDayData.find((o) => o.name == value).id)
     );
     form.setFieldsValue({

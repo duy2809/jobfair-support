@@ -65,6 +65,20 @@ class TemplateTaskController extends Controller
     public function update(Request $request, $id)
     {
         $templateTask = TemplateTask::find($id);
+        $check = false;
+        $existTemp = TemplateTask::whereRaw("BINARY `name`= ?", [$request->name])->first();
+        if (isset($existTemp)) {
+            $check = true;
+        }
+
+        if ($templateTask->name == $request->name) {
+            $check = false;
+        }
+
+        if ($check) {
+            return response()->json(['message' => 'Edit Failed'], 422);
+        }
+
         $templateTask->update($request->all());
         $templateTask->categories()->sync($request->category_id);
         if (!empty($request->beforeTasks)) {
