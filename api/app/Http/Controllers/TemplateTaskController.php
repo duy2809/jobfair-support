@@ -66,12 +66,12 @@ class TemplateTaskController extends Controller
     {
         $templateTask = TemplateTask::find($id);
         $check = false;
-        $existTemp = TemplateTask::whereRaw("BINARY `name`= ?", [$request->name])->first();
+        $existTemp = TemplateTask::whereRaw('BINARY `name`= ?', [$request->name])->first();
         if (isset($existTemp)) {
             $check = true;
         }
 
-        if ($templateTask->name == $request->name) {
+        if ($templateTask->name === $request->name) {
             $check = false;
         }
 
