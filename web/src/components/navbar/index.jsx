@@ -134,7 +134,7 @@ export default function Navbar() {
       </div>
       <div className="flex px-16 items-end">
         <div className="px-4 px">
-          <Dropdown overlay={notifications} onVisibleChange={handleVisibleChange} /* trigger={['hover']} */ visible={visible} placement="bottomCenter">
+          <Dropdown overlay={notifications} onClick={handleVisibleChange} /* trigger={['hover']} */ visible={visible} placement="bottomCenter">
             <div className="cursor-pointer">
               <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
               <span className="relative text-lg number-notifications -top-2 right-2">
