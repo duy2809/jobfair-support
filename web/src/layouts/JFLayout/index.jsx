@@ -3,6 +3,7 @@ import { Layout, Menu } from 'antd'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import _get from 'lodash/get'
+import '../../pages/global.scss'
 import {
   HomeOutlined,
   FileProtectOutlined,
