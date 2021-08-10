@@ -6,7 +6,6 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -27,17 +26,9 @@ class CategoryController extends Controller
 
     public function search($key)
     {
-        $categories = Category::select('*')->get();
-        $query = strtolower($key);
-        $categories = $categories->filter(function ($categories) use ($query) {
-            if (Str::contains(strtolower($categories->category_name), $query)) {
-                return true;
-            }
-
-            return false;
-        });
-
-        return $categories;
+        return Category::where('category_name', 'LIKE', "%$key%")
+            ->orderBy('categories.updated_at', 'desc')
+            ->get();
     }
 
     /**
