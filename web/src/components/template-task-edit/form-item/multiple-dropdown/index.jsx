@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form, Select, Tag, Tooltip } from 'antd';
 import './style.scss';
 const { Option } = Select;
@@ -67,11 +67,18 @@ const ItemMultipleDropdown = ({
         tagRender={tagRender}
       >
         {options.map((item) => {
-          // let shortItemName = item.name.slice();
           if (item.name.length > 20) {
-            // shortItemName = item.name.slice(0, 20) + '...';
             return (
-              <Option key={item.id} value={item.name}>
+              <Option
+                key={item.id}
+                value={item.name}
+                // style={{
+                //   whiteSpace: 'nowrap',
+                //   overflow: 'hidden',
+                //   textOverflow: 'ellipsis',
+                //   maxWidth: '200px',
+                // }}
+              >
                 {item.name.slice(0, 20) + '...'}
               </Option>
             );
