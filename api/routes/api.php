@@ -19,10 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/web-init', WebInit::class);
 
 Route::apiResource('/milestone', MilestoneController::class);
-
-Route::resource('/milestone', TemplateMilestoneController::class);
-
-Route::resource('/milestone', TemplateMilestoneController::class);
 Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
 });
@@ -64,7 +60,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 
 //milestone
-
 Route::resource('/milestone', TemplateMilestoneController::class);
 
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
@@ -100,10 +95,20 @@ Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTa
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
 
-//category
 
+//category
 Route::apiResource('/category', CategoryController::class);
 
 Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
+Route::prefix('category')->group(function () {
+    Route::get('/', 'CategoryController@index');
+});
+
+
+Route::resource('/profile', ProfileController::class);
+Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
+
+Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
+Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);

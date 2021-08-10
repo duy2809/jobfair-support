@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Empty, List, Modal, notification } from 'antd'
-import Link from 'next/link'
+import { Button, Modal, notification } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
+
 import OtherLayout from '../../layouts/OtherLayout'
 import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
 import { webInit } from '../../api/web-init'
@@ -24,6 +24,7 @@ export default function TaskList() {
   const [unit, setUnit] = useState([])
   const [des, setDes] = useState([])
   const [user, setUser] = useState({})
+
   const fetchInfo = async () => {
     await templateTask(idTplt).then((response) => {
       setName(response.data.name)
@@ -37,6 +38,8 @@ export default function TaskList() {
       console.log(error)
     })
   }
+
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchBeforeTask = async () => {
     await beforeTask(idTplt).then((response) => {
       setBeforeTask(response.data.before_tasks)
@@ -44,6 +47,7 @@ export default function TaskList() {
       console.log(error)
     })
   }
+
   const getDataUser = async () => {
     await webInit().then((response) => {
       setUser(response.data.auth.user.role)
@@ -122,9 +126,9 @@ export default function TaskList() {
                   : null}
               </div>
             </div>
-            <div className="big__title">
-              <h1>テンプレートタスク詳細</h1>
-            </div>
+
+            <h1>テンプレートタスク詳細</h1>
+
             <div className="info__tplt">
               <div className="info__center">
                 <div className="grid grid-cols-9 mt-3">
@@ -167,37 +171,28 @@ export default function TaskList() {
                   <div className="col-span-3">
                     <div className="rela">
                       <p>前のタスク </p>
-                      <List
-                        className="demo-infinite-container"
-                        bordered
-                        locale={
-                          { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                        }
-                        size="small"
-                        dataSource={beforeTasks}
-                        renderItem={(item) => (
-                          <List.Item className="list-items" key={item.id}>
-                            <Link href={`/tasks/${item.id}`}>{item.name}</Link>
-                          </List.Item>
-                        )}
-                      />
+                      <ul className="list__task">
+                        {beforeTasks ? beforeTasks.map((item) => (
+                          <li className="task__chil">
+                            <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
+                              {truncate(item.name)}
+                            </a>
+                          </li>
+                        )) : null }
+                      </ul>
+
                     </div>
                     <div className="rela">
                       <p>次のタスク</p>
-                      <List
-                        className="demo-infinite-container"
-                        bordered
-                        locale={
-                          { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                        }
-                        size="small"
-                        dataSource={afterTasks}
-                        renderItem={(item) => (
-                          <List.Item className="list-items" key={item.id}>
-                            <Link href={`/tasks/${item.id}`}>{item.name}</Link>
-                          </List.Item>
-                        )}
-                      />
+                      <ul className="list__task">
+                        {afterTasks ? afterTasks.map((item) => (
+                          <li>
+                            <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
+                              {truncate(item.name)}
+                            </a>
+                          </li>
+                        )) : null }
+                      </ul>
                     </div>
                   </div>
                   <div className="col-span-2 " />
