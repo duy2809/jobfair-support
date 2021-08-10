@@ -41,7 +41,7 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
             if (specialCharRegex.test(value)) {
               setCheckSpace(true);
               return Promise.reject(
-                new Error(label + 'はスペースが含まれていません。')
+                new Error('使用できない文字が含まれています')
               );
             }
 
