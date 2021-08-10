@@ -44,7 +44,9 @@ export default function ListCategories() {
     setSearchValue(key)
   }
   // set reload state
-
+  const reloadPage = () => {
+    setReload(true)
+  }
   // table columns
   const columns = [
     {
@@ -67,9 +69,11 @@ export default function ListCategories() {
         <Space size="middle">
           <EditCategory
             record={record}
+            reloadPage={reloadPage}
           />
           <DeleteCategory
             record={record}
+            reloadPage={reloadPage}
           />
         </Space>
       ),
@@ -94,7 +98,7 @@ export default function ListCategories() {
       <div className="flex relative">
         <h1 className="p-8 font-bold text-4xl">カテゴリー覧</h1>
         <div className="add">
-          <AddCategory />
+          <AddCategory reloadPage={reloadPage} />
         </div>
       </div>
 

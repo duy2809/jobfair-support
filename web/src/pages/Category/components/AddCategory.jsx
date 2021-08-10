@@ -7,13 +7,14 @@ import { Modal, Button, notification, Form } from 'antd'
 import '../style.scss'
 import { addCategory, checkUniqueAdd } from '../../../api/category'
 
-const AddCategory = () => {
+const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [category, setCategory] = useState({ })
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
   const [checkSpace, setcheckSpace] = useState(false)
   const [errorUnique, setErrorUnique] = useState(true)
+  const [reload, setReload] = useState(false)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -22,13 +23,18 @@ const AddCategory = () => {
   const showModal = () => {
     setIsModalVisible(true)
   }
+  const setReloadPage = () => {
+    props.reloadPage()
+    setIsModalVisible(false)
+  }
 
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,
     })
-    setTimeout(() => { window.location.reload() }, 1000)
+    // setTimeout(() => { window.location.reload() }, 1000)
+    setReloadPage()
   }
 
   const handleOk = () => {
@@ -38,6 +44,7 @@ const AddCategory = () => {
       .catch((error) => {
         notification.error({
           message: 'このカテゴリ名は存在しています',
+          duration: 3,
         })
       })
   }
@@ -46,16 +53,11 @@ const AddCategory = () => {
     setIsModalVisible(false)
   }
 
-  // add
-  const onValueNameChange = (e) => {
-    // setErrorUnique(false)
-    setcheckSpace(false)
-    setCategory(e.target.value)
-    form.setFieldsValue({
-      name: toHalfWidth(e.target.value),
-    })
-    if (e.target.value !== '') {
-      checkUniqueAdd(e.target.value).then((res) => {
+  // onBlur
+  const onBlur = () => {
+    const name = category
+    if (name !== '') {
+      checkUniqueAdd(name).then((res) => {
         if (res.data.length !== 0) {
           setErrorUnique(true)
           console.log('duplicated')
@@ -71,6 +73,16 @@ const AddCategory = () => {
     }
   }
 
+  // add
+  const onValueNameChange = (e) => {
+    // setErrorUnique(false)
+    setcheckSpace(false)
+    setCategory(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
+    })
+  }
+
   return (
     <>
       <Button type="primary" onClick={showModal} className="add-btn text-base">
@@ -84,7 +96,7 @@ const AddCategory = () => {
         okText="登録"
         cancelText="キャンセル"
       >
-        <Form>
+        <Form form={form}>
           <Form.Item
             label={
               <p> </p>
@@ -112,6 +124,7 @@ const AddCategory = () => {
               className="input-category"
               required="required"
               onChange={onValueNameChange}
+              onBlur={onBlur}
             />
           </Form.Item>
         </Form>

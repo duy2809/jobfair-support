@@ -9,12 +9,15 @@ import { deleteCategory } from '../../../api/category'
 const { confirm } = Modal
 
 const DeleteCategory = (props) => {
+  const setReloadPage = () => {
+    props.reloadPage()
+  }
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,
     })
-    setTimeout(() => { window.location.reload() }, 1000)
+    setReloadPage()
   }
 
   function showDeleteConfirm() {

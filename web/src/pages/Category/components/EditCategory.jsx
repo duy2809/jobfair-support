@@ -7,15 +7,17 @@ import { Modal, Form, notification } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../../api/category'
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-
 const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [nameInput, setNameInput] = useState({})
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
-  const [errorUnique, setErrorUnique] = useState(true)
+  const [reload, setReload] = useState(false)
+
+  function toHalfWidth(fullWidthStr) {
+    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+  }
 
   useEffect(async () => {
     const id = props.record.id
@@ -27,13 +29,38 @@ const EditCategory = (props) => {
     })
   }, [])
 
+  const setReloadPage = () => {
+    props.reloadPage()
+  }
+
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,
     })
     setIsModalVisible(false)
-    setTimeout(() => { window.location.reload() }, 1000)
+    setReloadPage()
+  }
+
+  // onBlur
+  const onBlur = () => {
+    const name = nameInput
+    const id = props.record.id
+    console.log(name)
+    if (name !== '') {
+      checkUniqueEdit(id, name).then((res) => {
+        if (res.data.length !== 0) {
+          console.log('duplicated')
+          console.log(form.getFieldValue('name'))
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このカテゴリ名は存在しています'],
+            },
+          ])
+        }
+      })
+    }
   }
 
   const onValueNameChange = (e) => {
@@ -42,22 +69,6 @@ const EditCategory = (props) => {
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
-
-    if (e.target.value !== '') {
-      checkUniqueEdit(e.target.value).then((res) => {
-        if (res.data.length !== 0) {
-          setErrorUnique(true)
-          console.log('duplicated')
-          console.log(form.getFieldValue('name'))
-          form.setFields([
-            {
-              name: 'name',
-              errors: [new Error('このカテゴリ名は存在しています。')],
-            },
-          ])
-        }
-      })
-    }
   }
 
   const showModal = (e) => {
@@ -91,7 +102,7 @@ const EditCategory = (props) => {
         okText="保存"
         cancelText="キャンセル"
       >
-        <Form>
+        <Form form={form}>
           <Form.Item
             label={
               <p> </p>
@@ -118,6 +129,7 @@ const EditCategory = (props) => {
               required="required"
               className="input-category"
               onChange={onValueNameChange}
+              onBlur={onBlur}
               placeholder="カテゴリ名を書いてください"
               defaultValue={props.record.name}
             />
