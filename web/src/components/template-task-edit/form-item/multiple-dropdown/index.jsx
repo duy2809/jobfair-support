@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { Form, Select, Tag, Tooltip } from 'antd';
-import './style.scss';
-const { Option } = Select;
+import React from 'react'
+import { Form, Select, Tag, Tooltip } from 'antd'
+import './style.scss'
+import PropTypes from 'prop-types'
+
+const { Option } = Select
 
 const toHalfWidth = (v) => {
-  let newArr = [];
-  for (let i = 0; i < v.length; i++) {
+  const newArr = []
+  for (let i = 0; i < v.length; i += 1) {
     newArr.push(
-      v[i].replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-        String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-      )
-    );
+      v[i].replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)),
+    )
   }
-  return newArr;
-};
+  return newArr
+}
 
 const ItemMultipleDropdown = ({
   form,
@@ -24,16 +24,16 @@ const ItemMultipleDropdown = ({
   setSelectedItems,
 }) => {
   const onValueNameChange = (value) => {
-    let newArray = options.filter((o) => value.includes(o.name));
+    const newArray = options.filter((o) => value.includes(o.name))
 
-    setSelectedItems(newArray);
-    let temp = {};
-    temp[name] = toHalfWidth(value);
-    form.setFieldsValue(temp);
-  };
+    setSelectedItems(newArray)
+    const temp = {}
+    temp[name] = toHalfWidth(value)
+    form.setFieldsValue(temp)
+  }
   return (
     <Form.Item
-      label={
+      label={(
         <p
           style={{
             color: '#2d334a',
@@ -43,18 +43,18 @@ const ItemMultipleDropdown = ({
         >
           {label}
         </p>
-      }
+      )}
       name={name}
       style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem' }}
-      labelAlign='left'
+      labelAlign="left"
     >
       <Select
         showArrow
-        mode='multiple'
+        mode="multiple"
         style={{ width: '100%', marginTop: '1.25rem' }}
         placeholder={label}
-        className='overflow-hidden'
-        maxTagCount='responsive'
+        className="overflow-hidden"
+        maxTagCount="responsive"
         defaultValue={selectedItems.map((item) => item.name)}
         onChange={onValueNameChange}
         tagRender={tagRender}
@@ -72,28 +72,27 @@ const ItemMultipleDropdown = ({
                 //   maxWidth: '200px',
                 // }}
               >
-                {item.name.slice(0, 20) + '...'}
+                {`${item.name.slice(0, 20)}...`}
               </Option>
-            );
-          } else {
-            return (
-              <Option key={item.id} value={item.name}>
-                {item.name}
-              </Option>
-            );
+            )
           }
+          return (
+            <Option key={item.id} value={item.name}>
+              {item.name}
+            </Option>
+          )
         })}
       </Select>
     </Form.Item>
-  );
-};
+  )
+}
 
 function tagRender(props) {
-  const { label, value, closable, onClose } = props;
+  const { label, value, closable, onClose } = props
   const onPreventMouseDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-  };
+    event.preventDefault()
+    event.stopPropagation()
+  }
   if (label.length > 20) {
     return (
       <Tag
@@ -104,23 +103,31 @@ function tagRender(props) {
         style={{ marginRight: 3 }}
       >
         <Tooltip title={label}>
-          <a href='#'>{label}</a>
+          <a href="#">{label}</a>
         </Tooltip>
       </Tag>
-    );
-  } else {
-    return (
-      <Tag
-        color={value}
-        onMouseDown={onPreventMouseDown}
-        closable={closable}
-        onClose={onClose}
-        style={{ marginRight: 3 }}
-      >
-        <a href='#'>{label}</a>
-      </Tag>
-    );
+    )
   }
+  return (
+    <Tag
+      color={value}
+      onMouseDown={onPreventMouseDown}
+      closable={closable}
+      onClose={onClose}
+      style={{ marginRight: 3 }}
+    >
+      <a href="#">{label}</a>
+    </Tag>
+  )
 }
 
-export default ItemMultipleDropdown;
+export default ItemMultipleDropdown
+
+ItemMultipleDropdown.propTypes = {
+  form: PropTypes.object.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  options: PropTypes.array.isRequired,
+  selectedItems: PropTypes.array.isRequired,
+  setSelectedItems: PropTypes.func.isRequired,
+}

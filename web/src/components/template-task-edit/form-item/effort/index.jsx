@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, Select, Space } from 'antd';
-const { Option } = Select;
+import React from 'react'
+import { Form, Input, Select, Space } from 'antd'
+import PropTypes from 'prop-types'
 
-const toHalfWidth = (v) =>
-  v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-  );
+const { Option } = Select
+
+const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 const Effort = ({
   form,
@@ -18,45 +17,42 @@ const Effort = ({
 }) => {
   const numberInputValidator = (_, value) => {
     if (!value) {
-      return Promise.reject(new Error('この項目は必須です'));
+      return Promise.reject(new Error('この項目は必須です'))
     }
-    if (isNaN(Number(value))) {
-      return Promise.reject(new Error('Input must be a validate number'));
+    if (Number.isNaN(Number(value))) {
+      return Promise.reject(new Error('Input must be a validate number'))
     }
     if (Number(value) <= 0) {
-      return Promise.reject(new Error('0以上の半角の整数で入力してください'));
+      return Promise.reject(new Error('0以上の半角の整数で入力してください'))
     }
 
-    return Promise.resolve();
-  };
+    return Promise.resolve()
+  }
 
-  const specialCharRegex = new RegExp('[ 　]');
   const onValueNameChange = (e) => {
-    setCheckSpace(false);
-    setInput((prevState) => (prevState = e.target.value));
+    setCheckSpace(false)
+    setInput(e.target.value)
     form.setFieldsValue({
       effort: toHalfWidth(e.target.value),
-    });
-  };
+    })
+  }
   const onValueIsDayChange = (value) => {
-    setCheckSpace(false);
-    setIsDay(
-      (prevState) => (prevState = isDayData.find((o) => o.name == value).id)
-    );
+    setCheckSpace(false)
+    setIsDay(isDayData.find((o) => o.name === value).id)
     form.setFieldsValue({
       is_day: toHalfWidth(value),
-    });
-  };
+    })
+  }
   const onValueUnitChange = (value) => {
-    setCheckSpace(false);
-    setUnit((prevState) => (prevState = value));
+    setCheckSpace(false)
+    setUnit(value)
     form.setFieldsValue({
       unit: toHalfWidth(value),
-    });
-  };
+    })
+  }
   return (
     <Form.Item
-      label={
+      label={(
         <p
           style={{
             color: '#2d334a',
@@ -66,10 +62,10 @@ const Effort = ({
         >
           工数
         </p>
-      }
-      name='effort'
-      labelAlign='left'
-      className='text-4xl justify-between'
+      )}
+      name="effort"
+      labelAlign="left"
+      className="text-4xl justify-between"
       rules={[
         {
           // required: true,
@@ -97,19 +93,19 @@ const Effort = ({
         // }),
       ]}
     >
-      <div className='flex flex-row justify-between '>
-        <Form.Item name='effort' className='w-1/2 max-w-xs flex-1 mt-0.5'>
+      <div className="flex flex-row justify-between ">
+        <Form.Item name="effort" className="w-1/2 max-w-xs flex-1 mt-0.5">
           <Input
-            type='text'
-            placeholder=''
+            type="text"
+            placeholder=""
             style={{ width: '80px' }}
             onChange={onValueNameChange}
           />
         </Form.Item>
         <Space>
-          <Form.Item name='is_day'>
+          <Form.Item name="is_day">
             <Select
-              placeholder='時間'
+              placeholder="時間"
               style={{ width: '150px' }}
               onChange={onValueIsDayChange}
             >
@@ -121,11 +117,11 @@ const Effort = ({
             </Select>
           </Form.Item>
 
-          <p className='slash-devider text-2xl font-extrabold mb-7'> / </p>
+          <p className="slash-devider text-2xl font-extrabold mb-7"> / </p>
 
-          <Form.Item name='unit'>
+          <Form.Item name="unit">
             <Select
-              placeholder='学生数'
+              placeholder="学生数"
               style={{ width: '150px' }}
               onChange={onValueUnitChange}
             >
@@ -139,7 +135,17 @@ const Effort = ({
         </Space>
       </div>
     </Form.Item>
-  );
-};
+  )
+}
 
-export default Effort;
+export default Effort
+
+Effort.propTypes = {
+  form: PropTypes.object.isRequired,
+  unitData: PropTypes.array.isRequired,
+  isDayData: PropTypes.array.isRequired,
+  setCheckSpace: PropTypes.func.isRequired,
+  setInput: PropTypes.func.isRequired,
+  setUnit: PropTypes.func.isRequired,
+  setIsDay: PropTypes.func.isRequired,
+}

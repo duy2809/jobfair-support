@@ -1,5 +1,6 @@
-import { Modal, Button } from 'antd';
-import React from 'react';
+import { Modal, Button } from 'antd'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 class CancelEditTemplateTask extends React.Component {
   state = {
@@ -9,36 +10,36 @@ class CancelEditTemplateTask extends React.Component {
   showModal = () => {
     this.setState({
       visible: true,
-    });
+    })
   };
 
   handleOk = () => {
-    window.location.href = '/template-tasks/' + this.props.id;
-    this.setState({ visible: false });
+    window.location.href = `/template-tasks/${this.props.id}`
+    this.setState({ visible: false })
   };
 
   handleCancel = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false })
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className='text-base px-8 mr-10'>
+        <Button onClick={this.showModal} className="text-base px-8 mr-10">
           キャンセル
         </Button>
         <Modal
           visible={visible}
-          title='マイルストーン編集'
+          title="マイルストーン編集"
           onOk={this.handleOk}
           onCancel={this.handleCancel}
-          centered={true}
+          centered
           footer={[
-            <Button key='back' onClick={this.handleCancel}>
+            <Button key="back" onClick={this.handleCancel}>
               いいえ
             </Button>,
-            <Button key='submit' type='primary' onClick={this.handleOk}>
+            <Button key="submit" type="primary" onClick={this.handleOk}>
               はい
             </Button>,
           ]}
@@ -46,7 +47,11 @@ class CancelEditTemplateTask extends React.Component {
           <p>変更内容が保存されません。よろしいですか？</p>
         </Modal>
       </>
-    );
+    )
   }
 }
-export default CancelEditTemplateTask;
+export default CancelEditTemplateTask
+
+CancelEditTemplateTask.propTypes = {
+  id: PropTypes.string.isRequired,
+}

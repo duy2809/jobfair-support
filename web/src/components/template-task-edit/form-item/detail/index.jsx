@@ -1,22 +1,21 @@
-import React from 'react';
-import { Form, Input } from 'antd';
-const { TextArea } = Input;
+import React from 'react'
+import { Form, Input } from 'antd'
+import PropTypes from 'prop-types'
 
-const toHalfWidth = (v) =>
-  v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) =>
-    String.fromCharCode(s.charCodeAt(0) - 0xfee0)
-  );
+const { TextArea } = Input
+
+const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 const Detail = ({ form, input, setInput }) => {
   const onValueNameChange = (e) => {
-    setInput((prevState) => (prevState = e.target.value));
+    setInput(e.target.value)
     form.setFieldsValue({
       description: toHalfWidth(e.target.value),
-    });
-  };
+    })
+  }
   return (
     <Form.Item
-      label={
+      label={(
         <p
           style={{
             color: '#2d334a',
@@ -26,19 +25,25 @@ const Detail = ({ form, input, setInput }) => {
         >
           詳細
         </p>
-      }
-      className='text-4xl justify-between'
-      labelAlign='left'
-      name='description'
+      )}
+      className="text-4xl justify-between"
+      labelAlign="left"
+      name="description"
     >
       <TextArea
         rows={7}
-        placeholder='何かを入力してください'
+        placeholder="何かを入力してください"
         onChange={onValueNameChange}
         defaultValue={input}
       />
     </Form.Item>
-  );
-};
+  )
+}
 
-export default Detail;
+export default Detail
+
+Detail.propTypes = {
+  form: PropTypes.object.isRequired,
+  input: PropTypes.string.isRequired,
+  setInput: PropTypes.func.isRequired,
+}
