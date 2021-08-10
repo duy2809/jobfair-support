@@ -101,8 +101,8 @@ body {
 
   //Pagination
   .ant-pagination-item:hover,
-  .ant-pagination-item>a:hover,
-  .ant-pagination-item-active>a,
+  .ant-pagination-item > a:hover,
+  .ant-pagination-item-active > a,
   .ant-pagination-item-active,
   .ant-pagination-item-link:hover {
     border-color: #ffd803 !important;
@@ -125,10 +125,34 @@ body {
    
   }
 
-  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+    .ant-select-selector {
     border-color: #ffd803;
-
   }
+  /* width */
+  ::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #edf2f7;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 100vh;
+    border: 3px solid #edf2f7;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+  }
+<<<<<<< HEAD
     /* width */
   ::-webkit-scrollbar {
     width: 16px;
@@ -155,4 +179,6 @@ body {
   thead[class*="ant-table-thead"] th {
         background-color: #bae8e8 !important;
     }
+=======
+>>>>>>> done
 }

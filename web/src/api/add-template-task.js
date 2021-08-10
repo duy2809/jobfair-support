@@ -13,6 +13,13 @@ const addTemplateTaskAPI = {
     const url = '/template-tasks'
     return instance.get(url)
   },
-
+  addTemplateTask: (data) => {
+    const url = '/template-tasks'
+    return instance.post(url, data)
+  },
+  isTemplateTaskExisted: () => {
+    const url = '/is-template-task-existed'
+    return instance.get(url)
+  },
 }
 export default addTemplateTaskAPI

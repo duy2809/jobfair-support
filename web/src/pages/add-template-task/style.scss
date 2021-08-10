@@ -12,7 +12,30 @@
     color: #2d334a;
   }
   .ant-form-horizontal .ant-form-item-label {
-    text-align: start;
+    text-align: end;
+    margin-right: 3px;
+    min-width: 210px;
+  }
+  .ant-tag,
+  .ant-tag a,
+  .ant-tag a {
+    color: rgb(16, 85, 189);
+  }
+  .ant-tag > .anticon + span,
+  .ant-tag > span + .anticon {
+    padding: 1px;
+    margin-left: 7px;
+    font-size: 11px;
+    transform: translateY(-10px);
+    border-radius: 100%;
+  }
+  .ant-tag > .anticon + span,
+  .ant-tag > span + .anticon:hover {
+    background-color: gray;
+    border: 1px solid black;
+  }
+  .add-template-form {
+    width: 70%;
   }
 
   .ant-form-item-control-input,
@@ -35,9 +58,18 @@
     }
   }
   .special-selector {
-    // min-width: 200px;
+    // padding: 4px;
   }
+  .ant-select-selection-overflow {
+    padding: 3px;
+  }
+
   .slash-devider {
     padding: 0 5px;
+  }
+  .ant-form-item-label > label,
+  .label {
+    font-size: 18px;
+    color: #272343;
   }
 }
