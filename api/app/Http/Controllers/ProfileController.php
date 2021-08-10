@@ -123,7 +123,7 @@ class ProfileController extends Controller
             //dd($request);
 
             $avatar = $user->id . '.' . $request->avatar->extension();
-            $load = $request->file('avatar')->storeAs('public/image/avatars', $avatar);
+            $load = $request->file('avatar')->storeAs('/image/avatars', $avatar);
 
             $path = "/image/avatars/$avatar";
             $request->avatar = $path;
@@ -131,9 +131,7 @@ class ProfileController extends Controller
             $user->update();
             
             //return $user;
-    	    return response()->json([
-                'message' => 'Success',
-            ]); 
+    	    return response()->json($path); 
         } 
         
         return response()->json(['message' => 'Failed']);

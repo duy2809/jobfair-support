@@ -16,6 +16,7 @@ import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
 import 'antd/dist/antd.css'
+import { webInit } from '../../api/web-init'
 import './styles.scss'
 
 const MilestonePage = () => {
@@ -26,7 +27,7 @@ const MilestonePage = () => {
   const [loading, setLoading] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
-
+  const [role, setRole] = useState()
   const [isModalType, setIsModalType] = useState({
     delete: false,
     edit: false,
@@ -34,7 +35,9 @@ const MilestonePage = () => {
   })
 
   const router = useRouter()
-
+  webInit().then((res) => {
+    setRole(res.data.auth.user.role)
+  })
   const openNotificationSuccess = () => {
     notification.success({
       message: 'マイルストーンが正常に削除されました',
@@ -197,7 +200,7 @@ const MilestonePage = () => {
     {
       title: '期日',
       dataIndex: 'period',
-      width: '20%',
+      width: `${role === 1 ? '20%' : '40%'}`,
       render: (period) => {
         const { numOfDays, type } = period
         return convertPeriod(numOfDays, type)
@@ -205,8 +208,8 @@ const MilestonePage = () => {
     },
     {
       key: 'action',
-      width: '20%',
-      render: (_text, record) => (
+      width: `${role === 1 ? '20%' : '0%'}`,
+      render: (_text, record) => (role === 1 && (
         <Space size="middle">
           <EditTwoTone
             id={record.id}
@@ -229,7 +232,7 @@ const MilestonePage = () => {
             }}
           />
         </Space>
-      ),
+      )),
     },
   ]
 
@@ -267,25 +270,27 @@ const MilestonePage = () => {
               <Col>
                 <h1>マイルストーン一覧</h1>
               </Col>
-              <Col>
-                <Button
-                  style={{
-                    backgroundColor: '#ffd803',
-                    borderColor: '#ffd803',
-                    color: 'black',
-                  }}
-                  type="primary"
-                  danger
-                  onClick={() => {
-                    setIsModalType((preState) => ({
-                      ...preState,
-                      add: true,
-                    }))
-                  }}
-                >
-                  追加
-                </Button>
-              </Col>
+              {role === 1 && (
+                <Col>
+                  <Button
+                    style={{
+                      backgroundColor: '#ffd803',
+                      borderColor: '#ffd803',
+                      color: 'black',
+                    }}
+                    type="primary"
+                    danger
+                    onClick={() => {
+                      setIsModalType((preState) => ({
+                        ...preState,
+                        add: true,
+                      }))
+                    }}
+                  >
+                    追加
+                  </Button>
+                </Col>
+              )}
             </Row>
 
             <Row style={{ justifyContent: 'space-between' }}>
