@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -22,6 +21,7 @@ class CategoryController extends Controller
             ->select('*')
             ->orderBy('categories.updated_at', 'desc')
             ->get();
+
         return response()->json($data);
     }
 
@@ -49,10 +49,11 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/'
+            'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return Category::create($request->all());
     }
 
@@ -76,12 +77,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         $rules = [
-            'category_name' => 'max:255|unique:categories,category_name|regex:/^[^\s]*$/'
+            'category_name' => 'max:255|unique:categories,category_name|regex:/^[^\s]*$/',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+
         return Category::find($id)->update($request->all());
     }
 
@@ -95,10 +96,12 @@ class CategoryController extends Controller
     {
         return Category::destroy($id);
     }
+
     public function checkDuplicate($name)
     {
         return Category::where('category_name', '=', $name)->get();
     }
+
     public function checkUniqueEdit($id, $name)
     {
         return Category::where('id', '<>', $id)->where('category_name', '=', $name)->get();

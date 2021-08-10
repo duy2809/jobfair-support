@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
