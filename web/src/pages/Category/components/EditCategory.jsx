@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../../api/category'
+import '../../global.scss'
 
 const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)

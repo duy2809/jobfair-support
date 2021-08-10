@@ -5,6 +5,7 @@ import 'antd/dist/antd.css'
 import React, { useState } from 'react'
 import { Modal, Button, notification, Form } from 'antd'
 import '../style.scss'
+import '../../global.scss'
 import { addCategory, checkUniqueAdd } from '../../../api/category'
 
 const AddCategory = (props) => {

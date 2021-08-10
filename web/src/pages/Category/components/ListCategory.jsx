@@ -4,6 +4,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 import '../style.scss'
+import '../../global.scss'
 
 import { Input, Space, Table, Pagination, Select } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
