@@ -48,7 +48,11 @@ class NotificationController extends Controller
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->get();
+>>>>>>> push data seeder notification table
 =======
         return Notification::where('notifiable_id','=',$notifiable_id)->get();
 >>>>>>> push data seeder notification table
@@ -92,7 +96,11 @@ class NotificationController extends Controller
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return Notification::find($id)->delete();
+=======
+        //
+>>>>>>> push data seeder notification table
 =======
         //
 >>>>>>> push data seeder notification table
@@ -105,7 +113,11 @@ class NotificationController extends Controller
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
+>>>>>>> push data seeder notification table
 =======
         return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
 >>>>>>> push data seeder notification table
@@ -118,7 +130,11 @@ class NotificationController extends Controller
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
+>>>>>>> push data seeder notification table
 =======
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
 >>>>>>> push data seeder notification table
@@ -136,7 +152,11 @@ class NotificationController extends Controller
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
+>>>>>>> push data seeder notification table
 =======
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
 >>>>>>> push data seeder notification table
