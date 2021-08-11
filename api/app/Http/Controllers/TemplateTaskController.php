@@ -30,7 +30,14 @@ class TemplateTaskController extends Controller
      */
     public function store(Request $request)
     {
-        $newTemplateTask = TemplateTask::create($request->all());
+        $newTemplateTask = TemplateTask::create([
+            'name'                  => $request->name,
+            'description_of_detail' => $request->description_of_detail,
+            'milestone_id'          => $request->milestone_id,
+            'is_day'                => $request->is_day,
+            'unit'                  => $request->unit,
+            'effort'                => $request->effort,
+        ]);
         $newTemplateTask->categories()->attach($request->category_id);
         if (!empty($request->beforeTasks)) {
             $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
