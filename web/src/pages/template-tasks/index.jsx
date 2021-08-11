@@ -92,7 +92,6 @@ export default function TemplateTaskList() {
     },
     {
       title: 'テンプレートタスク名',
-      width: 35,
       dataIndex: 'templateTaskName',
       fixed: 'left',
       ellipsis: {
@@ -102,14 +101,12 @@ export default function TemplateTaskList() {
     },
     {
       title: 'カテゴリ',
-      width: 100,
       dataIndex: 'category_name',
       fixed: 'left',
     },
     {
       title: 'マイルストーン',
       dataIndex: 'milestone_name',
-      width: 100,
     },
   ]
 
@@ -193,7 +190,7 @@ export default function TemplateTaskList() {
             <div className="space-y-5">
               <div className="flex-col space-y-9">
                 <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスク覧</h1>
+                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
                 </div>
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-4 w-9/12">
@@ -227,7 +224,7 @@ export default function TemplateTaskList() {
                     className="float-right"
                     allowClear="true"
                     prefix={<SearchOutlined />}
-                    placeholder="JF名, 管理者"
+                    placeholder="テンプレートタスク名"
                     onChange={onSearch}
                     value={valueSearch}
                   />

@@ -1,31 +1,6 @@
 .TemplateTaskList {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: #272343;
-  }
-  p {
-    color: #2d334a;
-  }
-  .ant-pagination-item:hover,
-  .ant-pagination-item > a:hover,
-  .ant-pagination-item-active > a,
-  .ant-pagination-item-active,
-  .ant-pagination-item-link:hover {
-    border-color: #ffd803 !important;
-    color: #ffd803 !important;
-  }
-  a:hover {
-    color: #ffd803 !important;
-  }
   thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
   }
 }
-.ant-tooltip-inner {
-  color: #272343 !important;
-  background-color: #fffffe !important;
-}
+
