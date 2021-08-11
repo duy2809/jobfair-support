@@ -1,7 +1,6 @@
 /* eslint-disable react/react-in-jsx-scope */
 import 'antd/dist/antd.css'
 import ListCategory from './components/ListCategory'
-import Navbar from '../../components/navbar'
 import OtherLayout from '../../layouts/OtherLayout'
 
 function App() {
@@ -10,12 +9,7 @@ function App() {
       <OtherLayout>
         <OtherLayout.Main>
           <div className="listCategory">
-            <div>
-              <Navbar />
-            </div>
-            <div>
-              <ListCategory />
-            </div>
+            <ListCategory />
           </div>
         </OtherLayout.Main>
       </OtherLayout>
