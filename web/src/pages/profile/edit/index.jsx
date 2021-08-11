@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
-import { Form, Input, Button, Modal, notification } from 'antd'
+import { Form, Input, Button, notification } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
 // import Avatar from '../UI/avatar/Avatar'
@@ -15,7 +15,6 @@ const EditProfilePage = () => {
   const [nameInput, setNameInput] = useState('')
   const [emailInput, setEmailInput] = useState('')
   const [idChatWorkInput, setIdChatWordInput] = useState('')
-  const [isModalVisible, setIsModalVisible] = useState(false)
   const [form] = Form.useForm()
   const [image, setImage] = useState()
   const [avatarUser, setAvatarUser] = useState()
@@ -117,7 +116,6 @@ const EditProfilePage = () => {
   }
 
   const handleOk = async () => {
-    setIsModalVisible(false)
     const data = await webInit()
     const id = data.data.auth.user.id
     updateInfo(id, {
@@ -150,10 +148,6 @@ const EditProfilePage = () => {
   const clickHandler = (e) => {
     e.preventDefault()
     fileInputRef.current.click()
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
   }
 
   const onNameChange = (e) => {
@@ -334,17 +328,6 @@ const EditProfilePage = () => {
                     />
 
                   </Form.Item>
-
-                  <Modal
-                    title="プロフィール編集"
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    cancelText="いいえ"
-                    okText="はい"
-                  >
-                    <p className="mb-5">このまま保存してもよろしいですか？ </p>
-                  </Modal>
 
                 </Form>
               </div>
