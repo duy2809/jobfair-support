@@ -76,12 +76,13 @@ Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
 
-Route::resource('/template-tasks', 'TemplateTaskController');
+Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
+Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
+
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
 Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
-Route::get('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
 
 //category
 Route::apiResource('/category', CategoryController::class);

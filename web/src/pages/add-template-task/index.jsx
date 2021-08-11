@@ -1,20 +1,13 @@
 import {
   CheckCircleTwoTone,
   ExclamationCircleOutlined,
-  ExclamationCircleTwoTone,
 } from '@ant-design/icons'
 import {
   Button, Form,
-  Input, Modal,
-  Tooltip,
-  notification,
-  Select,
-  Tag,
-  Space,
+  Input, Modal, notification,
+  Select, Space, Tag, Tooltip,
 } from 'antd'
-
 import { useRouter } from 'next/router'
-
 import React, { useEffect, useState } from 'react'
 import addTemplateTasksAPI from '../../api/add-template-task'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -29,16 +22,15 @@ const index = () => {
   const [templateTasks, settemplateTasks] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
-  const [selectedOptions, setSelectedOptions] = useState([])
-  const [numberInput, setnumberInput] = useState()
+
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
   // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
   const router = useRouter()
   const unitData = [
-    { id: 1, name: '学生数' },
-    { id: 2, name: '企業数' },
-    { id: 3, name: 'None' },
+    { id: 'students', name: '学生数' },
+    { id: 'companies', name: '企業数' },
+    { id: 'none', name: 'None' },
   ]
 
   const isDayData = [
@@ -60,15 +52,15 @@ const index = () => {
     }
     return true
   }
-  const convertTaskToOptions = (tasks) => {
-    const options = []
-    Object.values(tasks).forEach((element) => {
-      const dummyObj = { value: '' }
-      dummyObj.value = element.name
-      options.push(dummyObj)
-    })
-    return options
-  }
+  // const convertTaskToOptions = (tasks) => {
+  //   const options = []
+  //   Object.values(tasks).forEach((element) => {
+  //     const dummyObj = { value: '' }
+  //     dummyObj.value = element.name
+  //     options.push(dummyObj)
+  //   })
+  //   return options
+  // }
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -79,7 +71,7 @@ const index = () => {
         setlistCatergories(Array.from(categories.data))
         setlistMilestones(Array.from(milestones.data))
         settemplateTasks(Array.from(tasks.data))
-        setSelectedOptions(convertTaskToOptions(tasks.data))
+
         return null
       } catch (error) {
         return Error(error.toString())
@@ -154,6 +146,7 @@ const index = () => {
         description_of_detail: values.detail,
         milestone_id: values.milestone_id,
         is_day: values.isDay,
+        unit: values.unit,
         effort: values.effort * 1.0,
         category_id: values.category_id,
         beforeTasks: values.beforeTasks,
@@ -247,9 +240,9 @@ const index = () => {
       >
         <Tooltip title={label}>
           <span
-            onClick={(e) => {
-              // router.push()
-            }}
+            // onClick={(e) => {
+            //   // router.push()
+            // }}
             className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '20ch' }}
           >
@@ -262,24 +255,30 @@ const index = () => {
   }
   const isTemplateTaskExisted = async () => {
     try {
-      const templateTaskName = form.getFieldValue('template-name')
-      console.log(form.getFieldsValue())
-      const response = await addTemplateTasksAPI.isTemplateTaskExisted(templateTaskName)
-      if (response.data.length) {
-        return document.getElementById('error-msg').removeAttribute('hidden')
+      const templateName = form.getFieldValue('template_name')
+      if (templateName) {
+        const response = await addTemplateTasksAPI.isTemplateTaskExisted({ name: templateName })
+        if (response.data.length) {
+          document.getElementById('validate_name').style.border = '1px solid red'
+          return document.getElementById('error-msg').removeAttribute('hidden')
+        }
       }
       return null
     } catch (error) {
-      console.log(error)
       return null
     }
   }
-  // const filterSelectedTasks = (data) => {
-  //   const filteredOptions = templateTasks.filter((o) => !data.includes(o))
-  //   console.log(filteredOptions)
-  // }
+  const filterSelectedTasks = (data) => {
+    // console.log(data)
+    // const filteredOptions = templateTasks.filter((o) => !data.includes(o.id))
+    // console.log(Array.from(filteredOptions))
+    // settemplateTasks(Array.from(filteredOptions))
+    setSelectedItems(data)
+  }
+  // const filteredOptions = templateTasks.filter((o) => !setSelectedItems.includes(o))
 
   return (
+
     <OtherLayout>
       <OtherLayout.Main>
         <div className="add-template-task-page">
@@ -321,7 +320,12 @@ const index = () => {
                       >
                         <Input
                           type="text"
+                          id="validate_name"
                           onBlur={isTemplateTaskExisted}
+                          onChange={() => {
+                            document.getElementById('error-msg').setAttribute('hidden', 'true')
+                            document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                          }}
                           placeholder="タスクテンプレート名を入力する"
                           maxLength={200}
                         />
@@ -397,9 +401,10 @@ const index = () => {
                           showArrow
                           allowClear
                           tagRender={tagRender}
+                          value={selectedItems}
                           className="w-100"
                           placeholder="リレーション"
-                          // onChange={}
+                          onChange={filterSelectedTasks}
                         >
                           {templateTasks.map((element) => (
                             <Select.Option key={element.id} value={element.id}>
