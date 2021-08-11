@@ -29,6 +29,7 @@ const DeleteCategory = (props) => {
       okText: '保存',
       okType: 'danger',
       cancelText: 'キャンセル',
+      centered: true,
       onOk() {
         console.log('OK')
         deleteCategory(props.record.id)
