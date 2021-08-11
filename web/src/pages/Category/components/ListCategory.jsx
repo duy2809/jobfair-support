@@ -97,14 +97,12 @@ export default function ListCategories() {
   return (
     <div>
       <h1>カテゴリー覧</h1>
-      <div className="flex relative">
-        <div className="add">
-          <AddCategory reloadPage={reloadPage} />
-        </div>
+      <div className="add">
+        <AddCategory reloadPage={reloadPage} />
       </div>
 
       <div className="list">
-        <div className="flex pl-8 text-xl list-ht">
+        <div className="flex pl-12 text-xl list-ht">
           <p>表示件数: </p>
           &nbsp;
           <p>
@@ -113,6 +111,7 @@ export default function ListCategories() {
               defaultValue={{ value: '10' }}
               style={{ width: 60, borderRadius: '1rem' }}
               onChange={(e) => setPageS(e.value)}
+              className="selectBox"
             >
               <Select.Option value="10">10</Select.Option>
               <Select.Option value="25">25</Select.Option>
