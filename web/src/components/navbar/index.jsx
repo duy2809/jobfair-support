@@ -1,9 +1,11 @@
 import React, {useState} from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button } from 'antd'
+import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
+
+import moment from 'moment';
 
 export default function Navbar() {
   const moreNavbarOptions = (
@@ -55,14 +57,27 @@ export default function Navbar() {
     },
   ];
 
-  // select user
+  
+  // get list of user's name
   const { Option } = Select;
-  const children = [];
-  for (let i = 10; i < 36; i++) {
-    children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+  const listUser = [<Option key={0}>All</Option>];
+  // const users = [];
+  // for (let i = 0; i < users.length; i++) {
+  //   listUser.push(<Option key={user[i].id} value={users[i].name}>{users[i].name}</Option>);
+  // }
+  for (let i = 0; i < data.length; i++) {
+    listUser.push(<Option key={i+1} value={data[i].name}>{data[i].name}</Option>);
   }
+
+  //get user's noti
+  const getNoti = (value) => {
+    console.log(value);
+  }
+  
+  //change ...
   function handleChange(value) {
     console.log(`Selected: ${value}`);
+    getNoti(value);
   }
 
   // choose noti unread
@@ -70,7 +85,7 @@ export default function Navbar() {
     console.log(`checked = ${e.target.checked}`);
   }
 
-  // o-c noti
+  // show noti
   const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = () => {
@@ -85,8 +100,8 @@ export default function Navbar() {
         <div className="noti-header">
           <div>通知</div>
           <div className='noti-input'>
-            <Select size={100} defaultValue="a1" onChange={handleChange} >
-              {children}
+            <Select style={{ width: 200 }} size={100} defaultValue='All' onChange={handleChange} >
+              {listUser}
             </Select>
           </div>
           
@@ -105,18 +120,19 @@ export default function Navbar() {
       }
       bordered
       dataSource={data}
-      renderItem={item => <List.Item>
-        <List.Item.Meta
-          avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
-          title={<a href="https://ant.design">{item.name} ha ....{item.action}</a>}
-        />
-        <div>
-          {item.time}
-        </div>
+      renderItem={item =>  <List.Item>
+          <div className="noti-list-item">
+            <List.Item.Meta
+            avatar={<Avatar src="/images/logo.png" />}
+            title={<div>{item.name} ha ....{item.action}</div>}
+            /> 
+            <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
+              <span>{moment().subtract(2, 'days').fromNow(true)}</span>
+            </Tooltip>
+          </div>    
       </List.Item>}
-    />
+      />
     </div>
-    
   )
   const userInformations = (
     <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2 bg-gray-600">
