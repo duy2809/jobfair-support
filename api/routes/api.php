@@ -105,3 +105,10 @@ Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avat
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
+
+//Notification
+
+Route::resource('/notification', NotificationController::class);
+Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
+Route::get('/show-notification-user/{id}/{user_id}', [App\Http\Controllers\NotificationController::class, 'showNotificationUser']);
+Route::get('/show-user-uread/{id}/{user_id}', [App\Http\Controllers\NotificationController::class, 'showNotificationUserUread']);
