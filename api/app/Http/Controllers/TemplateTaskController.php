@@ -16,7 +16,8 @@ class TemplateTaskController extends Controller
     public function index()
     {
         $templateTasks = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])
-            ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id']);
+            ->orderBy('template_tasks.created_at', 'DESC')
+            ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
 
         return response()->json($templateTasks);
     }
