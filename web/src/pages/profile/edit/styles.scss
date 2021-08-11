@@ -1,22 +1,13 @@
-.container {
-  margin-top: 5rem;
-  display: flex;
-  // justify-content: space-between;
-  margin-left: 9rem;
-  p {
-    margin: auto;
+.container__profile-edit {
+
+  .container-profile {
+    margin-top: 5rem;
+    display: flex;
+    // justify-content: space-between;
+    margin-left: 9rem;
+    p {
+      margin: auto;
   }
-  .ant-btn {
-    background-color: #ECECEC;
-    border-color: #BBB;
-  }
-  
-  .ant-btn:hover {
-    color: #ffd803;
-    background: #fff;
-    border-color: #ffd803;
-  }
-  
 }
 
 .container-form {
@@ -31,42 +22,19 @@
   margin-top: 10px;
   display: flex;
   width: 85%;
-.ant-btn:hover {
-  color: #ffd803;
-  background: #fff;
-  border-color: #ffd803;
-}
-
-.ant-btn {
-  border-color: #BBB;
-  color: black;
-  border-radius: 5px;
-  width: auto;
-}
-
 p {
   margin: auto;
 }
 }
 
 .avatar{
-  img,
-  button {
+  img {
     width: 200px;
     height: 200px;
     border-radius: 50%;
     cursor: pointer;
   }
   
-  button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    border: none;
-    background: #fef289;
-    color: #000;
-  }
   .ant-upload-list-item-info {
     display: none;
   }
@@ -76,4 +44,5 @@ p {
     object-fit: cover;
     display: block;
   }
-  }
+}
+}

@@ -145,9 +145,15 @@ const EditProfilePage = () => {
       }
     }
   }
+
   const clickHandler = (e) => {
     e.preventDefault()
-    fileInputRef.current.click()
+    if (fileInputRef.current.value !== null) {
+      fileInputRef.current.value = ''
+      fileInputRef.current.click()
+    } else {
+      fileInputRef.current.click()
+    }
   }
 
   const onNameChange = (e) => {
@@ -171,191 +177,192 @@ const EditProfilePage = () => {
     <div>
       <Otherlayout>
         <Otherlayout.Main>
-          <p className="title mb-8" style={{ fontSize: '36px' }}>プロフィール編集</p>
-          <div className="container">
-            <div className="grid justify-items-center">
-              <div className="avatar">
-                <input
-                  type="file"
-                  style={{ display: 'none' }}
-                  ref={fileInputRef}
-                  accept="image/*"
-                  onChange={(e) => changeImageHandler(e)}
-                />
-                {preview ? (
-                  <div onClick={clickHandler}>
-                    <img
-                      src={preview}
-                      alt="user-img"
-                    />
-                  </div>
-                ) : (
-                  <div onClick={clickHandler}>
-                    <img
-                      className="avatar-img"
-                      alt="user-img"
-                      src={`${avatarUser}`}
-                    />
-                  </div>
-                )}
+          <h1>プロフィール編集</h1>
+          <div className="container__profile-edit">
+            <div className="container-profile">
+              <div className="grid justify-items-center">
+                <div className="avatar">
+                  <input
+                    type="file"
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={(e) => changeImageHandler(e)}
+                  />
+                  {preview ? (
+                    <div onClick={clickHandler}>
+                      <img
+                        src={preview}
+                        alt="user-img"
+                      />
+                    </div>
+                  ) : (
+                    <div onClick={clickHandler}>
+                      <img
+                        className="avatar-img"
+                        alt="user-img"
+                        src={`${avatarUser}`}
+                      />
+                    </div>
+                  )}
+                </div>
+                <ButtonChangePassword />
               </div>
-              <ButtonChangePassword />
+              <div className="container-form">
+                <div className="flex my-8 mx-8">
+                  <Form
+                    form={form}
+                    name="basic"
+                    labelCol={{
+                      span: 8,
+                    }}
+                    wrapperCol={{
+                      span: 12,
+                    }}
+                    className="w-3/4 my-6"
+                  >
+                    <Form.Item
+                      label={
+                        <p>ユーザー名</p>
+                      }
+                      name="name"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'この項目は必須です。',
+                        },
+                        () => ({
+                          validator(_, value) {
+                            if (/[0-9]/.test(value)) {
+                              setIsDisable(true)
+                              return Promise.reject(
+                                new Error(
+                                  '数字を入力しないでください。',
+                                ),
+                              )
+                            }
+                            if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)) {
+                              setIsDisable(true)
+                              return Promise.reject(
+                                new Error(
+                                  '特殊文字を入力しないでください。',
+                                ),
+                              )
+                            }
+
+                            return Promise.resolve()
+                          },
+                        }),
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        size="large"
+                        onChange={onNameChange}
+                        placeholder="ユーザー名"
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label={
+                        <p>チャットワークID</p>
+                      }
+                      name="chatwork"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'この項目は必須です。',
+                        },
+                        () => ({
+                          validator(_, value) {
+                            if (specialCharRegex.test(value)) {
+                              setIsDisable(true)
+                              return Promise.reject(new Error('スペースを入力しないでください。'))
+                            }
+                            if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)) {
+                              setIsDisable(true)
+                              return Promise.reject(
+                                new Error(
+                                  '特殊文字を入力しないでください。',
+                                ),
+                              )
+                            }
+                            return Promise.resolve()
+                          },
+                        }),
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        size="large"
+                        onChange={onChatworkIdChange}
+                        placeholder="チャットワークID"
+                      />
+
+                    </Form.Item>
+
+                    <Form.Item
+                      label={
+                        <p>メール</p>
+                      }
+                      name="email"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'この項目は必須です。',
+                        },
+                        () => ({
+                          validator(_, value) {
+                            if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(value) && value !== '') {
+                              setIsDisable(true)
+                              return Promise.reject(
+                                new Error(
+                                  'メールアドレスの形式が正しくありません。',
+                                ),
+                              )
+                            }
+                            return Promise.resolve()
+                          },
+                        }),
+                      ]}
+                    >
+
+                      <Input
+                        type="text"
+                        size="large"
+                        onChange={onEmailChange}
+                        placeholder="メール"
+                      />
+
+                    </Form.Item>
+
+                  </Form>
+                </div>
+              </div>
             </div>
-            <div className="container-form">
-              <div className="flex my-8 mx-8">
-                <Form
-                  form={form}
-                  name="basic"
-                  labelCol={{
-                    span: 8,
-                  }}
-                  wrapperCol={{
-                    span: 12,
-                  }}
-                  className="w-3/4 my-6"
+            <div className="container-btn justify-end">
+              <CancelEditProfile />
+              {(nameInput !== '' && emailInput !== '' && idChatWorkInput !== '' && isDisable === false) ? (
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="text-base px-9 mr-10"
+                  onClick={handleOk}
                 >
-                  <Form.Item
-                    label={
-                      <p style={{ color: '#2d334a', fontSize: '18px' }}>ユーザー名</p>
-                    }
-                    name="name"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'この項目は必須です。',
-                      },
-                      () => ({
-                        validator(_, value) {
-                          if (/[0-9]/.test(value)) {
-                            setIsDisable(true)
-                            return Promise.reject(
-                              new Error(
-                                '数字を入力しないでください。',
-                              ),
-                            )
-                          }
-                          if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)) {
-                            setIsDisable(true)
-                            return Promise.reject(
-                              new Error(
-                                '特殊文字を入力しないでください。',
-                              ),
-                            )
-                          }
-
-                          return Promise.resolve()
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      onChange={onNameChange}
-                      placeholder="ユーザー名"
-                    />
-                  </Form.Item>
-
-                  <Form.Item
-                    label={
-                      <p style={{ color: '#2d334a', fontSize: '18px' }}>チャットワークID</p>
-                    }
-                    name="chatwork"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'この項目は必須です。',
-                      },
-                      () => ({
-                        validator(_, value) {
-                          if (specialCharRegex.test(value)) {
-                            setIsDisable(true)
-                            return Promise.reject(new Error('スペースを入力しないでください。'))
-                          }
-                          if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)) {
-                            setIsDisable(true)
-                            return Promise.reject(
-                              new Error(
-                                '特殊文字を入力しないでください。',
-                              ),
-                            )
-                          }
-                          return Promise.resolve()
-                        },
-                      }),
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      onChange={onChatworkIdChange}
-                      placeholder="チャットワークID"
-                    />
-
-                  </Form.Item>
-
-                  <Form.Item
-                    label={
-                      <p style={{ color: '#2d334a', fontSize: '18px' }}>メール</p>
-                    }
-                    name="email"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'この項目は必須です。',
-                      },
-                      () => ({
-                        validator(_, value) {
-                          if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(value) && value !== '') {
-                            setIsDisable(true)
-                            return Promise.reject(
-                              new Error(
-                                'メールアドレスの形式が正しくありません。',
-                              ),
-                            )
-                          }
-                          return Promise.resolve()
-                        },
-                      }),
-                    ]}
-                  >
-
-                    <Input
-                      type="text"
-                      size="large"
-                      onChange={onEmailChange}
-                      placeholder="メール"
-                    />
-
-                  </Form.Item>
-
-                </Form>
-              </div>
+                  保存
+                </Button>
+              ) : (
+                <Button
+                  type="primary"
+                  className="text-base px-9 mr-10"
+                  htmlType="submit"
+                  onClick={handleOk}
+                  disabled
+                >
+                  保存
+                </Button>
+              )}
             </div>
-          </div>
-          <div className="container-btn justify-end">
-            <CancelEditProfile />
-            {(nameInput !== '' && emailInput !== '' && idChatWorkInput !== '' && isDisable === false) ? (
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ borderColor: '#ffd803' }}
-                className="text-base px-9 mr-10"
-                onClick={handleOk}
-              >
-                保存
-              </Button>
-            ) : (
-              <Button
-                type="primary"
-                className="text-base px-9 mr-10"
-                htmlType="submit"
-                onClick={handleOk}
-                disabled
-              >
-                保存
-              </Button>
-            )}
           </div>
         </Otherlayout.Main>
       </Otherlayout>
