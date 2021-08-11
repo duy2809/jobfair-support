@@ -1,52 +1,25 @@
 .invite-member-page {
-  .ant-btn-primary {
-    color: #272343;
-    background: #ffd803;
-    border-color: #ffd803;
-    box-shadow: shadow-2xl;
-    text-shadow: shadow-2xl;
+  .ant-form-horizontal .ant-form-item-control {
+    max-width: 530px;
+    min-width: 300px;
+    margin-left: 7px;
   }
-  .ant-btn-primary:hover,
-  .ant-btn-primary:focus {
-    color: #272343;
-    background: #ffd803;
-    border-color: #ffd803;
+  .label {
+    min-width: 180px;
   }
-
-  .ant-layout,
-  .ant-layout * {
-    box-sizing: rounded-5;
+  .invite-member-form {
+    padding: 40px;
+    border: 1px solid #ccc;
+    width: 65%;
   }
   .ant-form-item-label > label {
-    font-size: 19px;
+    font-size: 18px;
   }
-  .ant-form {
-    box-sizing: border-box;
+  .ant-space {
+    display: flex;
+  }
 
-    padding: 45px;
-    color: rgba(0, 0, 0, 0.85);
-    font-size: 14px;
-    font-variant: tabular-nums;
-    line-height: 1.5715;
-    list-style: none;
-    font-feature-settings: 'tnum';
-    margin-bottom: 0;
-    padding-bottom: 20px;
+  #errorEmail {
+    color: #ff4d4f;
   }
-  .ant-form-item {
-    margin: 0;
-  }
-  .ant-form-item-control {
-    margin-bottom: 20px;
-  }
-  .ant-form-horizontal .ant-form-item-label {
-    text-align: end;
-  }
-  .fix-input {
-    min-width: 300px;
-    margin: 0;
-  }
-  //   .fix-input:nth-child(1) {
-  //     margin-left: 10px;
-  //   }
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Input, Button, Modal, notification, Select } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Modal, notification, Select, Space } from 'antd'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../layouts/OtherLayout'
 import 'antd/dist/antd.css'
@@ -9,7 +10,6 @@ import { sendInviteLink } from '~/api/member'
 function InviteMember() {
   const [emailInput, setEmailInput] = useState('')
   const [roleInput, setRoleInput] = useState('')
-  const [isModalVisible, setIsModalVisible] = useState(false)
   const router = useRouter()
   const [form] = Form.useForm()
   const [, forceUpdate] = useState({})
@@ -27,16 +27,8 @@ function InviteMember() {
     setRoleInput(value)
   }
   const { Option } = Select
-  const layout = {
-    labelCol: {
-      span: 6,
-    },
-    wrapperCol: {
-      span: 28,
-    },
-  }
   const children = []
-  children.push(<Option key="2">管理者</Option>)
+  children.push(<Option key="2">JF管理者</Option>)
   children.push(<Option key="3">メンバ</Option>)
 
   /* eslint-disable no-template-curly-in-string */
@@ -50,16 +42,38 @@ function InviteMember() {
     },
   }
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
+  const isEmptyForm = () => {
+    const inputValues = form.getFieldsValue()
+    //  return type :[]
+    const inputs = Object.values(inputValues)
+
+    for (let i = 0; i < inputs.length; i += 1) {
+      const element = inputs[i]
+      if (element) {
+        return false
+      }
+    }
+    return true
   }
 
-  const handleClick = () => {
-    router.push('/memberdetail')
-  }
-
-  const showModal = () => {
-    setIsModalVisible(true)
+  const handleModal = () => {
+    if (isEmptyForm()) {
+      router.push('/member')
+    } else {
+      return Modal.confirm({
+        title: '変更は保存されていません。続行してもよろしいですか？',
+        icon: <ExclamationCircleOutlined />,
+        content: '',
+        onOk: () => {
+          router.push('/member')
+        },
+        onCancel: () => { },
+        centered: true,
+        okText: 'はい',
+        cancelText: 'いいえ',
+      })
+    }
+    return null
   }
 
   const openNotification = (type, message, description) => {
@@ -68,9 +82,6 @@ function InviteMember() {
       description,
       duration: 2.5,
     })
-  }
-  const onFinishFailed = (errorInfo) => {
-    openNotification('error', errorInfo)
   }
 
   const handleInvite = async () => {
@@ -87,47 +98,50 @@ function InviteMember() {
     } catch (error) {
       if (error.request.status === 400) {
         document.getElementById('errorEmail').removeAttribute('hidden')
-        // openNotification(
-        //   'error',
-        //   'このメールは既に存在しました',
-        // )
       }
     }
   }
-  // flex flex-col h-full items-center justify-center
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>メンバ招待</h1>
         <div className="invite-member-page">
-          <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-            <h1 className="text-3xl">メンバ招待</h1>
-            <div className="flex justify-items-center w-6/12 rounded-2xl border-2 border-black" style={{ margin: '0 auto' }}>
+          <div className="container mx-auto flex-1 justify-center px-4 pb-20">
+            <div className="flex justify-center">
               <Form
-                className="text-2xl m-auto w-full "
-                {...layout}
                 form={form}
+                labelCol={{
+                  span: 6,
+                }}
+                wrapperCol={{
+                  span: 14,
+                }}
+                layout="horizontal"
+                colon={false}
+                className="invite-member-form"
                 onFinish={handleInvite}
-                onFinishFailed={onFinishFailed}
                 validateMessages={validateMessages}
               >
-                <Form.Item>
+                <Form.Item label="メールアドレス" colon required>
                   <Form.Item
                     name="email"
                     label="メールアドレス"
+                    noStyle
                     rules={[
                       { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!' },
                     ]}
                   >
                     <Input
+                      name="email"
+                      className="py-2"
                       size="large"
                       onChange={onValueEmailChange}
-                      types="email"
-                      className="fix-input"
+                      type="email"
+                      placeholder="email@example.com"
                       initialValues={emailInput}
-
                     />
                   </Form.Item>
-                  <span id="errorEmail" hidden style={{ color: 'red' }}>このメールは既に存在しました</span>
+                  <span id="errorEmail" hidden>このメールは既に存在しました</span>
                 </Form.Item>
                 <Form.Item
                   name="categories"
@@ -137,12 +151,13 @@ function InviteMember() {
                       required: true,
                     },
                   ]}
+                  colon
                 >
                   <Select
                     showSearch
                     mode="tag"
-                    className="fix-input"
-                    placeholder="カテゴリを選んでください"
+                    className="ant-select"
+                    placeholder="役割を選んでください"
                     size="large"
                     onChange={onValueRoleChange}
                     initialValues={roleInput}
@@ -150,56 +165,30 @@ function InviteMember() {
                     {children}
                   </Select>
                 </Form.Item>
-                <Form.Item>
-                  <div className="flex justify-end mt-5">
-                    <div className="mr-3 ">
-                      <Modal
-                        centered="true"
-                        visible={isModalVisible}
-                        onCancel={handleCancel}
-                        onOk={handleClick}
-                        width={600}
-                        okText="はい"
-                        cancelText="いいえ"
-                      >
-                        <p className="mb-5">変更は保存されていません。続行してもよろしいですか？ </p>
-                      </Modal>
-                      <Button
-                        id="btn-cancel"
-                        className="ml-9 text-base px-14 w-32"
-                        type="primary"
-                        htmlType="submit"
-                        enabled="true"
-                        onClick={showModal}
-                      >
-                        キャンセル
-                      </Button>
-                    </div>
-                    <div>
-                      <Form.Item shouldUpdate>
-                        {() => (
-                          <div className="flex justify-center">
-                            <Button
-                              id="btn-submit"
-                              type="primary"
-                              htmlType="submit"
-                              className="text-base "
-                              disabled={
-                                !!form
-                                  .getFieldsError()
-                                  .filter(({ errors }) => errors.length).length
-                              || !(
-                                form.isFieldTouched('email')
-                                && form.isFieldTouched('categories'))
-                              }
-                            >
-                              招待
-                            </Button>
-                          </div>
-                        )}
-                      </Form.Item>
-                    </div>
-                  </div>
+
+                <Form.Item
+                  label=" "
+                  className="my-10"
+                >
+                  <Space size={20} className="flex justify-end">
+                    <Button
+                      className="ant-btn mr-3"
+                      id="btn-cancel"
+                      htmlType="button"
+                      enabled="true"
+                      onClick={handleModal}
+                    >
+                      キャンセル
+                    </Button>
+                    <Button
+                      id="btn-submit"
+                      type="primary"
+                      htmlType="submit"
+                      enabled
+                    >
+                      招待
+                    </Button>
+                  </Space>
                 </Form.Item>
               </Form>
             </div>

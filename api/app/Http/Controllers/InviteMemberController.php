@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 class InviteMemberController extends Controller
@@ -16,19 +15,19 @@ class InviteMemberController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'role' => 'required|integer|min:2|max:3'
+            'role'  => 'required|integer|min:2|max:3',
         ]);
         $user = User::whereEmail($request->email)->first();
         if (!$user) {
             DB::table('users')->insert([
-                'email'      => $request->email,
-                'name' => 'User' . random_int(10000, 99999),
-                'password' => Hash::make('12345678'),
-                'role'  => $request->role,
+                'email'       => $request->email,
+                'name'        => 'User'.random_int(10000, 99999),
+                'password'    => Hash::make('12345678'),
+                'role'        => $request->role,
                 'chatwork_id' => null,
-                'avatar'  => 'images/default.jpg',
-                'created_at' => now(),
-                'updated_at' => now()
+                'avatar'      => 'public/image/avatars/default.jpg',
+                'created_at'  => now(),
+                'updated_at'  => now(),
             ]);
             DB::table('password_resets')->insert([
                 'email'      => $request->email,
@@ -56,7 +55,7 @@ class InviteMemberController extends Controller
          * @return \Illuminate\Http\Response
          */
         Mail::send('email.welcome', $data, function ($message) use ($data) {
-        $message->to($data['email']);
+            $message->to($data['email']);
             $message->subject('Welcome to Jobfair Support');
         });
     }
