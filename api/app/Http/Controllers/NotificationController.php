@@ -46,7 +46,11 @@ class NotificationController extends Controller
     public function show($notifiable_id)
     {
 
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->get();
+>>>>>>> push data seeder notification table
     }
 
     /**
@@ -82,17 +86,29 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
+<<<<<<< HEAD
         return Notification::find($id)->delete();
+=======
+        //
+>>>>>>> push data seeder notification table
     }
     public function showUnread($notifiable_id)
     {
 
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
+>>>>>>> push data seeder notification table
     }
     public function showNotificationUser($notifiable_id, $user_id)
     {
 
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
+>>>>>>> push data seeder notification table
     }
     // public function showNotificationUser( Request $request,$notifiable_id)
     // {
@@ -102,6 +118,10 @@ class NotificationController extends Controller
     public function showNotificationUserUread($notifiable_id, $user_id)
     {
 
+<<<<<<< HEAD
         return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+=======
+        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
+>>>>>>> push data seeder notification table
     }
 }
