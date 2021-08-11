@@ -6,7 +6,7 @@ import 'antd/dist/antd.css'
 import './styles.scss'
 import { sendInviteLink } from '~/api/member'
 
-export default function InviteMember() {
+function InviteMember() {
   const [emailInput, setEmailInput] = useState('')
   const [roleInput, setRoleInput] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -209,3 +209,6 @@ export default function InviteMember() {
     </OtherLayout>
   )
 }
+
+InviteMember.middleware = ['auth:superadmin']
+export default InviteMember
