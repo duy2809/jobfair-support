@@ -37,6 +37,7 @@ class ProfileController extends Controller
             'id' => $id,
         ], $rules);
         $validator->validate();
+
         return User::find($id);
     }
 
@@ -110,7 +111,7 @@ class ProfileController extends Controller
             $validator = Validator::make($request->all(), $rules);
             $validator->validated();
 
-            $avatar = $user->id . '.' . $request->avatar->extension();
+            $avatar = $user->id.'.'.$request->avatar->extension();
             $request->file('avatar')->storeAs('public/image/avatars', $avatar);
 
             $path = "public/image/avatars/$avatar";
