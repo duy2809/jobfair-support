@@ -23,14 +23,6 @@ class CategoryFactory extends Factory
     {
         return [
             'category_name' => $this->faker->name(),
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 3953a14f6b75df6f204f07170c62433396037a4c
-=======
->>>>>>> dbe558e882a3fd0524591086e0c59c081abaa7ad
->>>>>>> framgia-develop
->>>>>>> 0f21d90c88a79a75041b61158f6284e73a35a612
         ];
     }
 }
