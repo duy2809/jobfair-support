@@ -1,6 +1,7 @@
 <?php
-
+use App\Http\Controllers;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
@@ -16,25 +17,14 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
-
-Route::apiResource('/milestone', MilestoneController::class);
-Route::prefix('member')->group(function () {
-    Route::get('/', 'MemberController@index');
-});
-Route::resource('/jobfair', 'JobfairController');
-
-
-
 // add jf route start
-
-
 
 // jobfair
 
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
-
+Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
 
@@ -59,10 +49,11 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 
 //milestone
+
 Route::resource('/milestone', TemplateMilestoneController::class);
 
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@getList');
+Route::get('/milestone', 'TemplateMilestoneController@index');
 Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
@@ -81,33 +72,30 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
-
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
-
-Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
-
 //template-task
+
 Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
 
-
 //category
 Route::apiResource('/category', CategoryController::class);
-
 Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
+
 Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
-
 
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+
+Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
