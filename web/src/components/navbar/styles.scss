@@ -3,9 +3,13 @@
     color: #272343;
     font-size: 16px;
 }
-.bell-icon {
-    color: #ffd803;
+
+.cursor-pointer{
+    .bell-icon {
+        color: #ffd803;
+    }
 }
+
 .number-notifications {
     color: #F14E2B;
 }
@@ -14,7 +18,7 @@
     background-color: #ffd803;
 } 
 
-.noti {
+.notification {
     width: 600px;
     
     .noti-header{

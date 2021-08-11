@@ -93,7 +93,7 @@ export default function Navbar() {
   };
 
   const notifications = (
-    <div className="noti w-96 border-2 rounded-2xl bg-white">
+    <div className="notification w-96 border-2 rounded-2xl bg-white">
       <List
       size="small"
       header={
