@@ -3,11 +3,11 @@ import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-//import './styles.scss'
+import './styles.scss'
 
 import moment from 'moment';
 
-export default function Navbar() {
+export default function Notification() {
   
   //get noti
   const data = [
@@ -74,7 +74,7 @@ export default function Navbar() {
   };
 
   const notifications = (
-    <div className="notif w-96 border-2 rounded-2xl bg-white">
+    <div className="notification w-96 border-2 rounded-2xl bg-white">
       <List
       size="small"
       header={
@@ -125,7 +125,7 @@ export default function Navbar() {
                 {data.length}
               </span>
             </div>
-          </Dropdown>
+        </Dropdown>
     </div>
   )
 }
