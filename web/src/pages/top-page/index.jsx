@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import List from "../../components/list";
 import { tasks, members, jobfairs } from "../../api/top-page";
@@ -82,6 +82,11 @@ const Top = () => {
   const [jobfairData, setJobfairData] = useState([]);
   const jobfairDataItem = [];
 
+  //   const [scheduleData, setScheduleData] = useState([]);
+  //   const scheduleDataItem = [];
+
+  //   const [templateTaskData, setTemplateTaskData] = useState([]);
+  //   const templateTaskDataItem = [];
   const [templateData, setTemplateData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
 
@@ -101,6 +106,16 @@ const Top = () => {
       setJobfairData(response.data);
     };
 
+    // const getSchedule = async () => {
+    //   const response = await schedule();
+    //   setScheduleData(response.data);
+    // };
+
+    // const getTemplateTaskData = async () => {
+    //   const response = await getTemplateTasks();
+    //   setTemplateTaskData(response.data);
+    //   console.log(response.data);
+    // };
     const getTemplate = async () => {
       await getTaskList().then((res) => {
         const datas = [];
