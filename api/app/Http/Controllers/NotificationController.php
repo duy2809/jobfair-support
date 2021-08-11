@@ -79,7 +79,7 @@ class NotificationController extends Controller
      */
     public function edit($id)
     {
-        return Notification::where('id', $id)->get();
+        //
     }
 
     /**
