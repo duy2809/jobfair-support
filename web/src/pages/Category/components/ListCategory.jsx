@@ -60,7 +60,6 @@ export default function ListCategories() {
       title: 'カテゴリー名',
       dataIndex: 'name',
       width: '60%',
-      sorter: (record1, record2) => record1.category_name > record2.category_name,
     },
     {
       key: '3',
