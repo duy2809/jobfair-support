@@ -89,10 +89,7 @@ Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
-<<<<<<< HEAD
 Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
-=======
->>>>>>> c51dcd89325da66da3c96e100668468a4eac289f
 
 //category
 
