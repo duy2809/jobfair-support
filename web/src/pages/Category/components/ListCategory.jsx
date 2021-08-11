@@ -96,8 +96,8 @@ export default function ListCategories() {
 
   return (
     <div>
+      <h1>カテゴリー覧</h1>
       <div className="flex relative">
-        <h1 className="p-8 font-bold text-4xl">カテゴリー覧</h1>
         <div className="add">
           <AddCategory reloadPage={reloadPage} />
         </div>
