@@ -119,7 +119,7 @@ export default function ListCategories() {
           </p>
           <p>
             <div className="absolute right-12">
-              <Space direction="vertical" className="pl-12">
+              <Space direction="vertical" className="pl-9">
                 <Input
                   placeholder="カテゴリを検索"
                   onChange={(e) => fetch(e.target.value)}

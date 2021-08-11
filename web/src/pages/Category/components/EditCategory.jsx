@@ -102,6 +102,7 @@ const EditCategory = (props) => {
         onCancel={handleCancel}
         okText="保存"
         cancelText="キャンセル"
+        centered
       >
         <Form form={form}>
           <Form.Item

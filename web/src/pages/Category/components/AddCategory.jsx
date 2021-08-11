@@ -97,6 +97,7 @@ const AddCategory = (props) => {
         onCancel={handleCancel}
         okText="登録"
         cancelText="キャンセル"
+        centered
       >
         <Form form={form}>
           <Form.Item
