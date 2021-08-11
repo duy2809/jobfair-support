@@ -12,14 +12,14 @@ class TemplateTask extends Model
     public $timestamps = false;
     protected $guarded = [];
 
-    public function templateMilestone()
+    public function milestone()
     {
-        return $this->belongsTo(TemplateMilestone::class, 'milestone_id');
+        return $this->belongsTo(Milestone::class, 'milestone_id');
     }
 
-    public function templateDocuments()
+    public function documents()
     {
-        return $this->morphMany(TemplateDocuments::class, 'templateDocumentable');
+        return $this->morphMany(Document::class, 'commentable');
     }
 
     public function categories()
@@ -35,5 +35,10 @@ class TemplateTask extends Model
     public function beforeTasks()
     {
         return $this->belongsToMany(self::class, 'pivot_table_template_tasks', 'after_tasks', 'before_tasks');
+    }
+
+    public function schedules()
+    {
+        return $this->belongsToMany(Schedule::class);
     }
 }
