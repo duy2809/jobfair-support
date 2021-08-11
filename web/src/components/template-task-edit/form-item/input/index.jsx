@@ -27,7 +27,7 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
           {label}
         </p>
       )}
-      labelAlign="left"
+      labelAlign="right"
       className="text-4xl justify-between"
       name={name}
       rules={[

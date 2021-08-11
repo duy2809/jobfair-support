@@ -250,7 +250,7 @@ const EditTemplateTaskPage = () => {
                       リレーション
                     </p>
                   )}
-                  labelAlign="left"
+                  labelAlign="right"
                   className="text-4xl justify-between"
                   required="true"
                 >

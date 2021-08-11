@@ -27,7 +27,7 @@ const Detail = ({ form, input, setInput }) => {
         </p>
       )}
       className="text-4xl justify-between"
-      labelAlign="left"
+      labelAlign="right"
       name="description"
     >
       <TextArea

@@ -35,7 +35,7 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
           {label}
         </p>
       )}
-      labelAlign="left"
+      labelAlign="right"
       className="text-4xl justify-between"
       name={name}
       rules={[

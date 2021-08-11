@@ -64,7 +64,7 @@ const Effort = ({
         </p>
       )}
       name="effort"
-      labelAlign="left"
+      labelAlign="right"
       className="text-4xl justify-between"
       rules={[
         {

@@ -2,6 +2,7 @@ import React from 'react'
 import { Form, Select, Tag, Tooltip } from 'antd'
 import './style.scss'
 import PropTypes from 'prop-types'
+import { getTemplateTasksList } from '../../../../api/template-task-edit'
 
 const { Option } = Select
 
@@ -14,6 +15,11 @@ const toHalfWidth = (v) => {
   }
   return newArr
 }
+
+let tasksList = []
+getTemplateTasksList().then((res) => {
+  tasksList = [...res.data]
+})
 
 const ItemMultipleDropdown = ({
   form,
@@ -59,29 +65,11 @@ const ItemMultipleDropdown = ({
         onChange={onValueNameChange}
         tagRender={tagRender}
       >
-        {options.map((item) => {
-          if (item.name.length > 20) {
-            return (
-              <Option
-                key={item.id}
-                value={item.name}
-                // style={{
-                //   whiteSpace: 'nowrap',
-                //   overflow: 'hidden',
-                //   textOverflow: 'ellipsis',
-                //   maxWidth: '200px',
-                // }}
-              >
-                {`${item.name.slice(0, 20)}...`}
-              </Option>
-            )
-          }
-          return (
-            <Option key={item.id} value={item.name}>
-              {item.name}
-            </Option>
-          )
-        })}
+        {options.map((item) => (
+          <Option key={item.id} value={item.name}>
+            {item.name}
+          </Option>
+        ))}
       </Select>
     </Form.Item>
   )
@@ -89,6 +77,11 @@ const ItemMultipleDropdown = ({
 
 function tagRender(props) {
   const { label, value, closable, onClose } = props
+  const handleClick = (e) => {
+    e.preventDefault()
+    const id = tasksList.find((item) => item.name === e.target.innerHTML).id
+    window.location.href = `/template-tasks/${id}`
+  }
   const onPreventMouseDown = (event) => {
     event.preventDefault()
     event.stopPropagation()
@@ -103,7 +96,13 @@ function tagRender(props) {
         style={{ marginRight: 3 }}
       >
         <Tooltip title={label}>
-          <a href="#">{label}</a>
+          <span
+            className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            style={{ maxWidth: '20ch' }}
+            onClick={handleClick}
+          >
+            {label}
+          </span>
         </Tooltip>
       </Tag>
     )
@@ -116,7 +115,12 @@ function tagRender(props) {
       onClose={onClose}
       style={{ marginRight: 3 }}
     >
-      <a href="#">{label}</a>
+      <span
+        className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+        onClick={handleClick}
+      >
+        {label}
+      </span>
     </Tag>
   )
 }
