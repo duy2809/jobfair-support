@@ -104,7 +104,7 @@ class ScheduleController extends Controller
 
     public function search(Request $request)
     {
-        return Schedule::where('name', 'like', '%' . $request->input('name') . '%')->get();
+        return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
     }
 
     public function getScheduleb($id)

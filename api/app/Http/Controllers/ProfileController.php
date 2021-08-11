@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -65,7 +64,6 @@ class ProfileController extends Controller
 
     public function updateUserInfo(Request $request, $id)
     {
-        //
         $rules = [
             'name' => 'required|string',
             'email' => [
@@ -81,6 +79,7 @@ class ProfileController extends Controller
         $validator->validated();
         $user = User::find($id);
         $user->update($request->all());
+
         return response()->json(['message' => 'Updated successfully']);
     }
 
@@ -93,13 +92,13 @@ class ProfileController extends Controller
         ]);
 
         $user = User::find($id);
-        if (Hash::check($request->current_password, $user->password)) {
-            $user->update([
-                'password' => bcrypt($request->password),
-            ]);
-        } else {
+        if (!Hash::check($request->current_password, $user->password)) {
             return response()->json(['message' => 'Current password incorrect']);
         }
+
+        $user->update([
+            'password' => bcrypt($request->password),
+        ]);
 
         return response()->json(['message' => 'Password has been successfully changed']);
     }
@@ -107,8 +106,6 @@ class ProfileController extends Controller
     public function updateAvatar(Request $request, $id)
     {
         if ($request->hasFile('avatar')) {
-            //$test = $request->file('avatar');
-            //dd([$test, $request->file('avatar')->storeAs('public/image/avatars', $id . '.' . $request->avatar->extension())]);
             $user = User::find($id);
 
             $rules = [
@@ -118,22 +115,17 @@ class ProfileController extends Controller
             $validator = Validator::make($request->all(), $rules);
             $validator->validated();
 
-            //dd($request);
-
-            $avatar = $user->id . '.' . $request->avatar->extension();
-            $load = $request->file('avatar')->storeAs('public/image/avatars', $avatar);
+            $avatar = $user->id.'.'.$request->avatar->extension();
+            $request->file('avatar')->storeAs('public/image/avatars', $avatar);
 
             $path = "public/image/avatars/$avatar";
             $request->avatar = $path;
-            //dd($request);
             $user->update();
 
-            //return $user;
             return response()->json($path);
         }
 
         return response()->json(['message' => 'Failed']);
-
     }
 
     /**

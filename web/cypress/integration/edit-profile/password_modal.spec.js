@@ -144,7 +144,7 @@ describe('Change Password Modal', () => {
     cy.get('#reset_password_current_password').clear().type('12345678')
     cy.get('.ant-modal .ant-btn-primary').click()
     cy.get('.ant-modal').should('not.be.visible')
-    cy.get('.ant-notification').should('be.visible').should('contain', 'パスワードを正常に変更しました')
+    cy.get('.ant-notification').should('be.visible').should('contain', 'パスワードを正常に変更しました。')
 
     cy.get('.ant-btn-round').click()
     cy.get('#reset_password_current_password').clear().type('123456789')

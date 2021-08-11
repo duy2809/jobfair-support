@@ -12,7 +12,7 @@ const ButtonChangePassword = () => {
   const validateMessages = {
     required: 'この項目は必須です。',
     string: {
-      range: 'パスワードは${min}文字以上${max}文字以下で入力してください。',
+      range: 'パスワードは8文字以上24文字以下で入力してください。',
     },
   }
   const openNotification = (type, message) => {
@@ -48,7 +48,7 @@ const ButtonChangePassword = () => {
         } else {
           setIsModalVisible(false)
           setIsPasswordOkLoading(false)
-          openNotification('success', 'パスワードを正常に変更しました')
+          openNotification('success', 'パスワードを正常に変更しました。')
         }
       })
     })
