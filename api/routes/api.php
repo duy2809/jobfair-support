@@ -93,5 +93,9 @@ Route::prefix('category')->group(function () {
 Route::put('/profile/{id}/update_info', 'ProfileController@updateUserInfo');
 Route::post('/profile/{id}/update_password', 'ProfileController@updatePassword');
 Route::post('/profile/{id}/update_avatar', 'ProfileController@updateAvatar');
+
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
+
+Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
+Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);

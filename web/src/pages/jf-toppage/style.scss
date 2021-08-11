@@ -33,10 +33,6 @@
         align-items: center;
         justify-content: space-between;
         margin-bottom: 30px;
-        h1{
-            color: #2d334a;
-            font-size: 36px;
-        }
         .admin__top{
             display: flex;
             .bo{
@@ -96,10 +92,8 @@
             border-right: 1px solid rgb(197, 193, 193);
         }
     }
-    
         input{
             outline: none;
-            
         }
    
 }

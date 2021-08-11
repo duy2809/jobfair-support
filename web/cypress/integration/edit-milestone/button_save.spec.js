@@ -1,6 +1,6 @@
 describe('Check button save', () => {
   beforeEach(() => {
-    cy.visit('http://jobfair.local:8000/milestones/10/edit')
+    cy.visit('http://jobfair.local:8000/milestones/1/edit')
     cy.wait(500)
   })
 
@@ -44,14 +44,6 @@ describe('Check button save', () => {
     cy.get('.ant-modal-content').find('.ant-btn').last().click()
     cy.wait(100)
     cy.get('.ant-notification-notice-message').should('be.visible').should('contain', 'このマイルストーン名は存在しています')
-  })
-
-  it('check click save and click yes when milestone name is available', () => {
-    cy.get('#basic_name').clear().type('ab') // replace with a input name that available in your database
-    cy.get('[type="submit"]').click()
-    cy.get('.ant-modal-content').find('.ant-btn').last().click()
-    cy.wait(100)
-    cy.get('.ant-notification-notice-message').should('be.visible').should('contain', '変更は正常に保存されました。')
   })
 
   it('check click save and click no', () => {
