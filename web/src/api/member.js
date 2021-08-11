@@ -1,4 +1,5 @@
-import axios from './axios'
+import axios from 'axios'
+import instance from '~/api/axios'
 
 const getMemberDetail = (id) => axios.get(`/member/${id}`)
 const getListMember = () => axios.get('/member')
@@ -8,3 +9,4 @@ export const MemberApi = {
   getListMember,
   updateMember,
 }
+export const sendInviteLink = (data) => instance.post('/invite-member', data)
