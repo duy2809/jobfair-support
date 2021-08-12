@@ -90,7 +90,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="flex px-16 items-center">
-        <Notification></Notification>
+        <Notification />
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
             <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer">
