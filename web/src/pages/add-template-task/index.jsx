@@ -3,7 +3,7 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import {
-  Button, Form,
+  Button, Form, Spin,
   Input, Modal, notification,
   Select, Space, Tag, Tooltip,
 } from 'antd'
@@ -20,6 +20,7 @@ const index = () => {
   const [listCatergories, setlistCatergories] = useState([])
   const [listMilestones, setlistMilestones] = useState([])
   const [templateTasks, settemplateTasks] = useState([])
+  const [loading, setLoading] = useState(false)
   const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
 
@@ -154,6 +155,7 @@ const index = () => {
       }
       console.log(data)
       setdisableBtn(true)
+      setLoading(true)
       const response = await addTemplateTasksAPI.addTemplateTask(data)
 
       if (response.status < 299) {
@@ -161,6 +163,7 @@ const index = () => {
         // routeTo(`/jf-toppage/${response.data.id}`)
       } else {
         setdisableBtn(false)
+        setLoading(false)
       }
 
       return response
@@ -282,269 +285,274 @@ const index = () => {
     <OtherLayout>
       <OtherLayout.Main>
         <div className="add-template-task-page">
-          <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-            {/* page title */}
-            {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
-            <h1>テンプレートタスク追加 </h1>
-            <div>
-              <div className="container mt-20">
-                <div className="grid justify-items-center">
-                  <Form
-                    className="place-self-center add-template-form"
-                    form={form}
-                    labelCol={{
-                      span: 6,
-                    }}
-                    wrapperCol={{
-                      span: 13,
-                    }}
-                    layout="horizontal"
-                    colon
-                    initialValues={{ defaultInputValue: 0 }}
-                    onFinish={onFinishSuccess}
-                    onFinishFailed={onFinishFailed}
-                  >
-                    {/* template task name */}
-                    <Form.Item
-                      label="タスクテンプレート名"
-                      required
-                    >
-                      <Form.Item
-                        name="template_name"
-                        noStyle
-                        rules={[
-                          {
-                            validator: templateTaskNameValidator,
-                          },
-                        ]}
+          <div id="loading">
+            <Spin spinning={loading} tip="Loading..." size="large">
+              <div className="container mx-auto flex-1 justify-center px-4  pb-20">
+                {/* page title */}
+                {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
+                <h1>テンプレートタスク追加 </h1>
+                <div>
+                  <div className="container mt-20">
+                    <div className="grid justify-items-center">
+                      <Form
+                        className="place-self-center add-template-form"
+                        form={form}
+                        labelCol={{
+                          span: 6,
+                        }}
+                        wrapperCol={{
+                          span: 13,
+                        }}
+                        layout="horizontal"
+                        colon
+                        initialValues={{ defaultInputValue: 0 }}
+                        onFinish={onFinishSuccess}
+                        onFinishFailed={onFinishFailed}
                       >
-                        <Input
-                          type="text"
-                          id="validate_name"
-                          onBlur={isTemplateTaskExisted}
-                          onChange={() => {
-                            document.getElementById('error-msg').setAttribute('hidden', 'true')
-                            document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
-                          }}
-                          placeholder="タスクテンプレート名を入力する"
-                          maxLength={200}
-                        />
-
-                      </Form.Item>
-
-                      <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
-                    </Form.Item>
-
-                    {/* category */}
-                    <Form.Item
-                      required
-                      // hasFeedback
-                      label="カテゴリー"
-                      name="category_id"
-                      rules={[
-                        {
-                          validator: categoryValidator,
-                        },
-                      ]}
-                    >
-                      <Select
-                        size="large"
-                        showArrow
-                        allowClear
-                        className="addJF-selector p-1"
-                        placeholder="カテゴリー"
-                      >
-                        {listCatergories.map((element) => (
-                          <Select.Option key={element.id} value={element.id}>
-                            {element.category_name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-
-                    </Form.Item>
-
-                    {/* milestone */}
-                    <Form.Item
-                      required
-                      // hasFeedback
-                      name="milestone_id"
-                      label="マイルストーン"
-                      rules={[
-                        {
-                          validator: milestoneValidator,
-                        },
-                      ]}
-                    >
-                      <Select
-                        showArrow
-                        allowClear
-                        size="large"
-                        className="addJF-selector p-1"
-                        placeholder="JF-スケジュールを選択"
-                      >
-                        {listMilestones.map((element) => (
-                          <Select.Option key={element.id} value={element.id}>
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-
-                    {/* relation */}
-                    <Form.Item
-                      label="リレーション"
-                    >
-                      <p className="">前のタスク:</p>
-                      <Form.Item noStyle name="beforeTasks">
-                        <Select
-                          mode="multiple"
-                          showArrow
-                          allowClear
-                          tagRender={tagRender}
-                          value={selectedItems}
-                          className="w-100"
-                          placeholder="リレーション"
-                          onChange={filterSelectedTasks}
+                        {/* template task name */}
+                        <Form.Item
+                          label="タスクテンプレート名"
+                          required
                         >
-                          {templateTasks.map((element) => (
-                            <Select.Option key={element.id} value={element.id}>
-                              {element.name}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                      <p className="mt-7">後のタスク:</p>
-                      <Form.Item noStyle name="afterTasks">
-                        <Select
-                          showArrow
-                          showSearch={false}
-                          allowClear
-                          tagRender={tagRender}
-                          mode="multiple"
-                          placeholder="リレーション"
-
-                        >
-                          {templateTasks.map((element) => (
-                            <Select.Option key={element.id} value={element.id}>
-                              {element.name}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-
-                    </Form.Item>
-
-                    {/* Kōsū - effort  */}
-                    <Form.Item
-                      label="工数"
-                      required
-
-                    >
-                      <Space className="space-items-special flex justify-between ">
-                        <div className="w-1/2 max-w-xs flex-grow ">
                           <Form.Item
+                            name="template_name"
                             noStyle
-                            name="effort"
                             rules={[
                               {
-                                validator: numberInputValidator,
+                                validator: templateTaskNameValidator,
                               },
                             ]}
                           >
                             <Input
-                              className="h-1/2 py-1"
-                              style={{ padding: '9px', minWidth: '53px' }}
                               type="text"
-                              size="large"
-                              min={1}
-                              value={0}
-                              onChange={autoConvertHalfwidth}
+                              id="validate_name"
+                              onBlur={isTemplateTaskExisted}
+                              onChange={() => {
+                                document.getElementById('error-msg').setAttribute('hidden', 'true')
+                                document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                              }}
+                              placeholder="タスクテンプレート名を入力する"
+                              maxLength={200}
                             />
+
                           </Form.Item>
-                        </div>
-                        {/* ----------------- */}
-                        <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                          <Form.Item noStyle name="isDay">
+
+                          <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
+                        </Form.Item>
+
+                        {/* category */}
+                        <Form.Item
+                          required
+                          // hasFeedback
+                          label="カテゴリー"
+                          name="category_id"
+                          rules={[
+                            {
+                              validator: categoryValidator,
+                            },
+                          ]}
+                        >
+                          <Select
+                            size="large"
+                            showArrow
+                            allowClear
+                            className="addJF-selector p-1"
+                            placeholder="カテゴリー"
+                          >
+                            {listCatergories.map((element) => (
+                              <Select.Option key={element.id} value={element.id}>
+                                {element.category_name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+
+                        </Form.Item>
+
+                        {/* milestone */}
+                        <Form.Item
+                          required
+                          // hasFeedback
+                          name="milestone_id"
+                          label="マイルストーン"
+                          rules={[
+                            {
+                              validator: milestoneValidator,
+                            },
+                          ]}
+                        >
+                          <Select
+                            showArrow
+                            allowClear
+                            size="large"
+                            className="addJF-selector p-1"
+                            placeholder="JF-スケジュールを選択"
+                          >
+                            {listMilestones.map((element) => (
+                              <Select.Option key={element.id} value={element.id}>
+                                {element.name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+
+                        {/* relation */}
+                        <Form.Item
+                          label="リレーション"
+                        >
+                          <p className="">前のタスク:</p>
+                          <Form.Item noStyle name="beforeTasks">
                             <Select
-                              required
-                              className="special-selector w-100 "
+                              mode="multiple"
                               showArrow
-                              size="large"
-                              showSearch={false}
-                              placeholder="時間"
+                              allowClear
+                              tagRender={tagRender}
+                              value={selectedItems}
+                              className="w-100"
+                              placeholder="リレーション"
+                              onChange={filterSelectedTasks}
                             >
-                              {isDayData.map((element) => (
+                              {templateTasks.map((element) => (
                                 <Select.Option key={element.id} value={element.id}>
                                   {element.name}
                                 </Select.Option>
                               ))}
                             </Select>
                           </Form.Item>
-                          <p className="slash-devider text-3xl font-extrabold"> / </p>
-                          <Form.Item noStyle name="unit">
+                          <p className="mt-7">後のタスク:</p>
+                          <Form.Item noStyle name="afterTasks">
                             <Select
-                              required
-                              size="large"
-                              className="special-selector"
                               showArrow
                               showSearch={false}
-                              placeholder="学生数"
+                              allowClear
+                              tagRender={tagRender}
+                              mode="multiple"
+                              placeholder="リレーション"
+
                             >
-                              {unitData.map((element) => (
+                              {templateTasks.map((element) => (
                                 <Select.Option key={element.id} value={element.id}>
                                   {element.name}
                                 </Select.Option>
                               ))}
                             </Select>
                           </Form.Item>
-                        </div>
-                      </Space>
 
-                    </Form.Item>
+                        </Form.Item>
 
-                    {/* details    */}
-                    <Form.Item
-                      label="詳細"
-                      name="detail"
-                    >
-                      <TextArea rows={7} placeholder="何かを入力してください" />
-                    </Form.Item>
+                        {/* Kōsū - effort  */}
+                        <Form.Item
+                          label="工数"
+                          required
 
-                    {/* 2 button */}
-                    <Form.Item
-                      label=" "
-                      colon={false}
-                      className="my-10"
-                    >
-                      <Space size={20} className="flex justify-end ">
-                        <Button
-                          htmlType="button"
-                          className="ant-btn"
-                          onClick={cancelConfirmModle}
-                          disabled={disableBtn}
-                          loading={disableBtn}
                         >
-                          キャンセル
-                        </Button>
-                        {/* --------------------------- */}
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          disabled={disableBtn}
-                          loading={disableBtn}
-                          style={{ letterSpacing: '-1px' }}
+                          <Space className="space-items-special flex justify-between ">
+                            <div className="w-1/2 max-w-xs flex-grow ">
+                              <Form.Item
+                                noStyle
+                                name="effort"
+                                rules={[
+                                  {
+                                    validator: numberInputValidator,
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  className="h-1/2 py-1"
+                                  style={{ padding: '9px', minWidth: '53px' }}
+                                  type="text"
+                                  size="large"
+                                  min={1}
+                                  value={0}
+                                  onChange={autoConvertHalfwidth}
+                                />
+                              </Form.Item>
+                            </div>
+                            {/* ----------------- */}
+                            <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
+                              <Form.Item noStyle name="isDay">
+                                <Select
+                                  required
+                                  className="special-selector w-100 "
+                                  showArrow
+                                  size="large"
+                                  showSearch={false}
+                                  placeholder="時間"
+                                >
+                                  {isDayData.map((element) => (
+                                    <Select.Option key={element.id} value={element.id}>
+                                      {element.name}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                              <p className="slash-devider text-3xl font-extrabold"> / </p>
+                              <Form.Item noStyle name="unit">
+                                <Select
+                                  required
+                                  size="large"
+                                  className="special-selector"
+                                  showArrow
+                                  showSearch={false}
+                                  placeholder="学生数"
+                                >
+                                  {unitData.map((element) => (
+                                    <Select.Option key={element.id} value={element.id}>
+                                      {element.name}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </div>
+                          </Space>
+
+                        </Form.Item>
+
+                        {/* details    */}
+                        <Form.Item
+                          label="詳細"
+                          name="detail"
                         >
-                          登録
-                        </Button>
-                      </Space>
-                    </Form.Item>
+                          <TextArea rows={7} placeholder="何かを入力してください" />
+                        </Form.Item>
 
-                    {/* end form */}
-                  </Form>
+                        {/* 2 button */}
+                        <Form.Item
+                          label=" "
+                          colon={false}
+                          className="my-10"
+                        >
+                          <Space size={20} className="flex justify-end ">
+                            <Button
+                              htmlType="button"
+                              className="ant-btn"
+                              onClick={cancelConfirmModle}
+                              disabled={disableBtn}
+                              loading={disableBtn}
+                            >
+                              キャンセル
+                            </Button>
+                            {/* --------------------------- */}
+                            <Button
+                              type="primary"
+                              htmlType="submit"
+                              disabled={disableBtn}
+                              loading={disableBtn}
+                              style={{ letterSpacing: '-1px' }}
+                            >
+                              登録
+                            </Button>
+                          </Space>
+                        </Form.Item>
 
+                        {/* end form */}
+                      </Form>
+
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+
+            </Spin>
           </div>
         </div>
       </OtherLayout.Main>
