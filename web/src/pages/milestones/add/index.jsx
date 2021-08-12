@@ -148,7 +148,7 @@ export default function AddMilestonePage() {
     <>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px', margin: 0 }}>
+          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
             マイルストーン追加
           </p>
 
@@ -161,11 +161,11 @@ export default function AddMilestonePage() {
                 typePeriod: '0',
               }}
               size="large"
+              className="space-y-12"
               labelCol={{ span: 10 }}
               wrapperCol={{ span: 6 }}
             >
               <Form.Item
-                className="pb-5"
                 label={(
                   <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>
                     マイルストーン名
@@ -202,7 +202,6 @@ export default function AddMilestonePage() {
                 />
               </Form.Item>
               <Form.Item
-                className="pb-5"
                 label={
                   <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>期日</p>
                 }
