@@ -72,7 +72,6 @@ const index = () => {
         setlistCatergories(Array.from(categories.data))
         setlistMilestones(Array.from(milestones.data))
         settemplateTasks(Array.from(tasks.data))
-
         return null
       } catch (error) {
         return Error(error.toString())
@@ -204,7 +203,6 @@ const index = () => {
     return Promise.resolve()
   }
   const numberInputValidator = (_, value) => {
-    console.log(value)
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
     }
@@ -219,7 +217,9 @@ const index = () => {
     }
 
     // setinputTest(Extention.toHalfWidth(value.toString()))
-    if (!Extensions.isFullWidth(value) && (!value.match(Extensions.Reg.onlyNumber))) {
+    if (!Extensions.isFullWidth(value)
+      && (!Extensions.Reg.floatNumber.test(value * 1.0))
+    ) {
       return Promise.reject(new Error('使用できない文字が含まれています。'))
     }
 
