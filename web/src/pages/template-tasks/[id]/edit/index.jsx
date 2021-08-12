@@ -222,7 +222,7 @@ const EditTemplateTaskPage = () => {
                 />
                 <ItemDropdow
                   form={form}
-                  label="カテゴリー"
+                  label="カテゴリ"
                   name="category"
                   setCheckSpace={setCheckSpace}
                   data={categoryData}
@@ -264,7 +264,7 @@ const EditTemplateTaskPage = () => {
                   />
                   <ItemMultipleDropdown
                     form={form}
-                    label="後のタスク"
+                    label="次のタスク"
                     name="nextTasks"
                     options={tasks}
                     selectedItems={nextTasks}
