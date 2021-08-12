@@ -29,7 +29,7 @@ export default function Notification() {
         const length = response.data.length
         for (let i = 0; i < length; i++) {
           // nameUser.push(response.data[i].user.name);
-          // setNameUser(nameUser => [...nameUser, response.data[i].user.name]);
+          setNameUser(nameUser => [...nameUser, response.data[i].user.name]);
           
         }
         // setNameUser(response.data.user.name)
