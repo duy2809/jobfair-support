@@ -202,14 +202,14 @@ export default function JFList() {
   }
 
   return (
-    <div className="JFList">
-
-      <OtherLayout>
-        <OtherLayout.Main>
-          <h1>JF一覧</h1>
+    <OtherLayout>
+      <OtherLayout.Main>
+        <div className="JFList">
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="flex-col space-y-9">
-              <div className="flex items-center" />
+              <div className="flex items-center">
+                <h1 className="text-3xl float-left">JF一覧</h1>
+              </div>
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-3">
@@ -229,6 +229,59 @@ export default function JFList() {
                       表示
                     </Button>
                   </div>
+                </div>
+                <div className="flex justify-between">
+                  <div className="flex space-x-8 items-center w-10/12">
+                    <DatePicker
+                      style={{ width: '15%', display: showFilter ? 'inline' : 'none' }}
+                      inputReadOnly="true"
+                      placeholder="開始日"
+                      onChange={FilterStartDate}
+                      format="YYYY/MM/DD"
+                      dateRender={(current) => {
+                        const style = {}
+                        if (current.date() === 1) {
+                          style.border = '1px solid #1890ff'
+                          style.borderRadius = '50%'
+                        }
+                        return (
+                          <div className="ant-picker-cell-inner" style={style}>
+                            {current.date()}
+                          </div>
+                        )
+                      }}
+                    />
+                    <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
+                      <p>
+                        推定参加学生数(
+                        {rangeStudentsNumber[0]}
+                        {' '}
+                        ~
+                        {rangeStudentsNumber[1]}
+                        )
+                      </p>
+                      <Slider
+                        range="true"
+                        defaultValue={[0, 100]}
+                        onAfterChange={FilterStudentsNumber}
+                      />
+                    </div>
+                    <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
+                      <p>
+                        参加企業社数(
+                        {rangeBussinessesNumber[0]}
+                        {' '}
+                        ~
+                        {rangeBussinessesNumber[1]}
+                        )
+                      </p>
+                      <Slider
+                        range="true"
+                        defaultValue={[0, 100]}
+                        onAfterChange={FilterBussinessesNumber}
+                      />
+                    </div>
+                  </div>
                   <Button
                     className="float-right"
                     href="/add-jobfair"
@@ -237,57 +290,7 @@ export default function JFList() {
                     JF追加
                   </Button>
                 </div>
-                <div className="flex space-x-8 items-center">
-                  <DatePicker
-                    style={{ width: '15%', display: showFilter ? 'inline' : 'none' }}
-                    inputReadOnly="true"
-                    placeholder="開始日"
-                    onChange={FilterStartDate}
-                    format="YYYY/MM/DD"
-                    dateRender={(current) => {
-                      const style = {}
-                      if (current.date() === 1) {
-                        style.border = '1px solid #1890ff'
-                        style.borderRadius = '50%'
-                      }
-                      return (
-                        <div className="ant-picker-cell-inner" style={style}>
-                          {current.date()}
-                        </div>
-                      )
-                    }}
-                  />
-                  <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-                    <p>
-                      推定参加学生数(
-                      {rangeStudentsNumber[0]}
-                      {' '}
-                      ~
-                      {rangeStudentsNumber[1]}
-                      )
-                    </p>
-                    <Slider
-                      range="true"
-                      defaultValue={[0, 100]}
-                      onAfterChange={FilterStudentsNumber}
-                    />
-                  </div>
-                  <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-                    <p>
-                      参加企業社数(
-                      {rangeBussinessesNumber[0]}
-                      {' '}
-                      ~
-                      {rangeBussinessesNumber[1]}
-                      )
-                    </p>
-                    <Slider
-                      range="true"
-                      defaultValue={[0, 100]}
-                      onAfterChange={FilterBussinessesNumber}
-                    />
-                  </div>
-                </div>
+
               </div>
             </div>
             <div className="flex space-x-8 items-center justify-between">
@@ -299,14 +302,17 @@ export default function JFList() {
                   <Option value={50}>50</Option>
                 </Select>
               </div>
-              <Input
-                className="w-1/4"
-                allowClear="true"
-                prefix={<SearchOutlined />}
-                placeholder="JF名, 管理者"
-                onChange={onSearch}
-                value={valueSearch}
-              />
+              <div>
+                <Input
+                  className="float-right"
+                  allowClear="true"
+                  prefix={<SearchOutlined />}
+                  placeholder="JF名, 管理者"
+                  onChange={onSearch}
+                  value={valueSearch}
+                />
+              </div>
+
             </div>
             <Table
               columns={columns}
@@ -317,8 +323,8 @@ export default function JFList() {
               locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
             />
           </div>
-        </OtherLayout.Main>
-      </OtherLayout>
-    </div>
+        </div>
+      </OtherLayout.Main>
+    </OtherLayout>
   )
 }

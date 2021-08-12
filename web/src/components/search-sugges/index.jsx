@@ -80,3 +80,4 @@ SearchSugges.propTypes = {
 SearchSugges.propTypes = {
   id: PropTypes.number.isRequired,
 }
+
