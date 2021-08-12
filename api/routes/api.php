@@ -62,7 +62,6 @@ Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilesto
 
 Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
-
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
 });
