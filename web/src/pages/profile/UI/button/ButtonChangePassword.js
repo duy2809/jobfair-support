@@ -24,6 +24,7 @@ const ButtonChangePassword = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false)
+    form.setFieldsValue({ current_password: '', password: '', confirm_password: '' })
   }
 
   const handleOk = () => {
@@ -49,6 +50,7 @@ const ButtonChangePassword = () => {
           setIsModalVisible(false)
           setIsPasswordOkLoading(false)
           openNotification('success', 'パスワードを正常に変更しました。')
+          form.setFieldsValue({ current_password: '', password: '', confirm_password: '' })
         }
       })
     })
