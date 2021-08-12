@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
 
         // create template tasks with fk to template milestones and categories
         foreach (Milestone::all() as $milestone) {
-            TemplateTask::factory(2)->for($milestone)->hasAttached(Category::all()->random(2))->create();
+            TemplateTask::factory(2)->for($milestone)->hasAttached(Category::all()->random())->create();
         }
 
         // create 3 template schedules
@@ -142,7 +142,7 @@ class DatabaseSeeder extends Seeder
                     'name' => $templateTask->name,
                     'start_time' => $startTime,
                     'end_time' => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
-                    'status' => 'new',
+                    'status' => '未着手',
 
                     'milestone_id' => $templateTask->milestone_id,
                     'schedule_id' => $schedule->id,
