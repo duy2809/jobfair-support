@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\TemplateMilestone;
+use App\Models\Milestone;
 use App\Models\TemplateTask;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,7 +28,7 @@ class TemplateTaskFactory extends Factory
             'is_day' => $this->faker->boolean(),
             'unit' => $this->faker->randomElement(['students', 'companies', 'none']),
             'description_of_detail' => $this->faker->text(),
-            'milestone_id' => TemplateMilestone::factory(),
+            'milestone_id' => Milestone::factory(),
 
         ];
     }

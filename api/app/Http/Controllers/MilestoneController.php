@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Milestone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -16,7 +17,11 @@ class MilestoneController extends Controller
      */
     public function index()
     {
-        return Milestone::all();
+        $data = DB::table('milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
     }
 
     /**
@@ -28,10 +33,8 @@ class MilestoneController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|regex:/^[^\s]*$/',
-            'name' => Rule::unique('milestones')->where('schedule_id', request('schedule_id')),
-            'period' => 'required|numeric|min:1|max:3000',
-            'schedule_id' => 'required|numeric|exists:App\Models\Schedule,id',
+            'name' => 'required|regex:/^[^\s]*$/|unique:milestones,name',
+            'period' => 'required|numeric|min:0|max:3000',
             'is_week' => 'required|numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -71,11 +74,9 @@ class MilestoneController extends Controller
         $rules = [
             'name' => 'regex:/^[^\s]*$/',
             'name' => [
-                Rule::unique('milestones')->where('schedule_id', Milestone::where('id', $id)->pluck('schedule_id')[0])
-                    ->whereNot('id', $id),
+                Rule::unique('milestones')->whereNot('id', $id),
             ],
-            'period' => 'numeric|min:1|max:3000',
-            'schedule_id' => 'numeric|exists:App\Models\Schedule,id',
+            'period' => 'numeric|min:0|max:3000',
             'is_week' => 'numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -92,6 +93,39 @@ class MilestoneController extends Controller
      */
     public function destroy($id)
     {
-        return Milestone::destroy($id);
+        Milestone::destroy($id);
+
+        return response()->json([
+            'success' => 'Record has been deleted successfully!',
+        ]);
+    }
+
+    public function checkUniqueEdit($id, $name)
+    {
+        return Milestone::where('id', '<>', $id)->where('name', '=', $name)->get();
+    }
+
+    public function checkUniqueAdd($name)
+    {
+        return Milestone::where('name', '=', $name)->get();
+    }
+
+    public function getSearch(Request $request)
+    {
+        $s = $request->input('s');
+        if ($request->input('s')) {
+            $data = DB::table('milestones')
+                ->where('name', 'LIKE', '%' + $s + '%')
+                ->orderBy('id', 'asc')
+                ->get();
+
+            return response()->json($data);
+        }
+
+        $data = DB::table('milestones')
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return response()->json($data);
     }
 }

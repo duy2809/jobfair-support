@@ -5,6 +5,7 @@ use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,11 +51,9 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 
 //milestone
 
-Route::resource('/milestone', TemplateMilestoneController::class);
+Route::resource('/milestone', MilestoneController::class);
 
-Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@index');
-Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
+Route::get('/milestone/search', 'MilestoneController@getSearch');
 
 //member
 
@@ -91,8 +90,8 @@ Route::prefix('category')->group(function () {
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
 
-Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueEdit']);
-Route::get('/check-unique-add/{name}', [App\Http\Controllers\TemplateMilestoneController::class, 'checkUniqueAdd']);
+Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueEdit']);
+Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueAdd']);
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
