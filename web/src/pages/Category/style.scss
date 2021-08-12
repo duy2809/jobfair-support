@@ -1,24 +1,12 @@
 .listCategory{
 // list
-    .ant-spin-container{
-        padding-top: 2rem;
-    }
-
     .ant-table-thead > tr > *{
         background-color : #bae8e8 !important;
         font-size: 16px;
     }
 
-    .ant-table-body{
-        max-height: 30rem !important;
-    }
-
     .ant-table-row{
         line-height: 0.05;
-    }
-
-    .ant-table-pagination.ant-pagination{
-        margin-top: 3.7rem;
     }
 
     .ant-table-pagination-right {
@@ -33,13 +21,6 @@
         position: relative;
     }
 
-    // add
-    .add{
-        position: absolute;
-        top: 13.5rem;
-        right: 3rem;
-    }
-
     // .input-category{
     //     height: 36px;
     //     width: -webkit-fill-available;
@@ -50,9 +31,4 @@
     .ant-form-item-required::after{
         display: none;
     }
-    // select box
-    .ant-select-selection-item{
-        font-size: 15px; 
-    }
-    // modal
 }

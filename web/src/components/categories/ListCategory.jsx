@@ -4,7 +4,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
 
-import { Input, Space, Table, Pagination, Select } from 'antd'
+import { Input, Space, Table, Row, Col, Select } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
@@ -87,16 +87,20 @@ export default function ListCategories() {
     })
   }
 
-  function setPageSize(selectObject) {
-    setPageS(selectObject.value)
-  }
-
   return (
     <div>
-      <h1>カテゴリー覧</h1>
-      <div className="add">
-        <AddCategory reloadPage={reloadPage} />
-      </div>
+      <Row
+        style={{ alignItems: 'center', justifyContent: 'space-between' }}
+      >
+        <Col>
+          <h1>カテゴリー覧</h1>
+        </Col>
+        <Col>
+          <div className="add">
+            <AddCategory reloadPage={reloadPage} />
+          </div>
+        </Col>
+      </Row>
 
       <div className="list">
         <div className="flex text-xl list-ht">
@@ -117,7 +121,7 @@ export default function ListCategories() {
           </p>
           <p>
             <div className="absolute right-12">
-              <Space direction="vertical" className="pl-9">
+              <Space direction="vertical">
                 <Input
                   placeholder="カテゴリを検索"
                   onChange={(e) => fetch(e.target.value)}
