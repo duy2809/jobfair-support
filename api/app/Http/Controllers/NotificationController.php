@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notifiable;
 use App\Models\Notification;
+use App\Models\User;
+
 class NotificationController extends Controller
 {
     /**
@@ -43,22 +46,22 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($notifiable_id)
+    public function show($user_id)
     {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return Notification::where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->get();
->>>>>>> push data seeder notification table
+        // return Notification::where('notifiable_id','=',$user_id)->get();
+        $noti = Notification::where('notifiable_id','=',$user_id)->get();
+        $user = Notification::select('user_id')->where('notifiable_id','=',$user_id)->get();
+        foreach ($user as $notification) {
+            // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
+            // $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
+            $nameUser[] =User::select('name')->find($notification->user_id);
+        
+        }
+
+        // return $user->notifications;
+        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+        // return $noti;
     }
 
     /**
@@ -94,74 +97,25 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         return Notification::find($id)->delete();
-=======
-        //
->>>>>>> push data seeder notification table
-=======
-        //
->>>>>>> push data seeder notification table
-=======
-        //
->>>>>>> push data seeder notification table
     }
     public function showUnread($notifiable_id)
     {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
+        // return Notification::where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+        $user = User::find($notifiable_id);
+
+        return $user->unreadnotifications;
     }
-    public function showNotificationUser($notifiable_id, $user_id)
+    public function showNotificationUser($user_id,$notifiable_id)
     {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->with('user:id,name,avatar')->get();
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->get();
->>>>>>> push data seeder notification table
+        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
     }
-    // public function showNotificationUser( Request $request,$notifiable_id)
-    // {
-
-    //     return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$request->user_id)->get();
-    // }
-    public function showNotificationUserUread($notifiable_id, $user_id)
+    
+    public function showNotificationUserUread($user_id,$notifiable_id)
     {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
-=======
-        return Notification::where('notifiable_id','=',$notifiable_id)->where('user_id','=',$user_id)->where('read_at','=',null)->get();
->>>>>>> push data seeder notification table
+        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
     }
 }
