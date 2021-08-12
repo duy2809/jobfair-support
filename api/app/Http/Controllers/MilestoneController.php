@@ -115,7 +115,7 @@ class MilestoneController extends Controller
         $s = $request->input('s');
         if ($request->input('s')) {
             $data = DB::table('milestones')
-                ->where('name', 'LIKE', '%'+$s+'%')
+                ->where('name', 'LIKE', '%' + $s + '%')
                 ->orderBy('id', 'asc')
                 ->get();
 

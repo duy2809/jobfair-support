@@ -14,7 +14,6 @@ class EditTemplateTasksTable extends Migration
     public function up()
     {
         Schema::table('template_tasks', function (Blueprint $table) {
-
             $table->text('description_of_detail')->nullable()->change();
         });
     }
@@ -27,7 +26,6 @@ class EditTemplateTasksTable extends Migration
     public function down()
     {
         Schema::table('template_tasks', function (Blueprint $table) {
-
             $table->text('description_of_detail')->change();
         });
     }

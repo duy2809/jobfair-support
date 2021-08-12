@@ -115,7 +115,6 @@ class DatabaseSeeder extends Seeder
         foreach (Jobfair::all() as $jobfair) {
             // random template schedule
             $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
-            //
             $schedule = Schedule::factory()->create([
                 'jobfair_id' => $jobfair->id,
                 'name' => $templateSchedule->name,
@@ -127,22 +126,22 @@ class DatabaseSeeder extends Seeder
 
             foreach ($templateSchedule->templateTasks as $templateTask) {
                 //create tasks
-                $numDates = ($templateTask->milestone->is_week) ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-                $start_time = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+                $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
+                $start_time = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
                 $duration = 0;
                 if ($templateTask->unit === 'students') {
                     $duration = (float) $templateTask->effort * $jobfair->number_of_students;
-
                 } else if ($templateTask->unit === 'none') {
                     $duration = (float) $templateTask->effort;
                 } else {
                     $duration = (float) $templateTask->effort & $jobfair->number_of_companies;
                 }
+
                 $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
                 $newTask = Task::create([
                     'name' => $templateTask->name,
                     'start_time' => $start_time,
-                    'end_time' => date('Y-m-d', strtotime($start_time . ' + ' . $duration . 'days')),
+                    'end_time' => date('Y-m-d', strtotime($start_time.' + '.$duration.'days')),
                     'status' => 'new',
 
                     'milestone_id' => $templateTask->milestone_id,

@@ -23,7 +23,6 @@ class CreateScheduleMilestoneTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
             $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
         });
-
     }
 
     /**
