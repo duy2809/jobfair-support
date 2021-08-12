@@ -5,8 +5,6 @@ import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
 
-import Notification from './notification'
-
 export default function Navbar() {
   const moreNavbarOptions = (
     <Menu className="border-2 rounded-2xl py-2 top-5 absolute transform -translate-x-1/2 left-1/2">
@@ -90,7 +88,16 @@ export default function Navbar() {
         </div>
       </div>
       <div className="flex px-16 items-center">
-        <Notification />
+        <div className="px-4">
+          <Dropdown overlay={notifications} trigger={['click']}>
+            <div className="cursor-pointer">
+              <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
+              <span className="relative text-lg number-notifications -top-2 right-2">
+                6
+              </span>
+            </div>
+          </Dropdown>
+        </div>
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
             <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer">
