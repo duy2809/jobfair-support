@@ -28,7 +28,7 @@ describe('Display Testing', () => {
     cy.get('.ant-notification-notice-message').should('contain', '.jpg, .png, サイズ4MB未満の画像を選択してください')
     cy.contains('保 存').should('be.disabled')
     cy.get('[type="file"]').attachFile('cat.jpg')
-    cy.get('.ant-notification-notice-message').should('not.be.visible')
+    cy.get('.ant-notification-notice-message').should('not.exist')
     cy.get('[type="file"]').attachFile('default.jpg')
     cy.contains('保 存').should('not.be.disabled').click()
   })
