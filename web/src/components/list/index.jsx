@@ -3,6 +3,7 @@ import { Button, Table, Input, DatePicker } from 'antd'
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import QueueAnim from 'rc-queue-anim'
 import PropTypes from 'prop-types'
+import { taskSearch } from '../../api/top-page'
 
 const { Search } = Input
 
@@ -18,10 +19,10 @@ const List = ({
 }) => {
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
-  const [listTemplate, setListTemplate] = useState([])
+  const [list, setList] = useState([])
 
   useEffect(() => {
-    setListTemplate(dataSource)
+    setList(dataSource)
   }, [dataSource])
 
   const onClick = () => {
@@ -36,7 +37,13 @@ const List = ({
         data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
       )
     })
-    setListTemplate(datas)
+    setList(datas)
+  }
+  const searchByTime = (date, dateString) => {
+    if (dataColumn[1].dataIndex === 'type') dateString = dateString.replace('-', '/')
+    console.log(dateString)
+    const datas = dataSource.filter((data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1)
+    setList(datas)
   }
 
   const searchByCategory = (e) => {
@@ -44,7 +51,7 @@ const List = ({
     const datas = dataSource.filter(
       (data) => data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
     )
-    setListTemplate(datas)
+    setList(datas)
   }
 
   const searchByMilestone = (e) => {
@@ -53,9 +60,21 @@ const List = ({
       (data) => data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase())
         !== -1,
     )
-    setListTemplate(datas)
+    setList(datas)
   }
-
+  const searchByJobfairName = (e) => {
+    const getTask = async () => {
+      const response = await taskSearch(e.target.value)
+      let tasks = []
+      tasks = response.data.map((data) => ({
+        name: data.name,
+        type: data.status,
+        time: data.start_time,
+      }))
+      setList(tasks)
+    }
+    getTask()
+  }
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -114,7 +133,11 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div className="px-1">Time: </div>
                 <div>
-                  <DatePicker picker="month" format="MM/YYYY" />
+                  <DatePicker
+                    picker="month"
+                    format="YYYY-MM"
+                    onChange={searchByTime}
+                  />
                 </div>
               </div>
             )}
@@ -123,7 +146,7 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div className="px-2">JobFair Name: </div>
                 <div>
-                  <Input type="text" />
+                  <Input type="text" onChange={searchByJobfairName} />
                 </div>
               </div>
             )}
@@ -161,7 +184,7 @@ const List = ({
               // disabled: false,
             }}
             // columns={{ align: 'center' }}
-            dataSource={listTemplate}
+            dataSource={list}
             columns={dataColumn}
           />
         </div>
