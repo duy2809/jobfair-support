@@ -9,8 +9,8 @@ class TopPageTasksController extends Controller
 {
     public function tasks(Request $request)
     {
-        // $user = $request->user();
-        $user = User::find(2);
+        $user = $request->user();
+        //$user = User::find(2);
         $taskName = $request->input('task-name') === null ? '' : $request->input('task-name');
         $startTime = $request->input('start-time') === null ? '' : $request->input('start-time');
         $jobfairName = $request->input('jobfair-name') === null ? '' : $request->input('jobfair-name');
