@@ -152,7 +152,8 @@ class DatabaseSeeder extends Seeder
                 // assign to jobfair's members whose have same category
                 $users = $schedule->users()->whereHas('categories', function (Builder $query) use ($newTask) {
                     $query->whereIn('id', $newTask->categories()->pluck('id'));
-                })->get()->random(2);
+                })->get();
+                $users = $users->random(rand(0, $users->count()));
                 $newTask->users()->attach($users, [
                     'notification' => 'thong bao',
                     'join_date' => now(),
