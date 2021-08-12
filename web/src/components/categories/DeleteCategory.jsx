@@ -3,9 +3,8 @@
 /* eslint-disable react/react-in-jsx-scope */
 import { Modal, Space, notification } from 'antd'
 import { ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
-import '../../global.scss'
 
-import { deleteCategory } from '../../../api/category'
+import { deleteCategory } from '../../api/category'
 
 const { confirm } = Modal
 

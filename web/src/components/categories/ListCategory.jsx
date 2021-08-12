@@ -3,15 +3,13 @@
 /* eslint-disable no-console */
 import React, { useContext, useEffect, useState } from 'react'
 import 'antd/dist/antd.css'
-import '../style.scss'
-import '../../global.scss'
 
 import { Input, Space, Table, Pagination, Select } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
-import { getCategories, searchCategory } from '../../../api/category'
+import { getCategories, searchCategory } from '../../api/category'
 
 export default function ListCategories() {
   const [pageS, setPageS] = useState(10)
@@ -101,7 +99,7 @@ export default function ListCategories() {
       </div>
 
       <div className="list">
-        <div className="flex pl-12 text-xl list-ht">
+        <div className="flex text-xl list-ht">
           <p>表示件数: </p>
           &nbsp;
           <p>
@@ -123,7 +121,7 @@ export default function ListCategories() {
                 <Input
                   placeholder="カテゴリを検索"
                   onChange={(e) => fetch(e.target.value)}
-                  style={{ width: 250, height: 40 }}
+                  style={{ width: 250 }}
                   value={searchValue}
                   // onPressEnter={(e) => search(searchValue)}
                   prefix={<SearchOutlined />}
