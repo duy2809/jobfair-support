@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('avatar');
+            $table->string('avatar')->default('/images/avatar/default.png');
             $table->unsignedTinyInteger('role');
             $table->string('chatwork_id')->nullable();
             $table->dateTime('created_at');

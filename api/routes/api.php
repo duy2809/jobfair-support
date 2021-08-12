@@ -53,10 +53,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 //milestone
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@index');
-Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
@@ -87,6 +84,11 @@ Route::prefix('category')->group(function () {
     Route::get('/', 'CategoryController@index');
 });
 
+//profile
+
+Route::put('/profile/{id}/update_info', 'ProfileController@updateUserInfo');
+Route::post('/profile/{id}/update_password', 'ProfileController@updatePassword');
+Route::post('/profile/{id}/update_avatar', 'ProfileController@updateAvatar');
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
 

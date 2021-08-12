@@ -204,7 +204,7 @@ export default function AddMilestonePage() {
               <Form.Item
                 className="pb-5"
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px' }}>期日</p>
+                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>期日</p>
                 }
                 name="time"
                 rules={[

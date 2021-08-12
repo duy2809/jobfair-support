@@ -13,6 +13,8 @@ use App\Models\TemplateTask;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +25,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // first 3 users in 3 role
+        User::create([
+            'name' => 'Sun Asterisk',
+            'email' => 'jobfair@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'public/image/avatars/default.jpg',
+            'role' => 1,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        $JFadmin = User::create([
+            'name' => 'JF Admin',
+            'email' => 'AnAdmin@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'public/image/avatars/default.jpg',
+            'role' => 2,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        User::create([
+            'name' => 'Member',
+            'email' => 'AMember@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'public/image/avatars/default.jpg',
+            'role' => 3,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
         // milestones data
         $milestones = [
             [
@@ -74,14 +113,27 @@ class DatabaseSeeder extends Seeder
                 ]);
                 $milestone->schedule_id = $schedule->id;
                 $milestone->save();
-                // create tasks for template schedule and assign their categories
-                // TODO đồng nhất task với template task và seed thêm quan hệ beforeTasks + afterTasks của template tasks và tasks
-                Task::factory(2)->for($milestone)->hasAttached(Category::all()->random(2))->create();
+                // Task::factory(2)->for($milestone)->hasAttached(Category::all()->random(2))->create();
+                // TODO Tasks Relation
+                foreach ($templateMilestone->templateTasks as $templateTask) {
+                    Task::create([
+                        'name' => $templateTask->name,
+                        'is_day' => $templateTask->is_day,
+                        'unit' => $templateTask->unit,
+                        'effort' => $templateTask->effort,
+                        'description_of_detail' => $templateTask->description_of_detail,
+                        'milestone_id' => $milestone->id,
+                    ]);
+                }
             }
         }
 
         //create 3 jobfairs
         Jobfair::factory(3)->create();
+
+        Jobfair::all()->first()->update([
+            'jobfair_admin_id' => $JFadmin->id,
+        ]); // first JF assign to $JFadmin
         foreach (Jobfair::all() as $jobfair) {
             // random template schedule
             $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
@@ -100,6 +152,7 @@ class DatabaseSeeder extends Seeder
                 $newMilestone->update(['schedule_id' => $schedule->id]);
                 $tasks = $milestone->tasks;
                 foreach ($tasks as $task) {
+                    // TODO Tasks Relation
                     $newTask = Task::create([
                         'name' => $task->name,
                         'start_time' => $task->start_time,
@@ -108,9 +161,11 @@ class DatabaseSeeder extends Seeder
                         'status' => $task->status,
                         'remind_member' => $task->remind_member,
                         'description_of_detail' => $task->description_of_detail,
-                        'relation_task_id' => $task->relation_task_id,
                         'milestone_id' => $newMilestone->id,
                         'user_id' => $task->user_id,
+                        'is_day' => $task->is_day,
+                        'effort' => $task->effort,
+                        'unit' => $task->unit,
                     ]);
                     // assign categories for new task
                     $newTask->categories()->attach(Category::all()->random(2));
