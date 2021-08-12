@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
             foreach ($templateSchedule->templateTasks as $templateTask) {
                 //create tasks
                 $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-                $start_time = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+                $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
                 $duration = 0;
                 if ($templateTask->unit === 'students') {
                     $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -140,8 +140,8 @@ class DatabaseSeeder extends Seeder
                 $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
                 $newTask = Task::create([
                     'name' => $templateTask->name,
-                    'start_time' => $start_time,
-                    'end_time' => date('Y-m-d', strtotime($start_time.' + '.$duration.'days')),
+                    'start_time' => $startTime,
+                    'end_time' => date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days')),
                     'status' => 'new',
 
                     'milestone_id' => $templateTask->milestone_id,
