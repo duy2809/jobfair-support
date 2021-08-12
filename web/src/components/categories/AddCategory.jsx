@@ -1,37 +1,30 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
-import React, { useState, useEffect } from 'react'
-import { Modal, Form, notification } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
-import { updateCategory, getCategories, checkUniqueEdit } from '../../../api/category'
-import '../../global.scss'
+import React, { useState } from 'react'
+import { Modal, Button, notification, Form } from 'antd'
+import { addCategory, checkUniqueAdd } from '../../api/category'
 
-const EditCategory = (props) => {
+const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [nameInput, setNameInput] = useState({})
-  const [checkSpace, setcheckSpace] = useState(false)
+  const [category, setCategory] = useState({ })
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
+  const [checkSpace, setcheckSpace] = useState(false)
+  const [errorUnique, setErrorUnique] = useState(true)
   const [reload, setReload] = useState(false)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
 
-  useEffect(async () => {
-    const id = props.record.id
-    getCategories(id).then((res) => {
-      setNameInput(res.data.name)
-      form.setFieldsValue({
-        name: res.data.name,
-      })
-    })
-  }, [])
-
+  const showModal = () => {
+    setIsModalVisible(true)
+  }
   const setReloadPage = () => {
     props.reloadPage()
+    setIsModalVisible(false)
   }
 
   const openNotificationSuccess = () => {
@@ -39,18 +32,34 @@ const EditCategory = (props) => {
       message: '変更は正常に保存されました。',
       duration: 3,
     })
-    setIsModalVisible(false)
+    // setTimeout(() => { window.location.reload() }, 1000)
     setReloadPage()
+    console.log('success')
+  }
+
+  const handleOk = () => {
+    addCategory({
+      category_name: category,
+    }).then(() => openNotificationSuccess())
+      .catch((error) => {
+        notification.error({
+          message: 'このカテゴリ名は存在しています',
+          duration: 3,
+        })
+      })
+  }
+
+  const handleCancel = () => {
+    setIsModalVisible(false)
   }
 
   // onBlur
   const onBlur = () => {
-    const name = nameInput
-    const id = props.record.id
-    console.log(name)
+    const name = category
     if (name !== '') {
-      checkUniqueEdit(id, name).then((res) => {
+      checkUniqueAdd(name).then((res) => {
         if (res.data.length !== 0) {
+          setErrorUnique(true)
           console.log('duplicated')
           console.log(form.getFieldValue('name'))
           form.setFields([
@@ -64,43 +73,27 @@ const EditCategory = (props) => {
     }
   }
 
+  // add
   const onValueNameChange = (e) => {
+    // setErrorUnique(false)
     setcheckSpace(false)
-    setNameInput(e.target.value)
+    setCategory(e.target.value)
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
   }
 
-  const showModal = (e) => {
-    setIsModalVisible(true)
-  }
-
-  const handleOk = () => {
-    const id = props.record.id
-    updateCategory(id, {
-      category_name: nameInput,
-    }).then(() => openNotificationSuccess())
-      .catch((error) => {
-        notification.error({
-          message: 'このカテゴリ名は存在しています',
-        })
-      })
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
-
   return (
     <>
-      <EditTwoTone onClick={showModal} />
+      <Button type="primary" onClick={showModal} className="add-btn text-base">
+        追加
+      </Button>
       <Modal
-        title="編集カテゴリ"
+        title="追加カテゴリ"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText="保存"
+        okText="登録"
         cancelText="キャンセル"
         centered
       >
@@ -128,12 +121,11 @@ const EditCategory = (props) => {
           >
             <input
               type="text"
-              required="required"
+              placeholder="カテゴリ名を書いてください"
               className="input-category"
+              required="required"
               onChange={onValueNameChange}
               onBlur={onBlur}
-              placeholder="カテゴリ名を書いてください"
-              defaultValue={props.record.name}
             />
           </Form.Item>
         </Form>
@@ -142,4 +134,4 @@ const EditCategory = (props) => {
   )
 }
 
-export default EditCategory
+export default AddCategory
