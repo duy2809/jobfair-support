@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use Illuminate\Http\Request;
 
 class WebInit extends Controller
@@ -22,13 +23,40 @@ class WebInit extends Controller
     protected function getAuth(Request $request)
     {
         $user = $request->user();
-
         if (!$user) {
             return null;
         }
 
+        $role = $user->role;
+        $roleStr = '';
+        switch ($role) {
+            case 1:
+                $roleStr = Role::SUPER_ADMIN;
+
+                break;
+            case 2:
+                $roleStr = Role::ADMIN;
+
+                break;
+            case 3:
+                $roleStr = Role::MEMBER;
+
+                break;
+            default:
+                break;
+        }
+
         return [
-            'user' => $user,
+            'user' => [
+                'id'          => $user->id,
+                'name'        => $user->name,
+                'email'       => $user->email,
+                'avatar'      => $user->avatar,
+                'role'        => $roleStr,
+                'chatwork_id' => $user->chatwork_id,
+                'created_at'  => $user->created_at,
+                'updated_at'  => $user->updated_at,
+            ],
         ];
     }
 }
