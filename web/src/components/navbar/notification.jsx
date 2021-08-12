@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -6,9 +6,38 @@ import Link from 'next/link'
 import './styles.scss'
 
 import moment from 'moment';
+import { getNotification } from '../../api/notification'
+import { ReactReduxContext } from 'react-redux'
+
 
 export default function Notification() {
-  
+  const [nameUser, setNameUser] = useState([])
+  const [type, setType] = useState('')
+  const [data_noti, setData] = useState('')
+  const [read_at, setReadAt] = useState('')
+  const [created_at, setCreatedAt] = useState('')
+  const [avatarUser, setAvatarUser] = useState('')
+
+  const [user, setUser] = useState(null)
+  const { store } = useContext(ReactReduxContext)
+
+  useEffect(() => {
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      const id = user.get('id')
+      getNotification(id).then((response) => {
+        const length = response.data.length
+        for (let i = 0; i < length; i++) {
+          // nameUser.push(response.data[i].user.name);
+          // setNameUser(nameUser => [...nameUser, response.data[i].user.name]);
+          
+        }
+        // setNameUser(response.data.user.name)
+        console.log(nameUser[1])
+      })
+    }
+  }, [user])
+
   //get noti
   const data = [
     {
