@@ -78,5 +78,6 @@ SearchSugges.propTypes = {
   listTask: PropTypes.array.isRequired,
 }
 SearchSugges.propTypes = {
-  listTask: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired,
 }
+
