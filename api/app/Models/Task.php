@@ -50,4 +50,9 @@ class Task extends Model
     {
         return $this->belongsTo(Schedule::class);
     }
+
+    public function templateTask()
+    {
+        return $this->belongsTo(TemplateTask::class);
+    }
 }

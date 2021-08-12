@@ -41,4 +41,9 @@ class TemplateTask extends Model
     {
         return $this->belongsToMany(Schedule::class);
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
 }

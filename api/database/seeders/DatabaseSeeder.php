@@ -8,11 +8,12 @@ use App\Models\Jobfair;
 use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
-use App\Models\TemplateMilestone;
 use App\Models\TemplateTask;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +24,42 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // first 3 users in 3 role
+        User::create([
+            'name' => 'Sun Asterisk',
+            'email' => 'jobfair@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 1,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        $JFadmin = User::create([
+            'name' => 'JF Admin',
+            'email' => 'AnAdmin@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 2,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+
+        User::create([
+            'name' => 'Member',
+            'email' => 'AMember@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'image/avatars/default.jpg',
+            'role' => 3,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
         // milestones data
         $milestones = [
             [
@@ -50,7 +87,7 @@ class DatabaseSeeder extends Seeder
         });
         // create template milestones
         foreach ($milestones as $milestone) {
-            TemplateMilestone::create([
+            Milestone::create([
                 'name' => $milestone[0],
                 'period' => $milestone[1],
                 'is_week' => $milestone[2],
@@ -58,72 +95,70 @@ class DatabaseSeeder extends Seeder
         }
 
         // create template tasks with fk to template milestones and categories
-        foreach (TemplateMilestone::all() as $milestone) {
+        foreach (Milestone::all() as $milestone) {
             TemplateTask::factory(2)->for($milestone)->hasAttached(Category::all()->random(2))->create();
         }
 
         // create 3 template schedules
         foreach (range(0, 2) as $index) {
-            $schedule = Schedule::factory()->create();
-            // create milestones for template schedule
-            foreach (TemplateMilestone::all() as $templateMilestone) {
-                $milestone = Milestone::make([
-                    'name' => $templateMilestone->name,
-                    'period' => $templateMilestone->period,
-                    'is_week' => $templateMilestone->is_week,
-                ]);
-                $milestone->schedule_id = $schedule->id;
-                $milestone->save();
-                // create tasks for template schedule and assign their categories
-                // TODO đồng nhất task với template task và seed thêm quan hệ beforeTasks + afterTasks của template tasks và tasks
-                Task::factory(2)->for($milestone)->hasAttached(Category::all()->random(2))->create();
+            $schedule = Schedule::factory()->hasAttached(Milestone::all()->random(5))->create();
+            foreach ($schedule->milestones as $milestone) {
+                $schedule->templateTasks()->attach($milestone->templateTasks->random(rand(0, $milestone->templateTasks->count())));
             }
         }
 
         //create 3 jobfairs
         Jobfair::factory(3)->create();
+        Jobfair::all()->first()->update([
+            'jobfair_admin_id' => $JFadmin->id,
+        ]); // first JF assign to $JFadmin
         foreach (Jobfair::all() as $jobfair) {
             // random template schedule
             $templateSchedule = Schedule::where('jobfair_id', null)->get()->random(1)->first();
-            $scheduleAttr = $templateSchedule->toArray();
-            array_shift($scheduleAttr);
-            $schedule = Schedule::create($scheduleAttr);
-            $schedule->update(['jobfair_id' => $jobfair->id]);
-            // add members for jobfair
-            $jobfair->schedule->users()->attach(User::where('id', '<>', $jobfair->jobfair_admin_id)->get()->random(10));
-            // clone tasks and milestones from template schedule to jobfair's schedule
-            $milestones = $templateSchedule->milestones;
-            foreach ($milestones as $milestone) {
-                $milestoneAttr = $milestone->toArray();
-                array_shift($milestoneAttr);
-                $newMilestone = Milestone::create($milestoneAttr);
-                $newMilestone->update(['schedule_id' => $schedule->id]);
-                $tasks = $milestone->tasks;
-                foreach ($tasks as $task) {
-                    $newTask = Task::create([
-                        'name' => $task->name,
-                        'start_time' => $task->start_time,
-                        'end_time' => $task->end_time,
-                        'number_of_member' => $task->number_of_member,
-                        'status' => $task->status,
-                        'remind_member' => $task->remind_member,
-                        'description_of_detail' => $task->description_of_detail,
-                        'relation_task_id' => $task->relation_task_id,
-                        'milestone_id' => $newMilestone->id,
-                        'user_id' => $task->user_id,
-                    ]);
-                    // assign categories for new task
-                    $newTask->categories()->attach(Category::all()->random(2));
-                    // assign to jobfair's members whose have same category
-                    $users = $jobfair->schedule->users()->whereHas('categories', function (Builder $query) use ($newTask) {
-                        $query->whereIn('id', $newTask->categories()->pluck('id'));
-                    })->get()->random(2);
-                    $newTask->users()->attach($users, [
-                        'notification' => 'thong bao',
-                        'join_date' => now(),
-                        'completed_date' => null,
-                    ]);
+            //
+            $schedule = Schedule::factory()->create([
+                'jobfair_id' => $jobfair->id,
+                'name' => $templateSchedule->name,
+            ]);
+
+            $schedule->users()->attach(User::where('id', '<>', $jobfair->jobfair_admin_id)->get()->random(10));
+
+            $schedule->milestones()->attach($templateSchedule->milestones);
+
+            foreach ($templateSchedule->templateTasks as $templateTask) {
+                //create tasks
+                $numDates = ($templateTask->milestone->is_week) ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
+                $start_time = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+                $duration = 0;
+                if ($templateTask->unit === 'students') {
+                    $duration = (float) $templateTask->effort * $jobfair->number_of_students;
+
+                } else if ($templateTask->unit === 'none') {
+                    $duration = (float) $templateTask->effort;
+                } else {
+                    $duration = (float) $templateTask->effort & $jobfair->number_of_companies;
                 }
+                $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
+                $newTask = Task::create([
+                    'name' => $templateTask->name,
+                    'start_time' => $start_time,
+                    'end_time' => date('Y-m-d', strtotime($start_time . ' + ' . $duration . 'days')),
+                    'status' => 'new',
+
+                    'milestone_id' => $templateTask->milestone_id,
+                    'schedule_id' => $schedule->id,
+                    'template_task_id' => $templateTask->id,
+                ]);
+                $newTask->categories()->attach($templateTask->categories);
+                // assign to jobfair's members whose have same category
+                $users = $schedule->users()->whereHas('categories', function (Builder $query) use ($newTask) {
+                    $query->whereIn('id', $newTask->categories()->pluck('id'));
+                })->get()->random(2);
+                $newTask->users()->attach($users, [
+                    'notification' => 'thong bao',
+                    'join_date' => now(),
+                    'completed_date' => null,
+                ]);
             }
         }
     }

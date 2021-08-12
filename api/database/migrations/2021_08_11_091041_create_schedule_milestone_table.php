@@ -17,7 +17,7 @@ class CreateScheduleMilestoneTable extends Migration
             $table->dropForeign('milestones_schedule_id_foreign');
             $table->dropColumn('schedule_id');
         });
-        Schema::create('schedule_milestone', function (Blueprint $table) {
+        Schema::create('milestone_schedule', function (Blueprint $table) {
             $table->unsignedBigInteger('milestone_id');
             $table->unsignedBigInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');

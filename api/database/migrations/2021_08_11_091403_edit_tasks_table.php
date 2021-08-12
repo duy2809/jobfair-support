@@ -23,8 +23,8 @@ class EditTasksTable extends Migration
             $table->date('start_time');
             $table->date('duration');
             $table->string('status');
-            $table->boolean('remind_member');
-            $table->text('description_of_detail');
+            $table->boolean('remind_member')->nullable();
+            $table->text('description_of_detail')->nullable();
             $table->unsignedBigInteger('milestone_id');
             $table->unsignedBigInteger('schedule_id');
             $table->unsignedBigInteger('user_id')->nullable();
