@@ -112,9 +112,9 @@ class ProfileController extends Controller
             $validator->validated();
 
             $avatar = $user->id.'.'.$request->avatar->extension();
-            $request->file('avatar')->storeAs('public/image/avatars', $avatar);
+            $request->file('avatar')->storeAs('/image/avatars', $avatar);
 
-            $path = "public/image/avatars/$avatar";
+            $path = "/image/avatars/$avatar";
             $request->avatar = $path;
             $user->update();
 

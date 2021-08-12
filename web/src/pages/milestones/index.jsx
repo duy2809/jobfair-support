@@ -200,7 +200,7 @@ const MilestonePage = () => {
     {
       title: '期日',
       dataIndex: 'period',
-      width: `${role === 1 ? '20%' : '40%'}`,
+      width: `${role === 'superadmin' ? '20%' : '40%'}`,
       render: (period) => {
         const { numOfDays, type } = period
         return convertPeriod(numOfDays, type)
@@ -208,8 +208,8 @@ const MilestonePage = () => {
     },
     {
       key: 'action',
-      width: `${role === 1 ? '20%' : '0%'}`,
-      render: (_text, record) => (role === 1 && (
+      width: `${role === 'superadmin' ? '20%' : '0%'}`,
+      render: (_text, record) => (role === 'superadmin' && (
         <Space size="middle">
           <EditTwoTone
             id={record.id}
@@ -268,9 +268,9 @@ const MilestonePage = () => {
               style={{ alignItems: 'center', justifyContent: 'space-between' }}
             >
               <Col>
-                <h1>マイルストーン一覧</h1>
+                <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
               </Col>
-              {role === 1 && (
+              {role === 'superadmin' && (
                 <Col>
                   <Button
                     style={{
