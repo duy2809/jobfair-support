@@ -116,15 +116,19 @@ const EditProfilePage = () => {
   }
 
   const handleOk = async () => {
-    const data = await webInit()
-    const id = data.data.auth.user.id
-    updateInfo(id, {
-      name: nameInput,
-      email: emailInput,
-      chatwork_id: idChatWorkInput,
-      avatar: pathName,
-    })
-    openNotificationSuccess()
+    if (nameInput === '' || emailInput === '' || idChatWorkInput === '' || isDisable === true) {
+      setIsDisable(true)
+    } else {
+      const data = await webInit()
+      const id = data.data.auth.user.id
+      updateInfo(id, {
+        name: nameInput,
+        email: emailInput,
+        chatwork_id: idChatWorkInput,
+        avatar: pathName,
+      })
+      openNotificationSuccess()
+    }
   }
 
   const fileInputRef = useRef()
@@ -342,26 +346,14 @@ const EditProfilePage = () => {
             </div>
             <div className="container-btn justify-end">
               <CancelEditProfile />
-              {(nameInput !== '' && emailInput !== '' && idChatWorkInput !== '' && isDisable === false) ? (
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="text-base px-9 mr-10"
-                  onClick={handleOk}
-                >
-                  保存
-                </Button>
-              ) : (
-                <Button
-                  type="primary"
-                  className="text-base px-9 mr-10"
-                  htmlType="submit"
-                  onClick={handleOk}
-                  disabled
-                >
-                  保存
-                </Button>
-              )}
+              <Button
+                type="primary"
+                className="text-base px-9 mr-10"
+                htmlType="submit"
+                onClick={handleOk}
+              >
+                保存
+              </Button>
             </div>
           </div>
         </Otherlayout.Main>
