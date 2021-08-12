@@ -203,13 +203,13 @@ export default function JFList() {
 
   return (
     <div className="JFList">
+
       <OtherLayout>
         <OtherLayout.Main>
+          <h1>JF一覧</h1>
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="flex-col space-y-9">
-              <div className="flex items-center">
-                <h1 className="text-3xl float-left">JF一覧</h1>
-              </div>
+              <div className="flex items-center" />
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-3">
