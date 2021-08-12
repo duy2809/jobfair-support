@@ -51,7 +51,7 @@ export default function ListCategories() {
     {
       title: 'No.',
       dataIndex: 'key',
-      width: '10%',
+      width: '8%',
     },
     {
       key: '2',
