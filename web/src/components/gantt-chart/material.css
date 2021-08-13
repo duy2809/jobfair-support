@@ -10,6 +10,14 @@ To use dhtmlxGantt in non-GPL projects (and get Pro version of the product), ple
 (c) XB Software Ltd.
 
 */
+html,
+body,
+#root,
+#root div:only-child,
+.gantt-container {
+  height: 100%;
+}
+
 .buttonBg {
   background: #ffffff;
 }
