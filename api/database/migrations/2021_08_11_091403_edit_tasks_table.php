@@ -15,6 +15,7 @@ class EditTasksTable extends Migration
     {
         Schema::table('assignments', function (Blueprint $table) {
             $table->dropForeign('assignments_task_id_foreign');
+            $table->dropColumn('task_id');
         });
         Schema::dropIfExists('tasks');
         Schema::create('tasks', function (Blueprint $table) {
@@ -33,6 +34,7 @@ class EditTasksTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });
         Schema::table('assignments', function (Blueprint $table) {
+            $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
         });
     }
@@ -46,6 +48,7 @@ class EditTasksTable extends Migration
     {
         Schema::table('assignments', function (Blueprint $table) {
             $table->dropForeign('assignments_task_id_foreign');
+            $table->dropColumn('task_id');
         });
         Schema::dropIfExists('tasks');
         Schema::create('tasks', function (Blueprint $table) {
@@ -64,6 +67,7 @@ class EditTasksTable extends Migration
             $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
         });
         Schema::table('assignments', function (Blueprint $table) {
+            $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
         });
     }

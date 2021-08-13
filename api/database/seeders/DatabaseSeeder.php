@@ -96,14 +96,14 @@ class DatabaseSeeder extends Seeder
 
         // create template tasks with fk to template milestones and categories
         foreach (Milestone::all() as $milestone) {
-            TemplateTask::factory(2)->for($milestone)->hasAttached(Category::all()->random())->create();
+            TemplateTask::factory(5)->for($milestone)->hasAttached(Category::all()->random())->create();
         }
 
         // create 3 template schedules
         foreach (range(0, 2) as $index) {
-            $schedule = Schedule::factory()->hasAttached(Milestone::all()->random(5))->create();
+            $schedule = Schedule::factory()->hasAttached(Milestone::all()->random(rand(3, Milestone::all()->count())))->create();
             foreach ($schedule->milestones as $milestone) {
-                $schedule->templateTasks()->attach($milestone->templateTasks->random(rand(0, $milestone->templateTasks->count())));
+                $schedule->templateTasks()->attach($milestone->templateTasks->random(rand(1, $milestone->templateTasks->count())));
             }
         }
 

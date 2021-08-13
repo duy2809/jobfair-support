@@ -23,7 +23,7 @@ class TemplateTaskFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->name(),
             'effort' => $this->faker->numberBetween(1, 10),
             'is_day' => $this->faker->boolean(),
             'unit' => $this->faker->randomElement(['students', 'companies', 'none']),
