@@ -89,7 +89,7 @@ const AddCategory = (props) => {
         追加
       </Button>
       <Modal
-        title="追加カテゴリ"
+        title="カテゴリ追加"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -100,7 +100,7 @@ const AddCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p> </p>
+              <p>カテゴリ名</p>
             }
             name="name"
             rules={[
@@ -121,7 +121,7 @@ const AddCategory = (props) => {
           >
             <input
               type="text"
-              placeholder="カテゴリ名を書いてください"
+              placeholder="例: 2次面接練習"
               className="input-category"
               required="required"
               onChange={onValueNameChange}
