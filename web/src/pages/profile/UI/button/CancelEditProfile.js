@@ -28,6 +28,7 @@ const CancelEditProfile = () => {
         title="プロフィール編集"
         onOk={handleOk}
         onCancel={handleCancel}
+        centered
         cancelText="いいえ"
         okText="はい"
       >
