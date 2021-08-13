@@ -91,24 +91,20 @@ class NotificationController extends Controller
     {
         return Notification::find($id)->delete();
     }
-    public function showUnread($user_id)
+    public function showUnread($notifiable_id)
     {
 
-        return Notification::where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-        // $user = User::find($user_id);
+        // return Notification::where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
+        $user = User::find($notifiable_id);
 
-        // return $user->unreadnotifications;
+        return $user->unreadnotifications;
     }
     public function showNotificationUser($user_id,$notifiable_id)
     {
 
         return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
     }
-    // public function showNotificationUser( Request $request,$notifiable_id)
-    // {
-
-    //     return Notification::where('user_id','=',$notifiable_id)->where('user_id','=',$request->user_id)->get();
-    // }
+    
     public function showNotificationUserUread($user_id,$notifiable_id)
     {
 

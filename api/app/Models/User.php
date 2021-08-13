@@ -47,10 +47,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Schedule::class, 'list_members');
     }
 
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class);
-    }
 
     public function tasks()
     {
