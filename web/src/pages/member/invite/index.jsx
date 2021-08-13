@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Form, Input, Button, Modal, notification, Select, Space } from 'antd'
 import { useRouter } from 'next/router'
-import OtherLayout from '../../layouts/OtherLayout'
+import OtherLayout from '~/layouts/OtherLayout'
 import 'antd/dist/antd.css'
 import './styles.scss'
 import { sendInviteLink } from '~/api/member'
@@ -67,7 +67,7 @@ function InviteMember() {
         onOk: () => {
           router.push('/member')
         },
-        onCancel: () => { },
+        onCancel: () => {},
         centered: true,
         okText: 'はい',
         cancelText: 'いいえ',
@@ -93,7 +93,10 @@ function InviteMember() {
         form.resetFields()
         setEmailInput('')
         setRoleInput('')
-        openNotification('success', 'ご登録のメールアドレスに招待メールを送信しました。')
+        openNotification(
+          'success',
+          'ご登録のメールアドレスに招待メールを送信しました。',
+        )
       }
     } catch (error) {
       if (error.request.status === 400) {
@@ -128,7 +131,11 @@ function InviteMember() {
                     label="メールアドレス"
                     noStyle
                     rules={[
-                      { required: true }, { type: 'email', message: 'メールアドレス有効なメールではありません!' },
+                      { required: true },
+                      {
+                        type: 'email',
+                        message: 'メールアドレス有効なメールではありません!',
+                      },
                     ]}
                   >
                     <Input
@@ -141,7 +148,9 @@ function InviteMember() {
                       initialValues={emailInput}
                     />
                   </Form.Item>
-                  <span id="errorEmail" hidden>このメールは既に存在しました</span>
+                  <span id="errorEmail" hidden>
+                    このメールは既に存在しました
+                  </span>
                 </Form.Item>
                 <Form.Item
                   name="categories"
@@ -166,10 +175,7 @@ function InviteMember() {
                   </Select>
                 </Form.Item>
 
-                <Form.Item
-                  label=" "
-                  className="my-10"
-                >
+                <Form.Item label=" " className="my-10">
                   <Space size={20} className="flex justify-end">
                     <Button
                       className="ant-btn mr-3"
