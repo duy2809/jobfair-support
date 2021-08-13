@@ -11,10 +11,16 @@
   p {
     color: #2d334a;
   }
+
   .ant-form-horizontal .ant-form-item-label {
     text-align: end;
     margin-right: 3px;
     min-width: 210px;
+  }
+  @media screen and (max-width: 860px) {
+    .ant-form-horizontal .ant-form-item-label {
+      text-align: left;
+    }
   }
   .ant-tag,
   .ant-tag a,
@@ -79,7 +85,7 @@
     right: 0;
     left: 0;
   }
-  // .ant-form-item-control-input-content {
-  //   max-width: 8%;
-  // }
+  .ant-col-13 {
+    min-width: 300px;
+  }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,7 +18,6 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
-
 // add jf route start
 
 // jobfair
@@ -54,16 +52,12 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 //milestone
 
 Route::resource('/milestone', TemplateMilestoneController::class);
-
 Route::get('/milestone/search', 'TemplateMilestoneController@getSearch');
-Route::get('/milestone', 'TemplateMilestoneController@index');
-Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
 Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
-
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
 });
@@ -92,11 +86,20 @@ Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks')
 Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
 
 //category
+Route::apiResource('/category', CategoryController::class);
+Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
+Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
+Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
 
-Route::prefix('category')->group(function () {
-    Route::get('/', 'CategoryController@index');
+Route::prefix('categories')->group(function () {
+    Route::get('/', 'CategoryController@getCatgories');
 });
 
+//profile
+
+Route::put('/profile/{id}/update_info', 'ProfileController@updateUserInfo');
+Route::post('/profile/{id}/update_password', 'ProfileController@updatePassword');
+Route::post('/profile/{id}/update_avatar', 'ProfileController@updateAvatar');
 Route::resource('/profile', ProfileController::class);
 Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avatar']);
 

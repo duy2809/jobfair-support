@@ -13,7 +13,7 @@ class Task extends Model
 
     protected $casts = [
         'start_time' => 'date: Y/m/d',
-        'end_time'   => 'date: Y/m/d',
+        'end_time' => 'date: Y/m/d',
     ];
 
     public function milestone()

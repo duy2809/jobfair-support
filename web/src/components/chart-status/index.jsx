@@ -5,8 +5,7 @@ import { Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
 // import { jftask } from '../../api/jf-toppage'
-
-export default function ChartStatus({ task }) {
+export default function ChartStatus({ task, id }) {
   const listStatus = []
   task.forEach((element) => {
     listStatus.push(element.status)
@@ -57,31 +56,31 @@ export default function ChartStatus({ task }) {
               <div className="new__if">
                 未着手
               </div>
-              <span onClick={() => { router.push('/task-list?status=未着手') }} style={{ background: '#5EB5A6' }}>{status.new}</span>
+              <span onClick={() => { router.push(`/tasks/${id}?status=未着手`) }} style={{ background: '#5EB5A6' }}>{status.new}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 進行中
               </div>
-              <span onClick={() => { router.push('/task-list?status=進行中') }} style={{ background: '#A1AF2F' }}>{status.propress}</span>
+              <span onClick={() => { router.push(`/tasks/${id}?status=進行中`) }} style={{ background: '#A1AF2F' }}>{status.propress}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 完了
               </div>
-              <span onClick={() => { router.push('/task-list?status=完了') }} style={{ background: '#4488C5' }}>{status.done}</span>
+              <span onClick={() => { router.push('/tasks?status=完了') }} style={{ background: '#4488C5' }}>{status.done}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 中断
               </div>
-              <span onClick={() => { router.push('/task-list?status=中断') }} style={{ background: 'rgb(185, 86, 86)' }}>{status.pending}</span>
+              <span onClick={() => { router.push(`/tasks/${id}?status=中断`) }} style={{ background: 'rgb(185, 86, 86)' }}>{status.pending}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
                 未完了
               </div>
-              <span onClick={() => { router.push('/task-list?status=未完了') }} style={{ background: 'rgb(121, 86, 23)' }}>{status.break}</span>
+              <span onClick={() => { router.push(`/tasks/${id}?status=未完了`) }} style={{ background: 'rgb(121, 86, 23)' }}>{status.break}</span>
             </div>
           </div>
         </div>
@@ -92,4 +91,7 @@ export default function ChartStatus({ task }) {
 }
 ChartStatus.propTypes = {
   task: PropTypes.array.isRequired,
+}
+ChartStatus.propTypes = {
+  id: PropTypes.number.isRequired,
 }

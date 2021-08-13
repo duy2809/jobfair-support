@@ -1,12 +1,12 @@
-import {
-  CheckCircleTwoTone,
+import { CheckCircleTwoTone,
   ExclamationCircleOutlined,
-} from '@ant-design/icons'
+  LoadingOutlined } from '@ant-design/icons'
 import {
   Button, Form, Spin,
   Input, Modal, notification,
   Select, Space, Tag, Tooltip,
 } from 'antd'
+
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import addTemplateTasksAPI from '../../api/add-template-task'
@@ -87,7 +87,7 @@ const index = () => {
   }
 
   const autoConvertHalfwidth = (event) => {
-    // const ans = parseInt(Extensions.toHalfWidth(event.target.value), 10)
+    // get FormItem name of this input
     const inputRef = event.target.id
     const dummyObject = {}
     dummyObject[inputRef] = Extensions.toHalfWidth(event.target.value)
@@ -112,7 +112,7 @@ const index = () => {
   //  open prompt after cancel button clicked .
   const cancelConfirmModle = () => {
     if (checkIsFormInputEmpty()) {
-      routeTo('/jobfairs')
+      routeTo('/template-tasks')
     } else {
       Modal.confirm({
         title: '入力内容が保存されません。よろしいですか？',
@@ -120,7 +120,7 @@ const index = () => {
         content: '',
         onOk: () => {
           onFormReset()
-          routeTo('/')
+          routeTo('/template-tasks')
         },
         onCancel: () => {},
         okText: 'はい',
@@ -128,7 +128,7 @@ const index = () => {
       })
     }
   }
-  //  open success notification after add jobfair button clicked .
+  //  open success notification after add button clicked .
   const successNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
@@ -138,7 +138,7 @@ const index = () => {
     })
   }
 
-  // handle user click add job fair.
+  // handle user click add template task and response from serve.
   const onFinishSuccess = async (values) => {
     try {
       const data = {
@@ -159,7 +159,7 @@ const index = () => {
 
       if (response.status < 299) {
         await successNotification()
-        // routeTo(`/jf-toppage/${response.data.id}`)
+        routeTo(`/template-task-dt/${response.data.id}`)
       } else {
         setdisableBtn(false)
         setLoading(false)
@@ -279,14 +279,14 @@ const index = () => {
     setSelectedItems(data)
   }
   // const filteredOptions = templateTasks.filter((o) => !setSelectedItems.includes(o))
-
+  const loadingIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />
   return (
 
     <OtherLayout>
       <OtherLayout.Main>
         <div className="add-template-task-page">
           <div id="loading">
-            <Spin spinning={loading} tip="Loading..." size="large">
+            <Spin spinning={loading} indicator={loadingIcon} tip="Loading..." size="large">
               <div className="container mx-auto flex-1 justify-center px-4  pb-20">
                 {/* page title */}
                 {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
@@ -295,7 +295,7 @@ const index = () => {
                   <div className="container mt-20">
                     <div className="grid justify-items-center">
                       <Form
-                        className="place-self-center add-template-form"
+                        className="place-self-center  add-template-form"
                         form={form}
                         labelCol={{
                           span: 6,
@@ -311,7 +311,7 @@ const index = () => {
                       >
                         {/* template task name */}
                         <Form.Item
-                          label="タスクテンプレート名"
+                          label="テンプレートタスク名"
                           required
                         >
                           <Form.Item
@@ -344,7 +344,7 @@ const index = () => {
                         <Form.Item
                           required
                           // hasFeedback
-                          label="カテゴリー"
+                          label="カテゴリ"
                           name="category_id"
                           rules={[
                             {
@@ -357,7 +357,7 @@ const index = () => {
                             showArrow
                             allowClear
                             className="addJF-selector p-1"
-                            placeholder="カテゴリー"
+                            placeholder="カテゴリ"
                           >
                             {listCatergories.map((element) => (
                               <Select.Option key={element.id} value={element.id}>
@@ -418,11 +418,10 @@ const index = () => {
                               ))}
                             </Select>
                           </Form.Item>
-                          <p className="mt-7">後のタスク:</p>
+                          <p className="mt-7">次のタスク:</p>
                           <Form.Item noStyle name="afterTasks">
                             <Select
                               showArrow
-                              showSearch={false}
                               allowClear
                               tagRender={tagRender}
                               mode="multiple"
@@ -485,7 +484,7 @@ const index = () => {
                                   ))}
                                 </Select>
                               </Form.Item>
-                              <p className="slash-devider text-3xl font-extrabold"> / </p>
+                              <p className="slash-devider text-3xl font-extrabold leading-10"> / </p>
                               <Form.Item noStyle name="unit">
                                 <Select
                                   required

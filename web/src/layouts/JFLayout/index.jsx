@@ -64,7 +64,7 @@ const JfLayout = ({ children }) => {
               </div>
             </div>
             <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-top/${idJF}`}>ホーム</Link>
+              <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
             </Menu.Item>
             <Menu.Item key="2" icon={<FileProtectOutlined />}>
               <Link href={`/tasks/${idJF}`}>タスク</Link>

@@ -47,7 +47,7 @@ class TemplateTaskController extends Controller
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
         }
 
-        return response()->json(['message' => 'Save Successfully'], 200);
+        return $newTemplateTask;
     }
 
     /**

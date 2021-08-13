@@ -150,7 +150,7 @@ export default function jftoppage() {
 
                     <div className="flex cha justify-center ...">
                       <div className="search__task">
-                        <SearchSugges listTask={listTask} />
+                        <SearchSugges listTask={listTask} id={idJf} />
                       </div>
                     </div>
                     <div className="chart__tt">
@@ -158,7 +158,7 @@ export default function jftoppage() {
                         <div className="status__global">
                           <h3>ステータス</h3>
                           <div className="status">
-                            <ChartStatus task={listTask} />
+                            <ChartStatus task={listTask} id={idJf} />
                           </div>
                         </div>
                       </div>
