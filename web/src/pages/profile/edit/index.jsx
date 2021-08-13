@@ -213,7 +213,7 @@ const EditProfilePage = () => {
                 <ButtonChangePassword />
               </div>
               <div className="container-form">
-                <div className="flex my-8 mx-8">
+                <div className="flex my-14 mx-8">
                   <Form
                     form={form}
                     name="basic"
