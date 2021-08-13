@@ -230,7 +230,7 @@ const Top = () => {
             key={1}
             dataColumn={jfListDataColumn}
             dataSource={jobfairDataItem}
-            text="List JobFair"
+            text="JF一覧"
             searchIcon
             showTimeInput
             showCategoryInput={false}
@@ -240,7 +240,7 @@ const Top = () => {
             key={2}
             dataColumn={memListDataColumn}
             dataSource={memberDataItem}
-            text="List Member"
+            text="メンバ一覧"
             searchIcon
             showTimeInput={false}
             showCategoryInput={false}
@@ -250,7 +250,7 @@ const Top = () => {
             key={3}
             dataColumn={jfScheduleDataColumn}
             dataSource={scheduleData}
-            text="JobFair Schedule"
+            text="JFスケジュール一覧"
             searchIcon
             showTimeInput={false}
             showCategoryInput={false}
@@ -259,7 +259,7 @@ const Top = () => {
           <List
             key={4}
             dataColumn={templateTaskDataColumn}
-            text="Template Task"
+            text="テンプレートタスク詳細"
             dataSource={templateData}
             searchIcon
             showTimeInput={false}
@@ -270,7 +270,7 @@ const Top = () => {
             key={5}
             dataColumn={taskListDataColumn}
             dataSource={taskDataItem}
-            text="List Task"
+            text="マスク一覧"
             searchIcon
             showTimeInput
             showCategoryInput={false}
