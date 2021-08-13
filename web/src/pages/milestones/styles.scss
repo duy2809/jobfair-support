@@ -1,12 +1,6 @@
 .container-list {
-    background-color: white;
-    & > p {
-      font-size: 14px;
-    }
-  }
-  h1 {
-    font-size: 36px;
-  }
+  background-color: white;
+
   .box-body {
     padding: 1rem 0;
   }
@@ -39,35 +33,16 @@
   .ant-pagination-options {
     display: none !important;
   }
-  .ant-btn-primary {
-    border-color: #ffd803 !important;
-    background-color: #ffd803 !important;
-    color: rgba(0, 0, 0, 0.85) !important;
-    &:hover {
-      color: rgba(0, 0, 0, 0.85);
-    }
-  }
+  
   .ant-modal-wrap {
     transform: translateY(210px);
   }
-  .ant-btn:hover,
-  .ant-btn:focus {
-    color: #ffd803;
-    background: #fff;
-    border-color: #ffd803;
-  }
+  
   .ant-layout-content {
     margin: 15px 16px !important;
   }
-  .ant-pagination-item:hover,
-  .ant-pagination-item > a:hover,
-  .ant-pagination-item-active > a,
-  .ant-pagination-item-active,
-  .ant-pagination-item-link:hover {
-    border-color: #ffd803 !important;
-    color: #ffd803 !important;
+
+  .ant-select-selector {
+    width: 35px;
   }
-  .ant-pagination-item-link-icon {
-    color: #ffd803 !important;
-  }
-  
+}

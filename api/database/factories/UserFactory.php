@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => Hash::make('12345678'),
-            'avatar' => 'public/image/avatars/default.jpg',
+            'avatar' => '/image/avatars/default.jpg',
             'role' => $this->faker->numberBetween(1, 3),
             'chatwork_id' => Str::random(10),
             'remember_token' => null,

@@ -68,6 +68,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        //ublic_path('/images/avatar') => storage_path('image/avatar'),
     ],
 
 ];
