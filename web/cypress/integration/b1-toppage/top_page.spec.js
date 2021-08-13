@@ -5,6 +5,7 @@ const columns = ['Name', 'Time', 'Name', 'Name', 'Name', 'Category', 'Milestone'
 describe('Top Page Test', () => {
     context('Top Page', () => {
         it('visit', () => {
+<<<<<<< HEAD
             cy.request('GET', '/api/web-init').then((response) => {
                 const str = response.headers['set-cookie'][0]
                 const token = `${str.replace('XSRF-TOKEN=', '').replace(/%3[Dd].*/g, '')}==`
@@ -20,6 +21,8 @@ describe('Top Page Test', () => {
                     },
                 })
             })
+=======
+>>>>>>> test
             cy.visit('/top-page')
         })
 
