@@ -30,11 +30,9 @@ class TaskFactory extends Factory
             'status' => $this->faker->randomElement(['未着手', '進行中', '完了', '中断', '未完了']),
             'remind_member' => $this->faker->boolean(),
             'description_of_detail' => $this->faker->text(),
+            'relation_task_id' => null,
             'milestone_id' => Milestone::factory(),
             'user_id' => null,
-            'is_day' => $this->faker->boolean(),
-            'effort' => $this->faker->numberBetween(1, 10),
-            'unit' => $this->faker->randomElement(['students', 'companies', 'none']),
         ];
     }
 }

@@ -36,13 +36,8 @@ class Task extends Model
         return $this->morphToMany(Category::class, 'categoriable');
     }
 
-    public function afterTasks()
+    public function relationTask()
     {
-        return $this->belongsToMany(self::class, 'pivot_table_tasks', 'before_tasks', 'after_tasks');
-    }
-
-    public function beforeTasks()
-    {
-        return $this->belongsToMany(self::class, 'pivot_table_tasks', 'after_tasks', 'before_tasks');
+        return $this->belongsTo(self::class, 'relation_task_id', 'id');
     }
 }

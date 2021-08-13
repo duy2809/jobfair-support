@@ -26,5 +26,8 @@ class EditRelationTaskOnTasksTable extends Migration
      */
     public function down()
     {
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropForeign('tasks_relation_task_id_foreign');
+        });
     }
 }
