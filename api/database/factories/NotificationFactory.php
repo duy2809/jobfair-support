@@ -24,14 +24,15 @@ class NotificationFactory extends Factory
     public function definition()
     {
         return [
+            'id' => $this->faker->uuid(),
             'type' => 'マイルストーン',
             'notifiable_type' => 'App\Models\User',
-            'notifiable_id' => 1,
+            'notifiable_id' => User::pluck('id')->random(),
             'subjectable_type' => 'App\Models\Milestone',
             'subjectable_id' => Milestone::pluck('id')->random(),
             'data' => $this->faker->randomElement(['登録','削除','編集']),
             'read_at' => $this->faker->randomElement([ null ,now()]),
-            'user_id' => User::pluck('id')->random(),
+            'user_id' => 1,
             'updated_at' => now(),
             'created_at' => now(),
         ];
