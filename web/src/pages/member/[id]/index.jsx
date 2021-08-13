@@ -36,5 +36,5 @@ function MemberDetailPage() {
     </div>
   )
 }
-MemberDetailPage.middleware = ['auth:superadmin', 'auth:admin','auth:member']
+MemberDetailPage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
 export default MemberDetailPage
