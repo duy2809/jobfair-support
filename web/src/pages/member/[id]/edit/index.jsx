@@ -29,7 +29,7 @@ const EditMember = ({ data }) => {
   }
 
   const fetchData = useCallback(() => {
-    CategoryApi.getListCategory().then((res) => {
+    CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
     })
   })
@@ -72,7 +72,9 @@ const EditMember = ({ data }) => {
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (form.getFieldsError().filter(({ errors }) => errors.length).length === 0) {
+      setIsModalVisible(true)
+    }
   }
 
   const showCancelModal = () => {
@@ -126,7 +128,7 @@ const EditMember = ({ data }) => {
                 {
                   type: 'email',
                   message: 'メールアドレス有効なメールではありません!',
-                  required: (emailInput === ''),
+                  required: true,
                 },
               ]}
             >
@@ -188,12 +190,11 @@ const EditMember = ({ data }) => {
                 </Button>
                 <Button
                   size="large"
-                  className="text-base px-10 ml-4 mr-10"
+                  className="text-base px-10 ml-4"
                   type="primary"
                   htmlType="submit"
                   enabled="true"
                   onClick={showModal}
-                  disabled={nameInput === '' || emailInput === ''}
                 >
                   保存
                 </Button>
