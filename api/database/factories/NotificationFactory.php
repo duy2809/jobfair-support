@@ -32,7 +32,7 @@ class NotificationFactory extends Factory
             'subjectable_id' => Task::pluck('id')->random(),
             'data' => $this->faker->randomElement(['登録','削除','編集']),
             'read_at' => $this->faker->randomElement([ null ,now()]),
-            'user_id' => 1,
+            'user_id' => User::pluck('id')->random(),
             'updated_at' => now(),
             'created_at' => now(),
         ];
