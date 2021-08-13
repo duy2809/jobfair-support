@@ -24,6 +24,11 @@ class CategoryController extends Controller
         return response()->json($data);
     }
 
+    public function getCatgories()
+    {
+        return Category::all()->pluck('category_name');
+    }
+
     public function search($key)
     {
         return Category::where('category_name', 'LIKE', "%$key%")
