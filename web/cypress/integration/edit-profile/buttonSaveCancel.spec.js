@@ -19,7 +19,7 @@ describe('button save + button cancel testing', () => {
     cy.wait(500)
   })
   it('button save', () => {
-    cy.contains('保 存').should('be.disabled')
+    cy.contains('保 存').should('not.be.disabled')
     cy.get('#basic_chatwork').clear().type('12345678')
     cy.contains('保 存').should('be.enabled').click()
     cy.get('.ant-notification').should('be.visible').should('contain', '変更は正常に保存されました。')

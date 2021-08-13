@@ -19,7 +19,7 @@ const EditProfilePage = () => {
   const [image, setImage] = useState()
   const [avatarUser, setAvatarUser] = useState()
   const [preview, setPreview] = useState()
-  const [isDisable, setIsDisable] = useState(true)
+  const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
   const router = useRouter()
 
