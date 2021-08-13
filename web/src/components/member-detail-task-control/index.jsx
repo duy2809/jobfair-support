@@ -18,11 +18,11 @@ export default class TaskControl extends React.Component {
     this.setState({
       visible: true,
     })
-  };
+  }
 
   onhandleCancel = () => {
     this.setState({ visible: false })
-  };
+  }
 
   onhandleOk = () => {
     const id = this.props.id
@@ -48,7 +48,7 @@ export default class TaskControl extends React.Component {
           })
         })
       })
-  };
+  }
 
   render() {
     const { visible } = this.state
@@ -64,7 +64,7 @@ export default class TaskControl extends React.Component {
               border: 'none',
               borderRadius: '3px',
               position: 'relative',
-              right: '420px',
+              right: '380px',
               bottom: '110px',
             }}
           >
@@ -81,8 +81,7 @@ export default class TaskControl extends React.Component {
             size="middle"
             className="btn"
             style={{
-              visibility:
-                this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
             }}
           >
             <Link href={`/member/${this.props.id}/edit`}>編集</Link>
@@ -93,8 +92,7 @@ export default class TaskControl extends React.Component {
             size="middle"
             className="btn"
             style={{
-              visibility:
-                this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
             }}
           >
             削除
@@ -108,12 +106,7 @@ export default class TaskControl extends React.Component {
               <Button key="back" onClick={this.onhandleCancel}>
                 いいえ
               </Button>,
-              <Button
-                type="primary"
-                size="large"
-                className="btn"
-                onClick={this.onhandleOk}
-              >
+              <Button type="primary" size="large" className="btn" onClick={this.onhandleOk}>
                 はい
               </Button>,
             ]}
