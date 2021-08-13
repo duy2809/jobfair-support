@@ -84,8 +84,8 @@ Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::cla
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
 
-Route::prefix('category')->group(function () {
-    Route::get('/', 'CategoryController@index');
+Route::prefix('categories')->group(function () {
+    Route::get('/', 'CategoryController@getCatgories');
 });
 
 Route::resource('/profile', ProfileController::class);
