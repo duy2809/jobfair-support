@@ -27,6 +27,7 @@ export default class Gantt extends Component {
     })
     gantt.config.drag_progress = true
     gantt.config.work_time = true
+    gantt.config.redo = true
     gantt.config.correct_work_time = true
     gantt.config.autoscroll = true
     gantt.config.autosize = true
@@ -94,11 +95,12 @@ export default class Gantt extends Component {
     // custom title bar
     gantt.config.lightbox.sections = [
       { name: 'description', height: 38, map_to: 'text', type: 'textarea', focus: true },
-      // { name: 'priority', height: 22, map_to: 'priority', type: 'select', options: '' },
+      { name: 'priority', height: 22, map_to: 'priority', type: 'select', options: '' },
       { name: 'holder', label: 'Holder', align: 'center' },
       { name: 'time', height: 72, type: 'duration', map_to: 'auto' },
     ]
     gantt.config.columns = [
+
       { name: 'text', label: 'Template Milestone', tree: true, width: '*' },
       {
         name: 'progress',
@@ -206,6 +208,35 @@ export default class Gantt extends Component {
       { unit: 'day', step: 1, format: '%j, %D' },
     ]
     // gantt.config.open_split_tasks = true
+    gantt.config.min_column_width = 50
+    gantt.config.scale_height = 90
+
+    const weekScaleTemplate = function (date) {
+      const dateToStr = gantt.date.date_to_str('%d %M')
+      const endDate = gantt.date.add(gantt.date.add(date, 1, 'week'), -1, 'day')
+      return `${dateToStr(date)} - ${dateToStr(endDate)}`
+    }
+
+    const daysStyle = function (date) {
+      // you can use gantt.isWorkTime(date)
+      // when gantt.config.work_time config is enabled
+      // In this sample it's not so we just check week days
+
+      if (date.getDay() === 0 || date.getDay() === 6) {
+        return 'weekend'
+      }
+      return ''
+    }
+
+    gantt.config.scales = [
+      { unit: 'month', step: 1, format: '%F, %Y' },
+      { unit: 'week', step: 1, format: weekScaleTemplate },
+      { unit: 'day', step: 1, format: '%D', css: daysStyle },
+    ]
+    gantt.templates.quick_info_content = function (start, end, task) {
+      return task.details || task.text
+    }
+    gantt.i18n.setLocale('jp')
 
     gantt.init(this.ganttContainer)
     // load data
