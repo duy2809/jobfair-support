@@ -7,7 +7,7 @@ import Autosuggest from 'react-autosuggest'
 import { notification, Button } from 'antd'
 import { useRouter } from 'next/router'
 
-export default function SearchSugges({ listTask }) {
+export default function SearchSugges({ listTask, id }) {
   const [value, setValue] = useState('')
   const [suggestions, setSuggestions] = useState([])
   const router = useRouter()
@@ -48,7 +48,7 @@ export default function SearchSugges({ listTask }) {
     listTask.forEach((element) => {
       if (value === element.name) {
         a = false
-        router.push(`/task-list?name=${value}`)
+        router.push(`/tasks/${id}?name=${value}`)
       }
     })
     if (a === true) {
@@ -76,4 +76,7 @@ export default function SearchSugges({ listTask }) {
 }
 SearchSugges.propTypes = {
   listTask: PropTypes.array.isRequired,
+}
+SearchSugges.propTypes = {
+  id: PropTypes.number.isRequired,
 }

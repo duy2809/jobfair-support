@@ -23,10 +23,9 @@
 
     .input-category{
         height: 36px;
-        width: -webkit-fill-available;
+        width: -webkit-fill-available !important;
         padding-left: 3px;
     }
-
     // add form
     .ant-form-item-required::after{
         display: none;

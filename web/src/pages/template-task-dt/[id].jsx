@@ -143,7 +143,7 @@ export default function TaskList() {
                 </div>
                 <div className="grid grid-cols-9 mt-3">
                   <div className="col-span-2 " />
-                  <div className="col-span-2 ">
+                  <div className="layber col-span-2 ">
                     <p>カテゴリ:</p>
                   </div>
                   <div className="col-span-3">
@@ -166,7 +166,7 @@ export default function TaskList() {
                 <div className="grid grid-cols-9 mt-3">
                   <div className="col-span-2" />
                   <div className="layber col-span-2 ">
-                    <p>リレーション</p>
+                    <p>リレーション:</p>
                   </div>
                   <div className="col-span-3">
                     <div className="rela">
@@ -201,7 +201,7 @@ export default function TaskList() {
                 <div className="grid grid-cols-9 mt-3">
                   <div className="col-span-2" />
                   <div className="layber col-span-2 ">
-                    <p>工数</p>
+                    <p>工数:</p>
                   </div>
                   <div className="col-span-3">
                     <span className="ef">{ef}</span>
@@ -214,7 +214,7 @@ export default function TaskList() {
                 <div className="grid grid-cols-9 mt-3">
                   <div className="col-span-2" />
                   <div className="layber col-span-2 ">
-                    <p>詳細</p>
+                    <p>詳細:</p>
                   </div>
                   <div className="col-span-3">
                     <div className="des demo-infinite-container">
