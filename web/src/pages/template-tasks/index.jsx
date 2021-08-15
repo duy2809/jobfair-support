@@ -185,12 +185,13 @@ export default function TemplateTaskList() {
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
           <div className="container mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
               <div className="flex-col space-y-9">
                 <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
+                  {/* <h1 className="text-3xl float-left">テンプレートタスクー覧</h1> */}
                 </div>
                 <div className="flex justify-between">
                   <div className="flex items-center space-x-4 w-9/12">

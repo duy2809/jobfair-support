@@ -39,17 +39,7 @@ const ItemMultipleDropdown = ({
   }
   return (
     <Form.Item
-      label={(
-        <p
-          style={{
-            color: '#2d334a',
-            fontSize: '18px',
-            alignItems: 'start',
-          }}
-        >
-          {label}
-        </p>
-      )}
+      label={label}
       name={name}
       style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem' }}
       labelAlign="left"
@@ -98,7 +88,7 @@ function tagRender(props) {
         <Tooltip title={label}>
           <span
             className="inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-            style={{ maxWidth: '20ch' }}
+            style={{ maxWidth: '18ch' }}
             onClick={handleClick}
           >
             {label}

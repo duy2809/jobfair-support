@@ -52,20 +52,9 @@ const Effort = ({
   }
   return (
     <Form.Item
-      label={(
-        <p
-          style={{
-            color: '#2d334a',
-            fontSize: '18px',
-            alignItems: 'start',
-          }}
-        >
-          工数
-        </p>
-      )}
+      label="工数"
       name="effort"
       labelAlign="right"
-      className="text-4xl justify-between"
       rules={[
         {
           // required: true,
@@ -94,7 +83,7 @@ const Effort = ({
       ]}
     >
       <div className="flex flex-row justify-between ">
-        <Form.Item name="effort" className="w-1/2 max-w-xs flex-1 mt-0.5">
+        <Form.Item name="effort" className="w-1/2 max-w-xs flex-1">
           <Input
             type="text"
             placeholder=""

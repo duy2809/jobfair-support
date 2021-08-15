@@ -16,19 +16,8 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
   }
   return (
     <Form.Item
-      label={(
-        <p
-          style={{
-            color: '#2d334a',
-            fontSize: '18px',
-            alignItems: 'start',
-          }}
-        >
-          {label}
-        </p>
-      )}
+      label={label}
       labelAlign="right"
-      className="text-4xl justify-between"
       name={name}
       rules={[
         {
@@ -51,7 +40,6 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
     >
       <Input
         type="text"
-        size="large"
         onChange={onValueNameChange}
         placeholder={label}
       />

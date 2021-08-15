@@ -94,6 +94,7 @@ const EditTemplateTaskPage = () => {
   const fetchPrevTasks = async (id) => {
     await getPrevTasks(id).then((res) => {
       setPrevTasks(res.data.before_tasks)
+      console.log(res.data.before_tasks)
       const value = []
       res.data.before_tasks.forEach((item) => value.push(item.name))
       form.setFieldsValue({
@@ -198,9 +199,9 @@ const EditTemplateTaskPage = () => {
       <OtherLayout>
         <OtherLayout.Main>
           <>
-            <p className="title mb-8" style={{ fontSize: '36px' }}>
+            <h1>
               テンプレートタスク編集
-            </p>
+            </h1>
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
               <Form
                 form={form}
@@ -239,19 +240,8 @@ const EditTemplateTaskPage = () => {
                   setId={setMilestoneId}
                 />
                 <Form.Item
-                  label={(
-                    <p
-                      style={{
-                        color: '#2d334a',
-                        fontSize: '18px',
-                        alignItems: 'start',
-                      }}
-                    >
-                      リレーション
-                    </p>
-                  )}
+                  label="リレーション"
                   labelAlign="right"
-                  className="text-4xl justify-between"
                   required="true"
                 >
                   <ItemMultipleDropdown
@@ -300,17 +290,17 @@ const EditTemplateTaskPage = () => {
                 />
 
                 <Form.Item className=" justify-end ">
-                  <div className="flex  my-10 ">
-                    <CancelEditTemplateTask id={pathId} />
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base px-10 "
-                      onClick={showModal}
-                    >
-                      保存
-                    </Button>
-                  </div>
+                  {/* <div className="flex  my-10 "> */}
+                  <CancelEditTemplateTask id={pathId} />
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="text-base px-10 "
+                    onClick={showModal}
+                  >
+                    保存
+                  </Button>
+                  {/* </div> */}
                 </Form.Item>
               </Form>
             </div>

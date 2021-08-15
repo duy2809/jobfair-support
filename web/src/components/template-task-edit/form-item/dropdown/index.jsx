@@ -24,19 +24,8 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
   }, [])
   return (
     <Form.Item
-      label={(
-        <p
-          style={{
-            color: '#2d334a',
-            fontSize: '18px',
-            alignItems: 'start',
-          }}
-        >
-          {label}
-        </p>
-      )}
+      label={label}
       labelAlign="right"
-      className="text-4xl justify-between"
       name={name}
       rules={[
         {

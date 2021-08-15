@@ -15,18 +15,7 @@ const Detail = ({ form, input, setInput }) => {
   }
   return (
     <Form.Item
-      label={(
-        <p
-          style={{
-            color: '#2d334a',
-            fontSize: '18px',
-            alignItems: 'start',
-          }}
-        >
-          詳細
-        </p>
-      )}
-      className="text-4xl justify-between"
+      label="詳細"
       labelAlign="right"
       name="description"
     >
