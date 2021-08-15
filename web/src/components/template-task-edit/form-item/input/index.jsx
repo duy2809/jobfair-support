@@ -2,8 +2,14 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import './style.scss'
 import PropTypes from 'prop-types'
+import { getTemplateTasksList } from '../../../../api/template-task-edit'
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+
+let tasksList = []
+getTemplateTasksList().then((res) => {
+  tasksList = [...res.data]
+})
 
 const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
   const specialCharRegex = new RegExp('[@!?$%]')
@@ -30,6 +36,12 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
               setCheckSpace(true)
               return Promise.reject(
                 new Error('使用できない文字が含まれています'),
+              )
+            }
+
+            if (tasksList.find((item) => item.name === value)) {
+              return Promise.reject(
+                new Error('このマイルストーン名は存在しています'),
               )
             }
 

@@ -216,7 +216,7 @@ const EditTemplateTaskPage = () => {
               >
                 <ItemInput
                   form={form}
-                  label="タスクテンプレート名"
+                  label="テンプレートタスク名"
                   name="templateTaskName"
                   setCheckSpace={setCheckSpace}
                   setInput={setTemplateTaskNameInput}
