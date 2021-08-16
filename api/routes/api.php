@@ -23,9 +23,12 @@ Route::get('/web-init', WebInit::class);
 
 // jobfair
 
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+Route::group(['prefix' => 'jobfair/{id}'], function () {
+    Route::get('/milestones', 'JobfairController@getMilestones');
+    Route::get('/tasks', 'JobfairController@getTasks');
+    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
+    Route::get('/tasks/search', 'JobfairController@searchTask');
+});
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
@@ -34,21 +37,13 @@ Route::resource('/jobfair', 'JobfairController');
 
 Route::resource('/schedules', 'ScheduleController');
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
-Route::get('/schedules/{id}/tasks', 'ScheduleController@getTasks');
+Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
 });
 
 Route::get('/admins', 'AdminController@index');
-
-Route::group(['prefix' => 'jobfair/{id}'], function () {
-    Route::get('/milestones', 'JobfairController@getMilestones');
-    Route::get('/tasks', 'JobfairController@getTasks');
-    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
-    Route::get('/tasks/search', 'JobfairController@searchTask');
-    Route::post('/jobfair', 'JobfairController@store');
-});
 
 //milestone
 
@@ -78,9 +73,7 @@ Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
 
-Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
-Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
-
+Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');

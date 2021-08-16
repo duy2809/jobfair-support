@@ -22,6 +22,8 @@ const index = () => {
   const [templateTasks, settemplateTasks] = useState([])
   const [isTemplateExisted, setIsTemplateExisted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [preTasks, setPreTasks] = useState([])
+  const [afterTasks, setAfterTasks] = useState([])
   const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
 
@@ -147,7 +149,7 @@ const index = () => {
           name: values.template_name,
           description_of_detail: values.detail,
           milestone_id: values.milestone_id,
-          is_day: values.isDay,
+          is_day: String(values.isDay),
           unit: values.unit,
           effort: values.effort * 1.0,
           category_id: values.category_id,
@@ -160,7 +162,7 @@ const index = () => {
 
         if (response.status < 299) {
           await successNotification()
-          // routeTo(`/template-task-dt/${response.data.id}`)
+          routeTo(`/template-task-dt/${response.data.id}`)
         } else {
           setdisableBtn(false)
           setLoading(false)
@@ -257,7 +259,6 @@ const index = () => {
     }
     return (
       <Tag
-        color={value}
         onMouseDown={onPreventMouseDown}
         closable={closable}
         onClose={onClose}
@@ -265,13 +266,14 @@ const index = () => {
       >
         <Tooltip title={label}>
           <span
-            // onClick={(e) => {
-            //   // router.push()
-            // }}
-            className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            onClick={() => {
+              routeTo(`/template-task-dt/${value}`)
+            }}
+            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '20ch' }}
           >
-            <a href="" className="my-1">{label}</a>
+            {label}
+            {/* <a href="" className="my-1">{label}</a> */}
           </span>
 
         </Tooltip>
@@ -296,6 +298,7 @@ const index = () => {
       return null
     }
   }
+  // const
   const filterSelectedTasks = (data) => {
     // console.log(data)
     // const filteredOptions = templateTasks.filter((o) => !data.includes(o.id))
@@ -321,7 +324,6 @@ const index = () => {
             <div id="loading">
               <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large">
                 <h1>テンプレートタスク追加 </h1>
-
                 <div className="container mx-auto flex-1 justify-center px-4  pb-20">
                   {/* page title */}
                   {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}

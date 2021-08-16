@@ -19,6 +19,7 @@ import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 // import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
+import instance from '../../api/axios'
 
 const index = () => {
   // page state.
@@ -139,8 +140,9 @@ const index = () => {
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
       }
       setdisableBtn(true)
-      const response = await addJFAPI.addJF(data)
 
+      const response = await addJFAPI.addJF(data)
+      console.log(response)
       if (response.status < 299) {
         await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
@@ -167,6 +169,8 @@ const index = () => {
           onClick: () => {},
         })
       }
+
+      console.log(error)
       return error
     }
   }
@@ -182,8 +186,8 @@ const index = () => {
   // call api get milestone  when selector change schedule
   const getTask = async (id) => {
     const tasks = await addJFAPI.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
     }
   }
 
