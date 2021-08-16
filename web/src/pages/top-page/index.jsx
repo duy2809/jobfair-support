@@ -235,5 +235,5 @@ const Top = () => {
     </div>
   );
 };
-
+Top.middleware = ["auth:superadmin", "auth:admin", "auth:member"];
 export default Top;
