@@ -15,7 +15,7 @@ class CreateTemplateTasksTable extends Migration
     {
         Schema::create('template_tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('relation_task_id');
             $table->unsignedInteger('number_of_member');
             $table->unsignedSmallInteger('status');
