@@ -100,7 +100,7 @@ const AddCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p>カテゴリ名</p>
+              <span>カテゴリ名</span>
             }
             name="name"
             rules={[
@@ -124,6 +124,7 @@ const AddCategory = (props) => {
               placeholder="例: 2次面接練習"
               className="input-category"
               required="required"
+              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
             />
