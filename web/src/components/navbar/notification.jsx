@@ -7,65 +7,98 @@ import './styles.scss'
 
 import moment from 'moment';
 import { getNotification } from '../../api/notification'
+import { getProfile, getAvatar } from '../../api/profile'
+
 import { ReactReduxContext } from 'react-redux'
 
 
 export default function Notification() {
-  const [nameUser, setNameUser] = useState([])
-  const [type, setType] = useState('')
-  const [data_noti, setData] = useState('')
-  const [read_at, setReadAt] = useState('')
-  const [created_at, setCreatedAt] = useState('')
-  const [avatarUser, setAvatarUser] = useState('')
+  const [userId, setUserId] = useState([])
+  const [userName, setUserName] = useState([])
+
+  const [lengthNoti, setLengthNoti] = useState()
+  const [type, setType] = useState([])
+  const [data_noti, setData] = useState([])
+  const [read_at, setReadAt] = useState([])
+  const [created_at, setCreatedAt] = useState([])
+  const [avatarUser, setAvatarUser] = useState([])
 
   const [user, setUser] = useState(null)
   const { store } = useContext(ReactReduxContext)
+
 
   useEffect(() => {
     setUser(store.getState().get('auth').get('user'))
     if (user) {
       const id = user.get('id')
       getNotification(id).then((response) => {
-        const length = response.data.length
+        const length = response.data.noti.length
+        setLengthNoti(length)
+        console.log(response.data.noti)
+        console.log(response.data.noti[0].data)
         for (let i = 0; i < length; i++) {
-          // nameUser.push(response.data[i].user.name);
-          setNameUser(nameUser => [...nameUser, response.data[i].user.name]);
+          setUserName(userName => [...userName, response.data.userName[i].name]);
+          setUserId(userId => [...userId, response.data.noti[i].user_id]);
+          setData(data_noti => [...data_noti, response.data.noti[i].data]);
+
+          setType(type => [...type, response.data.noti[i].type]);
           
         }
-        // setNameUser(response.data.user.name)
-        console.log(nameUser[1])
       })
     }
   }, [user])
 
+
+
   //get noti
-  const data = [
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-  ];
+  const data = []
+  // console.log(userId[0])
+  // console.log('test')
+  for (let i = 0; i < lengthNoti; i++) {
+    // console.log(userName[i])
+    
+    // getProfile(userId[i]).then((response) => {
+    //   data[i]= {'nameUser' : response.data.name}
+    // })
+    // getAvatar(userId[i]).then(() => {
+      const link = `/api/avatar/${userId[i]}`
+      // const link = '/images/logo.png'
+      data[i]= {'avatarLink' : link,'type' : type[i], 'name' : userName[i], 'data': data_noti[i]}
+
+    // })
+    // data[i]= {'type' : type[i]}
+    // console.log(data)
+    
+  }
+  // console.log(data)
+  // const data = [
+  //   {
+  //     'name' : 'a-san',
+  //     'action': 'add JF',
+  //     'time': '11:12:20',
+  //   },
+  //   {
+  //     'name' : 'a',
+  //     'action': 'add JF',
+  //     'time': '11:12:20',
+  //   },
+  //   {
+  //     'name' : 'a',
+  //     'action': 'add JF',
+  //     'time': '11:12:20',
+  //   },
+  //   {
+  //     'name' : 'a-san',
+  //     'action': 'add JF',
+  //     'time': '11:12:20',
+  //   },
+  //   {
+  //     'name' : 'a-san',
+  //     'action': 'add JF',
+  //     'time': '11:12:20',
+  //   },
+  // ];
+
 
   //get user's noti
   const getNoti = (value) => {
@@ -115,8 +148,8 @@ export default function Notification() {
       renderItem={item =>  <List.Item>
           <div className="noti-list-item">
             <List.Item.Meta
-            avatar={<Avatar src="/images/logo.png" />}
-            title={<div>{item.name} 渡辺さんがマイルストーンの名前を「インタビュー」に変更{item.action}</div>}
+            avatar={<Avatar src={item.avatarLink}/>}
+            title={<div>{item.name} {item.data} {item.type}  </div>}
             />
             <div className="noti-time">
               2021-07-30 4:00 PM
