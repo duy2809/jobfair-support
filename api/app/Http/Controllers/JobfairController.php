@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JobfairRequest;
 use App\Models\Jobfair;
-use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -15,9 +15,8 @@ class JobfairController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
-    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair) {
-
+    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
+    {
         foreach ($templateSchedule->templateTasks as $templateTask) {
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
             $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
@@ -41,12 +40,17 @@ class JobfairController extends Controller
                 'template_task_id' => $templateTask->id,
             ]);
             $newTask->categories()->attach($templateTask->categories);
-            
         }
     }
+
     public function index()
     {
-        return Jobfair::all();
+        $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
+            ->select('jobfairs.*', 'users.name as admin')
+            ->orderBy('jobfairs.updated_at', 'DESC')
+            ->get();
+
+        return response()->json($jobfairs);
     }
 
     /**
@@ -55,16 +59,9 @@ class JobfairController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(JobfairRequest $request)
     {
-        $request->validate([
-            'name' => 'string|required|unique:jobfairs',
-            'start_date' => 'required|date',
-            'number_of_students' => 'required|numeric|gte:1',
-            'number_of_companies' => 'required|numeric|gte:1',
-            'jobfair_admin_id' => 'required|numeric',
-        ]);
-        $jobfair = Jobfair::create($request->all());
+        $jobfair = Jobfair::create($request->validated());
         $templateSchedule = Schedule::find($request->schedule_id);
         $newSchedule = Schedule::create($templateSchedule->toArray());
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
@@ -94,23 +91,16 @@ class JobfairController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'string|required|unique:jobfairs',
-            'start_date' => 'required|date',
-            'number_of_students' => 'required|numeric|gte:1',
-            'number_of_companies' => 'required|numeric|gte:1',
-            'jobfair_admin_id' => 'required|numeric',
-        ]);
         $jobfair = Jobfair::find($id);
-        $jobfair->update($request->all());
+        $jobfair->update($request->validated());
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $templateSchedule = Schedule::find($request->schedule_id);
         $schedule->update(['name' => $templateSchedule->name]);
         $schedule->milestones()->sync($templateSchedule->milestones);
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+
         return response()->json($schedule);
-        
     }
 
     /**
@@ -132,37 +122,47 @@ class JobfairController extends Controller
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
             'schedule.milestones:id,name',
-            'schedule.milestones.tasks' => function ($q) use ($scheduleId){
-                $q->where('schedule_id', '=' ,$scheduleId->id)->select('name','status','milestone_id');
-            }            
-        ])->find($id,['id']);
-        
+            'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
+                $q->where('schedule_id', '=', $scheduleId->id)->select('name', 'status', 'milestone_id');
+            },
+        ])->find($id, ['id']);
+
         return response()->json($milestones);
-       
     }
 
     public function getTasks($id)
     {
-        $tasks = Jobfair::with(['schedule:id,jobfair_id','schedule.tasks:name,status,schedule_id'])->find($id,['id']);
+        $tasks = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
+                    ->select(['tasks.id', 'tasks.name', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id']);
+            },
+        ])->find($id, ['id']);
+
         return response()->json($tasks);
     }
 
     public function updatedTasks($id, Request $request)
     {
         $tasks = Jobfair::with(['schedule:id,jobfair_id','schedule.tasks' => function ($query) {
-            $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'tasks.schedule_id','users.name as username'])
-                    ->join('users', 'users.id', '=', 'tasks.user_id')
-                    ->orderBy('tasks.updated_at', 'DESC')
-                    ->take(30);
-        }])->find($id,['id']);
+            $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'tasks.schedule_id', 'users.name as username'])
+                ->join('users', 'users.id', '=', 'tasks.user_id')
+                ->orderBy('tasks.updated_at', 'DESC')
+                ->take(30);
+        },
+        ])->find($id, ['id']);
+
         return response()->json($tasks);
     }
 
     public function searchTask($id, Request $request)
     {
-        $tasks = Jobfair::with(['schedule.tasks' => function($q) use ($request){
-            $q->where('tasks.name', 'LIKE', "%$request->name%");
-        }])->find($id,['id']);
+        $tasks = Jobfair::with([
+            'schedule.tasks' => function ($q) use ($request) {
+                $q->where('tasks.name', 'LIKE', "%$request->name%");
+            },
+        ])->find($id, ['id']);
+
         return response()->json($tasks);
     }
 
