@@ -85,8 +85,10 @@ export default function MemberList() {
     setDataLoading(true)
     initPagination()
     webInit().then((res) => {
-      if (Object.keys(res.data.auth.user) !== {}) {
+      if (res.data.auth !== null) {
         setUser(res.data.auth.user)
+      } else {
+        router.push('/login')
       }
     })
     MemberApi.getListMember().then((res) => {
