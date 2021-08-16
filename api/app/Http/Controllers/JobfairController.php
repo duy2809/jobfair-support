@@ -121,7 +121,7 @@ class JobfairController extends Controller
         $scheduleId = Jobfair::find($id)->schedule;
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
-            'schedule.milestones:id,name',
+            'schedule.milestones:id,name,period',
             'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
                 $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
             },
@@ -135,7 +135,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
-                    ->select(['tasks.id', 'tasks.name', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id']);
+                    ->select(['tasks.id', 'tasks.name', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id','tasks.start_time','tasks.end_time']);
             },
         ])->find($id, ['id']);
 

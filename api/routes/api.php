@@ -36,7 +36,7 @@ Route::resource('/jobfair', 'JobfairController');
 
 Route::resource('/schedules', 'ScheduleController');
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
-Route::get('/schedules/{id}/tasks', 'ScheduleController@getTasks');
+Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');

@@ -89,7 +89,7 @@ class ScheduleController extends Controller
         return Schedule::with(['milestones:id,name'])->find($id, ['id']);
     }
 
-    public function getTasks($id)
+    public function getTemplateTasks($id)
     {
         return Schedule::with('templateTasks:id,name')->find($id, ['id']);
     }
