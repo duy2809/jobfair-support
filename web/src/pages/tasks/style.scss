@@ -11,14 +11,20 @@
       }
       .active {
             border-radius: 15px !important;
-            border-color: #2cb67d !important;
-            background-color: #2cb67d !important;
+            border-color: #ffd803 !important;
+            background-color: #ffd803 !important;
       }
 
       .ant-btn-text:hover,
       .ant-btn-text:focus {
             border-radius: 15px !important;
-            border-color: #2cb67d !important;
-            background-color: #2cb67d !important;
+            border-color: #ffd803 !important;
+            background-color: #ffd803 !important;
+      }
+      h1 {
+            font-size: 40px;
+            // margin-left: 0px;
+            // margin-bottom: 0px;
+            color: #272343;
       }
 }

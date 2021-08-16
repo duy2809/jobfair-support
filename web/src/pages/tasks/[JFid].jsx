@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Input, Empty, Select, Tooltip, Button } from 'antd'
+import { Table, Input, Empty, Select, Tooltip, Button, Tag } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { SearchOutlined } from '@ant-design/icons'
 import JfLayout from '../../layouts/JFLayout'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { jftask } from '../../api/jf-toppage'
-import { set } from 'lodash'
+import { jftask, jfdata } from '../../api/jf-toppage'
 
 export default function TaskList() {
   const router = useRouter()
@@ -18,13 +17,14 @@ export default function TaskList() {
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
   const [optionMilestone, setOptionMileStone] = useState([])
-  const [dataFilter, setDataFilter] = useState()
   const [optionCategory, setOptionCategory] = useState([])
-  const [status, setStatus] = useState('')
-  const [valueSearch, setValueSearch] = useState('')
+  const [status, setStatus] = useState(router.query.status)
+  const [valueSearch, setValueSearch] = useState(router.query.name)
   const { Option } = Select
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
+  const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
+  const [JF, setJF] = useState([])
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -47,29 +47,43 @@ export default function TaskList() {
       setItemCount(paginationData.pageSize)
     }
   }
-
-  //add data of table
+  // add data of table
   const addDataOfTable = (response) => {
-    const category = ['1次面接練習', 'TC業務', '企業担当', '管理者']
-    const milestone = ['会社紹介', 'オープンSCP', 'プロファイル選択ラウンドの結果', '1回目の面接', ' 1回目の面接結果', '2回目の面接']
+    const dataResponse = response.data.schedule.tasks
     const data = []
-    for (let i = 0; i < response.data.data[0].tasks.length; i += 1) {
-      const index1 = Math.floor((Math.random() * 10) % (category.length - 1))
-      const index2 = Math.floor((Math.random() * 10) % (milestone.length - 1))
+    for (let i = 0; i < dataResponse.length; i += 1) {
+      const users = []
+      for (let j = 0; j < dataResponse[i].users.length; j += 1) {
+        users.push(dataResponse[i].users[j].name)
+      }
       data.push({
         id: i + 1,
-        idtask: response.data.data[0].tasks[i].id,
-        taskName: response.data.data[0].tasks[i].name,
-        time: '',
-        status: response.data.data[0].tasks[i].status,
-        category_name: category[index1],
-        milestone_name: milestone[index2],
-        manager: response.data.data[0].tasks[i].name
+        idtask: dataResponse[i].id,
+        taskName: dataResponse[i].name,
+        start_date: dataResponse[i].start_time,
+        end_date: dataResponse[i].end_time,
+        status: dataResponse[i].status,
+        category_name: dataResponse[i].categories[0].category_name,
+        milestone_name: dataResponse[i].milestone.name,
+        managers: users,
       })
     }
     setTemperaryData(data)
     setOriginalData(data)
-    setDataFilter(data)
+    if (valueSearch) {
+      const taskNameParameter = router.query.name.toLowerCase()
+      const filteredData = data.filter((task) => (task.taskName.toLowerCase().includes(taskNameParameter)))
+      setTemperaryData(filteredData)
+    }
+    if (status) {
+      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
+      const index = arrayStatus.indexOf(router.query.status)
+      const arr = [0, 0, 0, 0, 0, 0]
+      arr[index] = 1
+      setActive(arr)
+      const filteredData = data.filter((task) => (!task.status.localeCompare(router.query.status)))
+      setTemperaryData(filteredData)
+    }
   }
 
   const addOptionCategory = (response) => {
@@ -110,50 +124,61 @@ export default function TaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (taskName, record) => <Tooltip title={taskName}><a href={``}>{taskName}</a></Tooltip>,
+      render: (taskName, record) => <Tooltip title={taskName}><a href={`/task-detail/${record.idtask}`}>{taskName}</a></Tooltip>,
     },
     {
       title: '開始日',
       width: 50,
-      dataIndex: 'time',
+      dataIndex: 'start_date',
       fixed: 'left',
     },
     {
-      title: '最終日',
+      title: '終了日',
       width: 50,
-      dataIndex: 'time',
+      dataIndex: 'end_date',
       fixed: 'left',
     },
     {
-      title: 'ステータス',
-      width: 80,
+      title: 'スターテス',
+      width: 50,
       dataIndex: 'status',
       fixed: 'left',
     },
     {
       title: 'カテゴリ',
-      width: 100,
+      width: 80,
       dataIndex: 'category_name',
       fixed: 'left',
     },
     {
       title: 'マイルストーン',
+      fixed: 'left',
       dataIndex: 'milestone_name',
-      width: 100,
+      width: 80,
     },
     {
       title: '担当者',
-      width: 100,
-      dataIndex: 'manager',
+      width: 120,
+      dataIndex: 'managers',
       fixed: 'left',
+      render: (managers) => (
+        managers
+          ? (
+            <span>
+              {managers.join(', ')}
+            </span>
+          ) : (<span />)
+      ),
     },
   ]
-
   // data of table get from database
 
   useEffect(async () => {
     setLoading(true)
     initPagination()
+    await jfdata(router.query.JFid).then((response) => {
+      setJF(response.data)
+    })
     await jftask(router.query.JFid).then((response) => {
       addDataOfTable(response)
     })
@@ -167,54 +192,61 @@ export default function TaskList() {
     setLoading(false)
   }, [itemCount])
 
-  const stateOfFilter = () => {
-
-  }
   // Search data on Table
-
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
-    const filteredData = originalData.filter((task) => (value? task.taskName.toLowerCase().includes(value.toLowerCase()): task.taskName)
-      && (category? !task.category_name.localeCompare(category) : task.category_name)
-      && (milestone? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-      && (status? !task.status.localeCompare(status): task.status))
-    return filteredData
+    const filteredData = originalData.filter(
+      (task) => (value ? (task.taskName.toLowerCase().includes(value)
+        || task.managers.some((manager) => manager.toLowerCase().includes(value))) : task.taskName)
+      && (category ? !task.category_name.localeCompare(category) : task.category_name)
+      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+      && (status ? !task.status.localeCompare(status) : task.status),
+    )
+    setTemperaryData(filteredData)
   }
   const onSearch = (e) => {
     const currValue = e.target.value
     setValueSearch(currValue)
-    setTemperaryData(searchDataOnTable(currValue))
+    searchDataOnTable(currValue)
   }
 
   const handleSelectCategory = (value) => {
     setCategory(value)
-    const filteredData = originalData.filter((task) => (value? !task.category_name.localeCompare(value) : task.category_name)
-      && (valueSearch? task.taskName.toLowerCase().includes(valueSearch.toLowerCase()): task.taskName)
-      && (milestone? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-      && (status? !task.status.localeCompare(status): task.status))
+    const filteredData = originalData.filter(
+      (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
+      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+      && (status ? !task.status.localeCompare(status) : task.status),
+    )
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
 
   const handlSelectMilestone = (value) => {
-    // if (!value) {
-    //   setMilestone('')
-    //   const filteredData = originalData.filter((task) => (task.taskName.toLowerCase().includes(valueSearch.toLowerCase()))
-    //     && task.category_name.includes(category)
-    //     && task.status.includes(status))
-    //   setTemperaryData(filteredData)
-    //   setDataFilter(filteredData)
-    //   return
-    // }
     setMilestone(value)
-    const filteredData = originalData.filter((task) => (value? !task.milestone_name.localeCompare(value) : task.milestone_name)
-      && (valueSearch? task.taskName.toLowerCase().includes(valueSearch.toLowerCase()): task.taskName)
-      && (category? !task.category_name.localeCompare(category) : task.category_name)
-      && (status? !task.status.localeCompare(status): task.status))
+    const filteredData = originalData.filter(
+      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
+      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+      && (category ? !task.category_name.localeCompare(category) : task.category_name)
+      && (status ? !task.status.localeCompare(status) : task.status),
+    )
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
-  
+
+  const FilterByStatus = (value) => {
+    setStatus(value)
+    const filteredData = originalData.filter(
+      (task) => (value ? !task.status.localeCompare(value) : task.status)
+      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+      && (category ? !task.category_name.localeCompare(category) : task.category_name)
+      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
+    )
+    setTemperaryData(filteredData)
+    setLoading(false)
+  }
+
   const [showFilter, setShowFilter] = useState(true)
 
   // hide filter
@@ -228,80 +260,68 @@ export default function TaskList() {
   const onShowFilter = () => {
     setShowFilter(true)
   }
-  const [active, setActive] = useState([1, 0, 0, 0, 0])
   // const [active] = useState([1, 0, 0, 0, 0])
   const chooseStatus = (index) => {
     setLoading(true)
-    var arr = [0, 0, 0, 0, 0]
+    const arr = [0, 0, 0, 0, 0, 0]
     arr[index] = 1
     setActive(arr)
-  }
-  const FilterByStatus = (value) => {
-    // if (!value) {
-    //   setStatus('')
-    //   const filteredData = originalData.filter((task) => (task.taskName.toLowerCase().includes(valueSearch.toLowerCase()))
-    //     && task.category_name.includes(category)
-    //     && task.milestone_name.includes(milestone))
-    //   setTemperaryData(filteredData)
-    //   setDataFilter(filteredData)
-    //   setLoading(false)
-    //   return
-    // }
-    setStatus(value)
-    const filteredData = originalData.filter((task) => (value? !task.status.localeCompare(value): task.status)
-    && (valueSearch? task.taskName.toLowerCase().includes(valueSearch.toLowerCase()): task.taskName)
-    && (category? !task.category_name.localeCompare(category) : task.category_name)
-    && (milestone? !task.milestone_name.localeCompare(milestone) : task.milestone_name))
-    setTemperaryData(filteredData)
-    setDataFilter(filteredData)
-    setLoading(false)
   }
   return (
     <JfLayout>
       <JfLayout.Main>
         <div className="TaskList">
-          <div className="container mx-auto flex flex-col space-y-2 justify-center">
+          <div className="container space-y-2 justify-center">
             <div className="space-y-2">
-              <div className="flex-col space-y-3">
-                <div className="flex items-center">
+              <div className="flex-col space-y-9">
+                <div className="flex items-center space-x-2">
                   <h1 className="text-3xl float-left">タスクー覧</h1>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <p>フィルタ</p>
-                  <Button
-                    onClick={hideFilter}
-                    type="primary"
-                    style={{ display: showFilter ? 'inline' : 'none' }}
-                  >
-                    非表示
-                  </Button>
-                  <Button
-                    onClick={onShowFilter}
-                    type="primary"
-                    style={{ display: showFilter ? 'none' : 'inline' }}
-                  >
-                    表示
-                  </Button>
-                </div>
-                <div className="flex justify-between">
-                  <div className="flex items-center space-x-1" >
-                    <b style={{ display: showFilter ? 'inline' : 'none' }}>スターテス:</b>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[0] ? 'active' : ''} onClick={() => { chooseStatus(0); FilterByStatus('') }}>全て</Button>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[1] ? 'active' : ''} onClick={() => { chooseStatus(1); FilterByStatus('未着手') }}>未着手</Button>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[2] ? 'active' : ''} onClick={() => { chooseStatus(2); FilterByStatus('進行中') }}>進行中</Button>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[3] ? 'active' : ''} onClick={() => { chooseStatus(3); FilterByStatus('完了') }}>完了</Button>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[4] ? 'active' : ''} onClick={() => { chooseStatus(4); FilterByStatus('中断') }}>中断</Button>
-                    <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[5] ? 'active' : ''} onClick={() => { chooseStatus(5); FilterByStatus('未完了') }}>未完了</Button>
+                  <div>
+                    <Tag color="#55acee">
+                      JF:
+                      {' '}
+                      {JF.name}
+                    </Tag>
                   </div>
-                  <Button
-                    className="flex float-right"
-                    href="/add-template-task"
-                    type="primary"
-                  >
-                    追加
-                  </Button>
                 </div>
-                <div className="flex justify-between">
+                <div className={showFilter ? 'space-y-3' : 'space-y-0'}>
+                  <div className="flex items-center space-x-3">
+                    <div>フィルタ</div>
+                    <Button
+                      onClick={hideFilter}
+                      type="primary"
+                      style={{ display: showFilter ? 'inline' : 'none' }}
+                    >
+                      非表示
+                    </Button>
+                    <Button
+                      onClick={onShowFilter}
+                      type="primary"
+                      style={{ letterSpacing: '-1px', display: showFilter ? 'none' : 'inline' }}
+
+                    >
+                      表示
+                    </Button>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="flex items-center justify-center space-x-1">
+                      <div style={{ display: showFilter ? 'inline' : 'none' }}>スターテス:</div>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[0] ? 'active' : ''} onClick={() => { chooseStatus(0); FilterByStatus('') }}>全て</Button>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[1] ? 'active' : ''} onClick={() => { chooseStatus(1); FilterByStatus('未着手') }}>未着手</Button>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[2] ? 'active' : ''} onClick={() => { chooseStatus(2); FilterByStatus('進行中') }}>進行中</Button>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[3] ? 'active' : ''} onClick={() => { chooseStatus(3); FilterByStatus('完了') }}>完了</Button>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[4] ? 'active' : ''} onClick={() => { chooseStatus(4); FilterByStatus('中断') }}>中断</Button>
+                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[5] ? 'active' : ''} onClick={() => { chooseStatus(5); FilterByStatus('未完了') }}>未完了</Button>
+                    </div>
+                    <Button
+                      className="flex float-right"
+                      href="/add-task"
+                      type="primary"
+                      style={{ letterSpacing: '-1px' }}
+                    >
+                      追加
+                    </Button>
+                  </div>
                   <div className="flex items-center space-x-4 w-9/12">
                     <Select style={{ display: showFilter ? 'inline' : 'none' }} className="w-1/4 items-center" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                       {optionCategory}
@@ -326,13 +346,15 @@ export default function TaskList() {
                     className="float-right"
                     allowClear="true"
                     prefix={<SearchOutlined />}
-                    placeholder="タスク名"
+                    placeholder="タスク名, 担当者"
                     onChange={onSearch}
+                    defaultValue={valueSearch}
                   />
                 </div>
               </div>
             </div>
             <Table
+              scroll={{ y: 380 }}
               columns={columns}
               dataSource={temperaryData}
               loading={loading}
@@ -343,5 +365,6 @@ export default function TaskList() {
         </div>
       </JfLayout.Main>
     </JfLayout>
+
   )
 }
