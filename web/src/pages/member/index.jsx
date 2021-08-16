@@ -14,7 +14,7 @@ const columns = [
     title: 'No.',
     key: 'No.',
     dataIndex: 'id',
-    render: (value, item, index) =>  index + 1,
+    render: (value, item, index) => index + 1,
     width: '6%',
   },
   {
