@@ -85,7 +85,7 @@ export default function MemberList() {
     setDataLoading(true)
     initPagination()
     webInit().then((res) => {
-      if (Object.keys(res) !== {}) {
+      if (Object.keys(res.data.auth.user) !== {}) {
         setUser(res.data.auth.user)
       }
     })
