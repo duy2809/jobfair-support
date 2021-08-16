@@ -6,6 +6,7 @@ describe('Top Page Test', () => {
     context('Top Page', () => {
         it('visit', () => {
             cy.visit('/top-page')
+            cy.getCookie('XSRF_TOKEN').should('be.not.exist')
         })
 
         // Check title of top page show
