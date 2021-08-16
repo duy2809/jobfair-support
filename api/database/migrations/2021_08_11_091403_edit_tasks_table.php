@@ -13,7 +13,6 @@ class EditTasksTable extends Migration
      */
     public function up()
     {
-
         Schema::table('tasks', function (Blueprint $table) {
             $table->boolean('remind_member')->nullable()->change();
             $table->text('description_of_detail')->nullable()->change();
@@ -21,7 +20,6 @@ class EditTasksTable extends Migration
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
             $table->dropColumn('number_of_member');
         });
-
     }
 
     /**

@@ -17,7 +17,6 @@ class AddTemplateTaskIdTasksTable extends Migration
             $table->text('memo')->nullable();
             $table->unsignedBigInteger('template_task_id')->nullable();
             $table->foreign('template_task_id')->references('id')->on('template_tasks')->nullOnDelete();
-
         });
     }
 
