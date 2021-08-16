@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Milestone;
-use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MilestoneFactory extends Factory
@@ -24,7 +23,6 @@ class MilestoneFactory extends Factory
     {
         return [
             'name' => preg_replace('/\s/', '_', $this->faker->unique()->name()),
-            'schedule_id' => Schedule::factory(),
             'period' => $this->faker->numberBetween(1, 50),
             'is_week' => false,
         ];
