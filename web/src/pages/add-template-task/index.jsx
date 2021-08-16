@@ -1,18 +1,12 @@
-<<<<<<< HEAD
-import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
-=======
 import { CheckCircleTwoTone,
   ExclamationCircleOutlined, ExclamationCircleTwoTone,
   LoadingOutlined } from '@ant-design/icons'
->>>>>>> fix db
 import {
   Button, Form, Spin,
   Input, Modal, notification,
   Select, Space, Tag, Tooltip,
 } from 'antd'
+
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import addTemplateTasksAPI from '../../api/add-template-task'
@@ -28,7 +22,9 @@ const index = () => {
   const [templateTasks, settemplateTasks] = useState([])
   const [isTemplateExisted, setIsTemplateExisted] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [selectedItems, setSelectedItems] = useState([])
+  const [beforeTasks, setPreTasks] = useState([])
+  const [afterTasks, setAfterTasks] = useState([])
+  // const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
 
   const [disableBtn, setdisableBtn] = useState(false)
@@ -50,7 +46,7 @@ const index = () => {
     // get all input values .
     const inputValues = form.getFieldsValue()
     //  return type :[]
-    const inputs = 'Object'.values(inputValues)
+    const inputs = Object.values(inputValues)
 
     for (let i = 0; i < inputs.length; i += 1) {
       const element = inputs[i]
@@ -79,6 +75,8 @@ const index = () => {
         setlistCatergories(Array.from(categories.data))
         setlistMilestones(Array.from(milestones.data))
         settemplateTasks(Array.from(tasks.data))
+        setAfterTasks(tasks.data)
+        setPreTasks(tasks.data)
         return null
       } catch (error) {
         return Error(error.toString())
@@ -94,7 +92,7 @@ const index = () => {
   }
 
   const autoConvertHalfwidth = (event) => {
-    // const ans = parseInt(Extensions.toHalfWidth(event.target.value), 10)
+    // get FormItem name of this input
     const inputRef = event.target.id
     const dummyObject = {}
     dummyObject[inputRef] = Extensions.toHalfWidth(event.target.value)
@@ -119,7 +117,7 @@ const index = () => {
   //  open prompt after cancel button clicked .
   const cancelConfirmModle = () => {
     if (checkIsFormInputEmpty()) {
-      routeTo('/jobfairs')
+      routeTo('/template-tasks')
     } else {
       Modal.confirm({
         title: '入力内容が保存されません。よろしいですか？',
@@ -127,7 +125,7 @@ const index = () => {
         content: '',
         onOk: () => {
           onFormReset()
-          routeTo('/')
+          routeTo('/template-tasks')
         },
         onCancel: () => {},
         okText: 'はい',
@@ -135,7 +133,7 @@ const index = () => {
       })
     }
   }
-  //  open success notification after add jobfair button clicked .
+  //  open success notification after add button clicked .
   const successNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
@@ -145,33 +143,24 @@ const index = () => {
     })
   }
 
-  // handle user click add job fair.
+  // handle user click add template task and response from serve.
   const onFinishSuccess = async (values) => {
-<<<<<<< HEAD
-    try {
-      const data = {
-        name: values.template_name,
-        description_of_detail: values.detail,
-        milestone_id: values.milestone_id,
-        is_day: values.isDay,
-        unit: values.unit,
-        effort: values.effort * 1.0,
-        category_id: values.category_id,
-        beforeTasks: values.beforeTasks,
-        afterTasks: values.afterTasks,
-      }
-      console.log(data)
-      setdisableBtn(true)
-      setLoading(true)
-      const response = await addTemplateTasksAPI.addTemplateTask(data)
-
-      if (response.status < 299) {
-        await successNotification()
-        // routeTo(`/jf-toppage/${response.data.id}`)
-      } else {
-=======
     if (!isTemplateExisted) {
       try {
+        const beforeID = []
+        const afterIDs = []
+
+        if (values.beforeTasks && values.afterTasks) {
+          templateTasks.forEach((e) => {
+            if (values.beforeTasks.includes(e.name)) {
+              beforeID.push(e.id)
+            }
+            if (values.afterTasks.includes(e.name)) {
+              afterIDs.push(e.id)
+            }
+            return ''
+          })
+        }
         const data = {
           name: values.template_name,
           description_of_detail: values.detail,
@@ -180,8 +169,8 @@ const index = () => {
           unit: values.unit,
           effort: values.effort * 1.0,
           category_id: values.category_id,
-          beforeTasks: values.beforeTasks,
-          afterTasks: values.afterTasks,
+          beforeTasks: beforeID,
+          afterTasks: afterIDs,
         }
         setdisableBtn(true)
         setLoading(true)
@@ -189,12 +178,11 @@ const index = () => {
 
         if (response.status < 299) {
           await successNotification()
-          // routeTo(`/template-task-dt/${response.data.id}`)
+          routeTo(`/template-task-dt/${response.data.id}`)
         } else {
           setdisableBtn(false)
           setLoading(false)
         }
-
         return response
       } catch (error) {
         const isDuplicate = JSON.parse(error.request.response).message
@@ -213,7 +201,6 @@ const index = () => {
             onClick: () => {},
           })
         }
->>>>>>> fix db
         setdisableBtn(false)
         setLoading(false)
         return error
@@ -240,7 +227,12 @@ const index = () => {
 
     return Promise.resolve()
   }
-
+  const isDayAndUnitValidator = (_, value) => {
+    if (value === undefined) {
+      return Promise.reject()
+    }
+    return Promise.resolve()
+  }
   const categoryValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -287,7 +279,6 @@ const index = () => {
     }
     return (
       <Tag
-        color={value}
         onMouseDown={onPreventMouseDown}
         closable={closable}
         onClose={onClose}
@@ -295,13 +286,15 @@ const index = () => {
       >
         <Tooltip title={label}>
           <span
-            // onClick={(e) => {
-            //   // router.push()
-            // }}
-            className="inline-block text-blue-800 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            onClick={() => {
+              const id = templateTasks.find((e) => e.name === value)
+              routeTo(`/template-task-dt/${id.id}`)
+            }}
+            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '20ch' }}
           >
-            <a href="" className="my-1">{label}</a>
+            {label}
+            {/* <a href="" className="my-1">{label}</a> */}
           </span>
 
         </Tooltip>
@@ -326,17 +319,23 @@ const index = () => {
       return null
     }
   }
-  const filterSelectedTasks = (data) => {
-    // console.log(data)
-    // const filteredOptions = templateTasks.filter((o) => !data.includes(o.id))
-    // console.log(Array.from(filteredOptions))
-    // settemplateTasks(Array.from(filteredOptions))
-    setSelectedItems(data)
+  const filtedArr = () => {
+    const before = form.getFieldsValue().beforeTasks
+    const after = form.getFieldsValue().afterTasks
+    let selectedItems = []
+    if (before && !after) {
+      selectedItems = [...selectedItems, ...before]
+    } else if (!before && after) {
+      selectedItems = [...selectedItems, ...after]
+    } else if (before && after) {
+      selectedItems = [...before, ...after]
+    }
+    const filted = templateTasks.filter((e) => !selectedItems.includes(e.name))
+    setAfterTasks(filted)
+    setPreTasks(filted)
+    return filted
   }
-  // const filteredOptions = templateTasks.filter((o) => !setSelectedItems.includes(o))
-<<<<<<< HEAD
 
-=======
   const loadingIcon = (
     <LoadingOutlined
       style={{ fontSize: 30,
@@ -344,43 +343,9 @@ const index = () => {
       spin
     />
   )
->>>>>>> fix db
   return (
     <>
 
-<<<<<<< HEAD
-    <OtherLayout>
-      <OtherLayout.Main>
-        <div className="add-template-task-page">
-          <div id="loading">
-            <Spin spinning={loading} tip="Loading..." size="large">
-              <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-                {/* page title */}
-                {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
-                <h1>テンプレートタスク追加 </h1>
-                <div>
-                  <div className="container mt-20">
-                    <div className="grid justify-items-center">
-                      <Form
-                        className="place-self-center add-template-form"
-                        form={form}
-                        labelCol={{
-                          span: 6,
-                        }}
-                        wrapperCol={{
-                          span: 13,
-                        }}
-                        layout="horizontal"
-                        colon
-                        initialValues={{ defaultInputValue: 0 }}
-                        onFinish={onFinishSuccess}
-                        onFinishFailed={onFinishFailed}
-                      >
-                        {/* template task name */}
-                        <Form.Item
-                          label="タスクテンプレート名"
-                          required
-=======
       <OtherLayout>
         <OtherLayout.Main>
 
@@ -388,7 +353,6 @@ const index = () => {
             <div id="loading">
               <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large">
                 <h1>テンプレートタスク追加 </h1>
-
                 <div className="container mx-auto flex-1 justify-center px-4  pb-20">
                   {/* page title */}
                   {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
@@ -409,7 +373,6 @@ const index = () => {
                           initialValues={{ defaultInputValue: 0 }}
                           onFinish={onFinishSuccess}
                           onFinishFailed={onFinishFailed}
->>>>>>> fix db
                         >
                           {/* template task name */}
                           <Form.Item
@@ -454,87 +417,6 @@ const index = () => {
                               },
                             ]}
                           >
-<<<<<<< HEAD
-                            <Input
-                              type="text"
-                              id="validate_name"
-                              onBlur={isTemplateTaskExisted}
-                              onChange={() => {
-                                document.getElementById('error-msg').setAttribute('hidden', 'true')
-                                document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
-                              }}
-                              placeholder="タスクテンプレート名を入力する"
-                              maxLength={200}
-                            />
-
-                          </Form.Item>
-
-                          <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
-                        </Form.Item>
-
-                        {/* category */}
-                        <Form.Item
-                          required
-                          // hasFeedback
-                          label="カテゴリー"
-                          name="category_id"
-                          rules={[
-                            {
-                              validator: categoryValidator,
-                            },
-                          ]}
-                        >
-                          <Select
-                            size="large"
-                            showArrow
-                            allowClear
-                            className="addJF-selector p-1"
-                            placeholder="カテゴリー"
-                          >
-                            {listCatergories.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
-                                {element.category_name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-
-                        </Form.Item>
-
-                        {/* milestone */}
-                        <Form.Item
-                          required
-                          // hasFeedback
-                          name="milestone_id"
-                          label="マイルストーン"
-                          rules={[
-                            {
-                              validator: milestoneValidator,
-                            },
-                          ]}
-                        >
-                          <Select
-                            showArrow
-                            allowClear
-                            size="large"
-                            className="addJF-selector p-1"
-                            placeholder="JF-スケジュールを選択"
-                          >
-                            {listMilestones.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
-                                {element.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-
-                        {/* relation */}
-                        <Form.Item
-                          label="リレーション"
-                        >
-                          <p className="">前のタスク:</p>
-                          <Form.Item noStyle name="beforeTasks">
-=======
->>>>>>> fix db
                             <Select
                               size="large"
                               showArrow
@@ -550,10 +432,6 @@ const index = () => {
                             </Select>
 
                           </Form.Item>
-<<<<<<< HEAD
-                          <p className="mt-7">後のタスク:</p>
-                          <Form.Item noStyle name="afterTasks">
-=======
 
                           {/* milestone */}
                           <Form.Item
@@ -567,10 +445,8 @@ const index = () => {
                               },
                             ]}
                           >
->>>>>>> fix db
                             <Select
                               showArrow
-                              showSearch={false}
                               allowClear
                               size="large"
                               className="addJF-selector p-1"
@@ -595,13 +471,12 @@ const index = () => {
                                 showArrow
                                 allowClear
                                 tagRender={tagRender}
-                                value={selectedItems}
                                 className="w-100"
                                 placeholder="リレーション"
-                                onChange={filterSelectedTasks}
+                                onChange={filtedArr}
                               >
-                                {templateTasks.map((element) => (
-                                  <Select.Option key={element.id} value={element.id}>
+                                {beforeTasks.map((element) => (
+                                  <Select.Option key={element.id} value={element.name}>
                                     {element.name}
                                   </Select.Option>
                                 ))}
@@ -615,9 +490,11 @@ const index = () => {
                                 tagRender={tagRender}
                                 mode="multiple"
                                 placeholder="リレーション"
+                                onChange={filtedArr}
+
                               >
-                                {templateTasks.map((element) => (
-                                  <Select.Option key={element.id} value={element.id}>
+                                {afterTasks.map((element) => (
+                                  <Select.Option key={element.id} value={element.name}>
                                     {element.name}
                                   </Select.Option>
                                 ))}
@@ -626,58 +503,6 @@ const index = () => {
 
                           </Form.Item>
 
-<<<<<<< HEAD
-                        >
-                          <Space className="space-items-special flex justify-between ">
-                            <div className="w-1/2 max-w-xs flex-grow ">
-                              <Form.Item
-                                noStyle
-                                name="effort"
-                                rules={[
-                                  {
-                                    validator: numberInputValidator,
-                                  },
-                                ]}
-                              >
-                                <Input
-                                  className="h-1/2 py-1"
-                                  style={{ padding: '9px', minWidth: '53px' }}
-                                  type="text"
-                                  size="large"
-                                  min={1}
-                                  value={0}
-                                  onChange={autoConvertHalfwidth}
-                                />
-                              </Form.Item>
-                            </div>
-                            {/* ----------------- */}
-                            <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                              <Form.Item noStyle name="isDay">
-                                <Select
-                                  required
-                                  className="special-selector w-100 "
-                                  showArrow
-                                  size="large"
-                                  showSearch={false}
-                                  placeholder="時間"
-                                >
-                                  {isDayData.map((element) => (
-                                    <Select.Option key={element.id} value={element.id}>
-                                      {element.name}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-                              </Form.Item>
-                              <p className="slash-devider text-3xl font-extrabold"> / </p>
-                              <Form.Item noStyle name="unit">
-                                <Select
-                                  required
-                                  size="large"
-                                  className="special-selector"
-                                  showArrow
-                                  showSearch={false}
-                                  placeholder="学生数"
-=======
                           {/* Kōsū - effort  */}
                           <Form.Item
                             label="工数"
@@ -688,12 +513,12 @@ const index = () => {
                                 <Form.Item
                                   noStyle
                                   name="effort"
+                                  required
                                   rules={[
                                     {
                                       validator: numberInputValidator,
                                     },
                                   ]}
->>>>>>> fix db
                                 >
                                   <Input
                                     className="h-1/2 py-1"
@@ -708,9 +533,17 @@ const index = () => {
                               </div>
                               {/* ----------------- */}
                               <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                                <Form.Item noStyle name="isDay">
+                                <Form.Item
+                                  noStyle
+                                  name="isDay"
+                                  required
+                                  rules={[
+                                    {
+                                      validator: isDayAndUnitValidator,
+                                    },
+                                  ]}
+                                >
                                   <Select
-                                    required
                                     className="special-selector w-100 "
                                     showArrow
                                     size="large"
@@ -725,9 +558,17 @@ const index = () => {
                                   </Select>
                                 </Form.Item>
                                 <p className="slash-devider text-3xl font-extrabold leading-10"> / </p>
-                                <Form.Item noStyle name="unit">
+                                <Form.Item
+                                  noStyle
+                                  name="unit"
+                                  required
+                                  rules={[
+                                    {
+                                      validator: isDayAndUnitValidator,
+                                    },
+                                  ]}
+                                >
                                   <Select
-                                    required
                                     size="large"
                                     className="special-selector"
                                     showArrow
