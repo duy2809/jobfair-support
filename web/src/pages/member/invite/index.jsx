@@ -131,10 +131,10 @@ function InviteMember() {
                     label="メールアドレス"
                     noStyle
                     rules={[
-                      { required: true },
                       {
                         type: 'email',
                         message: 'メールアドレス有効なメールではありません!',
+                        required: true,
                       },
                     ]}
                   >
@@ -180,18 +180,11 @@ function InviteMember() {
                     <Button
                       className="ant-btn mr-3"
                       id="btn-cancel"
-                      htmlType="button"
-                      enabled="true"
                       onClick={handleModal}
                     >
                       キャンセル
                     </Button>
-                    <Button
-                      id="btn-submit"
-                      type="primary"
-                      htmlType="submit"
-                      enabled
-                    >
+                    <Button id="btn-submit" type="primary">
                       招待
                     </Button>
                   </Space>
