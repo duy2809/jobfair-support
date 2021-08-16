@@ -48,6 +48,7 @@ class TemplateTaskController extends Controller
         }
 
         return $newTemplateTask;
+
         // $newTemplateTask = TemplateTask::create($request->validated());
         // $newTemplateTask->categories()->attach($request->category_id);
         // if (!empty($request->beforeTasks)) {
