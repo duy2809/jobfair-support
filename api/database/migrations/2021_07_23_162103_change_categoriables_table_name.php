@@ -22,6 +22,6 @@ class ChangeCategoriablesTableName extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categoriables');
+        Schema::rename('categoriables', 'categoriable');
     }
 }

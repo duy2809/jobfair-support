@@ -13,30 +13,15 @@ class EditTasksTable extends Migration
      */
     public function up()
     {
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->dropForeign('assignments_task_id_foreign');
-            $table->dropColumn('task_id');
-        });
-        Schema::dropIfExists('tasks');
-        Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->date('start_time');
-            $table->date('duration');
-            $table->string('status');
-            $table->boolean('remind_member')->nullable();
-            $table->text('description_of_detail')->nullable();
-            $table->unsignedBigInteger('milestone_id');
+
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->boolean('remind_member')->nullable()->change();
+            $table->text('description_of_detail')->nullable()->change();
             $table->unsignedBigInteger('schedule_id');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->timestamps();
-            $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
+            $table->dropColumn('number_of_member');
         });
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->unsignedBigInteger('task_id');
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
-        });
+
     }
 
     /**
@@ -46,29 +31,12 @@ class EditTasksTable extends Migration
      */
     public function down()
     {
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->dropForeign('assignments_task_id_foreign');
-            $table->dropColumn('task_id');
-        });
-        Schema::dropIfExists('tasks');
-        Schema::create('tasks', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->date('start_time');
-            $table->date('end_time');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->boolean('remind_member')->change();
+            $table->text('description_of_detail')->change();
+            $table->dropForeign(['schedule_id']);
+            $table->dropColumn('schedule_id');
             $table->unsignedInteger('number_of_member');
-            $table->string('status');
-            $table->boolean('remind_member');
-            $table->text('description_of_detail');
-            $table->unsignedInteger('relation_task_id');
-            $table->unsignedBigInteger('milestone_id');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->timestamps();
-            $table->foreign('milestone_id')->references('id')->on('milestones')->onDelete('cascade');
-        });
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->unsignedBigInteger('task_id');
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
         });
     }
 }
