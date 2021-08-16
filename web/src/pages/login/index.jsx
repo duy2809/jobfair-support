@@ -44,7 +44,7 @@ const LoginPage = () => {
       const response = await login(values)
       if (response.request.status === 200) openNotification('success', '正常にログインしました')
       setTimeout(() => {
-        router.push('/top')
+        router.push('/top-page')
       }, 2500)
     } catch (error) {
       if (error.request.status === 400) {
@@ -148,6 +148,7 @@ const LoginPage = () => {
               okButtonProps={{
                 disabled: isDisableOk,
               }}
+              centered
             >
               <Form
                 form={form2}
