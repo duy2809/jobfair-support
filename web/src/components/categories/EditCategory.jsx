@@ -95,7 +95,7 @@ const EditCategory = (props) => {
     <>
       <EditTwoTone onClick={showModal} />
       <Modal
-        title="編集カテゴリ"
+        title="カテゴリ編集"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -106,7 +106,7 @@ const EditCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p> </p>
+              <p>カテゴリ名</p>
             }
             name="name"
             rules={[
