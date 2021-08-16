@@ -141,7 +141,6 @@ const index = () => {
       setdisableBtn(true)
 
       const response = await addJFAPI.addJF(data)
-      console.log(response)
       if (response.status < 299) {
         await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
@@ -152,24 +151,24 @@ const index = () => {
       return response
     } catch (error) {
       setdisableBtn(false)
-      const isDuplicate = JSON.parse(error.request.response).message
-      if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
+      const errorResponse = JSON.parse(error.request.response)
+
+      if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: 'このJF名は既に使用されています。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: '保存に失敗しました。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       }
-
-      console.log(error)
+      // console.log(JSON.parse(error.request.response).errors.name[0])
       return error
     }
   }
