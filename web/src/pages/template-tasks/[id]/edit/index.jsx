@@ -94,7 +94,6 @@ const EditTemplateTaskPage = () => {
   const fetchPrevTasks = async (id) => {
     await getPrevTasks(id).then((res) => {
       setPrevTasks(res.data.before_tasks)
-      console.log(res.data.before_tasks)
       const value = []
       res.data.before_tasks.forEach((item) => value.push(item.name))
       form.setFieldsValue({
@@ -126,7 +125,7 @@ const EditTemplateTaskPage = () => {
       duration: 3,
     })
     setTimeout(() => {
-      window.location.href = '/template-tasks'
+      // window.location.href = '/template-tasks'
     }, 3000)
   }
 
@@ -134,7 +133,6 @@ const EditTemplateTaskPage = () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     setPathId(id)
-
     fetchTemplateTask(id)
     fetchCategoryData()
     fetchMilestoneData()
@@ -163,6 +161,9 @@ const EditTemplateTaskPage = () => {
     const submitNextTasks = []
     prevTasks.forEach((item) => submitPrevTasks.push(item.id))
     nextTasks.forEach((item) => submitNextTasks.push(item.id))
+    // console.log(isDay)
+    console.log(unit)
+    console.log(effortNumber)
     updateTemplateTask(id, {
       name: templateTaskNameInput,
       description_of_detail: description,

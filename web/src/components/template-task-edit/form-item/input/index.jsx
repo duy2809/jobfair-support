@@ -38,11 +38,14 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
                 new Error('使用できない文字が含まれています'),
               )
             }
-
-            if (tasksList.find((item) => item.name === value)) {
-              return Promise.reject(
-                new Error('このマイルストーン名は存在しています'),
-              )
+            const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+            const id = `${temp[1]}`
+            if ((tasksList.find((item) => item.name === value))) {
+              if ((tasksList.find((item) => item.name === value)).id === id) {
+                return Promise.reject(
+                  new Error('このマイルストーン名は存在しています'),
+                )
+              }
             }
 
             return Promise.resolve()
