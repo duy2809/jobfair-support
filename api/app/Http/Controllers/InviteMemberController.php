@@ -15,7 +15,6 @@ class InviteMemberController extends Controller
     {
         $request->validate([
             'email' => 'required|email',
-            'role'  => 'required|integer|min:2|max:3',
         ]);
         $user = User::whereEmail($request->email)->first();
         if (!$user) {
@@ -23,9 +22,9 @@ class InviteMemberController extends Controller
                 'email'       => $request->email,
                 'name'        => 'User'.random_int(10000, 99999),
                 'password'    => Hash::make('12345678'),
-                'role'        => $request->role,
+                'role'        => 3,
                 'chatwork_id' => null,
-                'avatar'      => 'public/image/avatars/default.jpg',
+                'avatar'      => 'image/avatars/default.jpg',
                 'created_at'  => now(),
                 'updated_at'  => now(),
             ]);
