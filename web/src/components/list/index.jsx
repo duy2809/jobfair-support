@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Table, Input, DatePicker } from 'antd'
-import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
-import QueueAnim from 'rc-queue-anim'
-import PropTypes from 'prop-types'
-import { taskSearch } from '../../api/top-page'
+import React, { useEffect, useState, useRef } from "react";
+import { Button, Table, Input, DatePicker } from "antd";
+import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import QueueAnim from "rc-queue-anim";
+import PropTypes from "prop-types";
+import { taskSearch } from "../../api/top-page";
 
-const { Search } = Input
+const { Search } = Input;
 
 const List = ({
   searchIcon,
@@ -17,87 +17,117 @@ const List = ({
   dataColumn,
   dataSource,
 }) => {
-  const [show, setShow] = useState(false)
-  const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
-  const [list, setList] = useState([])
+  const ref = useRef();
+
+  const [show, setShow] = useState(false);
+  const [showSearchIcon, setShowSearchIcon] = useState(searchIcon);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
-    setList(dataSource)
-  }, [dataSource])
+    setList(dataSource);
+  }, [dataSource]);
+
+  useEffect(() => {
+    const onBodyClick = (event) => {
+      //   console.log(event.target);
+      if (ref.current.contains(event.target)) {
+        return;
+      }
+      setShow(false);
+      setShowSearchIcon(true);
+    };
+
+    document.body.addEventListener("click", onBodyClick, { capture: true });
+
+    return () => {
+      document.body.removeEventListener("click", onBodyClick, {
+        capture: true,
+      });
+    };
+  }, []);
 
   const onClick = () => {
-    setShow(!show)
-    setShowSearchIcon(!showSearchIcon)
-  }
+    setShow(!show);
+    setShowSearchIcon(!showSearchIcon);
+  };
 
   const searchByName = (e) => {
     const datas = dataSource.filter((data) => {
-      console.log(data.name)
+      console.log(data.name);
       return (
         data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
-      )
-    })
-    setList(datas)
-  }
+      );
+    });
+    setList(datas);
+  };
   const searchByTime = (date, dateString) => {
-    if (dataColumn[1].dataIndex === 'type') dateString = dateString.replace('-', '/')
-    console.log(dateString)
-    const datas = dataSource.filter((data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1)
-    setList(datas)
-  }
+    if (dataColumn[1].dataIndex === "type")
+      dateString = dateString.replace("-", "/");
+    console.log(dateString);
+    const datas = dataSource.filter(
+      (data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1
+    );
+    setList(datas);
+  };
 
   const searchByCategory = (e) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     const datas = dataSource.filter(
-      (data) => data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
+      (data) =>
+        data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
+    );
+    setList(datas);
+  };
 
   const searchByMilestone = (e) => {
-    console.log(e.target.value)
+    console.log(e.target.value);
     const datas = dataSource.filter(
-      (data) => data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase())
-        !== -1,
-    )
-    setList(datas)
-  }
+      (data) =>
+        data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase()) !==
+        -1
+    );
+    setList(datas);
+  };
   const searchByJobfairName = (e) => {
     const getTask = async () => {
-      const response = await taskSearch(e.target.value)
-      let tasks = []
+      const response = await taskSearch(e.target.value);
+      let tasks = [];
       tasks = response.data.map((data) => ({
         name: data.name,
         type: data.status,
         time: data.start_time,
-      }))
-      setList(tasks)
-    }
-    getTask()
-  }
+      }));
+      setList(tasks);
+    };
+    getTask();
+  };
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <p style={{ fontSize: '22px', marginBottom: '16px' }}>{text}</p>
+    <div ref={ref}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <p style={{ fontSize: "22px", marginBottom: "16px" }}>{text}</p>
         <div className="flex items-center">
           <Button
-            style={{ border: 'none', marginBottom: '5px' }}
+            style={{ border: "none", marginBottom: "5px" }}
             shape="circle"
-            icon={<PlusCircleOutlined style={{ fontSize: '30px' }} />}
+            icon={<PlusCircleOutlined style={{ fontSize: "30px" }} />}
           />
 
           <span className="queue-demo">
             {showSearchIcon && (
               <Button
-                style={{ border: 'none' }}
+                style={{ border: "none" }}
                 shape="circle"
-                icon={<SearchOutlined style={{ fontSize: '30px' }} />}
+                icon={<SearchOutlined style={{ fontSize: "30px" }} />}
                 onClick={onClick}
               />
             )}
 
             <span>
-              <QueueAnim type="right" ease={['easeOutQuart', 'easeInOutQuart']}>
+              <QueueAnim
+                type="right"
+                delay={50}
+                ease={["easeOutQuart", "easeInOutQuart"]}
+              >
                 {show ? (
                   <Search
                     key="demo"
@@ -115,23 +145,23 @@ const List = ({
 
       <div
         style={{
-          display: 'grid',
-          gridTemplateRows: '15% 75%',
-          height: '480px',
-          backgroundColor: 'white',
-          border: '1px solid black',
-          borderRadius: '10px',
+          display: "grid",
+          gridTemplateRows: "15% 75%",
+          height: "480px",
+          backgroundColor: "white",
+          border: "1px solid black",
+          borderRadius: "10px",
         }}
       >
         <div
           style={{
-            display: 'grid',
+            display: "grid",
           }}
         >
           <div className="flex items-center justify-end px-2">
             {showTimeInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-1">Time: </div>
+                <div className="px-1">タイム: </div>
                 <div>
                   <DatePicker
                     picker="month"
@@ -144,7 +174,7 @@ const List = ({
 
             {showSearchByJFInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">JobFair Name: </div>
+                <div className="px-2">就職フェアの名前: </div>
                 <div>
                   <Input type="text" onChange={searchByJobfairName} />
                 </div>
@@ -155,7 +185,7 @@ const List = ({
           <div className="flex items-center justify-end px-2">
             {showCategoryInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">Categoty: </div>
+                <div className="px-2">カテゴリ: </div>
                 <div>
                   <Input type="text" onChange={searchByCategory} />
                 </div>
@@ -164,7 +194,7 @@ const List = ({
 
             {showMilestoneInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">Milestone: </div>
+                <div className="px-2">マイルストーン: </div>
                 <div>
                   <Input type="text" onChange={searchByMilestone} />
                 </div>
@@ -177,7 +207,7 @@ const List = ({
         <div>
           <Table
             pagination={{
-              position: ['bottomCenter'],
+              position: ["bottomCenter"],
               responsive: true,
               defaultPageSize: 5,
               // total: 5,
@@ -190,8 +220,8 @@ const List = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 List.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
@@ -202,6 +232,6 @@ List.propTypes = {
   showSearchByJFInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
-}
+};
 
-export default List
+export default List;
