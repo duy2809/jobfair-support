@@ -106,7 +106,7 @@ const EditCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p>カテゴリ名</p>
+              <span>カテゴリ名</span>
             }
             name="name"
             rules={[
@@ -129,6 +129,7 @@ const EditCategory = (props) => {
               type="text"
               required="required"
               className="input-category"
+              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
               placeholder="カテゴリ名を書いてください"

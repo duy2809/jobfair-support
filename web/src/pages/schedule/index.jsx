@@ -4,6 +4,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import './styles.scss'
+import { webInit } from '~/api/web-init'
 
 import { ListScheduleApi } from '~/api/schedule'
 
@@ -30,7 +31,8 @@ export default function ScheduleList() {
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
-
+  const [user, setUser] = useState({})
+  const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
@@ -68,6 +70,13 @@ export default function ScheduleList() {
   const fetchData = useCallback(() => {
     setDataLoading(true)
     initPagination()
+    webInit().then((res) => {
+      if (res.data.auth != null) {
+        setUser(res.data.auth.user)
+      } else {
+        router.push('/login')
+      }
+    })
     ListScheduleApi.getListShedule().then((res) => {
       const { data } = res
       setSchedules(data)
@@ -77,7 +86,6 @@ export default function ScheduleList() {
     })
   })
 
-  const router = useRouter()
   const handleClick = (e) => {
     e.preventDefault()
     router.push('/schedule/add')
@@ -91,7 +99,7 @@ export default function ScheduleList() {
     fetchData()
   }, [itemCount])
   const { Option } = Select
-  const role = 'super admin'
+  const role = user.role
   return (
     <Layout>
       <Layout.Main>
@@ -99,7 +107,7 @@ export default function ScheduleList() {
           <div className="flex w-full justify-between">
             <div className="text-4xl title">JFスケジュール一覧</div>
             <div>
-              { role === 'super admin' ? (
+              { role === 'superadmin' ? (
                 <Button
                   type="primary"
                   className="px-12"
