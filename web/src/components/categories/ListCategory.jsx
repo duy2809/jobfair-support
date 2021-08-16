@@ -120,7 +120,7 @@ export default function ListCategories() {
             </Select>
           </p>
           <p>
-            <div className="absolute right-12">
+            <div className="absolute right-12 no-border">
               <Space direction="vertical">
                 <Input
                   placeholder="カテゴリを検索"

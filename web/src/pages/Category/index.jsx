@@ -4,7 +4,7 @@ import ListCategory from '../../components/categories/ListCategory'
 import OtherLayout from '../../layouts/OtherLayout'
 import './style.scss'
 
-function App() {
+function listCategories() {
   return (
     <div>
       <OtherLayout>
@@ -17,5 +17,5 @@ function App() {
     </div>
   )
 }
-
-export default App
+listCategories.middleware = ['auth']
+export default listCategories
