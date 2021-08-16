@@ -3,9 +3,13 @@
     color: #272343;
     font-size: 16px;
 }
-.bell-icon {
-    color: #ffd803;
+
+.cursor-pointer{
+    .bell-icon {
+        color: #ffd803;
+    }
 }
+
 .number-notifications {
     color: #F14E2B;
 }
@@ -13,3 +17,49 @@
     border-radius: 50%;
     background-color: #ffd803;
 } 
+
+.notification {
+    width: 600px;
+    
+    .noti-header{
+        display: flex;
+        justify-items: center;
+        align-items: center;
+        margin: auto;
+    }
+
+    .noti-title{
+        font-size: 18px;
+        padding-right: 180px;
+    }
+
+    .noti-checked{
+        font-size: 18px;
+        padding-left: 180px;
+    }
+
+    .ant-list-items{
+        height: auto;
+        max-height: 500px;
+        overflow: auto;
+        
+        .noti-time{
+            padding-left: 48px;
+        }
+
+        .delete-btn {
+            margin-left: 30px;
+        }
+    }
+
+    .noti-footer{
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .noti-list-item {
+        width: 500px;
+        
+    }
+
+}
