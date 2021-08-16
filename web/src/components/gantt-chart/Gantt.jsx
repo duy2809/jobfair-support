@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from 'react'
 import { gantt } from 'dhtmlx-gantt'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
-import './Gantt.css'
+// import './Gantt.css'
 import './material.css'
 import './export'
 
@@ -101,42 +101,31 @@ export default class Gantt extends Component {
     ]
     gantt.config.columns = [
 
-      { name: 'text', label: 'Template Milestone', tree: true, width: '*' },
+      // { name: 'text', label: 'Template Milestone', tree: true, width: '*' },
       {
         name: 'progress',
-        label: 'Progress',
+        label: '',
         width: 80,
         align: 'center',
         template(item) {
-          if (item.progress >= 1) return 'Complete'
-          if (item.progress == 0) return 'Not started'
-          return `${Math.round(item.progress * 100)}%`
+          // if (item.progress >= 1) return 'Complete'
+          // if (item.progress == 0) return 'Not started'
+          // return `${Math.round(item.progress * 100)}%`
+          return 'Category'
         },
       },
       {
         name: 'assigned',
-        label: 'Assigned to',
+        label: '',
         align: 'center',
         width: 100,
         template(item) {
-          if (!item.users) return 'Nobody'
+          // if (!item.users) return 'Nobody'
           // return item.users.join(', ')
+          return 'task'
         },
       },
-      {
-        name: 'priority',
-        label: 'Priority',
-        align: 'center',
-        template(obj) {
-          if (obj.priority == 1) {
-            return 'Low'
-          }
-          if (obj.priority == 2) {
-            return 'Medium'
-          }
-          return 'High'
-        },
-      },
+
     ]
 
     // specifies the delay (in milliseconds) before redrawing the gantt when resizing the container
