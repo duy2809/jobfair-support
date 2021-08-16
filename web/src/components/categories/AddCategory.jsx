@@ -124,6 +124,7 @@ const AddCategory = (props) => {
               placeholder="例: 2次面接練習"
               className="input-category"
               required="required"
+              style={{ width: '-webkit-fill-available' }}
               onChange={onValueNameChange}
               onBlur={onBlur}
             />
