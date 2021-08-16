@@ -1,182 +1,182 @@
-import React, { useEffect, useState, useRef } from "react";
-import Navbar from "../../components/navbar";
-import List from "../../components/list";
-import { tasks, members, jobfairs } from "../../api/top-page";
-import { getTaskList } from "../../api/template-task";
-import { ListScheduleApi } from "../../api/schedule";
+import React, { useEffect, useState, useRef } from 'react'
+import Navbar from '../../components/navbar'
+import List from '../../components/list'
+import { tasks, members, jobfairs } from '../../api/top-page'
+import { getTaskList } from '../../api/template-task'
+import { ListScheduleApi } from '../../api/schedule'
 
-const { getListShedule } = ListScheduleApi;
+const { getListShedule } = ListScheduleApi
 
 const jfListDataColumn = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
-    title: "Time",
-    dataIndex: "time",
-    key: "time",
+    title: 'Time',
+    dataIndex: 'time',
+    key: 'time',
   },
-];
+]
 
 const memListDataColumn = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
   },
-];
+]
 
 const jfScheduleDataColumn = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
   },
-];
+]
 
 const templateTaskDataColumn = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
-    title: "Category",
-    dataIndex: "category",
-    key: "category",
+    title: 'Category',
+    dataIndex: 'category',
+    key: 'category',
   },
   {
-    title: "Milestone",
-    dataIndex: "milestone",
-    key: "milestone",
+    title: 'Milestone',
+    dataIndex: 'milestone',
+    key: 'milestone',
   },
-];
+]
 
 const taskListDataColumn = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
-    title: "Type",
-    dataIndex: "type",
-    key: "type",
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
   },
   {
-    title: "Time",
-    dataIndex: "time",
-    key: "time",
+    title: 'Time',
+    dataIndex: 'time',
+    key: 'time',
   },
-];
+]
 
 const Top = () => {
-  const ref = useRef();
-  const [taskData, setTaskData] = useState([]);
-  const taskDataItem = [];
+  const ref = useRef()
+  const [taskData, setTaskData] = useState([])
+  const taskDataItem = []
 
-  const [memberData, setMemberData] = useState([]);
-  const memberDataItem = [];
+  const [memberData, setMemberData] = useState([])
+  const memberDataItem = []
 
-  const [jobfairData, setJobfairData] = useState([]);
-  const jobfairDataItem = [];
+  const [jobfairData, setJobfairData] = useState([])
+  const jobfairDataItem = []
 
   //   const [scheduleData, setScheduleData] = useState([]);
   //   const scheduleDataItem = [];
 
   //   const [templateTaskData, setTemplateTaskData] = useState([]);
   //   const templateTaskDataItem = [];
-  const [templateData, setTemplateData] = useState([]);
-  const [scheduleData, setScheduleData] = useState([]);
+  const [templateData, setTemplateData] = useState([])
+  const [scheduleData, setScheduleData] = useState([])
 
   useEffect(() => {
     const getTask = async () => {
-      const response = await tasks();
-      setTaskData(response.data);
-    };
+      const response = await tasks()
+      setTaskData(response.data)
+    }
 
     const getMember = async () => {
-      const response = await members();
-      setMemberData(response.data);
-    };
+      const response = await members()
+      setMemberData(response.data)
+    }
 
     const getJobfair = async () => {
-      const response = await jobfairs();
-      setJobfairData(response.data);
-    };
+      const response = await jobfairs()
+      setJobfairData(response.data)
+    }
 
     const getTemplate = async () => {
       await getTaskList().then((res) => {
-        const datas = [];
+        const datas = []
         res.data.forEach((data) => {
           const categoriesName = data.categories.map(
-            (category) => category.category_name
-          );
+            (category) => category.category_name,
+          )
           categoriesName.forEach((categoryName) => {
             datas.push({
               name: data.name,
               category: categoryName,
               milestone: data.template_milestone.name,
-            });
-          });
-        });
-        setTemplateData(datas);
-      });
-    };
+            })
+          })
+        })
+        setTemplateData(datas)
+      })
+    }
 
     const getSchedule = async function () {
-      let dataItem = [];
+      let dataItem = []
       await getListShedule().then((res) => {
-        dataItem = res.data.map((data) => ({ name: data.name }));
-      });
-      setScheduleData(dataItem);
-    };
+        dataItem = res.data.map((data) => ({ name: data.name }))
+      })
+      setScheduleData(dataItem)
+    }
 
-    getTask();
-    getMember();
-    getJobfair();
-    getTemplate();
-    getSchedule();
-  }, []);
+    getTask()
+    getMember()
+    getJobfair()
+    getTemplate()
+    getSchedule()
+  }, [])
 
   jobfairData.forEach((jobfair) => {
-    const jobfairItem = { key: "", name: "", time: "" };
-    jobfairItem.key = jobfair.id;
-    jobfairItem.name = jobfair.name;
-    jobfairItem.time = jobfair.start_date;
+    const jobfairItem = { key: '', name: '', time: '' }
+    jobfairItem.key = jobfair.id
+    jobfairItem.name = jobfair.name
+    jobfairItem.time = jobfair.start_date
 
-    jobfairDataItem.push(jobfairItem);
-  });
+    jobfairDataItem.push(jobfairItem)
+  })
 
   memberData.forEach((member) => {
-    const memberItem = { key: "", name: "" };
-    memberItem.key = member.id;
-    memberItem.name = member.name;
+    const memberItem = { key: '', name: '' }
+    memberItem.key = member.id
+    memberItem.name = member.name
 
-    memberDataItem.push(memberItem);
-  });
+    memberDataItem.push(memberItem)
+  })
 
   taskData.forEach((task) => {
-    const taskItem = { key: "", name: "", type: "", time: "" };
-    taskItem.key = task.id;
-    taskItem.name = task.name;
-    taskItem.type = task.status;
-    taskItem.time = task.start_time;
+    const taskItem = { key: '', name: '', type: '', time: '' }
+    taskItem.key = task.id
+    taskItem.name = task.name
+    taskItem.type = task.status
+    taskItem.time = task.start_time
 
-    taskDataItem.push(taskItem);
-  });
+    taskDataItem.push(taskItem)
+  })
   return (
     <div ref={ref}>
       <Navbar />
-      <div style={{ width: "90%", margin: "auto" }}>
+      <div style={{ width: '90%', margin: 'auto' }}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "50% 50%",
-            gridGap: "20px",
-            width: "100%",
+            display: 'grid',
+            gridTemplateColumns: '50% 50%',
+            gridGap: '20px',
+            width: '100%',
           }}
         >
           <List
@@ -233,7 +233,7 @@ const Top = () => {
         </div>
       </div>
     </div>
-  );
-};
-Top.middleware = ["auth:superadmin", "auth:admin", "auth:member"];
-export default Top;
+  )
+}
+Top.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default Top

@@ -5,8 +5,22 @@ const columns = ['Name', 'Time', 'Name', 'Name', 'Name', 'Category', 'Milestone'
 describe('Top Page Test', () => {
     context('Top Page', () => {
         it('visit', () => {
+            cy.request('GET', '/api/web-init').then((response) => {
+                const str = response.headers['set-cookie'][0]
+                const token = `${str.replace('XSRF-TOKEN=', '').replace(/%3[Dd].*/g, '')}==`
+                cy.request({
+                    method: 'POST',
+                    url: '/api/login',
+                    headers: {
+                        'X-XSRF-TOKEN': token,
+                    },
+                    body: {
+                        email: 'jobfair@sun-asterisk.com',
+                        password: '12345678',
+                    },
+                })
+            })
             cy.visit('/top-page')
-            cy.getCookie('XSRF_TOKEN').should('be.not.exist')
         })
 
         // Check title of top page show
