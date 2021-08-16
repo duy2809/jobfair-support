@@ -123,7 +123,7 @@ class JobfairController extends Controller
             'schedule:id,jobfair_id',
             'schedule.milestones:id,name',
             'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
-                $q->where('schedule_id', '=', $scheduleId->id)->select('name', 'status', 'milestone_id');
+                $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
             },
         ])->find($id, ['id']);
 
@@ -159,7 +159,7 @@ class JobfairController extends Controller
     {
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
-                $q->where('tasks.name', 'LIKE', "%$request->name%");
+                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%'.$request->name.'%');
             },
         ])->find($id, ['id']);
 
