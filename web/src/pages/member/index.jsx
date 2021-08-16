@@ -46,7 +46,7 @@ export default function MemberList() {
   const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
-
+  const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
@@ -99,7 +99,6 @@ export default function MemberList() {
       setDataLoading(false)
     })
   })
-  const router = useRouter()
   const handleRow = (record) => ({ onClick: () => {
     router.push(`/member/${record.id}`)
   } })
