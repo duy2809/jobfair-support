@@ -22,9 +22,9 @@ const index = () => {
   const [templateTasks, settemplateTasks] = useState([])
   const [isTemplateExisted, setIsTemplateExisted] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [preTasks, setPreTasks] = useState([])
+  const [beforeTasks, setPreTasks] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
-  const [selectedItems, setSelectedItems] = useState([])
+  // const [selectedItems, setSelectedItems] = useState([])
   const { TextArea } = Input
 
   const [disableBtn, setdisableBtn] = useState(false)
@@ -46,7 +46,7 @@ const index = () => {
     // get all input values .
     const inputValues = form.getFieldsValue()
     //  return type :[]
-    const inputs = 'Object'.values(inputValues)
+    const inputs = Object.values(inputValues)
 
     for (let i = 0; i < inputs.length; i += 1) {
       const element = inputs[i]
@@ -75,6 +75,8 @@ const index = () => {
         setlistCatergories(Array.from(categories.data))
         setlistMilestones(Array.from(milestones.data))
         settemplateTasks(Array.from(tasks.data))
+        setAfterTasks(tasks.data)
+        setPreTasks(tasks.data)
         return null
       } catch (error) {
         return Error(error.toString())
@@ -145,16 +147,30 @@ const index = () => {
   const onFinishSuccess = async (values) => {
     if (!isTemplateExisted) {
       try {
+        const beforeID = []
+        const afterIDs = []
+
+        if (values.beforeTasks && values.afterTasks) {
+          templateTasks.forEach((e) => {
+            if (values.beforeTasks.includes(e.name)) {
+              beforeID.push(e.id)
+            }
+            if (values.afterTasks.includes(e.name)) {
+              afterIDs.push(e.id)
+            }
+            return ''
+          })
+        }
         const data = {
           name: values.template_name,
           description_of_detail: values.detail,
           milestone_id: values.milestone_id,
-          is_day: String(values.isDay),
+          is_day: values.isDay,
           unit: values.unit,
           effort: values.effort * 1.0,
           category_id: values.category_id,
-          beforeTasks: values.beforeTasks,
-          afterTasks: values.afterTasks,
+          beforeTasks: beforeID,
+          afterTasks: afterIDs,
         }
         setdisableBtn(true)
         setLoading(true)
@@ -167,7 +183,6 @@ const index = () => {
           setdisableBtn(false)
           setLoading(false)
         }
-
         return response
       } catch (error) {
         const isDuplicate = JSON.parse(error.request.response).message
@@ -212,7 +227,12 @@ const index = () => {
 
     return Promise.resolve()
   }
-
+  const isDayAndUnitValidator = (_, value) => {
+    if (value === undefined) {
+      return Promise.reject()
+    }
+    return Promise.resolve()
+  }
   const categoryValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -298,15 +318,23 @@ const index = () => {
       return null
     }
   }
-  // const
-  const filterSelectedTasks = (data) => {
-    // console.log(data)
-    // const filteredOptions = templateTasks.filter((o) => !data.includes(o.id))
-    // console.log(Array.from(filteredOptions))
-    // settemplateTasks(Array.from(filteredOptions))
-    setSelectedItems(data)
+  const filtedArr = () => {
+    const before = form.getFieldsValue().beforeTasks
+    const after = form.getFieldsValue().afterTasks
+    let selectedItems = []
+    if (before && !after) {
+      selectedItems = [...selectedItems, ...before]
+    } else if (!before && after) {
+      selectedItems = [...selectedItems, ...after]
+    } else if (before && after) {
+      selectedItems = [...before, ...after]
+    }
+    const filted = templateTasks.filter((e) => !selectedItems.includes(e.name))
+    setAfterTasks(filted)
+    setPreTasks(filted)
+    return filted
   }
-  // const filteredOptions = templateTasks.filter((o) => !setSelectedItems.includes(o))
+
   const loadingIcon = (
     <LoadingOutlined
       style={{ fontSize: 30,
@@ -442,13 +470,12 @@ const index = () => {
                                 showArrow
                                 allowClear
                                 tagRender={tagRender}
-                                value={selectedItems}
                                 className="w-100"
                                 placeholder="リレーション"
-                                onChange={filterSelectedTasks}
+                                onChange={filtedArr}
                               >
-                                {templateTasks.map((element) => (
-                                  <Select.Option key={element.id} value={element.id}>
+                                {beforeTasks.map((element) => (
+                                  <Select.Option key={element.id} value={element.name}>
                                     {element.name}
                                   </Select.Option>
                                 ))}
@@ -462,9 +489,11 @@ const index = () => {
                                 tagRender={tagRender}
                                 mode="multiple"
                                 placeholder="リレーション"
+                                onChange={filtedArr}
+
                               >
-                                {templateTasks.map((element) => (
-                                  <Select.Option key={element.id} value={element.id}>
+                                {afterTasks.map((element) => (
+                                  <Select.Option key={element.id} value={element.name}>
                                     {element.name}
                                   </Select.Option>
                                 ))}
@@ -483,6 +512,7 @@ const index = () => {
                                 <Form.Item
                                   noStyle
                                   name="effort"
+                                  required
                                   rules={[
                                     {
                                       validator: numberInputValidator,
@@ -502,9 +532,17 @@ const index = () => {
                               </div>
                               {/* ----------------- */}
                               <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                                <Form.Item noStyle name="isDay">
+                                <Form.Item
+                                  noStyle
+                                  name="isDay"
+                                  required
+                                  rules={[
+                                    {
+                                      validator: isDayAndUnitValidator,
+                                    },
+                                  ]}
+                                >
                                   <Select
-                                    required
                                     className="special-selector w-100 "
                                     showArrow
                                     size="large"
@@ -519,9 +557,17 @@ const index = () => {
                                   </Select>
                                 </Form.Item>
                                 <p className="slash-devider text-3xl font-extrabold leading-10"> / </p>
-                                <Form.Item noStyle name="unit">
+                                <Form.Item
+                                  noStyle
+                                  name="unit"
+                                  required
+                                  rules={[
+                                    {
+                                      validator: isDayAndUnitValidator,
+                                    },
+                                  ]}
+                                >
                                   <Select
-                                    required
                                     size="large"
                                     className="special-selector"
                                     showArrow

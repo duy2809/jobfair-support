@@ -19,7 +19,6 @@ import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 // import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
-import instance from '../../api/axios'
 
 const index = () => {
   // page state.
