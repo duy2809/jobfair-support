@@ -14,7 +14,7 @@ const columns = [
     title: 'No.',
     key: 'No.',
     dataIndex: 'id',
-    render: (id) => id,
+    render: (value, item, index) =>  index + 1,
     width: '6%',
   },
   {
@@ -85,7 +85,9 @@ export default function MemberList() {
     setDataLoading(true)
     initPagination()
     webInit().then((res) => {
-      setUser(res.data.auth.user)
+      if (Object.keys(res) !== {}) {
+        setUser(res.data.auth.user)
+      }
     })
     MemberApi.getListMember().then((res) => {
       const { data } = res
