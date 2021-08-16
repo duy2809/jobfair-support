@@ -6,6 +6,7 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
+import { webInit } from '~/api/web-init'
 
 const EditMember = ({ data }) => {
   const [form] = Form.useForm()
@@ -17,6 +18,7 @@ const EditMember = ({ data }) => {
   const [categories, setCategories] = useState(data.categories)
   const [categoriesSystem, setCategoriesSystem] = useState([])
   const [reqCategories, setReqCategories] = useState([])
+  const [user, setUser] = useState({})
 
   const { id } = router.query
 
@@ -29,6 +31,13 @@ const EditMember = ({ data }) => {
   }
 
   const fetchData = useCallback(() => {
+    webInit().then((res) => {
+      if (res.data.auth !== null) {
+        setUser(res.data.auth.user)
+      } else {
+        router.push('/login')
+      }
+    })
     CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
     })
@@ -94,6 +103,12 @@ const EditMember = ({ data }) => {
   useEffect(() => {
     fetchData()
   }, [])
+
+  useEffect(() => {
+    if (user.role === 'member') {
+      router.push('/login')
+    }
+  }, [user])
 
   return (
     <Layout>
