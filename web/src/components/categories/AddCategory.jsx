@@ -100,7 +100,7 @@ const AddCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p>カテゴリ名</p>
+              <span>カテゴリ名</span>
             }
             name="name"
             rules={[
