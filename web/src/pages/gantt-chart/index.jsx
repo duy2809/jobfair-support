@@ -38,13 +38,7 @@ export default function index() {
           <div className="gantt-chart">
             <div>
               <div className="container xl ">
-                <div className="header">
-                  <Button type="primary">Primary Button</Button>
-                  <Button type="primary">Primary Button</Button>
-                  <Button type="primary">Primary Button</Button>
-                  <Button type="primary">Primary Button</Button>
 
-                </div>
                 <div>
                   <DynamicComponentWithNoSSR tasks={data} />
                 </div>
