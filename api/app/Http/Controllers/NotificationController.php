@@ -49,6 +49,7 @@ class NotificationController extends Controller
     public function show($user_id)
     {
 
+<<<<<<< HEAD
          // return Notification::where('notifiable_id','=',$user_id)->get();
          $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id','=',$user_id)->get();
          if (count($noti) == 0) {
@@ -69,6 +70,21 @@ class NotificationController extends Controller
          }
        
          
+=======
+        // return Notification::where('notifiable_id','=',$user_id)->get();
+        $noti = Notification::where('notifiable_id','=',$user_id)->get();
+        $user = Notification::select('user_id')->where('notifiable_id','=',$user_id)->get();
+        foreach ($user as $notification) {
+            // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
+            // $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
+            $nameUser[] =User::select('name')->find($notification->user_id);
+        
+        }
+
+        // return $user->notifications;
+        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+        // return $noti;
+>>>>>>> merge front and back J1
     }
 
     /**
