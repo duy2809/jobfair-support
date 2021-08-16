@@ -18,8 +18,13 @@ class Milestone extends Model
         return $this->hasMany(Task::class);
     }
 
-    public function schedule()
+    public function templateTasks()
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->hasMany(TemplateTask::class);
+    }
+
+    public function schedules()
+    {
+        return $this->belongsToMany(Schedule::class);
     }
 }
