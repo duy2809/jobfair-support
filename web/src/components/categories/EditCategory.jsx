@@ -129,7 +129,7 @@ const EditCategory = (props) => {
               type="text"
               required="required"
               className="input-category"
-              style={{ width: '-webkit-fill-available' }}
+              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
               placeholder="カテゴリ名を書いてください"
