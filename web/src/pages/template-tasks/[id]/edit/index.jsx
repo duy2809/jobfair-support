@@ -19,9 +19,9 @@ import {
 } from '../../../../api/template-task-edit'
 
 const unitData = [
-  { id: 1, name: '学生数' },
-  { id: 2, name: '企業数' },
-  { id: 3, name: 'None' },
+  { id: 1, name: '学生数', sumbit: 'students' },
+  { id: 2, name: '企業数', submit: 'companies' },
+  { id: 3, name: 'None', submit: 'none' },
 ]
 
 const isDayData = [

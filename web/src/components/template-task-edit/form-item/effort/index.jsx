@@ -45,7 +45,7 @@ const Effort = ({
   }
   const onValueUnitChange = (value) => {
     setCheckSpace(false)
-    setUnit(value)
+    setUnit(unitData.find((o) => o.name === value).submit)
     form.setFieldsValue({
       unit: toHalfWidth(value),
     })
