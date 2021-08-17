@@ -11,7 +11,7 @@ class Schedule extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'jobfair_id'];
 
     public function milestones()
     {

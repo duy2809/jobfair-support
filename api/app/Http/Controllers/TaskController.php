@@ -2,22 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jobfair;
 use Illuminate\Http\Request;
 
-class JFListController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        return Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
-            ->select('jobfairs.*', 'users.name as admin')
-            ->orderBy('jobfairs.created_at', 'DESC')
-            ->get();
     }
 
     /**
@@ -78,11 +73,5 @@ class JFListController extends Controller
      */
     public function destroy($id)
     {
-        Jobfair::withTrashed()->where('id', $id)->delete();
-
-        return Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
-            ->select('jobfairs.*', 'users.name as admin')
-            ->orderBy('jobfairs.created_at', 'DESC')
-            ->get();
     }
 }

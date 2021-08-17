@@ -48,8 +48,9 @@ const index = () => {
   }
   const getTask = async (id) => {
     const tasks = await editApi.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
+      console.log(tasks.data.template_tasks)
     }
   }
 
