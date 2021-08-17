@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TemplateTaskRequest;
 use App\Models\Category;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class TemplateTaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TemplateTaskRequest $request)
     {
         $newTemplateTask = TemplateTask::create([
             'name' => $request->name,

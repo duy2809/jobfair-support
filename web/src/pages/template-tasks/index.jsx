@@ -14,7 +14,6 @@ export default function TemplateTaskList() {
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
   const [optionMilestone, setOptionMileStone] = useState([])
-  const [dataFilter, setDataFilter] = useState()
   const [optionCategory, setOptionCategory] = useState([])
   const [valueSearch, setValueSearch] = useState('')
   const { Option } = Select
@@ -46,18 +45,19 @@ export default function TemplateTaskList() {
   // add data of table
   const addDataOfTable = (response) => {
     const data = []
-    for (let i = 0; i < response.data.length; i += 1) {
-      data.push({
-        id: i + 1,
-        idTemplateTask: response.data[i].id,
-        templateTaskName: response.data[i].name,
-        category_name: response.data[i].categories[0].category_name,
-        milestone_name: response.data[i].template_milestone.name,
-      })
+    if (response) {
+      for (let i = 0; i < response.data.length; i += 1) {
+        data.push({
+          id: i + 1,
+          idTemplateTask: response.data[i].id,
+          templateTaskName: response.data[i].name,
+          category_name: response.data[i].categories[0].category_name,
+          milestone_name: response.data[i].milestone.name,
+        })
+      }
+      setTemperaryData(data)
+      setOriginalData(data)
     }
-    setTemperaryData(data)
-    setOriginalData(data)
-    setDataFilter(data)
   }
 
   const addOptionCategory = (response) => {
@@ -126,60 +126,42 @@ export default function TemplateTaskList() {
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
-  }, [itemCount])
+  }, [])
 
   // Search data on Table
 
   const searchDataOnTable = (value) => {
-    value = value.toLowerCase()
-    const filteredData = originalData.filter((templateTask) => (templateTask.templateTaskName.toLowerCase().includes(value))
-      && (templateTask.category_name.includes(category))
-      && (templateTask.milestone_name.includes(milestone)))
-    return filteredData
+    const filteredData = originalData.filter(
+      (templateTask) => (value ? templateTask.templateTaskName.toLowerCase().includes(value) : templateTask.templateTaskName)
+      && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name)
+      && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
+    )
+    setTemperaryData(filteredData)
   }
   const onSearch = (e) => {
-    const currValue = e.target.value
-    if (!currValue) {
-      setValueSearch('')
-      setTemperaryData(dataFilter)
-      return
-    }
+    const currValue = e.target.value.toLowerCase()
     setValueSearch(currValue)
-    setTemperaryData(searchDataOnTable(currValue))
+    searchDataOnTable(currValue)
   }
 
   const handleSelectCategory = (value) => {
-    if (!value) {
-      setCategory('')
-      const filteredData = originalData.filter((templateTask) => (templateTask.templateTaskName.toLowerCase().includes(valueSearch.toLowerCase()))
-        && templateTask.milestone_name.includes(milestone))
-      setTemperaryData(filteredData)
-      setDataFilter(filteredData)
-      return
-    }
     setCategory(value)
-    const filteredData = originalData.filter((templateTask) => (templateTask.category_name.includes(value))
-      && (templateTask.templateTaskName.toLowerCase().includes(valueSearch.toLowerCase()))
-      && templateTask.milestone_name.includes(milestone))
+    const filteredData = originalData.filter(
+      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
+      && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
+      && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
+    )
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
 
   const handlSelectMilestone = (value) => {
-    if (!value) {
-      setMilestone('')
-      const filteredData = originalData.filter((templateTask) => (templateTask.templateTaskName.toLowerCase().includes(valueSearch.toLowerCase()))
-        && templateTask.category_name.includes(category))
-      setTemperaryData(filteredData)
-      setDataFilter(filteredData)
-      return
-    }
     setMilestone(value)
-    const filteredData = originalData.filter((templateTask) => (templateTask.milestone_name.includes(value))
-      && (templateTask.templateTaskName.toLowerCase().includes(valueSearch.toLowerCase()))
-      && templateTask.category_name.includes(category))
+    const filteredData = originalData.filter(
+      (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
+      && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
+      && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name),
+    )
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
 
   return (
@@ -206,6 +188,7 @@ export default function TemplateTaskList() {
                     className="flex float-right"
                     href="/add-template-task"
                     type="primary"
+                    style={{ letterSpacing: '-2px' }}
                   >
                     追加
                   </Button>

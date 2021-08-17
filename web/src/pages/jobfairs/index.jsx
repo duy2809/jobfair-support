@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button, Slider, DatePicker, Input, Empty, Select, Tooltip } from 'antd'
 import './style.scss'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, UpOutlined, DownOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getJFList } from '../../api/jf-list'
 
@@ -12,7 +12,6 @@ export default function JFList() {
   const [loading, setLoading] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
-  const [dataFilter, setDataFilter] = useState()
   const { Option } = Select
 
   // select number to display
@@ -41,20 +40,21 @@ export default function JFList() {
   // add data of table
   const addDataOfTable = (response) => {
     const data = []
-    for (let i = 0; i < response.data.length; i += 1) {
-      data.push({
-        id: i + 1,
-        idJF: response.data[i].id,
-        JF名: response.data[i].name,
-        開始日: response.data[i].start_date.replaceAll('-', '/'),
-        推定参加学生数: response.data[i].number_of_students,
-        参加企業社数: response.data[i].number_of_companies,
-        管理者: response.data[i].admin,
-      })
+    if (response) {
+      for (let i = 0; i < response.data.length; i += 1) {
+        data.push({
+          id: i + 1,
+          idJF: response.data[i].id,
+          JF名: response.data[i].name,
+          開始日: response.data[i].start_date.replaceAll('-', '/'),
+          推定参加学生数: response.data[i].number_of_students,
+          参加企業社数: response.data[i].number_of_companies,
+          管理者: response.data[i].admin,
+        })
+      }
+      setTemperaryData(data)
+      setOriginalData(data)
     }
-    setTemperaryData(data)
-    setOriginalData(data)
-    setDataFilter(data)
   }
 
   // columns of tables
@@ -111,7 +111,7 @@ export default function JFList() {
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
-  }, [itemCount])
+  }, [])
 
   // State of filter'
   const [valueSearch, setValueSearch] = useState('')
@@ -123,24 +123,17 @@ export default function JFList() {
 
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
-    const filteredData = originalData.filter((JF) => (JF.JF名.toLowerCase().includes(value) || JF.管理者.toLowerCase().includes(value))
+    const filteredData = originalData.filter((JF) => (value ? (JF.JF名.toLowerCase().includes(value)
+      || JF.管理者.toLowerCase().includes(value)) : (JF.JF名))
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
-      && (JF.開始日.includes(startDate)))
-    return filteredData
+      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
+    setTemperaryData(filteredData)
   }
   const onSearch = (e) => {
-    setLoading(true)
     const currValue = e.target.value
-    if (!currValue) {
-      setValueSearch('')
-      setTemperaryData(dataFilter)
-      setLoading(false)
-      return
-    }
     setValueSearch(currValue)
-    setTemperaryData(searchDataOnTable(currValue))
-    setLoading(false)
+    searchDataOnTable(currValue)
   }
 
   // filter by number of students
@@ -148,58 +141,37 @@ export default function JFList() {
   const FilterStudentsNumber = (value) => {
     setRangeStudentsNumber(value)
     const filteredData = originalData.filter((JF) => (JF.推定参加学生数 <= value[1] && JF.推定参加学生数 >= value[0])
-      && (JF.JF名.includes(valueSearch) || JF.管理者.includes(valueSearch))
+      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
+              || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
-      && (JF.開始日.includes(startDate)))
+      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
   // filter by number of businesses
 
   const FilterBussinessesNumber = (value) => {
     setRangeBussinessesNumber(value)
     const filteredData = originalData.filter((JF) => (JF.参加企業社数 <= value[1] && JF.参加企業社数 >= value[0])
-      && (JF.JF名.includes(valueSearch) || JF.管理者.includes(valueSearch))
+      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
+                || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
-      && (JF.開始日.includes(startDate)))
+      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
 
   // filter by start date
 
   const FilterStartDate = (date, dateString) => {
-    if (dateString === '') {
-      setStartDate('')
-      const filteredData = originalData.filter((JF) => (JF.JF名.includes(valueSearch) || JF.管理者.includes(valueSearch))
-        && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
-        && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0]))
-      setTemperaryData(filteredData)
-      setDataFilter(filteredData)
-      return
-    }
     setStartDate(dateString)
-    const filteredData = originalData.filter((JF) => (JF.開始日 === dateString)
-      && (JF.JF名.includes(valueSearch) || JF.管理者.includes(valueSearch))
+    const filteredData = originalData.filter((JF) => (dateString ? !JF.開始日.localeCompare(dateString) : JF.開始日)
+      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
+              || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0]))
     setTemperaryData(filteredData)
-    setDataFilter(filteredData)
   }
 
   const [showFilter, setShowFilter] = useState(true)
-
-  // hide filter
-
-  const hideFilter = () => {
-    setShowFilter(false)
-  }
-
-  // show Filter
-
-  const onShowFilter = () => {
-    setShowFilter(true)
-  }
 
   return (
     <OtherLayout>
@@ -211,84 +183,75 @@ export default function JFList() {
                 <h1 className="text-3xl float-left">JF一覧</h1>
               </div>
               <div className="space-y-2">
-                <div className="flex justify-between">
-                  <div className="flex items-center space-x-3">
-                    <p>フィルタ</p>
-                    <Button
-                      onClick={hideFilter}
-                      type="primary"
-                      style={{ display: showFilter ? 'inline' : 'none' }}
-                    >
-                      非表示
-                    </Button>
-                    <Button
-                      onClick={onShowFilter}
-                      type="primary"
-                      style={{ display: showFilter ? 'none' : 'inline' }}
-                    >
-                      表示
-                    </Button>
-                  </div>
-                </div>
-                <div className="flex justify-between">
-                  <div className="flex space-x-8 items-center w-10/12">
-                    <DatePicker
-                      style={{ width: '15%', display: showFilter ? 'inline' : 'none' }}
-                      inputReadOnly="true"
-                      placeholder="開始日"
-                      onChange={FilterStartDate}
-                      format="YYYY/MM/DD"
-                      dateRender={(current) => {
-                        const style = {}
-                        if (current.date() === 1) {
-                          style.border = '1px solid #1890ff'
-                          style.borderRadius = '50%'
-                        }
-                        return (
-                          <div className="ant-picker-cell-inner" style={style}>
-                            {current.date()}
-                          </div>
-                        )
-                      }}
-                    />
-                    <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-                      <p>
-                        推定参加学生数(
-                        {rangeStudentsNumber[0]}
-                        {' '}
-                        ~
-                        {rangeStudentsNumber[1]}
-                        )
-                      </p>
-                      <Slider
-                        range="true"
-                        defaultValue={[0, 100]}
-                        onAfterChange={FilterStudentsNumber}
-                      />
-                    </div>
-                    <div style={{ width: '15%', display: showFilter ? 'inline' : 'none', textAlign: 'center' }}>
-                      <p>
-                        参加企業社数(
-                        {rangeBussinessesNumber[0]}
-                        {' '}
-                        ~
-                        {rangeBussinessesNumber[1]}
-                        )
-                      </p>
-                      <Slider
-                        range="true"
-                        defaultValue={[0, 100]}
-                        onAfterChange={FilterBussinessesNumber}
-                      />
-                    </div>
-                  </div>
+                <div className="flex items-center justify-between">
+                  <Button
+                    type="primary"
+                    className="flex items-center"
+                    onClick={() => {
+                      setShowFilter(!showFilter)
+                    }}
+                  >
+                    {showFilter ? <UpOutlined /> : <DownOutlined />}
+                    <span>フィルタ</span>
+                  </Button>
                   <Button
                     className="float-right"
                     href="/add-jobfair"
                     type="primary"
+                    style={{ letterSpacing: '-1px' }}
                   >
-                    JF追加
+                    追加
                   </Button>
+                </div>
+                <div className="flex items-center space-x-8" style={{ display: showFilter ? '' : 'none' }}>
+                  <DatePicker
+                    inputReadOnly="true"
+                    placeholder="開始日"
+                    onChange={FilterStartDate}
+                    format="YYYY/MM/DD"
+                    dateRender={(current) => {
+                      const style = {}
+                      if (current.date() === 1) {
+                        style.border = '1px solid #1890ff'
+                        style.borderRadius = '50%'
+                      }
+                      return (
+                        <div className="ant-picker-cell-inner" style={style}>
+                          {current.date()}
+                        </div>
+                      )
+                    }}
+                  />
+                  <div style={{ width: '15%', textAlign: 'center' }}>
+                    <p>
+                      推定参加学生数(
+                      {rangeStudentsNumber[0]}
+                      {' '}
+                      ~
+                      {rangeStudentsNumber[1]}
+                      )
+                    </p>
+                    <Slider
+                      range="true"
+                      defaultValue={[0, 100]}
+                      onAfterChange={FilterStudentsNumber}
+                    />
+                  </div>
+                  <div style={{ width: '15%', textAlign: 'center' }}>
+                    <p>
+                      参加企業社数(
+                      {rangeBussinessesNumber[0]}
+                      {' '}
+                      ~
+                      {rangeBussinessesNumber[1]}
+                      )
+                    </p>
+                    <Slider
+                      range="true"
+                      defaultValue={[0, 100]}
+                      onAfterChange={FilterBussinessesNumber}
+                    />
+                  </div>
                 </div>
 
               </div>
