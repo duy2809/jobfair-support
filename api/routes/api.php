@@ -105,17 +105,15 @@ Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
-<< << <<< dc80c5f58fd8908910bc1a69f4dd4a7190cef7ab
 //member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
-=======
+});
 
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
->>>>>>> FE + BE
 });
