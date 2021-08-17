@@ -94,9 +94,15 @@ const List = ({
   }
   return (
     <div ref={ref}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: '10px',
+        }}
+      >
         <Link href={route}>
-          <a style={{ fontSize: '22px', marginBottom: '16px' }}>{text}</a>
+          <a style={{ fontSize: '30px' }}>{text}</a>
         </Link>
         <div className="flex items-center">
           <Button
@@ -154,6 +160,7 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div>
                   <DatePicker
+                    size="large"
                     placeholder="タイム"
                     picker="month"
                     format="YYYY-MM"

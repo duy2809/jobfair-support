@@ -220,7 +220,7 @@ const Top = () => {
             key={5}
             dataColumn={taskListDataColumn}
             dataSource={taskDataItem}
-            text="マスク一覧"
+            text="タスク一覧"
             searchIcon
             showTimeInput
             showCategoryInput={false}
