@@ -139,8 +139,8 @@ const index = () => {
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
       }
       setdisableBtn(true)
-      const response = await addJFAPI.addJF(data)
 
+      const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
@@ -151,22 +151,24 @@ const index = () => {
       return response
     } catch (error) {
       setdisableBtn(false)
-      const isDuplicate = JSON.parse(error.request.response).message
-      if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
+      const errorResponse = JSON.parse(error.request.response)
+
+      if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: 'このJF名は既に使用されています。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: '保存に失敗しました。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       }
+      // console.log(JSON.parse(error.request.response).errors.name[0])
       return error
     }
   }
@@ -182,8 +184,8 @@ const index = () => {
   // call api get milestone  when selector change schedule
   const getTask = async (id) => {
     const tasks = await addJFAPI.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
     }
   }
 
@@ -359,6 +361,7 @@ const index = () => {
                   >
                     <DatePicker
                       help="Please select the correct date"
+                      className="py-2"
                       // style={{ backgroundColor: '#e3f6f5' }}
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
@@ -426,7 +429,11 @@ const index = () => {
                       },
                     ]}
                   >
-                    <Select className="addJF-selector" placeholder="管理者を選択">
+                    <Select
+                      size="large"
+                      className="addJF-selector"
+                      placeholder="管理者を選択"
+                    >
                       {listAdminJF.map((element) => (
                         <Select.Option key={element.id} value={element.id}>
                           {element.name}
@@ -448,6 +455,7 @@ const index = () => {
                     ]}
                   >
                     <Select
+                      size="large"
                       className="addJF-selector"
                       placeholder="JF-スケジュールを選択"
                       onSelect={onScheduleSelect}
@@ -462,7 +470,7 @@ const index = () => {
 
                   {/* list milestones */}
                   <Form.Item label=" ">
-                    マイルストーン一覧
+                    <span className="label">マイルストーン一覧</span>
                     <List
                       className="demo-infinite-container"
                       bordered
@@ -482,7 +490,7 @@ const index = () => {
 
                   {/* list task */}
                   <Form.Item label=" ">
-                    タスク一賜
+                    <span className="label">タスク一賜</span>
                     <List
                       className="demo-infinite-container"
                       bordered
