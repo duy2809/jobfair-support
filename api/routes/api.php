@@ -57,6 +57,7 @@ Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
+    Route::get('/{id}/tasks', 'MemberController@getTaskByID');
 });
 
 // login, logout
