@@ -287,7 +287,8 @@ const index = () => {
         <Tooltip title={label}>
           <span
             onClick={() => {
-              routeTo(`/template-task-dt/${value}`)
+              const id = templateTasks.find((e) => e.name === value)
+              routeTo(`/template-task-dt/${id.id}`)
             }}
             className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '20ch' }}
