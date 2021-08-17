@@ -61,9 +61,9 @@ const taskListDataColumn = [
     key: "name",
   },
   {
-    title: "Type",
-    dataIndex: "type",
-    key: "type",
+    title: "JF Name",
+    dataIndex: "jfName",
+    key: "JF Name",
   },
   {
     title: "Time",
@@ -168,12 +168,11 @@ const Top = () => {
   });
 
   taskData.forEach((task) => {
-    const taskItem = { key: "", name: "", type: "", time: "" };
+    const taskItem = { key: "", name: "", jfName: "", time: "" };
     taskItem.key = task.id;
     taskItem.name = task.name;
-    taskItem.type = task.status;
+    taskItem.jfName = task.jobfair.name;
     taskItem.time = task.start_time;
-
     taskDataItem.push(taskItem);
   });
   return (
@@ -197,6 +196,7 @@ const Top = () => {
             showTimeInput
             showCategoryInput={false}
             showMilestoneInput={false}
+            route="/jobfairs"
           />
           <List
             key={2}
@@ -207,6 +207,7 @@ const Top = () => {
             showTimeInput={false}
             showCategoryInput={false}
             showMilestoneInput={false}
+            route="/member"
           />
           <List
             key={3}
@@ -217,6 +218,7 @@ const Top = () => {
             showTimeInput={false}
             showCategoryInput={false}
             showMilestoneInput={false}
+            route="/schedule"
           />
           <List
             key={4}
@@ -227,6 +229,7 @@ const Top = () => {
             showTimeInput={false}
             showCategoryInput
             showMilestoneInput
+            route="/template-tasks"
           />
           <List
             key={5}
@@ -238,6 +241,7 @@ const Top = () => {
             showCategoryInput={false}
             showMilestoneInput={false}
             showSearchByJFInput
+            route="/tasks"
           />
         </div>
       </div>

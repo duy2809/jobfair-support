@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, Table, Input, DatePicker } from "antd";
 import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import Link from "next/link";
 import QueueAnim from "rc-queue-anim";
 import PropTypes from "prop-types";
 import { taskSearch } from "../../api/top-page";
@@ -16,6 +17,7 @@ const List = ({
   showSearchByJFInput,
   dataColumn,
   dataSource,
+  route,
 }) => {
   const ref = useRef();
 
@@ -91,10 +93,11 @@ const List = ({
   const searchByJobfairName = (e) => {
     const getTask = async () => {
       const response = await taskSearch(e.target.value);
+      console.log(response.data);
       let tasks = [];
       tasks = response.data.map((data) => ({
         name: data.name,
-        type: data.status,
+        jfName: data.jobfair.name,
         time: data.start_time,
       }));
       setList(tasks);
@@ -104,7 +107,9 @@ const List = ({
   return (
     <div ref={ref}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <p style={{ fontSize: "22px", marginBottom: "16px" }}>{text}</p>
+        <Link href={route}>
+          <a style={{ fontSize: "22px", marginBottom: "16px" }}>{text}</a>
+        </Link>
         <div className="flex items-center">
           <Button
             style={{ border: "none", marginBottom: "5px" }}
