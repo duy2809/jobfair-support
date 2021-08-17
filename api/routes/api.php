@@ -5,6 +5,7 @@ use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -111,3 +112,7 @@ Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
+
+// task kanban
+Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
+Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
