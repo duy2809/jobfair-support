@@ -73,7 +73,6 @@ const taskListDataColumn = [
 ];
 
 const Top = () => {
-  const ref = useRef();
   const [taskData, setTaskData] = useState([]);
   const taskDataItem = [];
 
@@ -83,11 +82,6 @@ const Top = () => {
   const [jobfairData, setJobfairData] = useState([]);
   const jobfairDataItem = [];
 
-  //   const [scheduleData, setScheduleData] = useState([]);
-  //   const scheduleDataItem = [];
-
-  //   const [templateTaskData, setTemplateTaskData] = useState([]);
-  //   const templateTaskDataItem = [];
   const [templateData, setTemplateData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
 
@@ -168,7 +162,7 @@ const Top = () => {
     taskDataItem.push(taskItem);
   });
   return (
-    <div ref={ref}>
+    <div>
       <Navbar />
       <div style={{ width: "90%", margin: "auto" }}>
         <div
