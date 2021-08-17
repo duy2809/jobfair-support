@@ -67,6 +67,7 @@ class JobfairController extends Controller
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
+
         return $jobfair;
     }
 
