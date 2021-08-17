@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { Table, Input, Empty, Select, Tooltip, Button, Tag } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import JfLayout from '../../layouts/JFLayout'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { jftask, jfdata } from '../../api/jf-toppage'
 
-export default function TaskList() {
+function TaskList() {
   const router = useRouter()
-  // state of table
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
+  const [showFilter, setShowFilter] = useState(true)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
   const [optionMilestone, setOptionMileStone] = useState([])
@@ -70,20 +70,20 @@ export default function TaskList() {
     }
     setTemperaryData(data)
     setOriginalData(data)
-    if (valueSearch) {
-      const taskNameParameter = router.query.name.toLowerCase()
-      const filteredData = data.filter((task) => (task.taskName.toLowerCase().includes(taskNameParameter)))
-      setTemperaryData(filteredData)
-    }
-    if (status) {
-      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
-      const index = arrayStatus.indexOf(router.query.status)
-      const arr = [0, 0, 0, 0, 0, 0]
-      arr[index] = 1
-      setActive(arr)
-      const filteredData = data.filter((task) => (!task.status.localeCompare(router.query.status)))
-      setTemperaryData(filteredData)
-    }
+    // if (valueSearch) {
+    //   const taskNameParameter = router.query.name.toLowerCase()
+    //   const filteredData = data.filter((task) => (task.taskName.toLowerCase().includes(taskNameParameter)))
+    //   setTemperaryData(filteredData)
+    // }
+    // if (status) {
+    //   const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
+    //   const index = arrayStatus.indexOf(router.query.status)
+    //   const arr = [0, 0, 0, 0, 0, 0]
+    //   arr[index] = 1
+    //   setActive(arr)
+    //   const filteredData = data.filter((task) => (!task.status.localeCompare(router.query.status)))
+    //   setTemperaryData(filteredData)
+    // }
   }
 
   const addOptionCategory = (response) => {
@@ -198,9 +198,9 @@ export default function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value ? (task.taskName.toLowerCase().includes(value)
         || task.managers.some((manager) => manager.toLowerCase().includes(value))) : task.taskName)
-      && (category ? !task.category_name.localeCompare(category) : task.category_name)
-      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-      && (status ? !task.status.localeCompare(status) : task.status),
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+        && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
   }
@@ -214,10 +214,10 @@ export default function TaskList() {
     setCategory(value)
     const filteredData = originalData.filter(
       (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
-      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
-      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-      && (status ? !task.status.localeCompare(status) : task.status),
+        && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+        && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
   }
@@ -226,10 +226,10 @@ export default function TaskList() {
     setMilestone(value)
     const filteredData = originalData.filter(
       (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
-      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
-      && (category ? !task.category_name.localeCompare(category) : task.category_name)
-      && (status ? !task.status.localeCompare(status) : task.status),
+        && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
   }
@@ -238,28 +238,15 @@ export default function TaskList() {
     setStatus(value)
     const filteredData = originalData.filter(
       (task) => (value ? !task.status.localeCompare(value) : task.status)
-      && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
-      && (category ? !task.category_name.localeCompare(category) : task.category_name)
-      && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
+        && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
     )
     setTemperaryData(filteredData)
     setLoading(false)
   }
 
-  const [showFilter, setShowFilter] = useState(true)
-
-  // hide filter
-
-  const hideFilter = () => {
-    setShowFilter(false)
-  }
-
-  // show Filter
-
-  const onShowFilter = () => {
-    setShowFilter(true)
-  }
   // const [active] = useState([1, 0, 0, 0, 0])
   const chooseStatus = (index) => {
     setLoading(true)
@@ -276,43 +263,25 @@ export default function TaskList() {
               <div className="flex-col space-y-9">
                 <div className="flex items-center space-x-2">
                   <h1 className="text-3xl float-left">タスクー覧</h1>
-                  <div>
+                  <h1>
                     <Tag color="#55acee">
                       JF:
                       {' '}
                       {JF.name}
                     </Tag>
-                  </div>
+                  </h1>
                 </div>
                 <div className={showFilter ? 'space-y-3' : 'space-y-0'}>
-                  <div className="flex items-center space-x-3">
-                    <div>フィルタ</div>
+                  <div className="flex items-center justify-between">
                     <Button
-                      onClick={hideFilter}
                       type="primary"
-                      style={{ display: showFilter ? 'inline' : 'none' }}
+                      icon={showFilter ? <UpOutlined style={{ fontSize: '18px' }} /> : <DownOutlined style={{ fontSize: '18px' }} />}
+                      onClick={() => {
+                        setShowFilter(!showFilter)
+                      }}
                     >
-                      非表示
+                      フィルタ
                     </Button>
-                    <Button
-                      onClick={onShowFilter}
-                      type="primary"
-                      style={{ letterSpacing: '-1px', display: showFilter ? 'none' : 'inline' }}
-
-                    >
-                      表示
-                    </Button>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center justify-center space-x-1">
-                      <div style={{ display: showFilter ? 'inline' : 'none' }}>スターテス:</div>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[0] ? 'active' : ''} onClick={() => { chooseStatus(0); FilterByStatus('') }}>全て</Button>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[1] ? 'active' : ''} onClick={() => { chooseStatus(1); FilterByStatus('未着手') }}>未着手</Button>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[2] ? 'active' : ''} onClick={() => { chooseStatus(2); FilterByStatus('進行中') }}>進行中</Button>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[3] ? 'active' : ''} onClick={() => { chooseStatus(3); FilterByStatus('完了') }}>完了</Button>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[4] ? 'active' : ''} onClick={() => { chooseStatus(4); FilterByStatus('中断') }}>中断</Button>
-                      <Button style={{ display: showFilter ? 'inline' : 'none' }} type="text" className={active[5] ? 'active' : ''} onClick={() => { chooseStatus(5); FilterByStatus('未完了') }}>未完了</Button>
-                    </div>
                     <Button
                       className="flex float-right"
                       href="/add-task"
@@ -321,6 +290,17 @@ export default function TaskList() {
                     >
                       追加
                     </Button>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="flex items-center justify-center space-x-1" style={{ display: showFilter ? '' : 'none' }}>
+                      <div>スターテス:</div>
+                      <Button type="text" className={active[0] ? 'active' : ''} onClick={() => { chooseStatus(0); FilterByStatus('') }}>全て</Button>
+                      <Button type="text" className={active[1] ? 'active' : ''} onClick={() => { chooseStatus(1); FilterByStatus('未着手') }}>未着手</Button>
+                      <Button type="text" className={active[2] ? 'active' : ''} onClick={() => { chooseStatus(2); FilterByStatus('進行中') }}>進行中</Button>
+                      <Button type="text" className={active[3] ? 'active' : ''} onClick={() => { chooseStatus(3); FilterByStatus('完了') }}>完了</Button>
+                      <Button type="text" className={active[4] ? 'active' : ''} onClick={() => { chooseStatus(4); FilterByStatus('中断') }}>中断</Button>
+                      <Button type="text" className={active[5] ? 'active' : ''} onClick={() => { chooseStatus(5); FilterByStatus('未完了') }}>未完了</Button>
+                    </div>
                   </div>
                   <div className="flex items-center space-x-4 w-9/12">
                     <Select style={{ display: showFilter ? 'inline' : 'none' }} className="w-1/4 items-center" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
@@ -368,3 +348,5 @@ export default function TaskList() {
 
   )
 }
+export default TaskList
+// TaskList.middleware = ['auth:superadmin']
