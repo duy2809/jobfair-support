@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
+const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }) => {
   const [fieldName, setFieldName] = useState('')
   const onValueNameChange = (value) => {
     setCheckSpace(false)
@@ -14,6 +14,11 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput }) => {
     const temp = {}
     temp[name] = toHalfWidth(value)
     form.setFieldsValue(temp)
+    if (name === 'category') {
+      setId(data.find((item) => item.category_name === value).id)
+    } else {
+      setId(data.find((item) => item.name === value).id)
+    }
   }
   useEffect(() => {
     if (name === 'category') {
@@ -54,4 +59,5 @@ ItemDropdow.propTypes = {
   setCheckSpace: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   setInput: PropTypes.func.isRequired,
+  setId: PropTypes.func.isRequired,
 }

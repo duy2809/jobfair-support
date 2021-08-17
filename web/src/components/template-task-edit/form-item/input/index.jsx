@@ -40,8 +40,8 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
             }
             const temp = /[/](\d+)[/]/.exec(window.location.pathname)
             const id = `${temp[1]}`
-            if ((tasksList.find((item) => item.name === value))) {
-              if ((tasksList.find((item) => item.name === value)).id === id) {
+            if ((tasksList.find((item) => item.name === value)) !== undefined) {
+              if ((tasksList.find((item) => item.name === value)).id !== Number(id)) {
                 return Promise.reject(
                   new Error('このマイルストーン名は存在しています'),
                 )

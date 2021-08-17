@@ -29,13 +29,19 @@ const isDayData = [
   { id: 1, name: '日' },
 ]
 
+let tasksList = []
+getTemplateTasksList().then((res) => {
+  tasksList = [...res.data]
+})
+
 const EditTemplateTaskPage = () => {
   const [categoryId, setCategoryId] = useState(0)
   const [milestoneId, setMilestoneId] = useState(0)
   const [isDay, setIsDay] = useState(0)
   const [unit, setUnit] = useState('')
   const [description, setDescription] = useState('')
-  const [tasks, setTasks] = useState([])
+  const [tasks1, setTasks1] = useState([])
+  const [tasks2, setTasks2] = useState([])
   const [pathId, setPathId] = useState('')
   const [categoryData, setCategoryData] = useState([])
   const [milestoneData, setMilestoneData] = useState([])
@@ -114,9 +120,10 @@ const EditTemplateTaskPage = () => {
   }
 
   const fetchTasks = async () => {
-    await getTemplateTasksList().then((res) => {
-      setTasks(res.data)
-    })
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    await setTasks1(tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)))
+    await setTasks2(tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)))
   }
 
   const openNotificationSuccess = () => {
@@ -141,6 +148,13 @@ const EditTemplateTaskPage = () => {
     fetchTasks()
   }, [])
 
+  useEffect(() => {
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
+    const id = `${temp[1]}`
+    setTasks1(tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)))
+    setTasks2(tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)))
+  }, [prevTasks, nextTasks])
+
   const showModal = () => {
     if (
       templateTaskNameInput !== ''
@@ -161,9 +175,6 @@ const EditTemplateTaskPage = () => {
     const submitNextTasks = []
     prevTasks.forEach((item) => submitPrevTasks.push(item.id))
     nextTasks.forEach((item) => submitNextTasks.push(item.id))
-    // console.log(isDay)
-    console.log(unit)
-    console.log(effortNumber)
     updateTemplateTask(id, {
       name: templateTaskNameInput,
       description_of_detail: description,
@@ -249,7 +260,7 @@ const EditTemplateTaskPage = () => {
                     form={form}
                     label="前のタスク"
                     name="prevTasks"
-                    options={tasks}
+                    options={tasks1}
                     selectedItems={prevTasks}
                     setSelectedItems={setPrevTasks}
                   />
@@ -257,7 +268,7 @@ const EditTemplateTaskPage = () => {
                     form={form}
                     label="次のタスク"
                     name="nextTasks"
-                    options={tasks}
+                    options={tasks2}
                     selectedItems={nextTasks}
                     setSelectedItems={setNextTasks}
                   />
