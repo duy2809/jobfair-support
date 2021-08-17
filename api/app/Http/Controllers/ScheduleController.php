@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Models\Milestone;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -15,7 +17,8 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return Schedule::whereNull('jobfair_id')->get();
+        // return Schedule::whereNull('jobfair_id')->get();
+        return Schedule::all();
     }
 
     public function getAll()
@@ -51,6 +54,15 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->allMilestones = Milestone::all();
+        $schedule->allMilestones->each(function ($milestone) {
+            $milestone->templateTasks;
+        });
+        $schedule->milestones->each(function ($milestone) use ($schedule) {
+            $milestone->templateTasks  = array_values($schedule->templateTasks->where('milestone_id', $milestone->id)->values()->all());
+        });   
+        return response()->json($schedule);
     }
 
     /**
@@ -72,6 +84,29 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->name = $request->newSchedule["name"];
+        $schedule->save();
+        foreach($request->addMilestones as $addMilestone) {
+            $schedule->milestones()->attach($addMilestone["id"]);
+        };
+        foreach($request->removeMilestones as $removeMilestone) {
+            $removeTemplateTasks = DB::table('template_tasks')->where('milestone_id', $removeMilestone["id"])->get();
+            DB::table('schedule_template_task')->get()->each(function ($link) use ($removeTemplateTasks, $schedule) {
+                $removeTemplateTasks->each(function ($removeTemplateTask) use ($schedule, $link) {
+                    if($link->template_task_id === $removeTemplateTask->id) {
+                        $schedule->templateTasks()->detach($removeTemplateTask->id);
+                    }
+                });
+            });
+            $schedule->milestones()->detach($removeMilestone["id"]);
+        };
+        foreach($request->addTemplateTasks as $addTemplateTask) {
+            $schedule->templateTasks()->attach($addTemplateTask['id']);
+        };
+        foreach($request->removeTemplateTasks as $removeTemplateTask) {
+            $schedule->templateTasks()->detach($removeTemplateTask['id']);
+        };
     }
 
     /**
@@ -100,7 +135,7 @@ class ScheduleController extends Controller
     }
 
     public function getScheduleb($id)
-    {
+    {   
         $schedule = Schedule::where('jobfair_id', '=', $id)->get();
 
         return response()->json([
