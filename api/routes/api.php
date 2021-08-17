@@ -6,7 +6,8 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\TopPageTasksController;
+use App\Http\Controllers\MemberController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
