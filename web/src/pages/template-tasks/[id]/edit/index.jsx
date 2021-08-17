@@ -60,8 +60,8 @@ const EditTemplateTaskPage = () => {
       } else {
         categoryName = ''
       }
-      setMilestoneInput(res.data.template_milestone.name)
-      setMilestoneId(res.data.template_milestone.id)
+      setMilestoneInput(res.data.milestone.name)
+      setMilestoneId(res.data.milestone.id)
       setDescription(res.data.description_of_detail)
       setEffortNumber(res.data.effort)
       setUnit(res.data.unit)
@@ -70,7 +70,7 @@ const EditTemplateTaskPage = () => {
       form.setFieldsValue({
         templateTaskName: res.data.name,
         category: categoryName,
-        milestone: res.data.template_milestone.name,
+        milestone: res.data.milestone.name,
         description: res.data.description_of_detail,
         effort: res.data.effort,
         unit: res.data.unit,

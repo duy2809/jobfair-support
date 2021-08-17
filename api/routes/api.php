@@ -19,9 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/web-init', WebInit::class);
 
-
 Route::resource('/jobfair', 'JobfairController');
-
 
 // add jf route start
 
@@ -61,10 +59,9 @@ Route::get('/milestone/search', 'MilestoneController@getSearch');
 
 // Route::get('/milestone', 'TemplateMilestoneController@getList');
 
-Route::get('/milestone', 'TemplateMilestoneController@index');
+// Route::get('/milestone', 'TemplateMilestoneController@index');
 
-Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
-
+// Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
@@ -80,7 +77,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
-
 
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
