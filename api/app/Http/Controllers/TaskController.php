@@ -25,7 +25,7 @@ class TaskController extends Controller
             ->join('tasks', 'schedules.id', '=', 'tasks.schedule_id')
             ->join('assignments', 'assignments.task_id', 'tasks.id')
             ->join('users', 'assignments.user_id', '=', 'users.id')
-            ->select('jobfairs.id as jobfairId', 'jobfairs.name as jobfairName', 'users.id as userId', 'users.name as userName', 'users.avatar', 'tasks.name as taskName', 'tasks.status', 'tasks.end_time', 'tasks.memo', 'tasks.id')
+            ->select('jobfairs.id as jobfairId', 'jobfairs.name as jobfairName', 'users.id as userId', 'users.name as userName', 'users.avatar', 'tasks.*', 'tasks.name as taskName')
             ->where('jobfairs.id', '=', $id)
             ->get();
     }
