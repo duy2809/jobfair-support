@@ -190,7 +190,7 @@ function TaskList() {
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
-  }, [itemCount])
+  }, [])
 
   // Search data on Table
   const searchDataOnTable = (value) => {
@@ -275,18 +275,19 @@ function TaskList() {
                   <div className="flex items-center justify-between">
                     <Button
                       type="primary"
-                      icon={showFilter ? <UpOutlined style={{ fontSize: '18px' }} /> : <DownOutlined style={{ fontSize: '18px' }} />}
+                      className="flex items-center"
                       onClick={() => {
                         setShowFilter(!showFilter)
                       }}
                     >
-                      フィルタ
+                      {showFilter ? <UpOutlined /> : <DownOutlined />}
+                      <span>フィルタ</span>
                     </Button>
                     <Button
                       className="flex float-right"
                       href="/add-task"
                       type="primary"
-                      style={{ letterSpacing: '-1px' }}
+                      style={{ letterSpacing: '-2px' }}
                     >
                       追加
                     </Button>
