@@ -32,9 +32,9 @@ class CreateScheduleMilestoneTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedule_milestone');
+        Schema::dropIfExists('milestone_schedule');
         Schema::table('milestones', function (Blueprint $table) {
-            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('schedule_id')->nullable();
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });
     }
