@@ -24,6 +24,8 @@
     "consola": "^2.15.3",
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
+    "dhtmlx-gantt": "^7.1.5",
+    "dhx-optimus": "^2.1.0",
     "cypress-file-upload": "^5.0.8",
     "dhtmlx-gantt": "^7.1.5",
     "dhx-optimus": "^2.1.0",
