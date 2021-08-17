@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
+use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 
@@ -101,3 +102,9 @@ Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
+
+//member detail
+Route::prefix('members')->group(function () {
+    Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
+    Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
+});
