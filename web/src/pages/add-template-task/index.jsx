@@ -129,6 +129,7 @@ const index = () => {
         },
         onCancel: () => {},
         okText: 'はい',
+        centered: true,
         cancelText: 'いいえ',
       })
     }
