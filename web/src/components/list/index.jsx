@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, Table, Input, DatePicker } from 'antd'
-import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons'
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import Link from 'next/link'
-import QueueAnim from 'rc-queue-anim'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
 
-const { Search } = Input
+// const { Search } = Input;
 
 const List = ({
   searchIcon,
@@ -53,9 +52,9 @@ const List = ({
   }
 
   const searchByName = (e) => {
-    const datas = dataSource.filter((data) => (
-      data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
-    ))
+    const datas = dataSource.filter(
+      (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
+    )
     setList(datas)
   }
   const searchByTime = (date, dateString) => {
@@ -103,7 +102,7 @@ const List = ({
           <Button
             style={{ border: 'none', marginBottom: '5px' }}
             shape="circle"
-            icon={<PlusCircleOutlined style={{ fontSize: '30px' }} />}
+            icon={<PlusOutlined style={{ fontSize: '30px' }} />}
           />
 
           <span className="queue-demo">
@@ -111,27 +110,25 @@ const List = ({
               <Button
                 style={{ border: 'none' }}
                 shape="circle"
-                icon={<SearchOutlined style={{ fontSize: '30px' }} />}
+                icon={(
+                  <SearchOutlined
+                    style={{ marginLeft: '4px', fontSize: '30px' }}
+                  />
+                )}
                 onClick={onClick}
               />
             )}
 
             <span>
-              <QueueAnim
-                type="right"
-                delay={50}
-                ease={['easeOutQuart', 'easeInOutQuart']}
-              >
-                {show ? (
-                  <Search
-                    key="demo"
-                    placeholder="Enter Name"
-                    allowClear
-                    enterButton
-                    onChange={searchByName}
-                  />
-                ) : null}
-              </QueueAnim>
+              {show ? (
+                <Input
+                  // key="demo"
+                  placeholder="名前"
+                  onChange={searchByName}
+                  bordered
+                  prefix={<SearchOutlined />}
+                />
+              ) : null}
             </span>
           </span>
         </div>
@@ -155,9 +152,9 @@ const List = ({
           <div className="flex items-center justify-end px-2">
             {showTimeInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-1">タイム: </div>
                 <div>
                   <DatePicker
+                    placeholder="タイム"
                     picker="month"
                     format="YYYY-MM"
                     onChange={searchByTime}
@@ -168,9 +165,12 @@ const List = ({
 
             {showSearchByJFInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">就職フェアの名前: </div>
                 <div>
-                  <Input type="text" onChange={searchByJobfairName} />
+                  <Input
+                    placeholder="就職フェアの名前"
+                    type="text"
+                    onChange={searchByJobfairName}
+                  />
                 </div>
               </div>
             )}
@@ -179,18 +179,24 @@ const List = ({
           <div className="flex items-center justify-end px-2">
             {showCategoryInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">カテゴリ: </div>
                 <div>
-                  <Input type="text" onChange={searchByCategory} />
+                  <Input
+                    placeholder="カテゴリ"
+                    type="text"
+                    onChange={searchByCategory}
+                  />
                 </div>
               </div>
             )}
 
             {showMilestoneInput && (
               <div className="flex items-center justify-end px-2">
-                <div className="px-2">マイルストーン: </div>
                 <div>
-                  <Input type="text" onChange={searchByMilestone} />
+                  <Input
+                    placeholder="マイルストーン"
+                    type="text"
+                    onChange={searchByMilestone}
+                  />
                 </div>
               </div>
             )}
@@ -200,11 +206,13 @@ const List = ({
         {/* Table data */}
         <div>
           <Table
-            pagination={{
-              position: ['bottomCenter'],
-              responsive: true,
-              defaultPageSize: 5,
-            }}
+            // pagination={{
+            //   position: ["bottomCenter"],
+            //   responsive: true,
+            //   defaultPageSize: 5,
+            // }}
+            scroll={{ y: 280 }}
+            pagination={false}
             dataSource={list}
             columns={dataColumn}
           />

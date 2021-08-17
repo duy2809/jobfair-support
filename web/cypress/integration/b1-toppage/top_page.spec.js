@@ -5,7 +5,6 @@ const columns = ['Name', 'Time', 'Name', 'Name', 'Name', 'Category', 'Milestone'
 describe('Top Page Test', () => {
     context('Top Page', () => {
         it('visit', () => {
-<<<<<<< HEAD
             cy.request('GET', '/api/web-init').then((response) => {
                 const str = response.headers['set-cookie'][0]
                 const token = `${str.replace('XSRF-TOKEN=', '').replace(/%3[Dd].*/g, '')}==`
@@ -21,8 +20,6 @@ describe('Top Page Test', () => {
                     },
                 })
             })
-=======
->>>>>>> test
             cy.visit('/top-page')
         })
 
@@ -54,7 +51,7 @@ describe('Top Page Test', () => {
         it.skip('check time of jf', () => {
             cy.request('/api/top-page/jobfairs').then(response => {
                 const eles = response.body;
-                return !!eles.reduce((n,item) => n !== false && item >= n && item)
+                return !!eles.reduce((n, item) => n !== false && item >= n && item)
             })
         })
 
@@ -66,13 +63,13 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').first().should('exist').as('search-input')
             cy.get('@search-input').invoke('attr', 'placeholder').should('eq', 'Enter Name')
             cy.get('@search-input').type('b').then(() => {
-              cy.wait(1000)
-              cy.get('.ant-table-row').contains('b', {matchCase: false})
-              cy.get('.ant-empty-description').should('contain', 'No Data')
+                cy.wait(1000)
+                cy.get('.ant-table-row').contains('b', { matchCase: false })
+                cy.get('.ant-empty-description').should('contain', 'No Data')
             })
             cy.get('@search-input').clear()
             cy.get('@search-input').type('Emelie Stokes').then(() => {
-                cy.get('.ant-table-row').contains('Emelie Stokes', {matchCase: false})
+                cy.get('.ant-table-row').contains('Emelie Stokes', { matchCase: false })
             })
             cy.get('@search-input').clear()
         })
@@ -82,7 +79,7 @@ describe('Top Page Test', () => {
             cy.go('back')
         })
 
-        it.skip('click row', () => {   
+        it.skip('click row', () => {
             cy.get('.ant-table-wrapper').then((ele, index) => {
                 cy.get(ele[0]).get('tr.ant-table-row').then(item => {
                     cy.get(item[0]).click()
@@ -116,18 +113,18 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[0]).should('exist').as('input-member')
                 cy.get('@input-member').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@input-member').clear()
                 cy.get('@input-member').type('Dr. Gus Walsh Jr.').then(() => {
-                    cy.get('.ant-table-row').contains('Dr. Gus Walsh Jr.', {matchCase: false})
+                    cy.get('.ant-table-row').contains('Dr. Gus Walsh Jr.', { matchCase: false })
                 })
                 cy.get('@input-member').clear()
             })
         })
 
-        it.skip('click row', () => {   
+        it.skip('click row', () => {
             cy.get('.ant-table-wrapper').then((ele, index) => {
                 cy.get(ele[1]).get('tr.ant-table-row').then(item => {
                     cy.get(item[0]).click()
@@ -153,18 +150,18 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[0]).should('exist').as('input-member')
                 cy.get('@input-member').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@input-member').clear()
                 cy.get('@input-member').type('Christelle Moore').then(() => {
-                    cy.get('.ant-table-row').contains('Christelle Moore', {matchCase: false})
+                    cy.get('.ant-table-row').contains('Christelle Moore', { matchCase: false })
                 })
                 cy.get('@input-member').clear()
             })
         })
 
-        it.skip('click row', () => {   
+        it.skip('click row', () => {
             cy.get('.ant-table-wrapper').then((ele, index) => {
                 cy.get(ele[2]).get('tr.ant-table-row').then(item => {
                     cy.get(item[0]).click()
@@ -191,18 +188,18 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[0]).should('exist').as('input-member')
                 cy.get('@input-member').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@input-member').clear()
                 cy.get('@input-member').type('Maudie Monahan').then(() => {
-                    cy.get('.ant-table-row').contains('Maudie Monahan', {matchCase: false})
+                    cy.get('.ant-table-row').contains('Maudie Monahan', { matchCase: false })
                 })
                 cy.get('@input-member').clear()
             })
         })
 
-        it.skip('click row', () => {   
+        it.skip('click row', () => {
             cy.get('.ant-table-wrapper').then((ele, index) => {
                 cy.get(ele[3]).get('tr.ant-table-row').then(item => {
                     cy.get(item[0]).click()
@@ -216,12 +213,12 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[0]).should('exist').as('category-template')
                 cy.get('@category-template').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@category-template').clear()
                 cy.get('@category-template').type('1次面接練習').then(() => {
-                    cy.get('.ant-table-row').contains('1次面接練習', {matchCase: false})
+                    cy.get('.ant-table-row').contains('1次面接練習', { matchCase: false })
                 })
                 cy.get('@category-template').clear()
             })
@@ -231,12 +228,12 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[1]).should('exist').as('category-template')
                 cy.get('@category-template').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@category-template').clear()
                 cy.get('@category-template').type('会社紹介').then(() => {
-                    cy.get('.ant-table-row').contains('会社紹介', {matchCase: false})
+                    cy.get('.ant-table-row').contains('会社紹介', { matchCase: false })
                 })
                 cy.get('@category-template').clear()
             })
@@ -259,18 +256,18 @@ describe('Top Page Test', () => {
             cy.get('.ant-input').then(res => {
                 cy.get(res[2]).should('exist').as('input-member')
                 cy.get('@input-member').type('bdasdasdadsa').then(() => {
-                  cy.wait(1000)
-                  cy.get('.ant-empty-description').should('contain', 'No Data')
+                    cy.wait(1000)
+                    cy.get('.ant-empty-description').should('contain', 'No Data')
                 })
                 cy.get('@input-member').clear()
                 cy.get('@input-member').type('Prof. Ivy Bailey').then(() => {
-                    cy.get('.ant-table-row').contains('Prof. Ivy Bailey', {matchCase: false})
+                    cy.get('.ant-table-row').contains('Prof. Ivy Bailey', { matchCase: false })
                 })
                 cy.get('@input-member').clear()
             })
         })
 
-        it.skip('click row', () => {   
+        it.skip('click row', () => {
             cy.get('.ant-table-wrapper').then((ele, index) => {
                 cy.get(ele[3]).get('tr.ant-table-row').then(item => {
                     cy.get(item[0]).click()
@@ -292,10 +289,10 @@ describe('Top Page Test', () => {
             cy.get('@input-jobfair').type('bdasdasdadsa').then(() => {
                 cy.wait(1000)
                 cy.get('.ant-empty-description').should('contain', 'No Data')
-              })
+            })
             cy.get('@input-jobfair').clear()
             cy.get('@input-jobfair').type('Prof. Ivy Bailey').then(() => {
-                cy.get('.ant-table-row').contains('Prof. Ivy Bailey', {matchCase: false})
+                cy.get('.ant-table-row').contains('Prof. Ivy Bailey', { matchCase: false })
             })
             cy.get('@input-jobfair').clear()
         })

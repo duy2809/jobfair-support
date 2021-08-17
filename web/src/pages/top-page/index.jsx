@@ -9,12 +9,12 @@ const { getListShedule } = ListScheduleApi
 
 const jfListDataColumn = [
   {
-    title: 'Name',
+    title: '名前',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Time',
+    title: 'タイム',
     dataIndex: 'time',
     key: 'time',
   },
@@ -22,7 +22,7 @@ const jfListDataColumn = [
 
 const memListDataColumn = [
   {
-    title: 'Name',
+    title: '名前',
     dataIndex: 'name',
     key: 'name',
   },
@@ -30,7 +30,7 @@ const memListDataColumn = [
 
 const jfScheduleDataColumn = [
   {
-    title: 'Name',
+    title: '名前',
     dataIndex: 'name',
     key: 'name',
   },
@@ -38,17 +38,17 @@ const jfScheduleDataColumn = [
 
 const templateTaskDataColumn = [
   {
-    title: 'Name',
+    title: '名前',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'Category',
+    title: 'カテゴリ',
     dataIndex: 'category',
     key: 'category',
   },
   {
-    title: 'Milestone',
+    title: 'マイルストーン',
     dataIndex: 'milestone',
     key: 'milestone',
   },
@@ -56,17 +56,17 @@ const templateTaskDataColumn = [
 
 const taskListDataColumn = [
   {
-    title: 'Name',
+    title: '名前',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'JF Name',
+    title: '就職フェアの名前',
     dataIndex: 'jfName',
     key: 'JF Name',
   },
   {
-    title: 'Time',
+    title: 'タイム',
     dataIndex: 'time',
     key: 'time',
   },
@@ -82,11 +82,6 @@ const Top = () => {
   const [jobfairData, setJobfairData] = useState([])
   const jobfairDataItem = []
 
-  //   const [scheduleData, setScheduleData] = useState([]);
-  //   const scheduleDataItem = [];
-
-  //   const [templateTaskData, setTemplateTaskData] = useState([]);
-  //   const templateTaskDataItem = [];
   const [templateData, setTemplateData] = useState([])
   const [scheduleData, setScheduleData] = useState([])
 
@@ -106,16 +101,6 @@ const Top = () => {
       setJobfairData(response.data)
     }
 
-    // const getSchedule = async () => {
-    //   const response = await schedule();
-    //   setScheduleData(response.data);
-    // };
-
-    // const getTemplateTaskData = async () => {
-    //   const response = await getTemplateTasks();
-    //   setTemplateTaskData(response.data);
-    //   console.log(response.data);
-    // };
     const getTemplate = async () => {
       await getTaskList().then((res) => {
         const datas = []
@@ -154,7 +139,7 @@ const Top = () => {
     const jobfairItem = { key: '', name: '', time: '' }
     jobfairItem.key = jobfair.id
     jobfairItem.name = jobfair.name
-    jobfairItem.time = jobfair.start_date
+    jobfairItem.time = jobfair.start_date.replaceAll('-', '/')
 
     jobfairDataItem.push(jobfairItem)
   })
@@ -178,7 +163,7 @@ const Top = () => {
   return (
     <div>
       <Navbar />
-      <div style={{ width: '90%', margin: 'auto', marginTop: '20px' }}>
+      <div style={{ width: '90%', margin: 'auto', marginTop: '50px' }}>
         <div
           style={{
             display: 'grid',
