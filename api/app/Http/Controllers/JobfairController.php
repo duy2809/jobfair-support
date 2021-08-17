@@ -173,48 +173,43 @@ class JobfairController extends Controller
 
     public function getMilestones($id)
     {
-        $milestones = Jobfair::find($id)->schedule()->with([
-            'milestones' => function ($query) {
-                $query->with([
-                    'tasks' => function ($task) {
-                        $task->select('milestone_id', 'name', 'status');
-                    },
-                ])->get();
+        $scheduleId = Jobfair::find($id)->schedule;
+        $milestones = Jobfair::with([
+            'schedule:id,jobfair_id',
+            'schedule.milestones:id,name,period',
+            'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
+                $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
             },
-        ])->get();
+        ])->find($id, ['id']);
 
-        return response()->json([
-            'data' => $milestones,
-        ]);
+        return response()->json($milestones);
     }
+
 
     public function getTasks($id)
     {
-        $tasks = Jobfair::find($id)->schedule()->with([
-            'tasks' => function ($query) {
-                $query->select(['tasks.name', 'tasks.status', 'tasks.id']);
+        $tasks = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
+                    ->select(['tasks.id', 'tasks.name', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id']);
             },
-        ])->get(['id']);
+        ])->find($id, ['id']);
 
-        return response()->json([
-            'data' => $tasks,
-        ]);
+        return response()->json($tasks);
     }
+
 
     public function updatedTasks($id, Request $request)
     {
-        $tasks = Jobfair::find($id)->schedule()->with([
-            'tasks' => function ($query) {
-                $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'users.name as username'])
-                    ->join('users', 'users.id', '=', 'tasks.user_id')
-                    ->orderBy('tasks.updated_at', 'DESC')
-                    ->take(30);
-            },
-        ])->get(['id']);
+        $tasks = Jobfair::with(['schedule:id,jobfair_id','schedule.tasks' => function ($query) {
+            $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'tasks.schedule_id', 'users.name as username'])
+                ->join('users', 'users.id', '=', 'tasks.user_id')
+                ->orderBy('tasks.updated_at', 'DESC')
+                ->take(30);
+        },
+        ])->find($id, ['id']);
 
-        return response()->json([
-            'data' => $tasks,
-        ]);
+        return response()->json($tasks);
     }
 
     public function searchTask($id, Request $request)

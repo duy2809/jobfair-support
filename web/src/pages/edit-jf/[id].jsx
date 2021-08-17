@@ -110,19 +110,11 @@ const index = () => {
       form.setFieldsValue(dummyObject)
     }
   }
-  const routeTo = async (url) => {
-    // await router.prefetch(url)
-    // await router.push(url)
-
-    router.prefetch(url)
-    router.push(url)
-  }
-
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
     if (checkIsFormInputEmpty()) {
-      routeTo('/jobfairs')
+      router.push('/jobfairs')
     } else {
       Modal.confirm({
         title: '変更内容が保存されません。よろしいですか？',
@@ -131,7 +123,7 @@ const index = () => {
         centered: true,
         onOk: () => {
           onFormReset()
-          routeTo('/jobfairs')
+          router.push('/jobfairs')
         },
 
         onCancel: () => {},
@@ -174,7 +166,7 @@ const index = () => {
       await editJF(idJf, data).then((response) => {
         console.log(response)
         saveNotification()
-        routeTo(`/jf-toppage/${idJf}`)
+        router.push(`/jf-toppage/${idJf}`)
       }).catch((error) => {
         console.log(error)
         setdisableBtn(false)

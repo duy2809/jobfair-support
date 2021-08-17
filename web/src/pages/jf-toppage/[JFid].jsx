@@ -20,7 +20,7 @@ export default function jftoppage() {
   const [name, setName] = useState('')
   const router = useRouter()
   const idJf = router.query.JFid
-  const [users, setUsers] = useState({})
+  const [users, setUsers] = useState('')
   const [startDate, setStartDate] = useState()
   const [user, setuser] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
@@ -39,20 +39,20 @@ export default function jftoppage() {
   const getDataUser = async () => {
     await webInit().then((response) => {
       setUsers(response.data.auth.user.role)
-      console.log(response.data.auth.user.name)
+      console.log(response.data.auth.user.role)
     }).catch((error) => {
       console.log(error)
     })
   }
   const fetchTasks = async () => {
     await jftask(idJf).then((response) => {
-      setlistTask(response.data.data[0].tasks)
+      setlistTask(response.data.schedule.tasks)
     }).catch((error) => {
       console.log(error)
     })
   }
   const handleEdit = () => {
-    router.push('/template-tasts')
+    router.push(`/edit-jf/${idJf}`)
   }
   const saveNotification = () => {
     notification.open({
@@ -66,7 +66,7 @@ export default function jftoppage() {
     await deleteJF(idJf).then((response) => {
       console.log(response.data)
       saveNotification()
-      router.push('/template-tasts')
+      router.push('/jobfairs')
     }).catch((error) => {
       console.log(error)
     })
@@ -136,7 +136,7 @@ export default function jftoppage() {
                   <div className="flex justify-end">
                     <div className="search__task">
                       <div className="button__right">
-                        { users === 2 ? (
+                        { users === 'admin' ? (
                           <>
                             <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>編集</Button>
                             <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>削除</Button>
