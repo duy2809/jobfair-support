@@ -164,6 +164,7 @@ const index = () => {
         jobfair_admin_id: changeAdmin ? values.jobfair_admin_id * 1.0 : AdminDF,
       }
       setdisableBtn(true)
+      console.log(data)
       await editJF(idJf, data).then((response) => {
         console.log(response)
         saveNotification()

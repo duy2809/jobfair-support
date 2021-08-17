@@ -92,7 +92,7 @@ class JobfairController extends Controller
     public function update(Request $request, $id)
     {
         $jobfair = Jobfair::find($id);
-        $jobfair->update($request->validated());
+        $jobfair->update($request->all());
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $templateSchedule = Schedule::find($request->schedule_id);
         $schedule->update(['name' => $templateSchedule->name]);
@@ -100,7 +100,7 @@ class JobfairController extends Controller
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
 
-        return response()->json($schedule);
+        return response()->json('thanh cong');
     }
 
     /**
