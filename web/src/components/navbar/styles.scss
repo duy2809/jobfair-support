@@ -13,3 +13,36 @@
     border-radius: 50%;
     background-color: #ffd803;
 } 
+
+.notification {
+    width: 600px;
+    
+    .noti-header{
+        display: flex;
+        justify-items: center;
+        align-items: center;
+        margin: auto;
+    }
+
+    .noti-input{
+        width: 300px;
+        margin: auto;
+    }
+
+    .ant-list-items{
+        height: auto;
+        max-height: 500px;
+        overflow: auto;
+    }
+
+    .noti-footer{
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .noti-list-item {
+        width: 500px;
+        display: flex;
+    }
+
+}
