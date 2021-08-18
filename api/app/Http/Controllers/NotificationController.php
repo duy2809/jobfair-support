@@ -109,7 +109,7 @@ class NotificationController extends Controller
         if($noti)
             $noti->delete(); 
         else
-            return response()->json(error);
+            return response()->json();
         return response()->json(null); 
         // return $noti;
      }
