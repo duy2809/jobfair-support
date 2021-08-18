@@ -79,7 +79,7 @@ class NotificationController extends Controller
      */
     public function edit($id)
     {
-        return Notification::where('id', $id)->get();
+        
     }
 
     /**
@@ -91,9 +91,8 @@ class NotificationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
-
+         return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
+       
     }
 
     /**
@@ -134,15 +133,5 @@ class NotificationController extends Controller
              
          }
     }
-    public function showNotificationUser($user_id,$notifiable_id)
-    {
-
-        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
-    }
-    
-    public function showNotificationUserUread($user_id,$notifiable_id)
-    {
-
-        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-    }
+   
 }

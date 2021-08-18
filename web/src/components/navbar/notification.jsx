@@ -14,6 +14,8 @@ import { ReactReduxContext } from 'react-redux'
 
 
 export default function Notification() {
+  const { store } = useContext(ReactReduxContext)
+
   const [userId, setUserId] = useState([])
   const [userName, setUserName] = useState([])
 
@@ -29,13 +31,11 @@ export default function Notification() {
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
-  const { store } = useContext(ReactReduxContext)
 
   const [loading, setLoading] = useState(false)
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
+ 
 
-
-  
  
   const data = []
   useEffect(() => {
@@ -138,8 +138,7 @@ export default function Notification() {
     
    
 
-  const { store } = useContext(ReactReduxContext)
-
+  
   const getNoti = (value) => {
     console.log(value);
   }
