@@ -14,6 +14,7 @@ const EditCategory = (props) => {
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
   const [reload, setReload] = useState(false)
+  const role = props.role
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -76,15 +77,17 @@ const EditCategory = (props) => {
   }
 
   const handleOk = () => {
-    const id = props.record.id
-    updateCategory(id, {
-      category_name: nameInput,
-    }).then(() => openNotificationSuccess())
-      .catch((error) => {
-        notification.error({
-          message: 'このカテゴリ名は存在しています',
+    if (role === 'superadmin') {
+      const id = props.record.id
+      updateCategory(id, {
+        category_name: nameInput,
+      }).then(() => openNotificationSuccess())
+        .catch((error) => {
+          notification.error({
+            message: 'このカテゴリ名は存在しています',
+          })
         })
-      })
+    }
   }
 
   const handleCancel = () => {
@@ -106,7 +109,7 @@ const EditCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p>カテゴリ名</p>
+              <span>カテゴリ名</span>
             }
             name="name"
             rules={[
@@ -129,6 +132,7 @@ const EditCategory = (props) => {
               type="text"
               required="required"
               className="input-category"
+              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
               placeholder="カテゴリ名を書いてください"

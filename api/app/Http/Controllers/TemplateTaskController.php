@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Http\Requests\TemplateTaskRequest;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
 
@@ -29,9 +28,16 @@ class TemplateTaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TemplateTaskRequest $request)
+    public function store(Request $request)
     {
-        $newTemplateTask = TemplateTask::create($request->validated());
+        $newTemplateTask = TemplateTask::create([
+            'name'                  => $request->name,
+            'description_of_detail' => $request->description_of_detail,
+            'milestone_id'          => $request->milestone_id,
+            'is_day'                => $request->is_day,
+            'unit'                  => $request->unit,
+            'effort'                => $request->effort,
+        ]);
         $newTemplateTask->categories()->attach($request->category_id);
         if (!empty($request->beforeTasks)) {
             $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
@@ -41,7 +47,19 @@ class TemplateTaskController extends Controller
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
         }
 
-        return response()->json(['message' => 'Save Successfully'], 200);
+        return $newTemplateTask;
+
+        // $newTemplateTask = TemplateTask::create($request->validated());
+        // $newTemplateTask->categories()->attach($request->category_id);
+        // if (!empty($request->beforeTasks)) {
+        //     $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
+        // }
+
+        // if (!empty($request->afterTasks)) {
+        //     $newTemplateTask->afterTasks()->attach($request->afterTasks);
+        // }
+
+        // return $newTemplateTask;
     }
 
     /**
@@ -116,5 +134,10 @@ class TemplateTaskController extends Controller
         $afterTasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
 
         return response()->json($afterTasks);
+    }
+
+    public function checkNameExisted(Request $request)
+    {
+        return TemplateTask::where('name', '=', $request->name)->get();
     }
 }

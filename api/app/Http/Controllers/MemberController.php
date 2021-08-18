@@ -17,7 +17,7 @@ class MemberController extends Controller
      */
     public function index()
     {
-        return User::all('id', 'name', 'email', 'created_at');
+        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
     }
 
     public function showMember($id)

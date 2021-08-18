@@ -79,7 +79,7 @@ class JobfairController extends Controller
      */
     public function show($id)
     {
-        return Jobfair::with('user:id,name,avatar')->find($id);
+        return Jobfair::with('user:id,name')->find($id);
     }
 
     /**

@@ -28,6 +28,7 @@ class EditRelationTaskOnTasksTable extends Migration
     {
         Schema::table('tasks', function (Blueprint $table) {
             $table->dropForeign('tasks_relation_task_id_foreign');
+            $table->unsignedBigInteger('relation_task_id')->change();
         });
     }
 }

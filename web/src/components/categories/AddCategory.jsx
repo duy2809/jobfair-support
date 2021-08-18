@@ -14,6 +14,7 @@ const AddCategory = (props) => {
   const [checkSpace, setcheckSpace] = useState(false)
   const [errorUnique, setErrorUnique] = useState(true)
   const [reload, setReload] = useState(false)
+  const role = props.role
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -38,15 +39,17 @@ const AddCategory = (props) => {
   }
 
   const handleOk = () => {
-    addCategory({
-      category_name: category,
-    }).then(() => openNotificationSuccess())
-      .catch((error) => {
-        notification.error({
-          message: 'このカテゴリ名は存在しています',
-          duration: 3,
+    if (role === 'superadmin') {
+      addCategory({
+        category_name: category,
+      }).then(() => openNotificationSuccess())
+        .catch((error) => {
+          notification.error({
+            message: 'このカテゴリ名は存在しています',
+            duration: 3,
+          })
         })
-      })
+    }
   }
 
   const handleCancel = () => {
@@ -100,7 +103,7 @@ const AddCategory = (props) => {
         <Form form={form}>
           <Form.Item
             label={
-              <p>カテゴリ名</p>
+              <span>カテゴリ名</span>
             }
             name="name"
             rules={[
@@ -124,6 +127,7 @@ const AddCategory = (props) => {
               placeholder="例: 2次面接練習"
               className="input-category"
               required="required"
+              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
             />

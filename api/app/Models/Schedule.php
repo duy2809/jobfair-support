@@ -13,6 +13,8 @@ class Schedule extends Model
 
     protected $fillable = ['name', 'jobfair_id'];
 
+    protected $guarded = [];
+
     public function milestones()
     {
         return $this->belongsToMany(Milestone::class);

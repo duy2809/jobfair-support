@@ -3,7 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
+use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TemplateTaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +46,6 @@ Route::prefix('schedule')->group(function () {
 
 Route::get('/admins', 'AdminController@index');
 
-
 //milestone
 
 Route::resource('/milestone', MilestoneController::class);
@@ -65,12 +66,19 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
+Route::resource('/jf-list', JFListController::class);
+Route::get('/jf-list', 'JFListController@index');
+Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+
+Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+
 //template-task
 
 Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
+Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
 
 //category
 Route::apiResource('/category', CategoryController::class);
@@ -97,3 +105,9 @@ Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
+
+//member detail
+Route::prefix('members')->group(function () {
+    Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
+    Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
+});

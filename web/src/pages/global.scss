@@ -79,7 +79,13 @@ body {
   .input {
     padding: 10px;
   }
-
+  .no-border {
+    .ant-input:hover,
+    .ant-input:focus {
+        border: none !important;
+    }
+    
+}
   //Tooltip
   .ant-tooltip-inner {
     color: #272343 !important;
