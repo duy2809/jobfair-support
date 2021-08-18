@@ -9,6 +9,7 @@ import { deleteCategory } from '../../api/category'
 const { confirm } = Modal
 
 const DeleteCategory = (props) => {
+  const role = props.role
   const setReloadPage = () => {
     props.reloadPage()
   }
@@ -30,9 +31,11 @@ const DeleteCategory = (props) => {
       cancelText: 'キャンセル',
       centered: true,
       onOk() {
-        console.log('OK')
-        deleteCategory(props.record.id)
-        openNotificationSuccess()
+        if (role === 'superadmin') {
+          console.log('OK')
+          deleteCategory(props.record.id)
+          openNotificationSuccess()
+        }
       },
       onCancel() {
         console.log('Cancel')
