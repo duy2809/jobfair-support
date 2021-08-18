@@ -45,8 +45,8 @@ const NotificationsJf = ({ id }) => {
               <div>
                 <div>
                   {posts.slice(0, visi).map((item) => (
-                    <div href="/task-list" className="grid grid-cols-12 gap-4 table-item ">
-                      <div className="col-span-6"><div className="item name"><h3><Link href={`/task-detail/${item.id}`}>{item.name}</Link></h3></div></div>
+                    <div href="/task-list" className="grid grid-cols-9 gap-4 table-item ">
+                      <div className="col-span-3"><div className="item name"><h3><Link href={`/task-detail/${item.id}`}>{item.name}</Link></h3></div></div>
                       <div className="col-span-3"><div className="item username"><h4>{item.username}</h4></div></div>
                       <div className="col-span-3"><div className="item updated_at"><TimeAgo date={item.updated_at} formatter={formatter} /></div></div>
 
