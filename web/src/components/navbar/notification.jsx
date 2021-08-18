@@ -136,10 +136,6 @@ export default function Notification() {
       
     }
     
-   
-
-  const { store } = useContext(ReactReduxContext)
-
   const getNoti = (value) => {
     console.log(value);
   }
