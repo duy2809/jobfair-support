@@ -3,12 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
-use App\Http\Controllers\MemberDetailController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
+use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -113,6 +113,15 @@ Route::prefix('members')->group(function () {
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
 
+<<<<<<< HEAD
 // task kanban
 Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
 Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
+=======
+// top-page
+Route::prefix('/top-page')->group(function () {
+    Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/jobfairs', [JobfairController::class, 'index']);
+    Route::get('/members', [MemberController::class, 'index']);
+});
+>>>>>>> develop
