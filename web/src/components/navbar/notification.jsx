@@ -175,6 +175,7 @@ useEffect(() => {
       loading={loading}
       locale = {{emptyText: 'No Notification'}}
       renderItem={item => 
+      !empty ?
        <List.Item  
       className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
       // extra={<Button size="small">Delete</Button>}
@@ -211,6 +212,7 @@ useEffect(() => {
             )}
 
       </List.Item>
+      :<div></div>
       }
       
       />

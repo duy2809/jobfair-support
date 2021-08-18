@@ -1,6 +1,10 @@
 import Color from 'color'
 const validPassword = '12345678'; // TODO: change your password in db
+<<<<<<< HEAD
 const existValidEmail = 'letitia.kessler@example.net'; // TODO: change your email in db
+=======
+const existValidEmail = 'schamberger.beryl@example.com'; // TODO: change your email in db
+>>>>>>> update api J1
 describe('User Profile Test', () => {
   const expectTextColor = Color('#2d334a').string() 
     it('Visits Jobfair Support Profile', () => {
@@ -15,6 +19,7 @@ describe('User Profile Test', () => {
       cy.visit('http://jobfair.local:8000/profile')
     })
 
+<<<<<<< HEAD
     it('Check header and footer notification', () =>{
       cy.get('div.ant-dropdown-trigger').find('span.anticon-bell').click();
     cy.get('.notification').should('be.visible');
@@ -44,3 +49,7 @@ describe('User Profile Test', () => {
 
   })
 })
+=======
+    
+  })
+>>>>>>> update api J1
