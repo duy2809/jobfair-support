@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker } from 'antd'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import Link from 'next/link'
-import PropTypes from 'prop-types'
-import { taskSearch } from '../../api/top-page'
+import React, { useEffect, useState, useRef } from "react";
+import { Button, Table, Input, DatePicker } from "antd";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import { taskSearch } from "../../api/top-page";
 
 // const { Search } = Input;
 
@@ -19,112 +19,116 @@ const List = ({
   route,
   routeToAdd,
 }) => {
-  const ref = useRef()
+  const ref = useRef();
 
-  const [show, setShow] = useState(false)
-  const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
-  const [list, setList] = useState([])
+  const [show, setShow] = useState(false);
+  const [showSearchIcon, setShowSearchIcon] = useState(searchIcon);
+  const [list, setList] = useState([]);
 
   useEffect(() => {
-    setList(dataSource)
-  }, [dataSource])
+    setList(dataSource);
+  }, [dataSource]);
 
   useEffect(() => {
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
-        return
+        return;
       }
-      setShow(false)
-      setShowSearchIcon(true)
-    }
+      setShow(false);
+      setShowSearchIcon(true);
+    };
 
-    document.body.addEventListener('click', onBodyClick, { capture: true })
+    document.body.addEventListener("click", onBodyClick, { capture: true });
 
     return () => {
-      document.body.removeEventListener('click', onBodyClick, {
+      document.body.removeEventListener("click", onBodyClick, {
         capture: true,
-      })
-    }
-  }, [])
+      });
+    };
+  }, []);
 
   const onClick = () => {
-    setShow(!show)
-    setShowSearchIcon(!showSearchIcon)
-  }
+    setShow(!show);
+    setShowSearchIcon(!showSearchIcon);
+  };
 
   const searchByName = (e) => {
     const datas = dataSource.filter(
-      (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
+      (data) =>
+        data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
+    );
+    setList(datas);
+  };
   const searchByTime = (date, dateString) => {
-    if (dataColumn[1].dataIndex === 'type') dateString = dateString.replace('-', '/')
+    if (dataColumn[1].dataIndex === "type")
+      dateString = dateString.replace("-", "/");
     const datas = dataSource.filter(
-      (data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
+      (data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1
+    );
+    setList(datas);
+  };
 
   const searchByCategory = (e) => {
     const datas = dataSource.filter(
-      (data) => data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
+      (data) =>
+        data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1
+    );
+    setList(datas);
+  };
 
   const searchByMilestone = (e) => {
     const datas = dataSource.filter(
-      (data) => data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase())
-        !== -1,
-    )
-    setList(datas)
-  }
+      (data) =>
+        data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase()) !==
+        -1
+    );
+    setList(datas);
+  };
   const searchByJobfairName = (e) => {
     const getTask = async () => {
-      const response = await taskSearch(e.target.value)
-      let tasks = []
+      const response = await taskSearch(e.target.value);
+      let tasks = [];
       tasks = response.data.map((data) => ({
         name: data.name,
         jfName: data.jobfair.name,
         time: data.start_time,
-      }))
-      setList(tasks)
-    }
-    getTask()
-  }
+      }));
+      setList(tasks);
+    };
+    getTask();
+  };
 
   return (
     <div ref={ref}>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: '10px',
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "10px",
         }}
       >
         <Link href={route}>
-          <a style={{ fontSize: '30px' }}>{text}</a>
+          <a style={{ fontSize: "30px" }}>{text}</a>
         </Link>
         <div className="flex items-center">
           <Link href={routeToAdd}>
             <Button
-              style={{ border: 'none', marginBottom: '5px' }}
+              style={{ border: "none", marginBottom: "5px" }}
               shape="circle"
-              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
+              icon={<PlusOutlined style={{ fontSize: "30px" }} />}
             />
           </Link>
 
           <span className="queue-demo">
             {showSearchIcon && (
               <Button
-                style={{ border: 'none' }}
+                style={{ border: "none" }}
                 shape="circle"
-                icon={(
+                icon={
                   <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '30px' }}
+                    style={{ marginLeft: "4px", fontSize: "30px" }}
                   />
-                )}
+                }
                 onClick={onClick}
               />
             )}
@@ -146,17 +150,17 @@ const List = ({
 
       <div
         style={{
-          display: 'grid',
-          gridTemplateRows: '15% 75%',
-          height: '480px',
-          backgroundColor: 'white',
-          border: '1px solid black',
-          borderRadius: '10px',
+          display: "grid",
+          gridTemplateRows: "15% 75%",
+          height: "480px",
+          backgroundColor: "white",
+          border: "1px solid black",
+          borderRadius: "10px",
         }}
       >
         <div
           style={{
-            display: 'grid',
+            display: "grid",
           }}
         >
           <div className="flex items-center justify-end px-2">
@@ -230,8 +234,8 @@ const List = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 List.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
@@ -244,6 +248,6 @@ List.propTypes = {
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
   routeToAdd: PropTypes.string.isRequired,
-}
+};
 
-export default List
+export default List;
