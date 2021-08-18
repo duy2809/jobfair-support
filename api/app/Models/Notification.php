@@ -13,6 +13,9 @@ class Notification extends Model
     // {
     //     return $this->belongsTo(User::class);
     // }
+    protected $casts = [
+        'id' => 'string'
+        ];
 
     public function notifiable()
     {
