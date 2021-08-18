@@ -17,6 +17,7 @@ const List = ({
   dataColumn,
   dataSource,
   route,
+  routeToAdd,
 }) => {
   const ref = useRef()
 
@@ -92,6 +93,7 @@ const List = ({
     }
     getTask()
   }
+
   return (
     <div ref={ref}>
       <div
@@ -105,11 +107,13 @@ const List = ({
           <a style={{ fontSize: '30px' }}>{text}</a>
         </Link>
         <div className="flex items-center">
-          <Button
-            style={{ border: 'none', marginBottom: '5px' }}
-            shape="circle"
-            icon={<PlusOutlined style={{ fontSize: '30px' }} />}
-          />
+          <Link href={routeToAdd}>
+            <Button
+              style={{ border: 'none', marginBottom: '5px' }}
+              shape="circle"
+              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
+            />
+          </Link>
 
           <span className="queue-demo">
             {showSearchIcon && (
@@ -239,6 +243,7 @@ List.propTypes = {
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
+  routeToAdd: PropTypes.string.isRequired,
 }
 
 export default List
