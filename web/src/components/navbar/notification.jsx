@@ -5,7 +5,7 @@ import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined, DeleteOutli
 import Link from 'next/link'
 import './styles.scss'
 
-import moment from 'moment';
+
 import { getNotification } from '../../api/notification'
 import { getUnreadNotification, deleteNotification } from '../../api/notification'
 
@@ -26,7 +26,7 @@ export default function Notification() {
   const [data_noti, setData] = useState([])
   const [read_at, setReadAt] = useState([])
   const [created_at, setCreatedAt] = useState([])
-  const [avatarUser, setAvatarUser] = useState([])
+
 
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
@@ -35,6 +35,8 @@ export default function Notification() {
   const [loading, setLoading] = useState(false)
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
  
+  const [empty, setEmpty] = useState(false)
+  
 
  
   const data = []
@@ -54,7 +56,7 @@ export default function Notification() {
         setLoading(true);
         getUnreadNotification(id).then((response) => {
           if(response.data == 0){
-  
+            setEmpty(true)
           }else{
             const length = response.data.noti.length
             setLengthNoti(length)
@@ -67,6 +69,7 @@ export default function Notification() {
               setType(type => [...type, response.data.noti[i].type]);
               setNotiId(notiId => [...notiId, response.data.noti[i].id]);
             }
+            setEmpty(false)
           }
           setLoading(false);
         })
@@ -75,7 +78,7 @@ export default function Notification() {
         setLoading(true);
         getNotification(id).then((response) => {
           if(response.data == 0){
-  
+            setEmpty(true)
           }else{
             const length = response.data.noti.length
             setLengthNoti(length)
@@ -87,10 +90,11 @@ export default function Notification() {
               setCreatedAt(created_at => [...created_at, response.data.noti[i].created_at]);
               setType(type => [...type, response.data.noti[i].type]);
               setNotiId(notiId => [...notiId, response.data.noti[i].id]);
-
+              
               
               
             }
+            setEmpty(false)
           }
           setLoading(false);
         })
@@ -200,6 +204,7 @@ export default function Notification() {
       loading={loading}
       locale = {{emptyText: 'No Notification'}}
       renderItem={item => 
+      !empty ?
        <List.Item  
       className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
       // extra={<Button size="small">Delete</Button>}
@@ -240,6 +245,7 @@ export default function Notification() {
             ):(<div></div>)}
 
       </List.Item>
+      :<div></div>
       }
       
       />
