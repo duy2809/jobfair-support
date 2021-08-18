@@ -89,11 +89,18 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+<<<<<<< HEAD
     public function update($id)
     {    
         $date = Notification::find($id);
         $date->read_at = \Carbon\Carbon::now();
         $date->save();
+=======
+    public function update(Request $request, $id)
+    {
+         return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
+       
+>>>>>>> update api J1
     }
 
     /**
@@ -134,6 +141,7 @@ class NotificationController extends Controller
              
          }
     }
+<<<<<<< HEAD
 
     public function updateAllRead() {
         $noti = Notification::orderBy('created_at', 'ASC')->where('read_at','=',null)->get();
@@ -146,4 +154,7 @@ class NotificationController extends Controller
             }
         }
     }
+=======
+   
+>>>>>>> update api J1
 }
