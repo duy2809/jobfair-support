@@ -6,6 +6,7 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
+import { webInit } from '~/api/web-init'
 
 const EditMember = ({ data }) => {
   const [form] = Form.useForm()
@@ -17,6 +18,7 @@ const EditMember = ({ data }) => {
   const [categories, setCategories] = useState(data.categories)
   const [categoriesSystem, setCategoriesSystem] = useState([])
   const [reqCategories, setReqCategories] = useState([])
+  const [user, setUser] = useState({})
 
   const { id } = router.query
 
@@ -29,7 +31,14 @@ const EditMember = ({ data }) => {
   }
 
   const fetchData = useCallback(() => {
-    CategoryApi.getListCategory().then((res) => {
+    webInit().then((res) => {
+      if (res.data.auth !== null) {
+        setUser(res.data.auth.user)
+      } else {
+        router.push('/login')
+      }
+    })
+    CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
     })
   })
@@ -48,15 +57,18 @@ const EditMember = ({ data }) => {
       name: nameInput,
       email: emailInput,
       categories: reqCategories,
-    }).then(() => {
-      openNotificationSuccess()
-      router.push(`/member/${data.user.id}`)
     })
+      .then(() => {
+        openNotificationSuccess()
+        router.push(`/member/${data.user.id}`)
+      })
       .catch((error) => {
         notification.error({
-          message: error.response.data.errors.email || error.response.data.errors.name,
+          message:
+            error.response.data.errors.email || error.response.data.errors.name,
         })
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsModalCancelVisible(false)
         setIsModalVisible(false)
       })
@@ -72,7 +84,11 @@ const EditMember = ({ data }) => {
   }
 
   const showModal = () => {
-    setIsModalVisible(true)
+    if (
+      form.getFieldsError().filter(({ errors }) => errors.length).length === 0
+    ) {
+      setIsModalVisible(true)
+    }
   }
 
   const showCancelModal = () => {
@@ -93,25 +109,35 @@ const EditMember = ({ data }) => {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    if (user.role === 'member') {
+      router.push('/login')
+    }
+  }, [user])
+
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-11/12 title">メンバ編集</div>
-          <Form className="w-8/12 pt-10" labelCol={{ span: 7 }} labelAlign="left" form={form}>
+        <h1>メンバ編集</h1>
+        <div className="flex flex-col items-center inviteWrapper">
+          <Form
+            className="w-2/5"
+            labelCol={{ span: 8 }}
+            labelAlign="right"
+            form={form}
+            size="large"
+          >
             <Form.Item
-              className="mx-10"
               name="name"
-              label="フルネーム"
+              label={<p style={{ fontSize: '18px' }}>フルネーム</p>}
               rules={[
                 {
                   message: 'フルネーム必要とされている!',
-                  required: (nameInput === ''),
+                  required: true,
                 },
               ]}
             >
               <Input
-                size="large"
                 onChange={onValueNameChange}
                 type="name"
                 value={nameInput}
@@ -119,19 +145,17 @@ const EditMember = ({ data }) => {
               />
             </Form.Item>
             <Form.Item
-              className="mx-10"
               name="email"
-              label="メールアドレス"
+              label={<p style={{ fontSize: '18px' }}>メールアドレス</p>}
               rules={[
                 {
                   type: 'email',
                   message: 'メールアドレス有効なメールではありません!',
-                  required: (emailInput === ''),
+                  required: true,
                 },
               ]}
             >
               <Input
-                size="large"
                 onChange={onValueEmailChange}
                 type="email"
                 defaultValue={emailInput}
@@ -146,27 +170,36 @@ const EditMember = ({ data }) => {
               onCancel={handleCancel}
               cancelText="いいえ"
               okText="はい"
+              centered
             >
               <p className="mb-5">このまま保存してもよろしいですか？ </p>
             </Modal>
 
             <Form.Item
-              className="mx-10"
               name="categories"
-              label="カテゴリ"
+              label={<p style={{ fontSize: '18px' }}>カテゴリ</p>}
               rules={[
                 {
                   required: false,
                 },
               ]}
             >
-              <Select mode="tags" defaultValue={categories} style={{ width: '100%' }} onChange={handleChangeSelect} placeholder="Tags Mode" size="large">
-                {categoriesSystem.map((item) => <Option key={item}>{item}</Option>)}
+              <Select
+                mode="tags"
+                defaultValue={categories}
+                onChange={handleChangeSelect}
+                placeholder="カテゴリ"
+                size="large"
+                className="selectBar"
+              >
+                {categoriesSystem.map((item) => (
+                  <Option key={item}>{item}</Option>
+                ))}
               </Select>
             </Form.Item>
 
             <Form.Item>
-              <div className="w-full flex justify-end">
+              <div className="flex justify-end">
                 <Modal
                   title="変更は保存されていません。続行してもよろしいですか？"
                   visible={isModalCancelVisible}
@@ -174,26 +207,19 @@ const EditMember = ({ data }) => {
                   onCancel={handleCancelModal}
                   cancelText="いいえ"
                   okText="はい"
+                  centered
                 >
                   <p className="mb-5">このまま保存してもよろしいですか？ </p>
                 </Modal>
 
-                <Button
-                  size="large"
-                  className="text-base"
-                  enabled="true"
-                  onClick={showCancelModal}
-                >
+                <Button size="middle" onClick={showCancelModal}>
                   キャンセル
                 </Button>
                 <Button
-                  size="large"
-                  className="text-base px-10 ml-4 mr-10"
+                  size="middle"
+                  className="ml-4"
                   type="primary"
-                  htmlType="submit"
-                  enabled="true"
                   onClick={showModal}
-                  disabled={nameInput === '' || emailInput === ''}
                 >
                   保存
                 </Button>

@@ -78,9 +78,14 @@ body {
 
   .input {
     padding: 10px;
-    max-width: 30%;
   }
-
+  .no-border {
+    .ant-input:hover,
+    .ant-input:focus {
+        border: none !important;
+    }
+    
+}
   //Tooltip
   .ant-tooltip-inner {
     color: #272343 !important;
@@ -91,7 +96,7 @@ body {
   .ant-picker:hover,
   .ant-picker-focused {
     border-color: #ffd803;
-    border-right-width: 1px !important;
+
   }
 
   //Pagination
@@ -111,13 +116,13 @@ body {
   //select
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
     border-color: #ffd803;
-    border-right-width: 1px !important;
+    
   }
 
   .ant-select:hover,
   .ant-select-focused {
     border-color: #ffd803;
-    border-right-width: 1px !important;
+   
   }
 
   .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)

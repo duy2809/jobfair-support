@@ -11,31 +11,23 @@ class Schedule extends Model
 
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'jobfair_id'];
 
-    public function templateMilestones()
-    {
-        return $this->hasMany(TemplateMilestone::class);
-    }
+    protected $guarded = [];
 
     public function milestones()
     {
-        return $this->hasMany(Milestone::class);
+        return $this->belongsToMany(Milestone::class);
     }
 
     public function tasks()
     {
-        return $this->hasManyThrough(Task::class, Milestone::class);
+        return $this->hasMany(Task::class);
     }
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'list_members');
-    }
-
-    public function templateDocuments()
-    {
-        return $this->morphMany(TemplateDocument::class, 'templateDocumentable');
     }
 
     public function documents()
@@ -46,5 +38,10 @@ class Schedule extends Model
     public function jobfair()
     {
         return $this->belongsTo(Jobfair::class);
+    }
+
+    public function templateTasks()
+    {
+        return $this->belongsToMany(TemplateTask::class);
     }
 }

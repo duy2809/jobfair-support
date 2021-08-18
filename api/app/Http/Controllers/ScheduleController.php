@@ -86,20 +86,12 @@ class ScheduleController extends Controller
 
     public function getMilestones($id)
     {
-        return Schedule::with([
-            'milestones' => function ($query) {
-                $query->select('schedule_id', 'name');
-            },
-        ])->find($id, ['id']);
+        return Schedule::with(['milestones:id,name'])->find($id, ['id']);
     }
 
-    public function getTasks($id)
+    public function getTemplateTasks($id)
     {
-        return Schedule::with([
-            'tasks' => function ($query) {
-                $query->select('tasks.name');
-            },
-        ])->find($id, ['id']);
+        return Schedule::with('templateTasks:id,name')->find($id, ['id']);
     }
 
     public function search(Request $request)

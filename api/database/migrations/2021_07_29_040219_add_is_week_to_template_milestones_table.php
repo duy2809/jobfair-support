@@ -15,7 +15,6 @@ class AddIsWeekToTemplateMilestonesTable extends Migration
     {
         Schema::table('template_milestones', function (Blueprint $table) {
             $table->boolean('is_week');
-            $table->renameColumn('milestone_name', 'name');
             $table->unsignedInteger('period')->change();
         });
     }
@@ -28,9 +27,8 @@ class AddIsWeekToTemplateMilestonesTable extends Migration
     public function down()
     {
         Schema::table('template_milestones', function (Blueprint $table) {
-            $table->renameColumn('name', 'milestone_name');
             $table->dropColumn('is_week');
-            $table->dropColumn('period');
+            $table->date('period')->change();
         });
     }
 }

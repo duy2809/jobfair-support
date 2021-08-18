@@ -7,13 +7,14 @@ import { formatDate } from '~/utils/utils'
 import './styles.scss'
 
 import { MemberApi } from '~/api/member'
+import { webInit } from '~/api/web-init'
 
 const columns = [
   {
     title: 'No.',
     key: 'No.',
     dataIndex: 'id',
-    render: (id) => id,
+    render: (value, item, index) => index + 1,
     width: '6%',
   },
   {
@@ -42,9 +43,10 @@ export default function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [filterData, setFilterData] = useState([])
+  const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
-
+  const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
@@ -82,6 +84,13 @@ export default function MemberList() {
   const fetchData = useCallback(() => {
     setDataLoading(true)
     initPagination()
+    webInit().then((res) => {
+      if (res.data.auth !== null) {
+        setUser(res.data.auth.user)
+      } else {
+        router.push('/login')
+      }
+    })
     MemberApi.getListMember().then((res) => {
       const { data } = res
       setMembers(data)
@@ -90,7 +99,6 @@ export default function MemberList() {
       setDataLoading(false)
     })
   })
-  const router = useRouter()
   const handleRow = (record) => ({ onClick: () => {
     router.push(`/member/${record.id}`)
   } })
@@ -103,7 +111,7 @@ export default function MemberList() {
     fetchData()
   }, [itemCount])
   const { Option } = Select
-  const role = 'admin'
+  const role = user.role
   return (
     <Layout>
       <Layout.Main>
@@ -111,7 +119,7 @@ export default function MemberList() {
           <div className="text-5xl w-full flex justify-between items-center title">
             <div>メンバ一覧</div>
             <div>
-              { role === 'admin' ? (
+              { role === 'superadmin' ? (
                 <Button
                   type="primary"
                   className="ml-5"
