@@ -19,46 +19,47 @@
 } 
 
 .notification {
-    width: 600px;
+    width: 500px;
     
     .noti-header{
         display: flex;
-        justify-items: center;
-        align-items: center;
-        margin: auto;
+        justify-content: space-between;
+        padding-left: 15px;
+        padding-right: 10px;
     }
 
     .noti-title{
         font-size: 18px;
-        padding-right: 180px;
     }
 
     .noti-checked{
         font-size: 18px;
-        padding-left: 180px;
     }
 
     .ant-list-items{
+        margin: auto;
         height: auto;
         max-height: 500px;
         overflow: auto;
-        
+        cursor: pointer;
         .noti-time{
             padding-left: 48px;
         }
 
         .delete-btn {
-            margin-left: 30px;
+            margin: auto;
         }
     }
-
+    .ant-list-item:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
     .noti-footer{
         display: flex;
         flex-direction: row-reverse;
     }
 
     .noti-list-item {
-        width: 500px;
+        width: 420px;
         
     }
 

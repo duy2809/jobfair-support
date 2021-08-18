@@ -1,12 +1,12 @@
 import React, {useState, useEffect, useContext} from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip,Spin } from 'antd'
-import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined, DeleteOutlined, DeleteTwoTone } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
 
 import moment from 'moment';
-import { getNotification } from '../../api/notification'
+import { getNotification, update, updateAllRead } from '../../api/notification'
 import { getUnreadNotification, deleteNotification } from '../../api/notification'
 
 
@@ -14,119 +14,74 @@ import { ReactReduxContext } from 'react-redux'
 
 
 export default function Notification() {
-  const [userId, setUserId] = useState([])
-  const [userName, setUserName] = useState([])
-
-  const [lengthNoti, setLengthNoti] = useState()
-  const [notiId, setNotiId] = useState([])
-
-  const [type, setType] = useState([])
-  const [data_noti, setData] = useState([])
-  const [read_at, setReadAt] = useState([])
-  const [created_at, setCreatedAt] = useState([])
-  const [avatarUser, setAvatarUser] = useState([])
-
+  // const [userName, setUserName] = useState([])
+  // const [lengthNoti, setLengthNoti] = useState()
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
   const { store } = useContext(ReactReduxContext)
-
   const [loading, setLoading] = useState(false)
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
+  const [checkUpdate, setCheckUpdate] = useState(0)
+  const [dataNoti, setDataNoti] = useState([])
 
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      // setUserName([])
+      setDataNoti([])
+      setUser(store.getState().get('auth').get('user'))
+      if (user) {
+        const id = user.get('id')
+        let data;
+        if (unread) {
+          const res = await getUnreadNotification(id)
+          if(!res.data) {
+            setLoading(false)
+            return
+          } else data = res.data
+          
+        } else {
+          const res = await getNotification(id)
+          if(!res.data) {
+            setLoading(false)
+            return
+          } else data = res.data
+        }
+        // const length = data.noti.length
+        // setLengthNoti(length)
+        const newNoti = data.noti.map((item, idx) => {
+          const newItem = {...item, ...data.userName[idx], avatar: `/api/avatar/${item.user_id}`}
+          return newItem 
+        }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
-  
- 
-  const data = []
-  useEffect(() => {
-    setUserName([])
-    setUserId([])
-    setData([])
-    setReadAt([])
-    setCreatedAt([])
-    setType([])
-    setNotiId([])
-
-    setUser(store.getState().get('auth').get('user'))
-    if (user) {
-      const id = user.get('id')
-      if (unread) {
-        setLoading(true);
-        getUnreadNotification(id).then((response) => {
-          if(response.data == 0){
-  
-          }else{
-            const length = response.data.noti.length
-            setLengthNoti(length)
-            for (let i = 0; i < length; i++) {
-              setUserName(userName => [...userName, response.data.userName[i].name]);
-              setUserId(userId => [...userId, response.data.noti[i].user_id]);
-              setData(data_noti => [...data_noti, response.data.noti[i].data]);
-              setReadAt(read_at => [...read_at, response.data.noti[i].read_at]);
-              setCreatedAt(created_at => [...created_at, response.data.noti[i].created_at]);
-              setType(type => [...type, response.data.noti[i].type]);
-              setNotiId(notiId => [...notiId, response.data.noti[i].id]);
-            }
-          }
-          setLoading(false);
-        })
-  
-      } else {
-        setLoading(true);
-        getNotification(id).then((response) => {
-          if(response.data == 0){
-  
-          }else{
-            const length = response.data.noti.length
-            setLengthNoti(length)
-            for (let i = 0; i < length; i++) {
-              setUserName(userName => [...userName, response.data.userName[i].name]);
-              setUserId(userId => [...userId, response.data.noti[i].user_id]);
-              setData(data_noti => [...data_noti, response.data.noti[i].data]);
-              setReadAt(read_at => [...read_at, response.data.noti[i].read_at]);
-              setCreatedAt(created_at => [...created_at, response.data.noti[i].created_at]);
-              setType(type => [...type, response.data.noti[i].type]);
-              setNotiId(notiId => [...notiId, response.data.noti[i].id]);
-
-              
-              
-            }
-          }
-          setLoading(false);
-        })
+        setDataNoti(newNoti)
+        setLoading(false)
       }
-      console.log(userName)
-      
+    }catch (err) {
+      console.error(err)
     }
-    console.log(123)
-  }, [deleteNotiCheck,unread,user])
-  
-  
-    if (user) {
-      const id = user.get('id')
-    getUnreadNotification(id).then((res) => {
-      if(res.data == 0){
-        setUnReadLength(0)
-      }else{
-        setUnReadLength(res.data.noti.length)
-      }
-    })
   }
-  
-  //get noti
-  for (let i = 0; i < lengthNoti; i++) {
-    const link = `/api/avatar/${userId[i]}`
-    if (read_at[i] == null) {
-      data[i]= {'noti_id':notiId[i],'avatarLink' : link,'type' : type[i], 'name' : userName[i], 'data': data_noti[i], 'created_at': created_at[i], 'read_at': false}
-      
-    } else {
-      data[i]= {'noti_id':notiId[i],'avatarLink' : link,'type' : type[i], 'name' : userName[i], 'data': data_noti[i], 'created_at': created_at[i], 'read_at': true}
-      
-    }
 
-  
+  if (user) {
+    const id = user.get('id')
+    getUnreadNotification(id).then((res) => {
+    if(res.data == 0){
+      setUnReadLength(0)
+    }else{
+      setUnReadLength(res.data.noti.length)
+    }
+  })
 }
+
+  useEffect(() => {
+    fetchData()
+  }, [deleteNotiCheck,unread,user, checkUpdate])
+    
   
+useEffect(() => {
+  console.log(store.getState().get('auth').get('user').get('id'))
+}, [])
   function onChangeUnread(e) {
       if(e.target.checked){
         setUnRead(true)
@@ -167,9 +122,35 @@ export default function Notification() {
   
   }
   
+  const updateReadAt = (id) => {
+    update(id).then(res => {
+      if(res.data == null){
+      }
+      setCheckUpdate(checkUpdate + 1)
+    })
+  }
+
+  const onChange = () => {
+    updateAllRead().then(res => {
+      if(res.data == null){
+      }
+      setCheckUpdate(checkUpdate + 1)
+    })
+  }
+
+  const convertDate = (date) => {
+  console.log(date)
+  const currentdate = new Date(date)
+  const hours = currentdate.getUTCHours()
+  const datetime = currentdate.getFullYear() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getDate() + " "  
+                + `${hours > 12 ? hours - 12 + ":" + currentdate.getMinutes() + "PM" : hours + ":" + currentdate.getMinutes() + "AM"}`
+  return datetime
+  }
 
   const notifications = (
-    <div className="notification w-96 border-2 rounded-2xl bg-white">
+    <div className="auto-cols-max notification w-96 border-2 rounded-2xl bg-white">
       <List
       size="small"
       header={
@@ -186,12 +167,11 @@ export default function Notification() {
         <div className='noti-footer'>
           <Checkbox 
             className='' 
-            // onChange={onChange}
+            onChange={onChange}
             >すべて既読にする</Checkbox>
         </div>
-      }
-      bordered
-      dataSource={data}
+      } 
+      dataSource={dataNoti}
       loading={loading}
       locale = {{emptyText: 'No Notification'}}
       renderItem={item => 
@@ -199,55 +179,47 @@ export default function Notification() {
       className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
       // extra={<Button size="small">Delete</Button>}
       >
-
-         
           {
-            !loading ? (
+            !loading && (
               <div 
-                className = "flex flex-row"
+                className = "flex flex-cols"
               >
                 <div 
                 className="noti-list-item"
                 >
                 <List.Item.Meta
-                avatar={<Avatar src={item.avatarLink}/>}
+                onClick={() => {if(!item.read_at) {
+                                updateReadAt(item.id)}}}
+                avatar={<Avatar src={item.avatar}/>}
                 title={<div>{item.name}さんが{item.type}を{item.data}しました</div>}
                 />
                 <div className="noti-time">
-                  {item.created_at}
+                  {convertDate(item.created_at)}
                 </div>
                 
-                </div>  
+                </div>
                 <div 
-                  className="delete-btn"
-                  style={{margin: 0 }}
-                  >
-                    <Button
-                    // className="justify-center"
-                    // value={item.noti_id}
-                    type="link"
-                    onClick={()=>deleteNoti(item.noti_id)}
-                    icon={<DeleteOutlined />}
-                    />
+                className="delete-btn"
+                style={{margin: 0 }}
+                  >  
+                <DeleteTwoTone 
+                  onClick={() => deleteNoti(item.id)}
+                  />
                 </div>
               </div>
 
-            ):(<div></div>)}
+            )}
 
       </List.Item>
       }
       
       />
     </div>
-      
-
-             
-
   )
 
   return (
-    <div className="px-4 px">
-        <Dropdown overlay={notifications} 
+        <Dropdown 
+          overlay={notifications} 
           onVisibleChange={handleVisibleChange}
           trigger={['click']}
           visible={visible} 
@@ -259,6 +231,5 @@ export default function Notification() {
               </span>
             </div>
         </Dropdown>
-    </div>
   )
 }
