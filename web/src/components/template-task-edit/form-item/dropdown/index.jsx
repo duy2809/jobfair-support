@@ -30,8 +30,9 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }
   return (
     <Form.Item
       label={label}
-      labelAlign="right"
+      labelAlign="left"
       name={name}
+      className="justify-evenly"
       rules={[
         {
           required: true,

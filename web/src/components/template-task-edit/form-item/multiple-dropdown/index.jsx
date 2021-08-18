@@ -87,7 +87,7 @@ function tagRender(props) {
       >
         <Tooltip title={label}>
           <span
-            className="inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            className="inline-block text-blue-400  cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '18ch' }}
             onClick={handleClick}
           >
@@ -106,7 +106,7 @@ function tagRender(props) {
       style={{ marginRight: 3 }}
     >
       <span
-        className="inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+        className="inline-block text-blue-400 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
         onClick={handleClick}
       >
         {label}

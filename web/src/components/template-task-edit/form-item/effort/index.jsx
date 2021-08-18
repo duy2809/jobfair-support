@@ -54,7 +54,8 @@ const Effort = ({
     <Form.Item
       label="工数"
       name="effort"
-      labelAlign="right"
+      labelAlign="left"
+      className="justify-evenly"
       rules={[
         {
           // required: true,

@@ -16,8 +16,9 @@ const Detail = ({ form, input, setInput }) => {
   return (
     <Form.Item
       label="詳細"
-      labelAlign="right"
+      labelAlign="left"
       name="description"
+      className="justify-evenly"
     >
       <TextArea
         rows={7}

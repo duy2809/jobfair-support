@@ -23,8 +23,9 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
   return (
     <Form.Item
       label={label}
-      labelAlign="right"
+      labelAlign="left"
       name={name}
+      className="justify-evenly"
       rules={[
         {
           required: true,

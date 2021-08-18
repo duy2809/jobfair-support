@@ -219,100 +219,113 @@ const EditTemplateTaskPage = () => {
                 form={form}
                 name="basic"
                 labelCol={{
-                  span: 8,
+                  span: 2,
                 }}
                 wrapperCol={{
-                  span: 12,
+                  span: 14,
                 }}
-                className="space-y-12 w-1/2"
+                className="space-y-12 w-5/6"
               >
-                <ItemInput
-                  form={form}
-                  label="テンプレートタスク名"
-                  name="templateTaskName"
-                  setCheckSpace={setCheckSpace}
-                  setInput={setTemplateTaskNameInput}
-                />
-                <ItemDropdow
-                  form={form}
-                  label="カテゴリ"
-                  name="category"
-                  setCheckSpace={setCheckSpace}
-                  data={categoryData}
-                  setInput={setCategoryInput}
-                  setId={setCategoryId}
-                />
-                <ItemDropdow
-                  form={form}
-                  label="マイルストーン"
-                  name="milestone"
-                  setCheckSpace={setCheckSpace}
-                  data={milestoneData}
-                  setInput={setMilestoneInput}
-                  setId={setMilestoneId}
-                />
-                <Form.Item
-                  label="リレーション"
-                  labelAlign="right"
-                  required="true"
-                >
-                  <ItemMultipleDropdown
-                    form={form}
-                    label="前のタスク"
-                    name="prevTasks"
-                    options={tasks1}
-                    selectedItems={prevTasks}
-                    setSelectedItems={setPrevTasks}
-                  />
-                  <ItemMultipleDropdown
-                    form={form}
-                    label="次のタスク"
-                    name="nextTasks"
-                    options={tasks2}
-                    selectedItems={nextTasks}
-                    setSelectedItems={setNextTasks}
-                  />
-                </Form.Item>
-                <Modal
-                  title="マイルストーン編集"
-                  visible={isModalVisible}
-                  onOk={handleOk}
-                  onCancel={handleCancel}
-                  cancelText="いいえ"
-                  okText="はい"
-                  centered
-                >
-                  <p className="mb-5">このまま保存してもよろしいですか？ </p>
-                </Modal>
+                <div className="grid grid-cols-2">
+                  <div className="col-span-1 mx-4">
+                    <ItemInput
+                      form={form}
+                      label="テンプレートタスク名"
+                      name="templateTaskName"
+                      setCheckSpace={setCheckSpace}
+                      setInput={setTemplateTaskNameInput}
+                    />
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <ItemDropdow
+                      form={form}
+                      label="カテゴリ"
+                      name="category"
+                      setCheckSpace={setCheckSpace}
+                      data={categoryData}
+                      setInput={setCategoryInput}
+                      setId={setCategoryId}
+                    />
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <ItemDropdow
+                      form={form}
+                      label="マイルストーン"
+                      name="milestone"
+                      setCheckSpace={setCheckSpace}
+                      data={milestoneData}
+                      setInput={setMilestoneInput}
+                      setId={setMilestoneId}
+                    />
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <Form.Item
+                      label="リレーション"
+                      labelAlign="left"
+                      required="true"
+                      className="justify-evenly"
+                    >
+                      <ItemMultipleDropdown
+                        form={form}
+                        label="前のタスク"
+                        name="prevTasks"
+                        options={tasks1}
+                        selectedItems={prevTasks}
+                        setSelectedItems={setPrevTasks}
+                      />
+                      <ItemMultipleDropdown
+                        form={form}
+                        label="次のタスク"
+                        name="nextTasks"
+                        options={tasks2}
+                        selectedItems={nextTasks}
+                        setSelectedItems={setNextTasks}
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <Modal
+                      title="マイルストーン編集"
+                      visible={isModalVisible}
+                      onOk={handleOk}
+                      onCancel={handleCancel}
+                      cancelText="いいえ"
+                      okText="はい"
+                      centered
+                    >
+                      <p className="mb-5">このまま保存してもよろしいですか？ </p>
+                    </Modal>
 
-                <Effort
-                  form={form}
-                  unitData={unitData}
-                  isDayData={isDayData}
-                  setCheckSpace={setCheckSpace}
-                  setInput={setEffortNumber}
-                  setUnit={setUnit}
-                  setIsDay={setIsDay}
-                />
-
-                <Detail
-                  form={form}
-                  input={description}
-                  setInput={setDescription}
-                />
-
-                <Form.Item className=" justify-end ">
-                  {/* <div className="flex  my-10 "> */}
-                  <CancelEditTemplateTask id={pathId} />
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className="text-base px-10 "
-                    onClick={showModal}
-                  >
-                    保存
-                  </Button>
-                  {/* </div> */}
+                    <Effort
+                      form={form}
+                      unitData={unitData}
+                      isDayData={isDayData}
+                      setCheckSpace={setCheckSpace}
+                      setInput={setEffortNumber}
+                      setUnit={setUnit}
+                      setIsDay={setIsDay}
+                    />
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <Detail
+                      form={form}
+                      input={description}
+                      setInput={setDescription}
+                    />
+                  </div>
+                </div>
+                <Form.Item className="justify-end">
+                  <div className="submit-btn">
+                    <CancelEditTemplateTask id={pathId} />
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="text-base px-10 "
+                      onClick={showModal}
+                    >
+                      保存
+                    </Button>
+                  </div>
                 </Form.Item>
               </Form>
             </div>
