@@ -49,19 +49,26 @@ class NotificationController extends Controller
     public function show($user_id)
     {
 
-        // return Notification::where('notifiable_id','=',$user_id)->get();
-        $noti = Notification::where('notifiable_id','=',$user_id)->get();
-        $user = Notification::select('user_id')->where('notifiable_id','=',$user_id)->get();
-        foreach ($user as $notification) {
-            // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
-            // $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
-            $nameUser[] =User::select('name')->find($notification->user_id);
-        
-        }
-
-        // return $user->notifications;
-        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
-        // return $noti;
+         // return Notification::where('notifiable_id','=',$user_id)->get();
+         $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id','=',$user_id)->get();
+         if (count($noti) == 0) {
+             return 0;
+        } else {
+                // $user = Notification::orderBy('created_at', 'ASC')->select('user_id')->where('notifiable_id','=',$user_id)->get();
+                foreach ($noti as $notification) {
+                 // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
+                //  $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
+                 $nameUser[] =User::select('name')->find($notification->user_id);
+             
+             }
+     
+             // return $user->notifications;
+             return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+            //  return $user;
+             
+         }
+       
+         
     }
 
     /**
@@ -72,7 +79,7 @@ class NotificationController extends Controller
      */
     public function edit($id)
     {
-        //
+        return Notification::where('id', $id)->get();
     }
 
     /**
@@ -97,15 +104,35 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
-        return Notification::find($id)->delete();
-    }
-    public function showUnread($notifiable_id)
+        // return Notification::where('id', $id)->get();
+        // return response()->json(['message' => 'Successed']);
+        $noti = Notification::find($id);
+        if($noti)
+            $noti->delete(); 
+        else
+            return response()->json(error);
+        return response()->json(null); 
+        // return $noti;
+     }
+    public function showUnread($user_id)
     {
 
         // return Notification::where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-        $user = User::find($notifiable_id);
+        // $user = User::find($user_id);
 
-        return $user->unreadnotifications;
+        // return $user->unreadnotifications;
+        $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id','=',$user_id)->where('read_at','=',null)->get();
+         if (count($noti) == 0) {
+             return 0;
+        } else {
+                foreach ($noti as $notification) {
+                 $nameUser[] =User::select('name')->find($notification->user_id);
+             
+             }
+     
+             return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+             
+         }
     }
     public function showNotificationUser($user_id,$notifiable_id)
     {
