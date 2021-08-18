@@ -131,5 +131,4 @@ Route::resource('/notification', NotificationController::class);
 Route::get('/notification/delete/{id}', 'NotificationController@destroy');
 
 Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
-Route::get('/show-notification-user/{id}/{noti_id}', [App\Http\Controllers\NotificationController::class, 'showNotificationUser']);
-Route::get('/show-user-uread/{id}/{noti_id}', [App\Http\Controllers\NotificationController::class, 'showNotificationUserUread']);
+
