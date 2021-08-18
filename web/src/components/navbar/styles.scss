@@ -3,9 +3,13 @@
     color: #272343;
     font-size: 16px;
 }
-.bell-icon {
-    color: #ffd803;
+
+.cursor-pointer{
+    .bell-icon {
+        color: #ffd803;
+    }
 }
+
 .number-notifications {
     color: #F14E2B;
 }
@@ -24,15 +28,28 @@
         margin: auto;
     }
 
-    .noti-input{
-        width: 300px;
-        margin: auto;
+    .noti-title{
+        font-size: 18px;
+        padding-right: 180px;
+    }
+
+    .noti-checked{
+        font-size: 18px;
+        padding-left: 180px;
     }
 
     .ant-list-items{
         height: auto;
         max-height: 500px;
         overflow: auto;
+        
+        .noti-time{
+            padding-left: 48px;
+        }
+
+        .delete-btn {
+            margin-left: 30px;
+        }
     }
 
     .noti-footer{
@@ -42,7 +59,7 @@
 
     .noti-list-item {
         width: 500px;
-        display: flex;
+        
     }
 
 }

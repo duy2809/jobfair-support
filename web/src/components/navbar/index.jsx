@@ -16,7 +16,7 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="/schedule">
+        <Link href="/jf-schedules">
           <a>スケジュール</a>
         </Link>
       </Menu.Item>
@@ -60,7 +60,7 @@ export default function Navbar() {
     <div className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
         <div className="w-20 ml-16">
-          <Link href="/top-page">
+          <Link href="top">
             <a>
               <img src="/images/logo.png" alt="logo" />
             </a>
@@ -73,7 +73,7 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="px-8">
-            <Link href="/member">
+            <Link href="/members">
               <a href="">メンバ</a>
             </Link>
           </div>

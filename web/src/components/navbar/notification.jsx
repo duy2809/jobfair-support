@@ -1,56 +1,145 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip } from 'antd'
+import { Menu, Dropdown, List, Avatar, Select, Checkbox, Button, Tooltip,Spin } from 'antd'
 import { CaretDownOutlined, BellFilled, UserOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
 
 import moment from 'moment';
+import { getNotification } from '../../api/notification'
+import { getUnreadNotification, deleteNotification } from '../../api/notification'
+
+
+import { ReactReduxContext } from 'react-redux'
+
 
 export default function Notification() {
+  const [userId, setUserId] = useState([])
+  const [userName, setUserName] = useState([])
+
+  const [lengthNoti, setLengthNoti] = useState()
+  const [notiId, setNotiId] = useState([])
+
+  const [type, setType] = useState([])
+  const [data_noti, setData] = useState([])
+  const [read_at, setReadAt] = useState([])
+  const [created_at, setCreatedAt] = useState([])
+  const [avatarUser, setAvatarUser] = useState([])
+
+  const [user, setUser] = useState(null)
+  const [unread, setUnRead] = useState(false)
+  const [unreadLength, setUnReadLength] = useState(0)
+  const { store } = useContext(ReactReduxContext)
+
+  const [loading, setLoading] = useState(false)
+  const [deleteNotiCheck, setDeleteNoti] = useState(0)
+
+
+  
+ 
+  const data = []
+  useEffect(() => {
+    setUserName([])
+    setUserId([])
+    setData([])
+    setReadAt([])
+    setCreatedAt([])
+    setType([])
+    setNotiId([])
+
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      const id = user.get('id')
+      if (unread) {
+        setLoading(true);
+        getUnreadNotification(id).then((response) => {
+          if(response.data == 0){
+  
+          }else{
+            const length = response.data.noti.length
+            setLengthNoti(length)
+            for (let i = 0; i < length; i++) {
+              setUserName(userName => [...userName, response.data.userName[i].name]);
+              setUserId(userId => [...userId, response.data.noti[i].user_id]);
+              setData(data_noti => [...data_noti, response.data.noti[i].data]);
+              setReadAt(read_at => [...read_at, response.data.noti[i].read_at]);
+              setCreatedAt(created_at => [...created_at, response.data.noti[i].created_at]);
+              setType(type => [...type, response.data.noti[i].type]);
+              setNotiId(notiId => [...notiId, response.data.noti[i].id]);
+            }
+          }
+          setLoading(false);
+        })
+  
+      } else {
+        setLoading(true);
+        getNotification(id).then((response) => {
+          if(response.data == 0){
+  
+          }else{
+            const length = response.data.noti.length
+            setLengthNoti(length)
+            for (let i = 0; i < length; i++) {
+              setUserName(userName => [...userName, response.data.userName[i].name]);
+              setUserId(userId => [...userId, response.data.noti[i].user_id]);
+              setData(data_noti => [...data_noti, response.data.noti[i].data]);
+              setReadAt(read_at => [...read_at, response.data.noti[i].read_at]);
+              setCreatedAt(created_at => [...created_at, response.data.noti[i].created_at]);
+              setType(type => [...type, response.data.noti[i].type]);
+              setNotiId(notiId => [...notiId, response.data.noti[i].id]);
+
+              
+              
+            }
+          }
+          setLoading(false);
+        })
+      }
+      console.log(userName)
+      
+    }
+    console.log(123)
+  }, [deleteNotiCheck,unread,user])
+  
+  
+    if (user) {
+      const id = user.get('id')
+    getUnreadNotification(id).then((res) => {
+      if(res.data == 0){
+        setUnReadLength(0)
+      }else{
+        setUnReadLength(res.data.noti.length)
+      }
+    })
+  }
   
   //get noti
-  const data = [
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-    {
-      'name' : 'a-san',
-      'action': 'add JF',
-      'time': '11:12:20',
-    },
-  ];
+  for (let i = 0; i < lengthNoti; i++) {
+    const link = `/api/avatar/${userId[i]}`
+    if (read_at[i] == null) {
+      data[i]= {'noti_id':notiId[i],'avatarLink' : link,'type' : type[i], 'name' : userName[i], 'data': data_noti[i], 'created_at': created_at[i], 'read_at': false}
+      
+    } else {
+      data[i]= {'noti_id':notiId[i],'avatarLink' : link,'type' : type[i], 'name' : userName[i], 'data': data_noti[i], 'created_at': created_at[i], 'read_at': true}
+      
+    }
 
   
-  // get list of user's name
-  const { Option } = Select;
-  const listUser = [<Option key={0}>All</Option>];
-  // const users = [];
-  // for (let i = 0; i < users.length; i++) {
-  //   listUser.push(<Option key={user[i].id} value={users[i].name}>{users[i].name}</Option>);
-  // }
-  for (let i = 0; i < data.length; i++) {
-    listUser.push(<Option key={i+1} value={data[i].name}>{data[i].name}</Option>);
-  }
+}
+  
+  function onChangeUnread(e) {
+      if(e.target.checked){
+        setUnRead(true)
+      }else{
+        setUnRead(false)
+      }
+      
+    }
+    
+   
 
-  //get user's noti
+  const { store } = useContext(ReactReduxContext)
+
   const getNoti = (value) => {
     console.log(value);
   }
@@ -61,10 +150,7 @@ export default function Notification() {
     getNoti(value);
   }
 
-  // choose noti unread
-  function onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
-  }
+  
 
   // show noti
   const [visible, setVisible] = useState(false)
@@ -72,6 +158,19 @@ export default function Notification() {
   const handleVisibleChange = () => {
     setVisible(!visible);
   };
+  const deleteNoti = (noti_id) => {
+    // console.log(noti_id)
+    // setDeleteNoti(noti_id)
+    // console.log(deleteNotiID)
+    deleteNotification(noti_id).then((res)=>{
+      if(res.data == null){
+      }
+      setDeleteNoti(deleteNotiCheck+1)
+    })
+    
+  
+  }
+  
 
   const notifications = (
     <div className="notification w-96 border-2 rounded-2xl bg-white">
@@ -79,61 +178,88 @@ export default function Notification() {
       size="small"
       header={
         <div className="noti-header">
-          <div>通知</div>
-          {/* <div className='noti-input'>
-            <Select style={{ width: 200 }} size={100} defaultValue='All' onChange={handleChange} >
-              {listUser}
-            </Select>
-          </div> */}
-          
-          <Checkbox className='' onChange={onChange}>未読のみ表示</Checkbox>
-          <Button
-          type="link"
-          icon={<CloseOutlined />}
-          onClick={handleVisibleChange}
-          />
+          <div className="noti-title">通知</div>   
+          <div className="noti-space"></div>    
+          <div className='noti-checked'>
+           <Checkbox  onChange={onChangeUnread}>未読のみ表示</Checkbox>
+          </div>   
+         
         </div>
       }
       footer={
         <div className='noti-footer'>
-          <Checkbox className='' onChange={onChange}>すべて既読にする</Checkbox>
+          <Checkbox 
+            className='' 
+            // onChange={onChange}
+            >すべて既読にする</Checkbox>
         </div>
       }
+      bordered
       dataSource={data}
-      renderItem={item =>  <List.Item>
-          <div className="noti-list-item">
-            <List.Item.Meta
-            avatar={<Avatar src="/images/logo.png" />}
-            title={<div>{item.name} ha ....{item.action}</div>}
-            /> 
-            <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-              <span>{moment().subtract(2, 'days').fromNow(true)}</span>
-            </Tooltip>
-          </div>
-          <div 
-            className="delete-btn"
-            style={{margin: 0 }}
-            >
-              <Button
-              // className="justify-center"
-              // value={item.noti_id}
-              type="link"
-              onClick={()=>deleteNoti(item.noti_id)}
-              icon={<DeleteOutlined />}
-              />
-          </div>    
-      </List.Item>}
+      loading={loading}
+      locale = {{emptyText: 'No Notification'}}
+      renderItem={item => 
+       <List.Item  
+      className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
+      // extra={<Button size="small">Delete</Button>}
+      >
+
+         
+          {
+            !loading ? (
+              <div 
+                className = "flex flex-row"
+              >
+                <div 
+                className="noti-list-item"
+                >
+                <List.Item.Meta
+                avatar={<Avatar src={item.avatarLink}/>}
+                title={<div>{item.name}さんが{item.type}を{item.data}しました</div>}
+                />
+                <div className="noti-time">
+                  {item.created_at}
+                </div>
+                
+                </div>  
+                <div 
+                  className="delete-btn"
+                  style={{margin: 0 }}
+                  >
+                    <Button
+                    // className="justify-center"
+                    // value={item.noti_id}
+                    type="link"
+                    onClick={()=>deleteNoti(item.noti_id)}
+                    icon={<DeleteOutlined />}
+                    />
+                </div>
+              </div>
+
+            ):(<div></div>)}
+
+      </List.Item>
+      }
+      
       />
     </div>
+      
+
+             
+
   )
 
   return (
     <div className="px-4 px">
-        <Dropdown overlay={notifications} onClick={handleVisibleChange} /* trigger={['hover']} */ visible={visible} placement="bottomCenter">
+        <Dropdown overlay={notifications} 
+          onVisibleChange={handleVisibleChange}
+          trigger={['click']}
+          visible={visible} 
+          placement="bottomCenter">
             <div className="cursor-pointer">
               <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
               <span className="relative text-lg number-notifications -top-2 right-2">
-                {data.length}
+                {unreadLength}
               </span>
             </div>
         </Dropdown>

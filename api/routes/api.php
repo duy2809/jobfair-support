@@ -111,3 +111,10 @@ Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
+
+//Notification
+
+Route::resource('/notification', NotificationController::class);
+Route::get('/notification/delete/{id}', 'NotificationController@destroy');
+
+Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
