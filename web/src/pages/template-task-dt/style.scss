@@ -1,5 +1,5 @@
 .wrapper {
-    padding: 0 20px;
+    // padding: 0 20px;
 
     .list__button {
         display: flex;
@@ -15,21 +15,15 @@
         }
     }
 
-    .big__title {
-        margin-top: 20px;
-    }
+   
 
     .info__tplt {
-        .rela {
-            margin: 10px 0;
-        }
+       
 
-        margin-top: 30px;
+        span {
+            padding-right:10px  ;
+            margin-right: 5px;
 
-        .ef {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 6px;
         }
     }
 
@@ -60,14 +54,6 @@
         line-height: 35px;
         height: 260px;
         overflow: auto;
-    }
-
-    .layber {
-        p {
-            width: 87%;
-            text-align: end;
-        }
-
     }
 
     .list-items {
