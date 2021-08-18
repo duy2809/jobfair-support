@@ -113,15 +113,13 @@ Route::prefix('members')->group(function () {
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
 
-<<<<<<< HEAD
-// task kanban
-Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
-Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
-=======
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
->>>>>>> develop
+
+// task kanban
+Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
+Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
