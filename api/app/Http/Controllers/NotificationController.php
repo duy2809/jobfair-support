@@ -49,7 +49,6 @@ class NotificationController extends Controller
     public function show($user_id)
     {
 
-<<<<<<< HEAD
          // return Notification::where('notifiable_id','=',$user_id)->get();
          $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id','=',$user_id)->get();
          if (count($noti) == 0) {
@@ -70,21 +69,6 @@ class NotificationController extends Controller
          }
        
          
-=======
-        // return Notification::where('notifiable_id','=',$user_id)->get();
-        $noti = Notification::where('notifiable_id','=',$user_id)->get();
-        $user = Notification::select('user_id')->where('notifiable_id','=',$user_id)->get();
-        foreach ($user as $notification) {
-            // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
-            // $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
-            $nameUser[] =User::select('name')->find($notification->user_id);
-        
-        }
-
-        // return $user->notifications;
-        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
-        // return $noti;
->>>>>>> merge front and back J1
     }
 
     /**
@@ -107,9 +91,8 @@ class NotificationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
-        return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
-
+         return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
+       
     }
 
     /**
@@ -150,15 +133,5 @@ class NotificationController extends Controller
              
          }
     }
-    public function showNotificationUser($user_id,$notifiable_id)
-    {
-
-        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->with('user:id,name,avatar')->get();
-    }
-    
-    public function showNotificationUserUread($user_id,$notifiable_id)
-    {
-
-        return Notification::where('user_id','=',$user_id)->where('notifiable_id','=',$notifiable_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
-    }
+   
 }
