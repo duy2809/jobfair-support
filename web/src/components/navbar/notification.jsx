@@ -29,7 +29,6 @@ export default function Notification() {
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
-  const [read, setRead] = useState(false)
   const { store } = useContext(ReactReduxContext)
 
   const [loading, setLoading] = useState(false)
@@ -139,9 +138,8 @@ export default function Notification() {
     
    
 
+  const { store } = useContext(ReactReduxContext)
 
-
-  //get user's noti
   const getNoti = (value) => {
     console.log(value);
   }
