@@ -132,11 +132,11 @@ export default function TaskList() {
             <div className="info__tplt">
               <div className="grid grid-cols-2 mx-16 info__center">
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className=" layber col-span-1 mx-4">
                       <p>テンプレートタスク名:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <div className="item__right">{name}</div>
                     </div>
 
@@ -144,11 +144,11 @@ export default function TaskList() {
 
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber  col-span-1 mx-4">
                       <p>カテゴリ:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <div className="item__right">{categoryName}</div>
                     </div>
                   </div>
@@ -156,22 +156,22 @@ export default function TaskList() {
                 </div>
 
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>マイルストーン:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <div className="item__right">{milestoneName}</div>
                     </div>
                   </div>
 
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>工数:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <span className="ef">{ef}</span>
                       <span className="ef">{isDay ? '日' : '時間'}</span>
                       <span>/</span>
