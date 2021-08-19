@@ -452,9 +452,9 @@ const index = () => {
             <div className="flex justify-center ...">
               <Form.Item
                 label=" "
-                className="my-10 "
+                className="my-5 "
               >
-                <Space size={30} className="flex justify-end">
+                <Space size={30}>
                   <Button
                     htmlType="button"
                     type="primary"

@@ -26,19 +26,17 @@ class JobfairController extends Controller
             } else if ($templateTask->unit === 'none') {
                 $duration = (float) $templateTask->effort;
             } else {
-                $duration = (float) $templateTask->effort & $jobfair->number_of_companies;
+                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
             }
 
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
-            $newTask = Task::create([
-                'name' => $templateTask->name,
-                'start_time' => $startTime,
-                'end_time' => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
-                'status' => '未着手',
-                'milestone_id' => $templateTask->milestone_id,
-                'schedule_id' => $newSchedule->id,
-                'template_task_id' => $templateTask->id,
-            ]);
+            $input = $templateTask->toArray();
+            $input['start_time'] = $startTime;
+            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['schedule_id'] = $newSchedule->id;
+            $input['status'] = '未着手';
+            $input['template_task_id'] = $templateTask->id;
+            $newTask = Task::create($input);
             $newTask->categories()->attach($templateTask->categories);
         }
     }
