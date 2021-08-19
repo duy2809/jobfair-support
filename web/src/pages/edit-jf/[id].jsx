@@ -48,17 +48,15 @@ const index = () => {
   }
   const getTask = async (id) => {
     const tasks = await editApi.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
+      console.log(tasks.data.template_tasks)
     }
   }
 
   useEffect(() => {
-    // Extensions.unSaveChangeConfirm(true)
-
     const fetchAPI = async () => {
       try {
-        // TODO: optimize this one by using axios.{all,spread}
         const infoJF = await editApi.jfdata(idJf)
         const admins = await editApi.getAdmin()
         const schedules = await editApi.getSchedule()
@@ -110,19 +108,11 @@ const index = () => {
       form.setFieldsValue(dummyObject)
     }
   }
-  const routeTo = async (url) => {
-    // await router.prefetch(url)
-    // await router.push(url)
-
-    router.prefetch(url)
-    router.push(url)
-  }
-
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
     if (checkIsFormInputEmpty()) {
-      routeTo('/jobfairs')
+      router.push('/jobfairs')
     } else {
       Modal.confirm({
         title: '変更内容が保存されません。よろしいですか？',
@@ -131,7 +121,7 @@ const index = () => {
         centered: true,
         onOk: () => {
           onFormReset()
-          routeTo('/jobfairs')
+          router.push('/jobfairs')
         },
 
         onCancel: () => {},
@@ -174,7 +164,7 @@ const index = () => {
       await editJF(idJf, data).then((response) => {
         console.log(response)
         saveNotification()
-        routeTo(`/jf-toppage/${idJf}`)
+        router.push(`/jf-toppage/${idJf}`)
       }).catch((error) => {
         console.log(error)
         setdisableBtn(false)
@@ -277,229 +267,219 @@ const index = () => {
     }
     return Promise.resolve()
   }
-  /* Validator of all input end */
 
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>JF 編集 </h1>
         <div className="edit__jf">
-          {/* JF名 戻る JF-スケジュール 管理者 開始日 参加企業社数  推定参加学生数 タスク一賜 マイルストーン一覧 */}
-          <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-            {/* page title */}
-            <h1 className="text-3xl">JF 編集 </h1>
-            <div>
-              <div className="container">
-                <Form
-                  form={form}
-                  labelCol={{
-                    span: 6,
-                  }}
-                  wrapperCol={{
-                    span: 14,
-                  }}
-                  layout="horizontal"
-                  colon={false}
-                  initialValues={{ defaultInputValue: 0 }}
-                  onFinish={onFinishSuccess}
-                  onFinishFailed={onFinishFailed}
-
+          <Form
+            form={form}
+            labelCol={{
+              span: 4,
+            }}
+            wrapperCol={{
+              span: 18,
+            }}
+            layout="horizontal"
+            colon={false}
+            initialValues={{ defaultInputValue: 0 }}
+            onFinish={onFinishSuccess}
+            onFinishFailed={onFinishFailed}
+          >
+            <div className="grid grid-cols-2 mx-10">
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  label="JF名"
+                  name="name"
+                  rules={[
+                    {
+                      validator: JFNameValidator,
+                    },
+                  ]}
                 >
-                  {/* jobfair name */}
-                  <Form.Item
-                    label="JF名"
-                    name="name"
-                    rules={[
-                      {
-                        validator: JFNameValidator,
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      placeholder="JF名入力する"
-                      maxLength={20}
-                      onChange={onValueNameChange}
-                    />
-                  </Form.Item>
-
-                  {/* start date */}
-                  <Form.Item
-                    name="start_date"
-                    label="開始日"
-                    rules={[
-                      {
-                        validator: startDayValidator,
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      help="Please select the correct date"
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      format={Extensions.dateFormat}
-                      placeholder={Extensions.dateFormat}
-
-                    // disable date in the past
-                    // disabledDate={(current) => {
-                    //   return current < moment();
-                    // }}
-                    />
-                  </Form.Item>
-                  {/* number of companies */}
-                  <Form.Item
-                    label="参加企業社数"
-                    name="number_of_companies"
-                    rules={[
-                      {
-                        validator: companiesJoinValidator,
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      min={1}
-                      onChange={autoConvertHalfwidth}
-                      style={{ width: '130px' }}
-                      placeholder="参加企業社数"
-                    />
-                  </Form.Item>
-
-                  {/* number of students */}
-                  <Form.Item
-                    name="number_of_students"
-                    label="推定参加学生数"
-                    rules={[
-                      {
-                        validator: studentsJoinValidator,
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      min={1}
-                      onChange={autoConvertHalfwidth}
-                      style={{ width: '130px' }}
-                      placeholder="推定参加学生数"
-                    />
-                  </Form.Item>
-
-                  {/* jobfair admin */}
-                  <Form.Item
-                    label="管理者"
-                    name="jobfair_admin_id"
-                    onSelect={adminSelect}
-                    rules={[
-                      {
-                        validator: JFAdminValidator,
-                      },
-                    ]}
-                  >
-                    <Select className="addJF-selector" placeholder="管理者を選択">
-                      {listAdminJF.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-
-                  {/* jobfair schedule */}
-                  <Form.Item
-                    name="schedule_id"
-                    label="JF-スケジュール"
-                    rules={[
-                      {
-                        validator: JFScheduleValidator,
-                      },
-                    ]}
-                  >
-                    <Select
-                      className="addJF-selector"
-                      placeholder="JF-スケジュールを選択"
-                      onSelect={onScheduleSelect}
-                    >
-                      {listSchedule.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-
-                  {/* list milestones */}
-                  <Form.Item label=" ">
-                    マイルストーン一覧
-                    <List
-                      className="demo-infinite-container"
-                      bordered
-                      locale={
-                        { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
-                      }
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      size="small"
-                      dataSource={listMilestone}
-                      renderItem={(item) => (
-                        <List.Item className="list-items" key={item.id}>
-                          {item.name}
-                        </List.Item>
-                      )}
-                    />
-                  </Form.Item>
-
-                  {/* list task */}
-                  <Form.Item label=" ">
-                    タスク一賜
-                    <List
-                      className="demo-infinite-container"
-                      bordered
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      size="small"
-                      locale={
-                        { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
-                      }
-                      dataSource={listTask}
-                      renderItem={(item) => (
-                        <List.Item className="list-items" key={item.id}>
-                          {item.name}
-                        </List.Item>
-                      )}
-                    />
-                  </Form.Item>
-
-                  {/* 2 button */}
-                  <Form.Item
-                    label=" "
-                    className="my-10 "
-                  >
-                    <Space size={30} className="flex justify-end">
-                      <Button
-                        htmlType="button"
-                        type="primary"
-                        onClick={cancelConfirmModle}
-                        disabled={disableBtn}
-                        className="button_cacel"
-                      >
-                        キャンセル
-                      </Button>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        disabled={disableBtn}
-                        loading={disableBtn}
-                      >
-                        保存
-                      </Button>
-                    </Space>
-                  </Form.Item>
-                </Form>
+                  <Input
+                    type="text"
+                    placeholder="JF名入力する"
+                    maxLength={20}
+                    onChange={onValueNameChange}
+                  />
+                </Form.Item>
               </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  name="start_date"
+                  label="開始日"
+                  rules={[
+                    {
+                      validator: startDayValidator,
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    help="Please select the correct date"
+                    format={Extensions.dateFormat}
+                    placeholder={Extensions.dateFormat}
+                  />
+                </Form.Item>
+
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  label="参加企業社数"
+                  name="number_of_companies"
+                  rules={[
+                    {
+                      validator: companiesJoinValidator,
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    size="large"
+                    min={1}
+                    onChange={autoConvertHalfwidth}
+                    style={{ width: '130px' }}
+                    placeholder="参加企業社数"
+                  />
+                </Form.Item>
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  name="number_of_students"
+                  label="推定参加学生数"
+                  rules={[
+                    {
+                      validator: studentsJoinValidator,
+                    },
+                  ]}
+                >
+                  <Input
+                    type="text"
+                    size="large"
+                    min={1}
+                    onChange={autoConvertHalfwidth}
+                    style={{ width: '130px' }}
+                    placeholder="推定参加学生数"
+                  />
+                </Form.Item>
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  label="管理者"
+                  name="jobfair_admin_id"
+                  onSelect={adminSelect}
+                  rules={[
+                    {
+                      validator: JFAdminValidator,
+                    },
+                  ]}
+                >
+                  <Select className="addJF-selector" placeholder="管理者を選択">
+                    {listAdminJF.map((element) => (
+                      <Select.Option key={element.id} value={element.id}>
+                        {element.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item
+                  name="schedule_id"
+                  label="JF-スケジュール"
+                  rules={[
+                    {
+                      validator: JFScheduleValidator,
+                    },
+                  ]}
+                >
+                  <Select
+                    className="addJF-selector"
+                    placeholder="JF-スケジュールを選択"
+                    onSelect={onScheduleSelect}
+                  >
+                    {listSchedule.map((element) => (
+                      <Select.Option key={element.id} value={element.id}>
+                        {element.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item label=" ">
+                  マイルストーン一覧
+                  <List
+                    className="demo-infinite-container"
+                    bordered
+                    locale={
+                      { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
+                    }
+                    style={{ height: 250, overflow: 'auto' }}
+                    size="small"
+                    dataSource={listMilestone}
+                    renderItem={(item) => (
+                      <List.Item className="list-items" key={item.id}>
+                        {item.name}
+                      </List.Item>
+                    )}
+                  />
+                </Form.Item>
+              </div>
+              <div className="col-span-1 mx-4">
+                <Form.Item label=" ">
+                  タスク一賜
+                  <List
+                    className="demo-infinite-container"
+                    bordered
+                    style={{ height: 250, overflow: 'auto' }}
+                    size="small"
+                    locale={
+                      { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
+                    }
+                    dataSource={listTask}
+                    renderItem={(item) => (
+                      <List.Item className="list-items" key={item.id}>
+                        {item.name}
+                      </List.Item>
+                    )}
+                  />
+                </Form.Item>
+              </div>
+
             </div>
-          </div>
+            <div className="flex justify-center ...">
+              <Form.Item
+                label=" "
+                className="my-5 "
+              >
+                <Space size={30}>
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    onClick={cancelConfirmModle}
+                    disabled={disableBtn}
+                    className="button_cacel"
+                  >
+                    キャンセル
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={disableBtn}
+                    loading={disableBtn}
+                  >
+                    保存
+                  </Button>
+                </Space>
+              </Form.Item>
+            </div>
+          </Form>
         </div>
       </OtherLayout.Main>
     </OtherLayout>
   )
 }
-
+index.middleware = ['auth:superadmin', 'auth:admin']
 export default index

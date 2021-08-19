@@ -8,9 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'name',
+        'start_time',
+        'end_time',
+        'status',
+        'remind_member',
+        'description_of_detail',
+        'milestone_id',
+        'user_id',
+        'schedule_id',
+        'template_task_id',
+    ];
     protected $guarded = [];
-
     protected $casts = [
         'start_time' => 'date: Y/m/d',
         'end_time' => 'date: Y/m/d',
@@ -23,7 +33,11 @@ class Task extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'assignments', 'task_id', 'user_id')->withPivot(['completed_date', 'join_date', 'notification']);
+        return $this->belongsToMany(User::class, 'assignments', 'task_id', 'user_id')->withPivot([
+            'completed_date',
+            'join_date',
+            'notification',
+        ]);
     }
 
     public function documents()

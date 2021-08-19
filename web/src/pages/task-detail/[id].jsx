@@ -1,29 +1,89 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import OtherLayout from '../../layouts/OtherLayout'
+import { Button, Modal, notification } from 'antd'
+import {
+  ExclamationCircleOutlined,
+  CheckCircleTwoTone,
+} from '@ant-design/icons'
+import JfLayout from '../../layouts/JFLayout'
+import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
 
 export default function TaskList() {
   const router = useRouter()
   const idTask = router.query.id
   const [user, setUser] = useState({})
-  console.log(idTask)
-  const deletetpl = async () => {
-    // await deleteTptt(idTplt).then((response) => {
-    //   console.log(response.data)
-    //   saveNotification()
-    //   router.push('/template-tasts')
-    // }).catch((error) => {
-    //   console.log(error)
-    // })
+  const [beforeTasks, setBeforeTask] = useState([])
+  const [afterTasks, setAfterTasks] = useState([])
+  const [infoTask, setInfoTask] = useState({
+    name: '',
+    categories: '',
+    milestone: '',
+    status: '',
+    start_time: '',
+    end_time: '',
+    effort: '',
+    is_day: null,
+    unit: '',
+    description_of_detail: '',
+  })
+  const saveNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
+      message: '正常に削除されました',
+      onClick: () => {},
+    })
   }
+  const [listMemberAssignee, setListMemberAssignee] = useState([])
+  const deletetpl = async () => {
+    await deleteTask(idTask).then((response) => {
+      console.log(response.data)
+      router.push('/tasks/1')
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const getDataUser = async () => {
     await webInit().then((response) => {
       setUser(response.data.auth.user.role)
       console.log(response.data.auth.user.name)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
+  const fetchTaskData = async () => {
+    await taskData(idTask).then((response) => {
+      setInfoTask({
+        name: response.data.name,
+        categories: response.data.categories[0].category_name,
+        milestone: response.data.milestone.name,
+        status: response.data.status,
+        start_time: response.data.start_time,
+        end_time: response.data.end_time,
+        effort: response.data.template_task.effort,
+        is_day: response.data.template_task.is_day,
+        unit: response.data.template_task.unit,
+        description_of_detail: response.data.description_of_detail,
+      })
+      setListMemberAssignee(response.data.users)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  const fetchBeforeTask = async () => {
+    await beforeTask(idTask).then((response) => {
+      setBeforeTask(response.data.before_tasks)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  const fetchafterTask = async () => {
+    await afterTask(idTask).then((response) => {
+      setAfterTasks(response.data.after_tasks)
     }).catch((error) => {
       console.log(error)
     })
@@ -35,6 +95,7 @@ export default function TaskList() {
       content: '',
       onOk: () => {
         deletetpl()
+        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -50,11 +111,14 @@ export default function TaskList() {
   }
   useEffect(() => {
     getDataUser()
+    fetchTaskData()
+    fetchBeforeTask()
+    fetchafterTask()
   }, [])
   return (
     <div>
-      <OtherLayout>
-        <OtherLayout.Main>
+      <JfLayout>
+        <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
@@ -88,15 +152,15 @@ export default function TaskList() {
               </div>
             </div>
             <h1>タスク詳細</h1>
-            <div className="info__tplt mx-6">
-              <div className="grid grid-cols-2 mx-16 info__center">
+            <div className="info__tplt">
+              <div className="grid grid-cols-2 mx-5 info__center">
                 <div className="col-span-1 mx-4 ">
                   <div className="grid grid-cols-3 ">
                     <div className=" layber col-span-1 mx-4">
                       <p>タスク名:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <div className="item__right">dfgdfg</div>
+                      <div className="item__right">{infoTask.name}</div>
                     </div>
                   </div>
                 </div>
@@ -106,121 +170,121 @@ export default function TaskList() {
                       <p>カテゴリ:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <div className="item__right">sdgdfgdfg</div>
+                      <div className="item__right">{infoTask.categories}</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>マイルストーン:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
-                      <div className="item__right">555weet</div>
+                    <div className="col-span-2 mx-4">
+                      <div className="item__right">{infoTask.milestone}</div>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>工数:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
-                      <span className="ef">5555</span>
-                      <span className="ef">sddfg</span>
+                    <div className="col-span-2 mx-4">
+                      <span className="ef">{infoTask.effort}</span>
+                      <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                       <span>/</span>
-                      <span className="ef">sfsdfdg</span>
+                      <span className="ef">{infoTask.unit}</span>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3">
                     <div className="layber col-span-1 mx-4">
                       <p>担当者:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <ul className="list__member">
-                        <li>asdsfd</li>
-                        <li>asfsdf</li>
-                        {/* {beforeTasks ? beforeTasks.map((item) => (
-                        <li className="task__chil">
-                          <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
-                            {truncate(item.name)}
-                          </a>
-                        </li>
-                      )) : null } */}
+                        {listMemberAssignee ? listMemberAssignee.map((item) => (
+                          <li className="task__chil">
+                            {`${item.name},`}
+                          </li>
+                        )) : null }
                       </ul>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>ステータス:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
-                      <span className="item__right">new</span>
+                    <div className="col-span-2 mx-4">
+                      {infoTask.status === '未着手' ? (<span style={{ background: '#5EB5A6', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
+                      {infoTask.status === '進行中' ? (<span style={{ background: '#A1AF2F', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
+                      {infoTask.status === '完了' ? (<span style={{ background: '#4488C5', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
+                      {infoTask.status === '中断' ? (<span style={{ background: 'rgb(185, 86, 86)', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
+                      {infoTask.status === '未完了' ? (<span style={{ background: 'rgb(121, 86, 23)', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>開始日:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
-                      <span className="item__right">2020/06/04</span>
+                    <div className="col-span-2 mx-4">
+                      <span className="item__right">{infoTask.start_time}</span>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber col-span-1 mx-4">
                       <p>終了日:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
-                      <span className="item__right">2020/06/04</span>
+                    <div className="col-span-2 mx-4">
+                      <span className="item__right">{infoTask.end_time}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 mx-16 mt-5">
+              <div className="grid grid-cols-2 mx-5 mt-5">
                 <div className="rela col-span-1 mx-8">
                   <p className="mb-2">前のタスク </p>
                   <ul className="list__task">
-                    {/* {beforeTasks ? beforeTasks.map((item) => (
+                    {beforeTasks ? beforeTasks.map((item) => (
                       <li className="task__chil">
                         <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
                           {truncate(item.name)}
                         </a>
                       </li>
-                    )) : null } */}
+                    )) : null }
                   </ul>
                 </div>
                 <div className="rela col-span-1 mx-8">
                   <p className="mb-2">次のタスク</p>
                   <ul className="list__task">
-                    {/* {1 ? afterTa1sks.map((item) => (
+                    {afterTasks ? afterTasks.map((item) => (
                       <li>
                         <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
                           {truncate(item.name)}
                         </a>
                       </li>
-                    )) : null } */}
+                    )) : null }
                   </ul>
                 </div>
               </div>
 
-              <div className="mx-16 mt-5">
-                <div className=" mx-8 des demo-infinite-container">sdfdgf</div>
+              <div className="mx-5 mt-5">
+                <div className=" mx-8 des demo-infinite-container">{infoTask.description_of_detail}</div>
               </div>
             </div>
 
           </div>
-        </OtherLayout.Main>
-      </OtherLayout>
+        </JfLayout.Main>
+      </JfLayout>
     </div>
   )
 }

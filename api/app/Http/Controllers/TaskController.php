@@ -47,21 +47,9 @@ class TaskController extends Controller
             'milestone:id,name',
             'categories:id,category_name',
             'users:id,name',
+            'templateTask:id,effort,is_day,unit'
         ])->find($id);
         return response()->json($tasks);
-        // $task = Task::where('tasks.id',$id)
-        // ->join('milestones','tasks.milestone_id','=','milestones.id')
-        // ->join('schedules','tasks.schedule_id','=','schedules.id')
-        // ->join('template_tasks','tasks.template_task_id','=','template_tasks.id')
-        // ->get(
-        //     [
-        //         'tasks.*',
-        //         'milestones.name AS milestone_name',
-        //         'schedules.name AS schedule_name',
-        //         'template_tasks.name AS template_task_name'
-        //     ]
-        // );
-        // return response()->json($task);
     }
 
     /**
@@ -93,6 +81,13 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
+        $task = Task::find($id);
+        $task->categories()->detach();
+        $task->beforeTasks()->detach();
+        $task->afterTasks()->detach();
+        $task->delete();
+
+        return response()->json(['message' => 'Delete Successfully'], 200);
     }
     public function getBeforeTasks($id)
     {

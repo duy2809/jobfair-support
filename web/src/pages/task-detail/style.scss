@@ -13,7 +13,11 @@
         }
     }
 
-   
+    .stt{
+        border: 1px solid ;
+        padding: 5px 10px;
+        font-weight: 600;
+    }
 
     .info__tplt {
        
@@ -44,7 +48,14 @@
 
         }
     }
-
+.list__member{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    li{
+        margin-right: 10px;
+    }
+}
     .des {
         padding: 13px;
         border: 1px solid #b5b5b8;
