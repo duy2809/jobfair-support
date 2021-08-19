@@ -109,9 +109,6 @@ Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avat
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueAdd']);
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
