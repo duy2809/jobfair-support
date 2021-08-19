@@ -26,19 +26,17 @@ class JobfairController extends Controller
             } else if ($templateTask->unit === 'none') {
                 $duration = (float) $templateTask->effort;
             } else {
-                $duration = (float) $templateTask->effort & $jobfair->number_of_companies;
+                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
             }
 
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
-            $newTask = Task::create([
-                'name'             => $templateTask->name,
-                'start_time'       => $startTime,
-                'end_time'         => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
-                'status'           => '未着手',
-                'milestone_id'     => $templateTask->milestone_id,
-                'schedule_id'      => $newSchedule->id,
-                'template_task_id' => $templateTask->id,
-            ]);
+            $input = $templateTask->toArray();
+            $input['start_time'] = $startTime;
+            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['schedule_id'] = $newSchedule->id;
+            $input['status'] = '未着手';
+            $input['template_task_id'] = $templateTask->id;
+            $newTask = Task::create($input);
             $newTask->categories()->attach($templateTask->categories);
         }
     }
@@ -68,7 +66,7 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
-        return response()->json(['message' => 'Create Successfully'], 200);
+        return $jobfair;
     }
 
     /**
@@ -92,7 +90,7 @@ class JobfairController extends Controller
     public function update(Request $request, $id)
     {
         $jobfair = Jobfair::find($id);
-        $jobfair->update($request->validated());
+        $jobfair->update($request->all());
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $templateSchedule = Schedule::find($request->schedule_id);
         $schedule->update(['name' => $templateSchedule->name]);
@@ -100,7 +98,7 @@ class JobfairController extends Controller
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
 
-        return response()->json($schedule);
+        return response()->json('success');
     }
 
     /**
@@ -121,7 +119,7 @@ class JobfairController extends Controller
         $scheduleId = Jobfair::find($id)->schedule;
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
-            'schedule.milestones:id,name',
+            'schedule.milestones:id,name,period',
             'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
                 $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
             },
@@ -135,6 +133,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
+
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
                     ->orderBy('tasks.end_time', 'DESC');
             },
