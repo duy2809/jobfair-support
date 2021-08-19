@@ -125,3 +125,8 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
+
+// task
+Route::prefix('task')->group(function () {
+    Route::post('/{id}', "TaskController@store");
+});
