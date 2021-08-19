@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\TemplateTask;
 use App\Models\Jobfair;
 use App\Models\Schedule;
 use App\Models\Task;
+use App\Models\TemplateTask;
+use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
@@ -64,7 +64,8 @@ class TaskController extends Controller
             ]);
             $newTask->categories()->attach($templateTask->categories);
         }
-        return response()->json("added task successfully");
+
+        return response()->json('added task successfully');
     }
 
     /**
