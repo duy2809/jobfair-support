@@ -8,13 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
-    protected $fillable = ['name', 'description_of_detaik', 'memo','start_time', 'end_time','status','milestone_id','schedule_id','user_id','template_task_id'];
-=======
-
     protected $guarded = [];
-
->>>>>>> develop
     protected $casts = [
         'start_time' => 'date: Y/m/d',
         'end_time' => 'date: Y/m/d',
