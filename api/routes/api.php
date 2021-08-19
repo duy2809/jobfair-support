@@ -50,7 +50,8 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-
+//milestone controller
+Route::get('/milestones/{id}/list', 'MilestoneController@getInfoMilestones');
 //member
 
 Route::prefix('member')->group(function () {

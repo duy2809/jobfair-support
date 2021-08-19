@@ -51,7 +51,8 @@
     "redux-actions": "^2.6.5",
     "redux-immutable": "^4.0.0",
     "redux-saga": "1.0.5",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "swiper": "^6.8.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
