@@ -128,7 +128,6 @@ class JobfairController extends Controller
         return response()->json($milestones);
     }
 
-
     public function getTasks($id)
     {
         $tasks = Jobfair::with([
@@ -142,7 +141,6 @@ class JobfairController extends Controller
 
         return response()->json($tasks);
     }
-
 
     public function updatedTasks($id, Request $request)
     {
