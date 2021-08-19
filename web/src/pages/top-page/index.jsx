@@ -105,9 +105,7 @@ const Top = () => {
       await getTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
-          const categoriesName = data.categories.map(
-            (category) => category.category_name,
-          )
+          const categoriesName = data.categories.map((category) => category.category_name)
           categoriesName.forEach((categoryName) => {
             datas.push({
               name: data.name,
