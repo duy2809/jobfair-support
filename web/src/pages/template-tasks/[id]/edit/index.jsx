@@ -214,15 +214,16 @@ const EditTemplateTaskPage = () => {
             <h1>
               テンプレートタスク編集
             </h1>
+            {/* <div className="h-screen flex flex-col items-center pt-10 bg-white my-8"> */}
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
               <Form
                 form={form}
                 name="basic"
                 labelCol={{
-                  span: 2,
+                  span: 4,
                 }}
                 wrapperCol={{
-                  span: 14,
+                  span: 16,
                 }}
                 className="space-y-12 w-5/6"
               >
@@ -259,31 +260,6 @@ const EditTemplateTaskPage = () => {
                     />
                   </div>
                   <div className="col-span-1 mx-4">
-                    <Form.Item
-                      label="リレーション"
-                      labelAlign="left"
-                      required="true"
-                      className="justify-evenly"
-                    >
-                      <ItemMultipleDropdown
-                        form={form}
-                        label="前のタスク"
-                        name="prevTasks"
-                        options={tasks1}
-                        selectedItems={prevTasks}
-                        setSelectedItems={setPrevTasks}
-                      />
-                      <ItemMultipleDropdown
-                        form={form}
-                        label="次のタスク"
-                        name="nextTasks"
-                        options={tasks2}
-                        selectedItems={nextTasks}
-                        setSelectedItems={setNextTasks}
-                      />
-                    </Form.Item>
-                  </div>
-                  <div className="col-span-1 mx-4">
                     <Modal
                       title="マイルストーン編集"
                       visible={isModalVisible}
@@ -307,13 +283,31 @@ const EditTemplateTaskPage = () => {
                     />
                   </div>
                   <div className="col-span-1 mx-4">
-                    <Detail
+                    <ItemMultipleDropdown
                       form={form}
-                      input={description}
-                      setInput={setDescription}
+                      label="前のタスク"
+                      name="prevTasks"
+                      options={tasks1}
+                      selectedItems={prevTasks}
+                      setSelectedItems={setPrevTasks}
+                    />
+                  </div>
+                  <div className="col-span-1 mx-4">
+                    <ItemMultipleDropdown
+                      form={form}
+                      label="次のタスク"
+                      name="nextTasks"
+                      options={tasks2}
+                      selectedItems={nextTasks}
+                      setSelectedItems={setNextTasks}
                     />
                   </div>
                 </div>
+                <Detail
+                  form={form}
+                  input={description}
+                  setInput={setDescription}
+                />
                 <Form.Item className="justify-end">
                   <div className="submit-btn">
                     <CancelEditTemplateTask id={pathId} />

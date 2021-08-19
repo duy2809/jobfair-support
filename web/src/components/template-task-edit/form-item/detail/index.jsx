@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Input } from 'antd'
 import PropTypes from 'prop-types'
+import './style.scss'
 
 const { TextArea } = Input
 
@@ -14,19 +15,20 @@ const Detail = ({ form, input, setInput }) => {
     })
   }
   return (
-    <Form.Item
-      label="詳細"
-      labelAlign="left"
-      name="description"
-      className="justify-evenly"
-    >
-      <TextArea
-        rows={7}
-        placeholder="何かを入力してください"
-        onChange={onValueNameChange}
-        defaultValue={input}
-      />
-    </Form.Item>
+    <div className="description">
+      <Form.Item
+        name="description"
+        className="justify-evenly w-full"
+      >
+        <TextArea
+          rows={7}
+          placeholder="何かを入力してください"
+          onChange={onValueNameChange}
+          defaultValue={input}
+        />
+      </Form.Item>
+    </div>
+
   )
 }
 

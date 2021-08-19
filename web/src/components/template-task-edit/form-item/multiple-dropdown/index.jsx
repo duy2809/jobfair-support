@@ -38,30 +38,32 @@ const ItemMultipleDropdown = ({
     form.setFieldsValue(temp)
   }
   return (
-    <Form.Item
-      label={label}
-      name={name}
-      style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem' }}
-      labelAlign="left"
-    >
-      <Select
-        showArrow
-        mode="multiple"
-        style={{ width: '100%', marginTop: '1.25rem' }}
-        placeholder={label}
-        className="overflow-hidden"
-        maxTagCount="responsive"
-        defaultValue={selectedItems.map((item) => item.name)}
-        onChange={onValueNameChange}
-        tagRender={tagRender}
+    <div className="">
+      <Form.Item
+        label={label}
+        name={name}
+        // style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem' }}
+        className="justify-evenly"
+        labelAlign="left"
       >
-        {options.map((item) => (
-          <Option key={item.id} value={item.name}>
-            {item.name}
-          </Option>
-        ))}
-      </Select>
-    </Form.Item>
+        <Select
+          showArrow
+          mode="multiple"
+          placeholder={label}
+          className="overflow-hidden w-full"
+          maxTagCount="responsive"
+          defaultValue={selectedItems.map((item) => item.name)}
+          onChange={onValueNameChange}
+          tagRender={tagRender}
+        >
+          {options.map((item) => (
+            <Option key={item.id} value={item.name}>
+              {item.name}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </div>
   )
 }
 
