@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../../components/navbar'
 import List from '../../components/list'
 import { tasks, members, jobfairs } from '../../api/top-page'
 import { getTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
-import Layout from '~/layouts/OtherLayout'
+import Layout from '../../layouts/OtherLayout'
 
 const { getListShedule } = ListScheduleApi
 
@@ -106,9 +105,7 @@ const Top = () => {
       await getTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
-          const categoriesName = data.categories.map(
-            (category) => category.category_name,
-          )
+          const categoriesName = data.categories.map((category) => category.category_name)
           categoriesName.forEach((categoryName) => {
             datas.push({
               name: data.name,
