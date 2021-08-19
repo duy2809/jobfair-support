@@ -100,7 +100,7 @@ class ScheduleController extends Controller
         $addedTemplateTasks = $request->addedTemplateTasks;
         $schedule->templateTasks()->detach();
         $schedule->templateTasks()->attach($addedTemplateTasks);
-        $schedule->templateTasks->each(function ($templateTask) use ($schedule) {
+        $schedule->templateTasks->each(function ($templateTask) use ($schedule, $addedMilestones) {
             if(!in_array($templateTask->milestone_id, $addedMilestones)) {
                 $schedule->templateTasks()->detach($templateTask->id);
             }
