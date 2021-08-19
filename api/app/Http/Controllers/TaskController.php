@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -42,6 +43,25 @@ class TaskController extends Controller
      */
     public function show($id)
     {
+        $tasks = Task::with([
+            'milestone:id,name',
+            'categories:id,category_name',
+            'users:id,name',
+        ])->find($id);
+        return response()->json($tasks);
+        // $task = Task::where('tasks.id',$id)
+        // ->join('milestones','tasks.milestone_id','=','milestones.id')
+        // ->join('schedules','tasks.schedule_id','=','schedules.id')
+        // ->join('template_tasks','tasks.template_task_id','=','template_tasks.id')
+        // ->get(
+        //     [
+        //         'tasks.*',
+        //         'milestones.name AS milestone_name',
+        //         'schedules.name AS schedule_name',
+        //         'template_tasks.name AS template_task_name'
+        //     ]
+        // );
+        // return response()->json($task);
     }
 
     /**
@@ -73,5 +93,18 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
+    }
+    public function getBeforeTasks($id)
+    {
+        $beforeTasks = Task::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+
+        return response()->json($beforeTasks);
+    }
+
+    public function getAfterTasks($id)
+    {
+        $afterTasks = Task::with('afterTasks:id,name')->find($id, ['id', 'name']);
+
+        return response()->json($afterTasks);
     }
 }

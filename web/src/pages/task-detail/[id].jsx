@@ -1,13 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { Button, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
+import { webInit } from '../../api/web-init'
 
 export default function TaskList() {
   const router = useRouter()
   const idTask = router.query.id
+  const [user, setUser] = useState({})
   console.log(idTask)
   const deletetpl = async () => {
     // await deleteTptt(idTplt).then((response) => {
@@ -17,6 +19,14 @@ export default function TaskList() {
     // }).catch((error) => {
     //   console.log(error)
     // })
+  }
+  const getDataUser = async () => {
+    await webInit().then((response) => {
+      setUser(response.data.auth.user.role)
+      console.log(response.data.auth.user.name)
+    }).catch((error) => {
+      console.log(error)
+    })
   }
   const modelDelete = () => {
     Modal.confirm({
@@ -38,6 +48,9 @@ export default function TaskList() {
   const handleEdit = () => {
     router.push('/template-tasts')
   }
+  useEffect(() => {
+    getDataUser()
+  }, [])
   return (
     <div>
       <OtherLayout>
@@ -54,7 +67,7 @@ export default function TaskList() {
                 </Button>
               </div>
               <div className="button__right">
-                {2 === 2 ? (
+                {user === 'admin' ? (
                   <>
                     <Button
                       style={{ border: 'none' }}
@@ -78,21 +91,21 @@ export default function TaskList() {
             <div className="info__tplt mx-6">
               <div className="grid grid-cols-2 mx-16 info__center">
                 <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className=" layber col-span-1 mx-4">
-                      <p>テンプレートタスク名:</p>
+                      <p>タスク名:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <div className="item__right">dfgdfg</div>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-2 ">
+                  <div className="grid grid-cols-3 ">
                     <div className="layber  col-span-1 mx-4">
                       <p>カテゴリ:</p>
                     </div>
-                    <div className="col-span-1 mx-4">
+                    <div className="col-span-2 mx-4">
                       <div className="item__right">sdgdfgdfg</div>
                     </div>
                   </div>
