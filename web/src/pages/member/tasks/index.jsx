@@ -177,15 +177,24 @@ export default function TaskList() {
             <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
             <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
           </div>
-          <div className="flex my-4 w-full items-center justify-start">
-            <Form className="flex items-center">
+          <div className="flex my-4 w-full items-center justify-between">
+            <div>
+              <span className="text-xl">表示件数: </span>
+              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+                <Option value={10}>10</Option>
+                <Option value={25}>25</Option>
+                <Option value={50}>50</Option>
+              </Select>  
+            </div>
+            <Form className="flex items-center justify-center">
               <Form.Item
-                className="mr-4"
+                className="mr-4 mb-0"
               >
                 <Input size="large" onChange={handleInputName} placeholder="タスク名" prefix={<SearchOutlined />} />
               </Form.Item>
               <Form.Item
                 name="start_date"
+                className="mb-0"
                 rules={[
                   {
                     validator: startDayValidator,
@@ -201,14 +210,6 @@ export default function TaskList() {
                 />
               </Form.Item>
             </Form>
-          </div>
-          <div className="flex justify-start w-full">
-            <span className="text-xl">表示件数: </span>
-            <Select className="ml-5" value={itemCount} onChange={handleSelect}>
-              <Option value={10}>10</Option>
-              <Option value={25}>25</Option>
-              <Option value={50}>50</Option>
-            </Select>
           </div>
           <Table
             className="w-full rounded-3xl table-styled my-5 table-striped-rows"
