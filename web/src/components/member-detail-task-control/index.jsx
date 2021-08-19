@@ -10,13 +10,13 @@ export default class TaskControl extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      visible: false,
+      visible: false
     }
   }
 
   showModal = () => {
     this.setState({
-      visible: true,
+      visible: true
     })
   }
 
@@ -32,7 +32,7 @@ export default class TaskControl extends React.Component {
           notification.success({
             message: 'メッセージ',
             description: '正常に削除されました',
-            duration: 2,
+            duration: 2
           })
           setTimeout(() => {
             Router.push('/member/') // xoa xong thi ve man memberlist
@@ -44,7 +44,7 @@ export default class TaskControl extends React.Component {
           notification.error({
             message: 'メッセージ',
             description: '削除に失敗しました',
-            duration: 3,
+            duration: 3
           })
         })
       })
@@ -65,7 +65,7 @@ export default class TaskControl extends React.Component {
               borderRadius: '3px',
               position: 'relative',
               right: '380px',
-              bottom: '110px',
+              bottom: '110px'
             }}
           >
             <Link href="/member/">戻る</Link>
@@ -81,7 +81,7 @@ export default class TaskControl extends React.Component {
             size="middle"
             className="btn"
             style={{
-              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden'
             }}
           >
             <Link href={`/member/${this.props.id}/edit`}>編集</Link>
@@ -92,7 +92,7 @@ export default class TaskControl extends React.Component {
             size="middle"
             className="btn"
             style={{
-              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden'
             }}
           >
             削除
@@ -108,7 +108,7 @@ export default class TaskControl extends React.Component {
               </Button>,
               <Button type="primary" size="large" className="btn" onClick={this.onhandleOk}>
                 はい
-              </Button>,
+              </Button>
             ]}
           >
             <p>削除してもよろしいですか?</p>
@@ -120,9 +120,9 @@ export default class TaskControl extends React.Component {
 }
 TaskControl.defaultProps = {
   id: 0,
-  role: 0,
+  role: 0
 }
 TaskControl.propTypes = {
   id: PropTypes.number,
-  role: PropTypes.number,
+  role: PropTypes.number
 }
