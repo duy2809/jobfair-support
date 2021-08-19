@@ -1,0 +1,36 @@
+.add-task-page {
+  .search-input {
+    min-height: 30px;
+  }
+  .lazyload-list {
+    min-height: 350px;
+  }
+  .ant-spin-nested-loading {
+    align-items: center;
+    flex: 0 0 100%;
+  }
+  .ant-input-clear-icon:last-child {
+    font-size: 15px;
+    border: 0.29px solid rgb(136, 136, 136);
+    border-radius: 50%;
+    // background-color: rgb(136, 136, 136);
+  }
+  .lazyload-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ant-spin-container {
+    flex: 0 0 100%;
+    align-items: stretch;
+    flex-grow: revert;
+  }
+  .ant-form-item {
+    margin: 0;
+  }
+  .header {
+    .ant-space-item {
+      width: 50%;
+    }
+  }
+}
