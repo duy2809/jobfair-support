@@ -167,8 +167,7 @@ const List = ({
                   <DatePicker
                     size="large"
                     placeholder="タイム"
-                    picker="month"
-                    format="YYYY-MM"
+                    format="YYYY/MM/DD"
                     onChange={searchByTime}
                   />
                 </div>
