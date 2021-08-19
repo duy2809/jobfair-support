@@ -7,6 +7,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
+use App\Http\Controllers\MemberDetailController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------

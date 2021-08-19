@@ -18,10 +18,10 @@ class MemberDetailTable extends React.Component {
         phoneNumber: '',
         categories: [],
         chatworkID: '',
-        assignedJF: [],
+        assignedJF: []
       },
       listCate: [],
-      listJF: [],
+      listJF: []
     }
   }
 
@@ -41,12 +41,12 @@ class MemberDetailTable extends React.Component {
               avatar: member.avatar,
               role: member.role,
               chatworkID: member.chatwork_id,
-              phoneNumber: member.phone_number,
-            },
+              phoneNumber: member.phone_number
+            }
           },
           () => {
             this.setID(id) // set ID and Role after setState
-          },
+          }
         )
 
         const listJobfair = res.data.jobfairs
@@ -56,13 +56,13 @@ class MemberDetailTable extends React.Component {
               <td className="border-none inline-block">{element.name}</td>
               <td className="border-none inline-block">{element.start_date}</td>
             </tr>
-          )),
+          ))
         })
         const categorires = res.data.categories
         this.setState({
           listCate: categorires.map((element) => (
             <tr className="category-name border-none block mx-auto">{element.category_name}</tr>
-          )),
+          ))
         })
       })
       .catch((error) => console.log(error))
@@ -83,7 +83,7 @@ class MemberDetailTable extends React.Component {
             height: '150px',
             display: 'block',
             borderRadius: '50%',
-            margin: '30px 0 auto 200px',
+            margin: '30px 0 auto 200px'
           }}
           id="avatar"
         />
@@ -115,22 +115,6 @@ class MemberDetailTable extends React.Component {
               {this.state.listCate}
             </td>
           </tr>
-          <tr>
-            <th>チャットワークID：</th>
-            <td
-              className=" ml-auto mr-auto  py-3 text-left"
-              style={{
-                minWidth: '50%',
-                minHeight: '10px',
-                display: 'block',
-                color: '#99ccff',
-              }}
-            >
-              <a href={`https://www.chatwork.com/${this.state.member.chatworkID}`}>
-                {this.state.member.chatworkID}
-              </a>
-            </td>
-          </tr>
           <tr className="ml-auto mr-auto  py-3  text-left">
             <th>アサインされたJF：</th>
             <td style={{ minWidth: '50%', minHeight: '10px', display: 'block' }}>
@@ -145,9 +129,9 @@ class MemberDetailTable extends React.Component {
 export default withRouter(MemberDetailTable)
 MemberDetailTable.propTypes = {
   router: PropTypes.any,
-  setID: PropTypes.func,
+  setID: PropTypes.func
 }
 MemberDetailTable.defaultProps = {
   router: null,
-  setID: null,
+  setID: null
 }
