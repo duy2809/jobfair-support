@@ -66,7 +66,7 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
-        return response()->json(['message' => 'Create Successfully'], 200);
+        return $jobfair;
     }
 
     /**
@@ -144,7 +144,7 @@ class JobfairController extends Controller
 
     public function updatedTasks($id, Request $request)
     {
-        $tasks = Jobfair::with(['schedule:id,jobfair_id','schedule.tasks' => function ($query) {
+        $tasks = Jobfair::with(['schedule:id,jobfair_id', 'schedule.tasks' => function ($query) {
             $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'tasks.schedule_id', 'users.name as username'])
                 ->join('users', 'users.id', '=', 'tasks.user_id')
                 ->orderBy('tasks.updated_at', 'DESC')

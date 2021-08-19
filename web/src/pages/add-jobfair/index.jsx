@@ -147,12 +147,10 @@ const index = () => {
       } else {
         setdisableBtn(false)
       }
-
       return response
     } catch (error) {
       setdisableBtn(false)
       const errorResponse = JSON.parse(error.request.response)
-
       if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
@@ -197,18 +195,20 @@ const index = () => {
     getTask(scheduleId)
   }
   const checkIsJFNameExisted = async () => {
-    const name = form.getFieldValue('name')
-    const response = await addJFAPI.isJFExisted({ name })
+    try {
+      const name = form.getFieldValue('name')
+      if (name) {
+        const response = await addJFAPI.isJFExisted({ name })
 
-    if (response.data.length) {
-      return notification.open({
-        icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-        duration: 3,
-        message: 'このJF名は既に使用されています。',
-        onClick: () => {},
-      })
+        if (response.data.length) {
+          document.getElementById('validate_name').style.border = '1px solid red'
+          return document.getElementById('error-msg').removeAttribute('hidden')
+        }
+      }
+      return false
+    } catch (error) {
+      return error
     }
-    return false
   }
 
   /* Validator of all input. */
@@ -326,27 +326,33 @@ const index = () => {
                   {/* jobfair name */}
                   <Form.Item
                     label="JF名"
-                    name="name"
                     required
-                    // hasFeedback
-                    rules={[
-                      {
-                        validator: JFNameValidator,
-                      },
-
-                    ]}
                   >
-                    <Input
-                      type="text"
-                      name="JFName"
-                      onBlur={checkIsJFNameExisted}
-                      // onFocus={checkIsJFNameExisted}
-                      placeholder="JF名を入力する"
-                      maxLength={200}
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                    />
-                  </Form.Item>
+                    <Form.Item
+                      name="name"
+                      noStyle
+                      rules={[
+                        {
+                          validator: JFNameValidator,
+                        },
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        id="validate_name"
+                        onBlur={checkIsJFNameExisted}
+                        onChange={() => {
+                          document.getElementById('error-msg').setAttribute('hidden', 'true')
+                          document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                        }}
+                        placeholder="JF名を入力する"
+                        maxLength={200}
+                      />
 
+                    </Form.Item>
+
+                    <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
+                  </Form.Item>
                   {/* start date */}
                   <Form.Item
                     required
