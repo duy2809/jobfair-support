@@ -224,12 +224,7 @@ export default function JFList() {
                   />
                   <div style={{ width: '15%', textAlign: 'center' }}>
                     <p>
-                      推定参加学生数(
-                      {rangeStudentsNumber[0]}
-                      {' '}
-                      ~
-                      {rangeStudentsNumber[1]}
-                      )
+                      推定参加学生数
                     </p>
                     <Slider
                       range="true"
@@ -239,12 +234,7 @@ export default function JFList() {
                   </div>
                   <div style={{ width: '15%', textAlign: 'center' }}>
                     <p>
-                      参加企業社数(
-                      {rangeBussinessesNumber[0]}
-                      {' '}
-                      ~
-                      {rangeBussinessesNumber[1]}
-                      )
+                      参加企業社数
                     </p>
                     <Slider
                       range="true"
