@@ -9,7 +9,7 @@ export default function ChartMilestone({ id }) {
   const [listTask, setlistTask] = useState([])
   const fetchTasks = async () => {
     await listmilestone(id).then((response) => {
-      setlistTask(response.data.data[0].milestones)
+      setlistTask(response.data.schedule.milestones)
     }).catch((error) => {
       console.log(error)
     })

@@ -71,10 +71,10 @@ export default class TaskControl extends React.Component {
             <Link href="/member/">戻る</Link>
           </Button>
           <Button type="primary" size="middle" className="btn">
-            <Link href="/task-list/">タスクー覧</Link>
+            <Link href={`/member/${this.props.id}/tasks`}>タスクー覧</Link>
           </Button>
           <Button type="primary" size="middle" className="btn">
-            <Link href="/gantt-chart/">ガンチャート</Link>
+            <Link href={`/member/${this.props.id}/gantt-chart`}>ガンチャート</Link>
           </Button>
           <Button
             type="primary"
