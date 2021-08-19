@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
   Button,
   Form,
@@ -10,6 +9,7 @@ import {
   Divider,
   Row,
   Col,
+  Modal,
 } from 'antd';
 import List from '../../../../components/jf-schedule-edit-list';
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons';
@@ -22,38 +22,26 @@ import {
   getTemplateTaskList,
   getAddedMilestonesList,
   getAddedTemplateTaskList,
+  postCheckExistName,
   putData,
 } from '../../../../api/jf-schedule';
 
 function editJobfairSchedule() {
   const [form] = Form.useForm();
-  const { Option } = Select;
-  // const router = useRouter()
-  // const { id } = router.query
-  // console.log(id)
-  // const [jfScheduleData, setJfScheduleData] = useState({});
-
+  const router = useRouter();
   const [milestonesList, setMilestonesList] = useState([]);
   const [templateTaskList, setTemplateTaskList] = useState([]);
   const [addedMilestonesList, setAddedMilestonesList] = useState([]);
   const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([]);
   const [nameInput, setNameInput] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // API GET 1: /api/schedules/1
-  // const jfscheduleData = {
-  //   id: 1,
-  //   name: 'JF Schedule 1',
-  //   jobfair_id: 2,
-  // };
-
-  // API POST: /api/schedules/1
-  const dataSend = {
-    schedule: {
-      name: 'JF Schedule 1',
-    },
-    addedMilestonesList: [1, 2, 3, 4],
-    addedTemplateTaskList: [1, 3, 5, 6],
-  };
+  // TASK:
+  // - Check trung ten jf-schedule
+  // - Chuyen huong sau khi save, cancel
+  // - Lam modal confirm save
+  // - Lam man hinh add
+  // - Code cypress
 
   useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname);
@@ -84,6 +72,9 @@ function editJobfairSchedule() {
           arr.push(item.id);
         });
         setAddedMilestonesList(arr);
+        form.setFieldsValue({
+          milestone_select: arr,
+        });
       })
       .catch((err) => console.error(err));
     await getAddedTemplateTaskList(id)
@@ -114,43 +105,34 @@ function editJobfairSchedule() {
     });
   });
 
-  const onFinish = async (values) => {
-    // try {
-    //   const response = await login(values);
-    //   if (response.request.status === 200)
-    //     openNotification('success', '正常にログインしました');
-    //   setTimeout(() => {
-    //     router.push('/top-page');
-    //   }, 2500);
-    // } catch (error) {
-    //   if (error.request.status === 400) {
-    //     openNotification(
-    //       'error',
-    //       'メールアドレスもしくはパスワードが間違っています',
-    //     );
-    //   }
-    // }
+  const onFinish = async () => {
+    const temp = /[/](\d+)[/]/.exec(window.location.pathname);
+    const id = `${temp[1]}`;
+    const dataSend = {
+      schedule: {
+        name: nameInput,
+      },
+      addedMilestones: addedMilestonesList,
+      addedTemplateTasks: addedTemplateTaskList,
+    };
+    console.log(dataSend);
+    await putData(id, dataSend)
+      .then((res) => {
+        if (res.status === 200)
+          openNotification('success', '変更は正常に保存されました。');
+        setTimeout(() => {
+          router.push('/schedule');
+        }, 2500);
+      })
+      .catch((err) => console.log(err));
   };
 
   const onFinishFailed = (errorInfo) => {
-    openNotification('error', errorInfo);
+    const { errorFields } = errorInfo;
+    errorFields.forEach((itemError) => {
+      itemError.errors.forEach((error) => openNotification('error', error));
+    });
   };
-
-  function onChange(value) {
-    console.log(`selected ${value}`);
-  }
-
-  function onBlur() {
-    console.log('blur');
-  }
-
-  function onFocus() {
-    console.log('focus');
-  }
-
-  function onSearch(val) {
-    console.log('search:', val);
-  }
 
   const onDeleteTemplateTask = (id) => {
     console.log(`Delete template task id:${id}`);
@@ -164,6 +146,9 @@ function editJobfairSchedule() {
     const newState = _.filter(addedMilestonesList, (item) => item !== id);
     console.log(newState);
     setAddedMilestonesList(newState);
+    form.setFieldsValue({
+      milestone_select: newState,
+    });
   };
 
   const onAddTemplateTask = (id) => {
@@ -175,15 +160,14 @@ function editJobfairSchedule() {
 
   const selectMilestoneProps = {
     mode: 'multiple',
-    style: { width: '100%' },
+    optionFilterProp: 'label',
     value: addedMilestonesList,
     options: milestonesOptions,
     onChange: (newValue) => {
       setAddedMilestonesList(newValue);
     },
-    placeholder: 'マイルストーン. . .',
+    placeholder: 'マイルストーンを入力してください。',
     maxTagCount: 'responsive',
-    size: 'large',
   };
 
   const onValueNameChange = (e) => {
@@ -191,20 +175,25 @@ function editJobfairSchedule() {
     console.log(nameInput);
   };
 
-  const onHandleSubmit = async () => {
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const onBlur = async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname);
     const id = `${temp[1]}`;
     const dataSend = {
-      schedule: {
-        name: nameInput,
-      },
-      addedMilestones: addedMilestonesList,
-      addedTemplateTasks: addedTemplateTaskList,
+      name: nameInput,
     };
-    console.log(dataSend);
-    await putData(id, dataSend)
+    await postCheckExistName(id, dataSend)
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
+        // form.setFields([
+        //   {
+        //     name: 'jfschedule_name',
+        //     errors: ['このJFスケジュール名は存在しています。'],
+        //   },
+        // ]);
       })
       .catch((err) => console.log(err));
   };
@@ -214,75 +203,83 @@ function editJobfairSchedule() {
       <Layout.Main>
         <h1>JFスケジュール編集</h1>
         <Form
+          labelAlign="left"
+          labelCol={{ span: 7 }}
+          size="large"
           form={form}
           name="edit-jfschedule"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          className="w-1/2"
           requiredMark={'optional'}
         >
-          <Form.Item
-            label={
-              <div className="flex items-center w-full">
-                <ScheduleOutlined style={{ fontSize: '32px' }} />
-                <p className="ml-2">JFスケジュール名</p>
-              </div>
-            }
-            name="jfschedule_name"
-            rules={[
-              {
-                required: true,
-                message: 'JFスケジュール名を入力してください。',
-              },
-            ]}
-          >
-            <Input
-              placeholder="JFスケジュール名を入力してください。"
-              onChange={onValueNameChange}
-            />
+          <div className="w-1/2">
+            <Form.Item
+              label={
+                <div className="flex items-center justify-between">
+                  <ScheduleOutlined style={{ fontSize: '32px' }} />
+                  <span className="ml-2">JFスケジュール名</span>
+                </div>
+              }
+              name="jfschedule_name"
+              rules={[
+                {
+                  required: true,
+                  message: 'JFスケジュール名を入力してください。',
+                },
+              ]}
+            >
+              <Input
+                placeholder="JFスケジュール名を入力してください。"
+                onChange={onValueNameChange}
+                onBlur={onBlur}
+              />
+            </Form.Item>
+            <Form.Item
+              label={
+                <div className="flex items-center w-full">
+                  <FlagOutlined style={{ fontSize: '32px' }} />
+                  <span className="ml-2">マイルストーン</span>
+                </div>
+              }
+              name="milestone_select"
+              rules={[
+                {
+                  required: true,
+                  message: 'マイルストーンを入力してください。',
+                },
+              ]}
+            >
+              <Select {...selectMilestoneProps} />
+            </Form.Item>
+          </div>
+          <Divider />
+          <Row gutter={[24, 24]}>
+            {milestonesList.map((milestone) => {
+              if (addedMilestonesList.includes(milestone.id))
+                return (
+                  <Col span={12} key={milestone.id}>
+                    <List
+                      milestone={milestone}
+                      templateTaskParentList={templateTaskList}
+                      addedTemplateTaskParentList={addedTemplateTaskList}
+                      onDeleteTemplateTask={onDeleteTemplateTask}
+                      onDeleteMilestone={onDeleteMilestone}
+                      onAddTemplateTask={onAddTemplateTask}
+                    />
+                  </Col>
+                );
+            })}
+          </Row>
+
+          <Form.Item>
+            <div className="mt-5 flex justify-end">
+              <Button className="mr-3">キャンセル</Button>
+              <Button type="primary" htmlType="submit">
+                保存
+              </Button>
+            </div>
           </Form.Item>
         </Form>
-
-        <div className="flex items-center w-1/2 justify-between selectWrapper">
-          <div className="flex items-center">
-            <FlagOutlined style={{ fontSize: '32px' }} />
-            <p
-              className="ml-2 mr-5"
-              style={{
-                'white-space': 'nowrap',
-                overflow: 'hidden',
-              }}
-            >
-              マイルストーン :
-            </p>
-          </div>
-          <Select {...selectMilestoneProps} />
-        </div>
-        <Divider />
-
-        <Row gutter={[24, 24]}>
-          {milestonesList.map((milestone) => {
-            if (addedMilestonesList.includes(milestone.id))
-              return (
-                <Col span={12} key={milestone.id}>
-                  <List
-                    milestone={milestone}
-                    templateTaskParentList={templateTaskList}
-                    addedTemplateTaskParentList={addedTemplateTaskList}
-                    onDeleteTemplateTask={onDeleteTemplateTask}
-                    onDeleteMilestone={onDeleteMilestone}
-                    onAddTemplateTask={onAddTemplateTask}
-                  />
-                </Col>
-              );
-          })}
-        </Row>
-        <div className="mt-5 flex justify-end">
-          <Button className="mr-3">キャンセル</Button>
-          <Button type="primary" onClick={onHandleSubmit}>
-            保存
-          </Button>
-        </div>
       </Layout.Main>
     </Layout>
   );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { List, Select } from 'antd';
 import {
@@ -28,14 +28,6 @@ function jfScheduleEditList({
     }
   });
 
-  // console.log({
-  //   templateTaskParentList,
-  //   addedTemplateTaskParentList,
-  //   templateTaskChildernList,
-  //   addedTemplateTaskChildernList,
-  //   milestone,
-  // });
-
   const templateTaskOptions = [];
   templateTaskChildernList.forEach((item) => {
     let value = item.id;
@@ -47,6 +39,7 @@ function jfScheduleEditList({
 
   const selectTemplateTaskProps = {
     mode: 'multiple',
+    optionFilterProp: 'label',
     style: { width: '90%' },
     value: addedTemplateTaskChildernList,
     options: templateTaskOptions,
@@ -61,15 +54,12 @@ function jfScheduleEditList({
     size: 'middle',
   };
 
-  const renderHeader = (milestone) => {
-    const { id, name } = milestone;
+  const renderHeader = ({ id, name }) => {
     return (
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <FileDoneOutlined style={{ fontSize: 32 }} />
-          <Link href={`/milestones/${id}`}>
-            <a className="ml-4 text-lg">{name}</a>
-          </Link>
+          <span className="ml-4 text-lg">{name}</span>
         </div>
         <div className="w-1/2 flex justify-items-end items-center">
           <Select {...selectTemplateTaskProps} />
