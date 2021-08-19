@@ -152,7 +152,7 @@ export default function AddMilestonePage() {
             マイルストーン追加
           </p> */}
           <h1>
-          マイルストーン追加
+            マイルストーン追加
           </h1>
 
           <div className="pt-10">

@@ -1,7 +1,7 @@
 import React from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown } from 'antd'
-import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
 
@@ -27,20 +27,20 @@ export default function Navbar() {
       </Menu.Item>
     </Menu>
   )
-  const notifications = (
-    <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
-      <Menu.Item key="0">
-        <Link href="/">
-          <a>通知 1</a>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Link href="/">
-          <a>通知 2</a>
-        </Link>
-      </Menu.Item>
-    </Menu>
-  )
+  // const notifications = (
+  //   <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
+  //     <Menu.Item key="0">
+  //       <Link href="/">
+  //         <a>通知 1</a>
+  //       </Link>
+  //     </Menu.Item>
+  //     <Menu.Item key="1">
+  //       <Link href="/">
+  //         <a>通知 2</a>
+  //       </Link>
+  //     </Menu.Item>
+  //   </Menu>
+  // )
   const userInformations = (
     <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
@@ -90,7 +90,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="flex px-16 items-center">
-        <Notification></Notification>
+        <Notification />
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
             <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer">
