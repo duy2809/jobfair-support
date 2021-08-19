@@ -102,4 +102,6 @@ Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
-Route::post('/file/upload', [FileController::class, 'upload']);
+
+// file
+Route::resource('/file', FileController::class);
