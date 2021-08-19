@@ -11,65 +11,65 @@ const jfListDataColumn = [
   {
     title: '名前',
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
   },
   {
     title: 'タイム',
     dataIndex: 'time',
-    key: 'time'
-  }
+    key: 'time',
+  },
 ]
 
 const memListDataColumn = [
   {
     title: '名前',
     dataIndex: 'name',
-    key: 'name'
-  }
+    key: 'name',
+  },
 ]
 
 const jfScheduleDataColumn = [
   {
     title: '名前',
     dataIndex: 'name',
-    key: 'name'
-  }
+    key: 'name',
+  },
 ]
 
 const templateTaskDataColumn = [
   {
     title: '名前',
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
   },
   {
     title: 'カテゴリ',
     dataIndex: 'category',
-    key: 'category'
+    key: 'category',
   },
   {
     title: 'マイルストーン',
     dataIndex: 'milestone',
-    key: 'milestone'
-  }
+    key: 'milestone',
+  },
 ]
 
 const taskListDataColumn = [
   {
     title: '名前',
     dataIndex: 'name',
-    key: 'name'
+    key: 'name',
   },
   {
     title: '就職フェアの名前',
     dataIndex: 'jfName',
-    key: 'JF Name'
+    key: 'JF Name',
   },
   {
     title: 'タイム',
     dataIndex: 'time',
-    key: 'time'
-  }
+    key: 'time',
+  },
 ]
 
 const Top = () => {
@@ -110,7 +110,7 @@ const Top = () => {
             datas.push({
               name: data.name,
               category: categoryName,
-              milestone: data.milestone.name
+              milestone: data.milestone.name,
             })
           })
         })
@@ -168,7 +168,7 @@ const Top = () => {
                 display: 'grid',
                 gridTemplateColumns: '50% 50%',
                 gridGap: '20px',
-                width: '100%'
+                width: '100%',
               }}
             >
               <List
