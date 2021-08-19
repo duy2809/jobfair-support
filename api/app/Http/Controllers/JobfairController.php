@@ -100,7 +100,7 @@ class JobfairController extends Controller
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
 
-        return response()->json('thanh cong');
+        return response()->json('success');
     }
 
     /**
