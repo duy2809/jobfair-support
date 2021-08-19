@@ -74,6 +74,10 @@ class ScheduleController extends Controller
         return Schedule::findOrFail($id)->templateTasks;
     }
 
+    public function checkScheduleNameExist(Request $request) {
+        return count(Schedule::where('name', 'LIKE', '%' . $request->name . '%')->get()) !== 0 ;
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

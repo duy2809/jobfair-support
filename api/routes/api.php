@@ -47,6 +47,7 @@ Route::prefix('schedules/{id}')->group(function () {
     Route::get('/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
     Route::get('/added-milestones', 'ScheduleController@getAddedMilestones');
     Route::get('/added-template-tasks', 'ScheduleController@getAddedTemplateTasks');
+    Route::post('/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
 });
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
 Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
