@@ -3,10 +3,11 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
+use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -104,3 +105,16 @@ Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
+
+//member detail
+Route::prefix('members')->group(function () {
+    Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
+    Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
+});
+
+// top-page
+Route::prefix('/top-page')->group(function () {
+    Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/jobfairs', [JobfairController::class, 'index']);
+    Route::get('/members', [MemberController::class, 'index']);
+});

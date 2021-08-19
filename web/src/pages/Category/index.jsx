@@ -17,5 +17,5 @@ function listCategories() {
     </div>
   )
 }
-listCategories.middleware = ['auth']
+listCategories.middleware = ['auth:superadmin', 'auth:admin', 'auth']
 export default listCategories
