@@ -133,6 +133,7 @@ const List = ({
               {show ? (
                 <Input
                   // key="demo"
+                  className="no-border"
                   placeholder="名前"
                   onChange={searchByName}
                   bordered
