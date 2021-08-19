@@ -150,7 +150,7 @@ useEffect(() => {
   }
 
   const notifications = (
-    <div className="auto-cols-max notification w-96 border-2 rounded-2xl bg-white">
+    <div className="notification border-2 rounded-2xl bg-white">
       <List
       size="small"
       header={
