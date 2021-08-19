@@ -168,14 +168,14 @@ export default function TaskList() {
         </div>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <h1 className="m-0 flex justify-start w-full">メンバ詳細（タスク一覧）</h1>
-          <div className="text-xl w-full flex justify-start items-center title">
+          <div className="text-xl w-full flex justify-start items-center">
             <div className="my-5 mr-5">ステータス:</div>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
-            <Button onClick={handleSelectStatus} className={`border-0	mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
+            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
           </div>
           <div className="flex my-4 w-full items-center justify-between">
             <div>
@@ -184,7 +184,7 @@ export default function TaskList() {
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
-              </Select>  
+              </Select>
             </div>
             <Form className="flex items-center justify-center">
               <Form.Item
