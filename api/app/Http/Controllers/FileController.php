@@ -2,31 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Document;
 use Illuminate\Http\Request;
+use App\Models\Document;
 
 class FileController extends Controller
 {
-    //upload file function
-
-    function upload(Request $request )
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
     {
-        // if ($request->hasFile('docs')) {
-        //     $rules = [
-        //         'avatar' => 'required|mimes:docs,pdf|max:4096',
-        //     ];
+        $data = DB::table('documents')
+        ->select('*')
+        ->orderBy('documents.updated_at', 'desc')
+        ->get();
 
-        //     $validator = Validator::make($request->all(), $rules);
-        //     $validator->validated();
-        //     $req->file('docs')->store('/docs', $doc);
+        return response()->json($data);
+    }
 
-        //     $path = "/docs/$doc";
-        //     $user->update();
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
-        //     return response()->json($path);
-        // }
-        $path = $request->file('docs')->store('public');
-        return response()->json($path);
-        // return response()->json(['message' => 'Failed']);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if($request->is_file === true)
+        {
+            $rules = [
+                'name' => 'required',
+                'link' => 'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            $validator->validate();
+        } else {
+            $rules = [
+                'name' => 'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            $validator->validate();
+        }
+
+        return Document::create($request->all());
+    }
+
+    /**
+     * Display files and folder in specified folder.
+     *
+     * @param  int  $pervious folder id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $data = DB::table('documents')
+        ->select('*')
+        ->where('preFolderID', $id)
+        ->orderBy('documents.updated_at', 'desc')
+        ->get();
+
+        return response()->json($data);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        return Document::destroy($id);
     }
 }
