@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
+
+Route::resource('/jobfair', 'JobfairController');
+
 // add jf route start
 
 // jobfair
@@ -50,6 +53,12 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
+
+// Route::get('/milestone', 'TemplateMilestoneController@getList');
+
+// Route::get('/milestone', 'TemplateMilestoneController@index');
+
+// Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
