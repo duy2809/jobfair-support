@@ -15,7 +15,7 @@ class EditDocumentsTable extends Migration
     {
         Schema::table('documents', function (Blueprint $table) {
             $table->string('name');
-            $table->string('link');
+            $table->string('link')->nullable();
             $table->unsignedBigInteger('preFolderId')->nullable();
             $table->boolean('is_file');
             $table->dropColumn('description');
