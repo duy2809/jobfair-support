@@ -15,8 +15,8 @@ class TemplateTaskController extends Controller
      */
     public function index()
     {
-        $templateTasks = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])
-            ->orderBy('template_tasks.created_at', 'DESC')
+        $templateTasks = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])
+            ->orderBy('template_tasks.updated_at', 'DESC')
             ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
 
         return response()->json($templateTasks);
@@ -48,6 +48,18 @@ class TemplateTaskController extends Controller
         }
 
         return $newTemplateTask;
+
+        // $newTemplateTask = TemplateTask::create($request->validated());
+        // $newTemplateTask->categories()->attach($request->category_id);
+        // if (!empty($request->beforeTasks)) {
+        //     $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
+        // }
+
+        // if (!empty($request->afterTasks)) {
+        //     $newTemplateTask->afterTasks()->attach($request->afterTasks);
+        // }
+
+        // return $newTemplateTask;
     }
 
     /**
@@ -58,7 +70,7 @@ class TemplateTaskController extends Controller
      */
     public function show($id)
     {
-        $templateTask = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])->find($id);
+        $templateTask = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])->find($id);
 
         return response()->json($templateTask);
     }
@@ -73,7 +85,7 @@ class TemplateTaskController extends Controller
     public function update(Request $request, $id)
     {
         $templateTask = TemplateTask::find($id);
-        $templateTask->update($request->all());
+        $templateTask->update($request->validated());
         $templateTask->categories()->sync($request->category_id);
         if (!empty($request->beforeTasks)) {
             $templateTask->beforeTasks()->sync($request->beforeTasks);

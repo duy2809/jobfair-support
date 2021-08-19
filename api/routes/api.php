@@ -3,8 +3,10 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
+use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,9 +25,12 @@ Route::get('/web-init', WebInit::class);
 
 // jobfair
 
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
+Route::group(['prefix' => 'jobfair/{id}'], function () {
+    Route::get('/milestones', 'JobfairController@getMilestones');
+    Route::get('/tasks', 'JobfairController@getTasks');
+    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
+    Route::get('/tasks/search', 'JobfairController@searchTask');
+});
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
@@ -34,21 +39,13 @@ Route::resource('/jobfair', 'JobfairController');
 
 Route::resource('/schedules', 'ScheduleController');
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
-Route::get('/schedules/{id}/tasks', 'ScheduleController@getTasks');
+Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
 });
 
 Route::get('/admins', 'AdminController@index');
-
-Route::group(['prefix' => 'jobfair/{id}'], function () {
-    Route::get('/milestones', 'JobfairController@getMilestones');
-    Route::get('/tasks', 'JobfairController@getTasks');
-    Route::get('/updated-tasks', 'JobfairController@updatedTasks');
-    Route::get('/tasks/search', 'JobfairController@searchTask');
-    Route::post('/jobfair', 'JobfairController@store');
-});
 
 //milestone
 
@@ -111,3 +108,16 @@ Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
+
+//member detail
+Route::prefix('members')->group(function () {
+    Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
+    Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
+});
+
+// top-page
+Route::prefix('/top-page')->group(function () {
+    Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/jobfairs', [JobfairController::class, 'index']);
+    Route::get('/members', [MemberController::class, 'index']);
+});

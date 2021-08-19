@@ -15,7 +15,7 @@ const addJFAPI = {
   },
 
   getTaskList: (id) => {
-    const url = `/schedules/${id}/tasks`
+    const url = `/schedules/${id}/template-tasks`
     return instance.get(url)
     // expect result
     //     {

@@ -139,8 +139,8 @@ const index = () => {
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
       }
       setdisableBtn(true)
-      const response = await addJFAPI.addJF(data)
 
+      const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
@@ -151,22 +151,24 @@ const index = () => {
       return response
     } catch (error) {
       setdisableBtn(false)
-      const isDuplicate = JSON.parse(error.request.response).message
-      if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
+      const errorResponse = JSON.parse(error.request.response)
+
+      if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: 'このJF名は既に使用されています。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: '保存に失敗しました。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       }
+      // console.log(JSON.parse(error.request.response).errors.name[0])
       return error
     }
   }
@@ -182,8 +184,8 @@ const index = () => {
   // call api get milestone  when selector change schedule
   const getTask = async (id) => {
     const tasks = await addJFAPI.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
     }
   }
 
