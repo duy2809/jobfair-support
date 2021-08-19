@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Button, Empty, Form, DatePicker } from 'antd'
+import { Select, Table, Input, Button, Empty, DatePicker } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import moment from 'moment'
@@ -89,9 +89,16 @@ export default function TaskList() {
     return obj.status.trim() === optionStatus.trim()
   }
 
+  const checkDate = (obj) => {
+    if (searchDateValue === 'Invalid date') {
+      return true
+    }
+    return obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+  }
+
   const handleInput = () => {
     const result = tasks.filter((obj) => obj.name.toLowerCase().indexOf(searchNameValue.toLowerCase()) > -1
-      && obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+      && checkDate(obj)
       && check(obj))
     setFilteredData(result)
   }
@@ -117,13 +124,6 @@ export default function TaskList() {
       setDataLoading(false)
     })
   })
-
-  const startDayValidator = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('この項目は必須です'))
-    }
-    return Promise.resolve()
-  }
 
   const handleRow = (record) => ({ onClick: () => {
     router.push(`/tasks/${record.id}`)
@@ -168,16 +168,26 @@ export default function TaskList() {
         </div>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <h1 className="m-0 flex justify-start w-full">メンバ詳細（タスク一覧）</h1>
-          <div className="text-xl w-full flex justify-start items-center">
-            <div className="my-5 mr-5">ステータス:</div>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
-            <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
+          <div className="text-xl w-full flex justify-between items-center">
+            <div className="flex items-center">
+              <div className="my-5 mr-5">ステータス:</div>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
+              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
+            </div>
+            <DatePicker
+              className=""
+              size="large"
+              help="Please select the correct date"
+              format={Extensions.dateFormat}
+              placeholder={Extensions.dateFormat}
+              onChange={handleInputDate}
+            />
           </div>
-          <div className="flex my-4 w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
               <Select className="ml-5" value={itemCount} onChange={handleSelect}>
@@ -186,30 +196,10 @@ export default function TaskList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <Form className="flex items-center justify-center">
-              <Form.Item
-                className="mr-4 mb-0"
-              >
-                <Input size="large" onChange={handleInputName} placeholder="タスク名" prefix={<SearchOutlined />} />
-              </Form.Item>
-              <Form.Item
-                name="start_date"
-                className="mb-0"
-                rules={[
-                  {
-                    validator: startDayValidator,
-                  },
-                ]}
-              >
-                <DatePicker
-                  size="large"
-                  help="Please select the correct date"
-                  format={Extensions.dateFormat}
-                  placeholder={Extensions.dateFormat}
-                  onChange={handleInputDate}
-                />
-              </Form.Item>
-            </Form>
+            <div>
+              <Input size="large" onChange={handleInputName} placeholder="タスク名" prefix={<SearchOutlined />} />
+
+            </div>
           </div>
           <Table
             className="w-full rounded-3xl table-styled my-5 table-striped-rows"
