@@ -22,10 +22,13 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($user_id)
+    public function show($id)
+
     {
+        $i = 0;
+
          // return Notification::where('notifiable_id','=',$user_id)->get();
-         $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $user_id)->get();
+         $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $id)->get();
         if (count($noti) === 0) {
             return 0;
         }
@@ -34,8 +37,9 @@ class NotificationController extends Controller
         foreach ($noti as $notification) {
          // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
             //  $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
-            $nameUser[] = User::select('name')->find($notification->user_id);
-            $nameTask[] = Task::select('name')->find($notification->subjectable_id);
+            $nameUser[$i] = User::select('name')->find($notification->user_id);
+            $nameTask[$i] = Task::select('name')->find($notification->subjectable_id);
+            $i++;
         }
 
         // return $user->notifications;
@@ -88,20 +92,21 @@ class NotificationController extends Controller
         // return $noti;
     }
 
-    public function showUnread($user_id)
+    public function showUnread($id)
     {
         // return Notification::where('user_id','=',$user_id)->where('read_at','=',null)->with('user:id,name,avatar')->get();
         // $user = User::find($user_id);
 
         // return $user->unreadnotifications;
-        $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $user_id)->where('read_at', '=', null)->get();
+        $i = 0;
+        $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $id)->where('read_at', '=', null)->get();
         if (count($noti) === 0) {
             return 0;
         }
 
         foreach ($noti as $notification) {
-            $nameUser[] = User::select('name')->find($notification->user_id);
-            $nameTask[] = Task::select('name')->find($notification->subjectable_id);
+            $nameUser[$i] = User::select('name')->find($notification->user_id);
+            $nameTask[$i] = Task::select('name')->find($notification->subjectable_id);
         }
 
         return response()->json(['userName' => $nameUser, 'noti' => $noti, 'taskName' => $nameTask]);
