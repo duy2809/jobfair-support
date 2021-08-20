@@ -112,6 +112,14 @@ Route::prefix('members')->group(function () {
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
 
+//Notification
+
+Route::resource('/notification', NotificationController::class);
+Route::get('/notification/delete/{id}', 'NotificationController@destroy');
+Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
+Route::post('/notification/update/{id}', 'NotificationController@update');
+Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+
 //task
 Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
