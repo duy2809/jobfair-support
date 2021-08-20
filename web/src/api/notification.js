@@ -9,3 +9,4 @@ export const deleteNotification = (id) => instance.get(`/notification/delete/${i
 export const update = (id) => instance.post(`/notification/update/${id}`)
 
 export const updateAllRead = () => instance.post('notification/update_all_read')
+
