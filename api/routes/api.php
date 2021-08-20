@@ -63,6 +63,7 @@ Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
+    Route::get('/{id}/tasks', 'MemberController@getTaskByID');
 });
 
 // login, logout
@@ -80,7 +81,9 @@ Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
 
-Route::resource('/template-tasks', 'TemplateTaskController');
+Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
+Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
+
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
@@ -114,6 +117,12 @@ Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
+
+//task
+Route::resource('/task', TaskController::class);
+Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
+Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
+
 
 // top-page
 Route::prefix('/top-page')->group(function () {

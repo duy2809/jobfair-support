@@ -388,6 +388,11 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@dhtmlx/trial-react-gantt@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@dhtmlx/trial-react-gantt/-/trial-react-gantt-1.1.2.tgz#9db2a931af6a0ff584e1c2f943e844c8bac59673"
+  integrity sha512-LhHT6MaMksPGbca9BG3RDu/bcdKoXiXWqBnycRxzRP1fw9MGGw/YBSxOvHdDoH+8lOTxpwKVYXm9QYX7mefVdg==
+
 "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz#db28b1c4368a259b60a97311d6a952d4fd01ac1a"
@@ -3054,6 +3059,16 @@ detective@^5.2.0:
     acorn-node "^1.6.1"
     defined "^1.0.0"
     minimist "^1.1.1"
+
+dhtmlx-gantt@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/dhtmlx-gantt/-/dhtmlx-gantt-7.1.5.tgz#5ea53f3da85f8d95540c7befa303a57bda46310c"
+  integrity sha512-1E7xPtcp377Bjoa7k23FF1Zx+r6lNSXwa6r4oVfzBFL8BtGFPhmzg/vCBsZgC/0Ta0EdgeX5g7TqzaTioBr1kw==
+
+dhx-optimus@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/dhx-optimus/-/dhx-optimus-2.1.0.tgz#f75d348ee14ac3404adc7f1f3b239719d1072b5c"
+  integrity sha512-+JfMDKeIEuURoBWNDhb3f4B04uuOwWXhxtRV7dhYPw3643dd96G2+oOrADElnM9dzAJcnFSo77liEpf2xUyeIw==
 
 didyoumean@^1.2.1:
   version "1.2.1"
