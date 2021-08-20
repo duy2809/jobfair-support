@@ -33,7 +33,6 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/tasks', 'JobfairController@getTasks');
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
-   
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
@@ -132,4 +131,3 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
-
