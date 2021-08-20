@@ -151,7 +151,11 @@ export default function AddMilestonePage() {
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
             マイルストーン追加
           </p> */}
+<<<<<<< HEAD
           <h1 className="title">
+=======
+          <h1>
+>>>>>>> 59835965a73e584a845592834b6c3821bc20b436
           マイルストーン追加
           </h1>
 
