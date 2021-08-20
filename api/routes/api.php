@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
+
+Route::resource('/jobfair', 'JobfairController');
+
 // add jf route start
 
 // jobfair
@@ -51,7 +55,8 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-
+//milestone controller
+Route::get('/milestones/{id}/list', 'MilestoneController@getInfoMilestones');
 //member
 
 Route::prefix('member')->group(function () {
@@ -101,9 +106,6 @@ Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avat
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueAdd']);
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
