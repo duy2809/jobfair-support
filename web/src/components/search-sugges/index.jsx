@@ -61,7 +61,7 @@ export default function SearchSugges({ listTask, id }) {
     onChange,
   }
   return (
-    <>
+    <div className="search-sugges">
       <Autosuggest
         suggestions={suggestions}
         onSuggestionsFetchRequested={onSuggestionsFetchRequested}
@@ -71,7 +71,7 @@ export default function SearchSugges({ listTask, id }) {
         inputProps={inputProps}
       />
       <Button style={{ border: 'none' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
-    </>
+    </div>
   )
 }
 SearchSugges.propTypes = {

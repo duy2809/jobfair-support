@@ -3,11 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\TemplateTaskController;
+use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,6 +21,9 @@ use Illuminate\Support\Facades\Route;
  */
 
 Route::get('/web-init', WebInit::class);
+
+Route::resource('/jobfair', 'JobfairController');
+
 // add jf route start
 
 // jobfair
@@ -50,6 +54,12 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
+
+// Route::get('/milestone', 'TemplateMilestoneController@getList');
+
+// Route::get('/milestone', 'TemplateMilestoneController@index');
+
+// Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
 
 //member
 
@@ -100,9 +110,6 @@ Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avat
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueAdd']);
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
@@ -120,3 +127,9 @@ Route::get('/notification/delete/{id}', 'NotificationController@destroy');
 Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
 Route::post('/notification/update/{id}', 'NotificationController@update');
 Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+// top-page
+Route::prefix('/top-page')->group(function () {
+    Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/jobfairs', [JobfairController::class, 'index']);
+    Route::get('/members', [MemberController::class, 'index']);
+});

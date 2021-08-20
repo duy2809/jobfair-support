@@ -7,6 +7,7 @@ import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
 import { webInit } from '~/api/web-init'
+import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
   const [form] = Form.useForm()
@@ -19,15 +20,18 @@ const EditMember = ({ data }) => {
   const [categoriesSystem, setCategoriesSystem] = useState([])
   const [reqCategories, setReqCategories] = useState([])
   const [user, setUser] = useState({})
+  const [showExitPrompt, setShowExitPrompt] = useState(false)
 
   const { id } = router.query
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
+    setShowExitPrompt(true)
   }
 
   const onValueEmailChange = (e) => {
     setEmailInput(e.target.value)
+    setShowExitPrompt(true)
   }
 
   const fetchData = useCallback(() => {
@@ -47,7 +51,7 @@ const EditMember = ({ data }) => {
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: '正常に更新されました',
+      message: '変更は正常に保存されました。',
       duration: 1,
     })
   }
@@ -103,11 +107,16 @@ const EditMember = ({ data }) => {
     setCategories(value)
     const result = value.map((item) => categoriesSystem.indexOf(item) + 1)
     setReqCategories(result)
+    setShowExitPrompt(true)
   }
 
   useEffect(() => {
     fetchData()
   }, [])
+
+  useEffect(() => {
+    Extensions.unSaveChangeConfirm(showExitPrompt)
+  }, [showExitPrompt])
 
   useEffect(() => {
     if (user.role === 'member') {
@@ -132,7 +141,7 @@ const EditMember = ({ data }) => {
               label={<p style={{ fontSize: '18px' }}>フルネーム</p>}
               rules={[
                 {
-                  message: 'フルネーム必要とされている!',
+                  message: 'この項目は必須です',
                   required: true,
                 },
               ]}
@@ -185,7 +194,7 @@ const EditMember = ({ data }) => {
               ]}
             >
               <Select
-                mode="tags"
+                mode="multiple"
                 defaultValue={categories}
                 onChange={handleChangeSelect}
                 placeholder="カテゴリ"
