@@ -23,7 +23,6 @@ class NotificationController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-
     {
         $i = 0;
 
