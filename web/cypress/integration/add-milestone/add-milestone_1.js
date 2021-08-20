@@ -1,6 +1,6 @@
 import Color from 'color'
 describe('Edit Milestone Test', () => {
-  const expectTextColor = Color('#2d334a').string() 
+  const expectTextColor = Color('#272343').string() 
     it('Visits Jobfair Support Edit Milestone', () => {
       cy.visit('http://jobfair.local:8000/milestones/add')
     })
