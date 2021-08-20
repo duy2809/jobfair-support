@@ -1,53 +1,53 @@
-import React from 'react';
-import { Draggable } from 'react-beautiful-dnd';
-import PropTypes from 'prop-types';
-import { Card, Button, Tooltip } from 'antd';
-import { CalendarOutlined, LinkOutlined } from '@ant-design/icons';
-import { formatDate } from '../../utils/utils';
+import React from 'react'
+import { Draggable } from 'react-beautiful-dnd'
+import PropTypes from 'prop-types'
+import { Card, Button, Tooltip } from 'antd'
+import { CalendarOutlined, LinkOutlined } from '@ant-design/icons'
+import { formatDate } from '../../utils/utils'
 
-import './styles.scss';
-import AvatarKanban from './AvatarKanban';
+import './styles.scss'
+import AvatarKanban from './AvatarKanban'
 
 const Task = (props) => {
-  const { title, task, isControllable, index } = props;
-  const { taskName, memo, user, end_time: endTime, id } = task;
+  const { title, task, isControllable, index } = props
+  const { taskName, memo, user, end_time: endTime, id } = task
 
-  let memoStyle;
-  let cardBorderedStyle;
+  let memoStyle
+  let cardBorderedStyle
 
   if (title === '未着手') {
-    cardBorderedStyle = 'ant-card__bordered--未着手';
-    memoStyle = 'memo--未着手';
+    cardBorderedStyle = 'ant-card__bordered--未着手'
+    memoStyle = 'memo--未着手'
   } else if (title === '進行中') {
-    cardBorderedStyle = 'ant-card__bordered--進行中';
-    memoStyle = 'memo--進行中';
+    cardBorderedStyle = 'ant-card__bordered--進行中'
+    memoStyle = 'memo--進行中'
   } else if (title === '完了') {
-    cardBorderedStyle = 'ant-card__bordered--完了';
-    memoStyle = 'memo--完了';
+    cardBorderedStyle = 'ant-card__bordered--完了'
+    memoStyle = 'memo--完了'
   } else if (title === '中断') {
-    cardBorderedStyle = 'ant-card__bordered--中断';
-    memoStyle = 'memo--中断';
+    cardBorderedStyle = 'ant-card__bordered--中断'
+    memoStyle = 'memo--中断'
   } else {
-    cardBorderedStyle = 'ant-card__bordered--未完了';
-    memoStyle = 'memo--未完了';
+    cardBorderedStyle = 'ant-card__bordered--未完了'
+    memoStyle = 'memo--未完了'
   }
   return (
     <Draggable draggableId={id.toString()} index={index} key={id}>
       {(provided) => (
         <div
-          className='container__column--task'
+          className="container__column--task"
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={isControllable ? provided.innerRef : null}
         >
-          <div className='mx-auto'>
+          <div className="mx-auto">
             <Card
               bordered={false}
               className={cardBorderedStyle}
               style={{ marginBottom: '5px' }}
             >
               <div style={{ display: '-ms-flexbox', justifyContent: 'start' }}>
-                <div className='text-lg mb-2'>
+                <div className="text-lg mb-2">
                   <a href={`/task-detail/${id}`}>{taskName}</a>
                 </div>
                 <div
@@ -57,7 +57,7 @@ const Task = (props) => {
                   }}
                 >
                   {title === '中断' && (
-                    <Button className='memo--中断 m-1'>
+                    <Button className="memo--中断 m-1">
                       <span style={{ color: 'white', wordSpacing: '-2.5px' }}>
                         問題
                       </span>
@@ -66,9 +66,9 @@ const Task = (props) => {
                   {memo && (
                     <Button className={memoStyle}>
                       <Tooltip
-                        placement='bottom'
+                        placement="bottom"
                         title={<p>{memo}</p>}
-                        className='m-1 flex justify-center'
+                        className="m-1 flex justify-center"
                       >
                         <span
                           style={{
@@ -92,17 +92,19 @@ const Task = (props) => {
                 }}
               >
                 <div
-                  className='border m-1 user'
+                  className="border m-1 user"
                   style={{ display: 'inline-flex', alignItems: 'center' }}
                 >
                   <CalendarOutlined />
-                  &nbsp; {formatDate(endTime)}
+                  &nbsp;
+                  {' '}
+                  {formatDate(endTime)}
                 </div>
                 <Tooltip
-                  placement='bottom'
+                  placement="bottom"
                   title={<a>関連リンク</a>}
-                  trigger='click'
-                  className='m-1 flex justify-center'
+                  trigger="click"
+                  className="m-1 flex justify-center"
                 >
                   <LinkOutlined />
                 </Tooltip>
@@ -112,14 +114,14 @@ const Task = (props) => {
         </div>
       )}
     </Draggable>
-  );
-};
+  )
+}
 
 Task.propTypes = {
   title: PropTypes.string.isRequired,
   task: PropTypes.object.isRequired,
   isControllable: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
-};
+}
 
-export default Task;
+export default Task
