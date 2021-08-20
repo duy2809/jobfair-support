@@ -45,6 +45,11 @@ class ScheduleController extends Controller
 
     public function store(Request $request)
     {
+        $schedule = new Schedule;
+        $schedule->name = $request->schedule["name"];
+        $schedule->save();
+        $schedule->milestones()->attach($request->addedMilestones);
+        $schedule->templateTasks()->attach($request->addedTemplateTasks);
     }
 
     /**
