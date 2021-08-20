@@ -4,7 +4,6 @@ import { Dropdown, List, Avatar, Checkbox } from 'antd'
 import { BellFilled, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
-import { useRouter } from 'next/router'
 import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
 
 export default function Notification() {
@@ -18,7 +17,6 @@ export default function Notification() {
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
   const [checkUpdate, setCheckUpdate] = useState(0)
   const [dataNoti, setDataNoti] = useState([])
-  const router = useRouter()
 
   const fetchData = async () => {
     setLoading(true)
@@ -128,13 +126,13 @@ export default function Notification() {
 
   const handlerClick = (type, id) => {
     if(type === 'タスク') {
-      router.push(`/task-detail/${id}`)
+      window.location.href = `/task-detail/${id}`
     }
     if(type === 'メンバ') {
-      router.push(`/member/${id}`)
+      window.location.href = `/member/${id}`
     }
     if(type === 'JF') {
-      router.push(`/jf-toppage/${id}`)
+      window.location.href = `/jf-toppage/${id}`
     }
   }
 
