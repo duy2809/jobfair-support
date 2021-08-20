@@ -18,6 +18,7 @@ class FileController extends Controller
     {
         $data = DB::table('documents')
         ->select('*')
+        ->whereNull('preFolderID')
         ->orderBy('documents.updated_at', 'desc')
         ->get();
 
@@ -77,7 +78,22 @@ class FileController extends Controller
 
         return response()->json($data);
     }
-
+    public function search(Request $request)
+    {
+        if($request->has('name'))
+        {
+            $query::where('name', 'LIKE', "%$request->name%");
+        }
+        if($request->has('update_date'))
+        {
+            $query::whereBetween('update_date', [$request->from,$request->to]);
+        }
+        if($request->has('name'))
+        {
+            $query::where('name', 'LIKE', "%$request->name%");
+        }
+        return $data->get;
+    }
     /**
      * Show the form for editing the specified resource.
      *
