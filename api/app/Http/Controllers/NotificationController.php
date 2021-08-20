@@ -26,6 +26,7 @@ class NotificationController extends Controller
     {
         $i = 0;
         $nameUser = [];
+        $nameTask = [];
 
          // return Notification::where('notifiable_id','=',$user_id)->get();
          $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $id)->get();
@@ -100,6 +101,7 @@ class NotificationController extends Controller
         // return $user->unreadnotifications;
         $i = 0;
         $nameUser = [];
+        $nameTask = [];
         $noti = Notification::orderBy('created_at', 'ASC')->where('notifiable_id', '=', $id)->where('read_at', '=', null)->get();
         if (count($noti) === 0) {
             return 0;
