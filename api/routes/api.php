@@ -6,6 +6,7 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
@@ -123,3 +124,8 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
+
+// task kanban
+Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
+Route::get('/kanban/{jfId}/{userId}', [TaskController::class, 'getJobfair']);
+Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
