@@ -29,6 +29,7 @@ import {
 function editJobfairSchedule() {
   const [form] = Form.useForm();
   const router = useRouter();
+  const [beforeEditName, setbeforeEditName] = useState('');
   const [milestonesList, setMilestonesList] = useState([]);
   const [templateTaskList, setTemplateTaskList] = useState([]);
   const [addedMilestonesList, setAddedMilestonesList] = useState([]);
@@ -36,19 +37,13 @@ function editJobfairSchedule() {
   const [nameInput, setNameInput] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // TASK:
-  // - Check trung ten jf-schedule
-  // - Chuyen huong sau khi save, cancel
-  // - Lam modal confirm save
-  // - Lam man hinh add
-  // - Code cypress
-
   useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname);
     const id = `${temp[1]}`;
 
     await getSchedule(id)
       .then(({ data }) => {
+        setbeforeEditName(data.name);
         setNameInput(data.name);
         form.setFieldsValue({
           jfschedule_name: data.name,
@@ -116,15 +111,26 @@ function editJobfairSchedule() {
       addedTemplateTasks: addedTemplateTaskList,
     };
     console.log(dataSend);
-    await putData(id, dataSend)
-      .then((res) => {
-        if (res.status === 200)
-          openNotification('success', '変更は正常に保存されました。');
-        setTimeout(() => {
-          router.push('/schedule');
-        }, 2500);
-      })
-      .catch((err) => console.log(err));
+    if (nameInput !== beforeEditName) {
+      await postCheckExistName(id, dataSend)
+        .then(({ data }) => {
+          console.log(data);
+          if (data === 'exist') {
+            openNotification('error', 'このJFスケジュール名は存在しています。');
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      await putData(id, dataSend)
+        .then((res) => {
+          if (res.status === 200)
+            openNotification('success', '変更は正常に保存されました。');
+          setTimeout(() => {
+            router.push(`/jf-schedule/${id}`);
+          }, 2500);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -161,18 +167,18 @@ function editJobfairSchedule() {
   const selectMilestoneProps = {
     mode: 'multiple',
     optionFilterProp: 'label',
-    value: addedMilestonesList,
+    // value: addedMilestonesList,
     options: milestonesOptions,
     onChange: (newValue) => {
       setAddedMilestonesList(newValue);
     },
     placeholder: 'マイルストーンを入力してください。',
     maxTagCount: 'responsive',
+    showArrow: true,
   };
 
   const onValueNameChange = (e) => {
     setNameInput(e.target.value);
-    console.log(nameInput);
   };
 
   const handleCancel = () => {
@@ -185,17 +191,22 @@ function editJobfairSchedule() {
     const dataSend = {
       name: nameInput,
     };
-    await postCheckExistName(id, dataSend)
-      .then((res) => {
-        console.log(res.data);
-        // form.setFields([
-        //   {
-        //     name: 'jfschedule_name',
-        //     errors: ['このJFスケジュール名は存在しています。'],
-        //   },
-        // ]);
-      })
-      .catch((err) => console.log(err));
+    console.log(dataSend);
+    if (nameInput !== beforeEditName) {
+      await postCheckExistName(id, dataSend)
+        .then(({ data }) => {
+          console.log(data);
+          if (data === 'exist') {
+            form.setFields([
+              {
+                name: 'jfschedule_name',
+                errors: ['このJFスケジュール名は存在しています。'],
+              },
+            ]);
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
@@ -255,19 +266,43 @@ function editJobfairSchedule() {
           <Divider />
           <Row gutter={[24, 24]}>
             {milestonesList.map((milestone) => {
-              if (addedMilestonesList.includes(milestone.id))
+              if (addedMilestonesList.includes(milestone.id)) {
+                const templateTaskChildernList = _.filter(templateTaskList, {
+                  milestone_id: milestone.id,
+                });
+                const templateTaskOptions = [];
+                templateTaskChildernList.forEach((item) => {
+                  let value = item.id;
+                  templateTaskOptions.push({
+                    label: item.name,
+                    value,
+                  });
+                });
+                const addedTemplateTaskChildernList = [];
+                templateTaskChildernList.forEach((item) => {
+                  if (_.includes(addedTemplateTaskList, item.id)) {
+                    addedTemplateTaskChildernList.push(item.id);
+                  }
+                });
+
                 return (
                   <Col span={12} key={milestone.id}>
                     <List
                       milestone={milestone}
-                      templateTaskParentList={templateTaskList}
-                      addedTemplateTaskParentList={addedTemplateTaskList}
+                      templateTaskChildernList={templateTaskChildernList}
+                      addedTemplateTaskChildernList={
+                        addedTemplateTaskChildernList
+                      }
+                      templateTaskOptions={templateTaskOptions}
                       onDeleteTemplateTask={onDeleteTemplateTask}
                       onDeleteMilestone={onDeleteMilestone}
                       onAddTemplateTask={onAddTemplateTask}
+                      selectName={`template_task_select_${milestone.id}`}
+                      form={form}
                     />
                   </Col>
                 );
+              }
             })}
           </Row>
 

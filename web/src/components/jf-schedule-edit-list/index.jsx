@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { List, Select } from 'antd';
+import { List, Select, Form, Input } from 'antd';
 import {
   FileDoneOutlined,
   DeleteOutlined,
@@ -10,32 +10,30 @@ import _ from 'lodash';
 import './styles.scss';
 
 function jfScheduleEditList({
-  templateTaskParentList,
-  addedTemplateTaskParentList,
+  templateTaskChildernList,
+  addedTemplateTaskChildernList,
+  templateTaskOptions,
   onDeleteTemplateTask,
   onDeleteMilestone,
   onAddTemplateTask,
   milestone,
+  form,
+  selectName,
 }) {
-  const templateTaskChildernList = _.filter(templateTaskParentList, {
-    milestone_id: milestone.id,
-  });
+  useEffect(() => {
+    const temp = {};
+    temp[selectName] = addedTemplateTaskChildernList;
+    form.setFieldsValue(temp);
+  }, [addedTemplateTaskChildernList]);
 
-  const addedTemplateTaskChildernList = [];
-  templateTaskChildernList.forEach((item) => {
-    if (_.includes(addedTemplateTaskParentList, item.id)) {
-      addedTemplateTaskChildernList.push(item.id);
-    }
-  });
-
-  const templateTaskOptions = [];
-  templateTaskChildernList.forEach((item) => {
-    let value = item.id;
-    templateTaskOptions.push({
-      label: item.name,
-      value,
-    });
-  });
+  const onValueSelectChange = (value) => {
+    console.log(value);
+    console.log(addedTemplateTaskChildernList);
+    const temp = {};
+    temp[selectName] = value;
+    console.log('Test: ', temp);
+    form.setFieldsValue(temp);
+  };
 
   const selectTemplateTaskProps = {
     mode: 'multiple',
@@ -49,9 +47,10 @@ function jfScheduleEditList({
     onDeselect: (id) => {
       onDeleteTemplateTask(id);
     },
-    placeholder: 'テンプレートタスク. . .',
+    placeholder: 'テンプレートタスクを入力してください。',
     maxTagCount: 'responsive',
     size: 'middle',
+    showArrow: true,
   };
 
   const renderHeader = ({ id, name }) => {
@@ -61,14 +60,29 @@ function jfScheduleEditList({
           <FileDoneOutlined style={{ fontSize: 32 }} />
           <span className="ml-4 text-lg">{name}</span>
         </div>
-        <div className="w-1/2 flex justify-items-end items-center">
-          <Select {...selectTemplateTaskProps} />
-          <CloseOutlined
-            style={{ fontSize: '24px' }}
-            className="ml-5"
-            onClick={() => onDeleteMilestone(id)}
-          />
-        </div>
+        <Form.Item
+          name={selectName}
+          rules={[
+            {
+              required: true,
+              message: 'テンプレートタスクを入力してください。',
+            },
+          ]}
+          className="w-1/2 m-0"
+          shouldUpdate
+        >
+          <div className="flex justify-items-end items-center">
+            <Select
+              {...selectTemplateTaskProps}
+              onChange={onValueSelectChange}
+            />
+            <CloseOutlined
+              style={{ fontSize: '24px' }}
+              className="ml-5"
+              onClick={() => onDeleteMilestone(id)}
+            />
+          </div>
+        </Form.Item>
       </div>
     );
   };
