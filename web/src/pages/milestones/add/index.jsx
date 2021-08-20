@@ -151,8 +151,9 @@ export default function AddMilestonePage() {
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
             マイルストーン追加
           </p> */}
-          <h1>
-            マイルストーン追加
+
+          <h1 className="title">
+          マイルストーン追加
           </h1>
 
           <div className="pt-10">
@@ -170,7 +171,7 @@ export default function AddMilestonePage() {
             >
               <Form.Item
                 label={(
-                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>
+                  <p style={{margin: 0 }}>
                     マイルストーン名
                   </p>
                 )}
@@ -206,7 +207,7 @@ export default function AddMilestonePage() {
               </Form.Item>
               <Form.Item
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>期日</p>
+                  <p style={{ margin: 0 }}>期日</p>
                 }
                 name="time"
                 rules={[

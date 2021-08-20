@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -18,26 +19,6 @@ class NotificationController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
-
-    /**
-     * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -55,10 +36,11 @@ class NotificationController extends Controller
          // $nameUser[] = User::select('name')->where('id','=',$notification->user_id)->get();
             //  $nameUser[] =User::select('name')->where('id','=',$notification->user_id)->get();
             $nameUser[] = User::select('name')->find($notification->user_id);
+            $nameTask[] = Task::select('name')->find($notification->subjectable_id);
         }
 
         // return $user->notifications;
-        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+        return response()->json(['userName' => $nameUser, 'noti' => $noti, 'taskName' => $nameTask]);
         //  return $user;
     }
 
@@ -120,9 +102,10 @@ class NotificationController extends Controller
 
         foreach ($noti as $notification) {
             $nameUser[] = User::select('name')->find($notification->user_id);
+            $nameTask[] = Task::select('name')->find($notification->subjectable_id);
         }
 
-        return response()->json(['userName' => $nameUser, 'noti' => $noti]);
+        return response()->json(['userName' => $nameUser, 'noti' => $noti, 'taskName' => $nameTask]);
     }
 
     public function updateAllRead()

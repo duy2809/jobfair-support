@@ -48,11 +48,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Schedule::class, 'list_members');
     }
 
-    public function notifications()
-    {
-        return $this->morphMany(Notification::class, 'notifiable');
-    }
-
     public function tasks()
     {
         return $this->belongsToMany(Task::class, 'assignments');

@@ -45,7 +45,7 @@ export default function Notification() {
         // const length = data.noti.length
         // setLengthNoti(length)
         const newNoti = data.noti.map((item, idx) => {
-          const newItem = { ...item, ...data.userName[idx], avatar: `/api/avatar/${item.user_id}` }
+          const newItem = { ...item, ...data.userName[idx],taskName: `${data.taskName[idx].name}`, avatar: `/api/avatar/${item.user_id}` }
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -127,13 +127,13 @@ export default function Notification() {
   }
 
   const handlerClick = (type, id) => {
-    if (type === 'タスク') {
+    if(type === 'タスク') {
       router.push(`/task-detail/${id}`)
     }
-    if (type === 'メンバ') {
+    if(type === 'メンバ') {
       router.push(`/member/${id}`)
     }
-    if (type === 'JF') {
+    if(type === 'JF') {
       router.push(`/jf-toppage/${id}`)
     }
   }
@@ -200,6 +200,7 @@ export default function Notification() {
                         <div>
                           {item.name}
                           さんが
+                          {item.taskName}
                           {item.type}
                           を
                           {item.data}
