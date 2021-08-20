@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -42,6 +43,15 @@ class TaskController extends Controller
      */
     public function show($id)
     {
+        $task = Task::with([
+            'milestone:id,name',
+            'categories:id,category_name',
+            'users:id,name',
+            'schedule.jobfair:id,name',
+            'templateTask:id,effort,is_day,unit',
+        ])->find($id);
+
+        return response()->json($task);
     }
 
     /**
@@ -73,5 +83,26 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
+        $task = Task::find($id);
+        $task->categories()->detach();
+        $task->beforeTasks()->detach();
+        $task->afterTasks()->detach();
+        $task->delete();
+
+        return response()->json(['message' => 'Delete Successfully'], 200);
+    }
+
+    public function getBeforeTasks($id)
+    {
+        $beforeTasks = Task::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+
+        return response()->json($beforeTasks);
+    }
+
+    public function getAfterTasks($id)
+    {
+        $afterTasks = Task::with('afterTasks:id,name')->find($id, ['id', 'name']);
+
+        return response()->json($afterTasks);
     }
 }

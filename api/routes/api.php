@@ -117,6 +117,12 @@ Route::prefix('members')->group(function () {
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
 });
 
+//task
+Route::resource('/task', TaskController::class);
+Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
+Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
+
+
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
