@@ -121,8 +121,7 @@ Route::post('/notification/update/{id}', 'NotificationController@update');
 Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
 
 //task
-
-Route::resource('/task', TaskController::class);
+Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 
