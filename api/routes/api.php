@@ -113,7 +113,7 @@ Route::prefix('members')->group(function () {
 });
 
 //task
-Route::resource('/task', TaskController::class);
+Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 
