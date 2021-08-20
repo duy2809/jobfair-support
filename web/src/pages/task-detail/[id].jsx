@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification } from 'antd'
+import { Button, Modal, notification, Tooltip } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
@@ -327,13 +327,16 @@ export default function TaskList() {
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
-                          <a
-                            href={`/tasks/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {truncate(item.name)}
-                          </a>
+                          <Tooltip placement="top" title={item.name}>
+                            <a
+                              href={`/task-detail/${item.id}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {truncate(item.name)}
+                            </a>
+                          </Tooltip>
+
                         </li>
                       ))
                       : null}
@@ -345,13 +348,15 @@ export default function TaskList() {
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
-                          <a
-                            href={`/tasks/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {truncate(item.name)}
-                          </a>
+                          <Tooltip placement="top" title={item.name}>
+                            <a
+                              href={`/task-detail/${item.id}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {truncate(item.name)}
+                            </a>
+                          </Tooltip>
                         </li>
                       ))
                       : null}
