@@ -133,4 +133,3 @@ Route::get('/notification/delete/{id}', 'NotificationController@destroy');
 Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
 Route::post('/notification/update/{id}', 'NotificationController@update');
 Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
-

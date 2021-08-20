@@ -1,10 +1,6 @@
 import Color from 'color'
 const validPassword = '12345678'; // TODO: change your password in db
-<<<<<<< HEAD
 const existValidEmail = 'letitia.kessler@example.net'; // TODO: change your email in db
-=======
-const existValidEmail = 'schamberger.beryl@example.com'; // TODO: change your email in db
->>>>>>> update api J1
 describe('User Profile Test', () => {
   const expectTextColor = Color('#2d334a').string() 
     it('Visits Jobfair Support Profile', () => {
@@ -19,7 +15,6 @@ describe('User Profile Test', () => {
       cy.visit('http://jobfair.local:8000/profile')
     })
 
-<<<<<<< HEAD
     it('Check header and footer notification', () =>{
       cy.get('div.ant-dropdown-trigger').find('span.anticon-bell').click();
     cy.get('.notification').should('be.visible');
@@ -37,19 +32,30 @@ describe('User Profile Test', () => {
 
   it('Check contain notification', () =>{
     cy.get('div.ant-spin-nested-loading').find('div.ant-spin-container').then(($body) => {
-      if($body.find('div.ant-list-items')){
-        $body.find('div.ant-list-items').find('li.ant-list-item').find('div.delete-btn')
-        $body.find('div.ant-list-items').find('li.ant-list-item').find('span.ant-avatar')
-        $body.find('div.ant-list-items').find('li.ant-list-item').find('div.noti-time')
+      if($body.find('ul.ant-list-items')){
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('div.delete-btn').click()
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('span.ant-avatar')
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('div.noti-time')
 
       }else{
-        $body.find('div.ant-list-items').contains('No Notification')
+        $body.find('ul.ant-list-items').contains('通知なし')
       }
     })
+    cy.get('div.noti-checked').find('span.ant-checkbox').click()
+    cy.wait(3000);
+    cy.get('div.ant-spin-nested-loading').find('div.ant-spin-container').then(($body) => {
+      if($body.find('ul.ant-list-items')){
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('div.delete-btn')
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('span.ant-avatar')
+        $body.find('ul.ant-list-items').find('li.ant-list-item').find('div.noti-time')
+        $body.find('ul.ant-list-items>li.bg-gray-300')
+
+      }else{
+        $body.find('ul.ant-list-items').contains('未読の通知はありません')
+      }
+    })
+    cy.get('div.noti-footer').find('span.ant-checkbox').click()
+    cy.wait(3000);
 
   })
 })
-=======
-    
-  })
->>>>>>> update api J1

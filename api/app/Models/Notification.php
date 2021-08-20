@@ -13,12 +13,9 @@ class Notification extends Model
     // {
     //     return $this->belongsTo(User::class);
     // }
-<<<<<<< HEAD
     protected $casts = [
-        'id' => 'string'
-        ];
-=======
->>>>>>> merge front and back J1
+        'id' => 'string',
+    ];
 
     public function notifiable()
     {
@@ -29,7 +26,4 @@ class Notification extends Model
     {
         return $this->morphTo();
     }
-
-    
-
 }
