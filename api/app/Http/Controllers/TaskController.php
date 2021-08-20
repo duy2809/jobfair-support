@@ -43,13 +43,16 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $tasks = Task::with([
+        $task = Task::with([
             'milestone:id,name',
             'categories:id,category_name',
             'users:id,name',
+            'schedule.jobfair:id,name',
             'templateTask:id,effort,is_day,unit'
         ])->find($id);
-        return response()->json($tasks);
+    
+        
+        return response()->json($task);
     }
 
     /**

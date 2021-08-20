@@ -33,6 +33,10 @@ export default function TaskList() {
     unit: '',
     description_of_detail: '',
   })
+  const [infoJF, setInfoJF] = useState({
+    id: null,
+    name: '',
+  })
   const saveNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
@@ -46,7 +50,7 @@ export default function TaskList() {
     await deleteTask(idTask)
       .then((response) => {
         console.log(response.data)
-        router.push('/tasks/1')
+        router.push(`/tasks/${infoJF.id}`)
       })
       .catch((error) => {
         console.log(error)
@@ -80,6 +84,10 @@ export default function TaskList() {
           description_of_detail: response.data.description_of_detail,
         })
         setListMemberAssignee(response.data.users)
+        setInfoJF({
+          id: response.data.schedule.jobfair.id,
+          name: response.data.schedule.jobfair.name,
+        })
       })
       .catch((error) => {
         console.log(error)
@@ -119,10 +127,10 @@ export default function TaskList() {
     })
   }
   const handleBack = () => {
-    router.push('/template-tasts')
+    router.push(`/tasks/${infoJF.id}`)
   }
   const handleEdit = () => {
-    router.push('/template-tasts')
+    router.push(`/tasks/${infoJF.id}`)
   }
   useEffect(() => {
     getDataUser()
@@ -166,7 +174,11 @@ export default function TaskList() {
                 ) : null}
               </div>
             </div>
-            <h1>タスク詳細</h1>
+            <div className="title">
+              <h1>タスク詳細</h1>
+              <span>{infoJF.name}</span>
+            </div>
+
             <div className="info__tplt">
               <div className="grid grid-cols-2 mx-5 info__center">
                 <div className="col-span-1 mx-4 ">
