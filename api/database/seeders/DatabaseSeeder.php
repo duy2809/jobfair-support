@@ -142,7 +142,13 @@ class DatabaseSeeder extends Seeder
                     'name' => $templateTask->name,
                     'start_time' => $startTime,
                     'end_time' => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
-                    'status' => '未着手',
+                    'status' => collect([
+                        '未着手',
+                        '進行中',
+                        '完了',
+                        '中断',
+                        '未完了',
+                    ])->random(),
 
                     'milestone_id' => $templateTask->milestone_id,
                     'schedule_id' => $schedule->id,
