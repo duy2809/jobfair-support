@@ -54,13 +54,8 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-
-// Route::get('/milestone', 'TemplateMilestoneController@getList');
-
-// Route::get('/milestone', 'TemplateMilestoneController@index');
-
-// Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
-
+//milestone controller
+Route::get('/milestones/{id}/list', 'MilestoneController@getInfoMilestones');
 //member
 
 Route::prefix('member')->group(function () {
