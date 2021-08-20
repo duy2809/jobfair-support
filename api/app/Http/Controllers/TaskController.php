@@ -29,13 +29,13 @@ class TaskController extends Controller
             ->where('jobfairs.id', '=', $id)
             ->get();
     }
+
     public function getJobfair($jfId, $userId)
     {
-        $data = DB::table('jobfairs')
+        return DB::table('jobfairs')
             ->where('jobfairs.id', '=', $jfId)
             ->where('jobfairs.jobfair_admin_id', '=', $userId)
             ->get();
-        return $data;
     }
 
     /**
