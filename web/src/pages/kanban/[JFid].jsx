@@ -9,7 +9,21 @@ import JfLayout from '../../layouts/JFLayout'
 import 'antd/dist/antd.css'
 import './style.scss'
 import { getTaskByJfId, updateTask, getJobfair } from '../../api/task-kanban'
-import { columnTask } from './utils/columnTask'
+
+const singleTask = (type, taskIds) => {
+  const obj = {}
+  obj[type] = {
+    id: type,
+    title: type,
+    taskIds,
+  }
+  return obj
+}
+
+const columnTask = (type, data) => {
+  const taskIds = data.filter((el) => el.status === type).map((el) => el.id)
+  return singleTask(type, taskIds)
+}
 
 const Column = dynamic(() => import('../../components/kanban/Column'))
 
