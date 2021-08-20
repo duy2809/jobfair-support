@@ -75,8 +75,7 @@ export default function TaskList() {
   const deletetpl = async () => {
     await deleteTptt(idTplt).then((response) => {
       console.log(response.data)
-      saveNotification()
-      router.push('/template-tasts')
+      router.push('/template-tasks')
     }).catch((error) => {
       console.log(error)
     })
@@ -88,6 +87,7 @@ export default function TaskList() {
       content: '',
       onOk: () => {
         deletetpl()
+        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -102,10 +102,10 @@ export default function TaskList() {
     getDataUser()
   }, [])
   const handleBack = () => {
-    router.push('/template-tasts')
+    router.push('/template-tasks')
   }
   const handleEdit = () => {
-    router.push('/template-tasts')
+    router.push(`/template-tasks/${idTplt}/edit`)
   }
   return (
     <div>
@@ -189,7 +189,7 @@ export default function TaskList() {
                   <ul className="list__task">
                     {beforeTasks ? beforeTasks.map((item) => (
                       <li className="task__chil">
-                        <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
+                        <a href={`/task-detail/${item.id}`} target="_blank" rel="noreferrer">
                           {truncate(item.name)}
                         </a>
                       </li>
@@ -202,7 +202,7 @@ export default function TaskList() {
                   <ul className="list__task">
                     {afterTasks ? afterTasks.map((item) => (
                       <li>
-                        <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
+                        <a href={`/task-detail/${item.id}`} target="_blank" rel="noreferrer">
                           {truncate(item.name)}
                         </a>
                       </li>

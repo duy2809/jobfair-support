@@ -4,7 +4,6 @@ import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
-import './styles.scss'
 
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'

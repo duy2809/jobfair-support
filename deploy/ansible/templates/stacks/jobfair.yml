@@ -23,6 +23,13 @@ x-application-env: &application-env
   SENTRY_DSN: "{{ config.sentry.dns }}"
   LOG_CHANNEL: "{{ config.log.channel }}"
 
+  MAIL_MAILER: "{{ config.mail.mailer }}"
+  MAIL_HOST: "{{ config.mail.host }}"
+  MAIL_PORT: "{{ config.mail.port }}"
+  MAIL_USERNAME: "{{ config.mail.username }}"
+  MAIL_PASSWORD: "{{ config.mail.password }}"
+  MAIL_ENCRYPTION: "{{ config.mail.encryption }}"
+
   {% for key in extra_env_vars %}
   {{ key }}: "{{ extra_env_vars[key] }}"
   {% endfor %}

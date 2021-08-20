@@ -1,9 +1,11 @@
 import React from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown } from 'antd'
-import { CaretDownOutlined, BellFilled, UserOutlined } from '@ant-design/icons'
+import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
+
+import Notification from './notification'
 
 export default function Navbar() {
   const moreNavbarOptions = (
@@ -14,7 +16,7 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="/schedule">
+        <Link href="/jf-schedules">
           <a>スケジュール</a>
         </Link>
       </Menu.Item>
@@ -25,20 +27,20 @@ export default function Navbar() {
       </Menu.Item>
     </Menu>
   )
-  const notifications = (
-    <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
-      <Menu.Item key="0">
-        <Link href="/">
-          <a>通知 1</a>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="1">
-        <Link href="/">
-          <a>通知 2</a>
-        </Link>
-      </Menu.Item>
-    </Menu>
-  )
+  // const notifications = (
+  //   <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
+  //     <Menu.Item key="0">
+  //       <Link href="/">
+  //         <a>通知 1</a>
+  //       </Link>
+  //     </Menu.Item>
+  //     <Menu.Item key="1">
+  //       <Link href="/">
+  //         <a>通知 2</a>
+  //       </Link>
+  //     </Menu.Item>
+  //   </Menu>
+  // )
   const userInformations = (
     <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
@@ -58,7 +60,7 @@ export default function Navbar() {
     <div className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
         <div className="w-20 ml-16">
-          <Link href="/top-page">
+          <Link href="top">
             <a>
               <img src="/images/logo.png" alt="logo" />
             </a>
@@ -71,7 +73,7 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="px-8">
-            <Link href="/member">
+            <Link href="/members">
               <a href="">メンバ</a>
             </Link>
           </div>
@@ -88,16 +90,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="flex px-16 items-center">
-        <div className="px-4">
-          <Dropdown overlay={notifications} trigger={['click']}>
-            <div className="cursor-pointer">
-              <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
-              <span className="relative text-lg number-notifications -top-2 right-2">
-                6
-              </span>
-            </div>
-          </Dropdown>
-        </div>
+        <Notification />
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
             <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer">
