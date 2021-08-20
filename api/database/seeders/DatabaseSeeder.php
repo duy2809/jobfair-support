@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Sun Asterisk',
             'email' => 'jobfair@sun-asterisk.com',
             'password' => Hash::make('12345678'),
-            'avatar' => 'image/avatars/default.jpg',
+            'avatar' => 'images/avatars/default.jpg',
             'role' => 1,
             'chatwork_id' => Str::random(10),
             'remember_token' => null,
@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'JF Admin',
             'email' => 'AnAdmin@sun-asterisk.com',
             'password' => Hash::make('12345678'),
-            'avatar' => 'image/avatars/default.jpg',
+            'avatar' => 'images/avatars/default.jpg',
             'role' => 2,
             'chatwork_id' => Str::random(10),
             'remember_token' => null,
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Member',
             'email' => 'AMember@sun-asterisk.com',
             'password' => Hash::make('12345678'),
-            'avatar' => 'image/avatars/default.jpg',
+            'avatar' => 'images/avatars/default.jpg',
             'role' => 3,
             'chatwork_id' => Str::random(10),
             'remember_token' => null,
@@ -127,7 +127,7 @@ class DatabaseSeeder extends Seeder
             foreach ($templateSchedule->templateTasks as $templateTask) {
                 //create tasks
                 $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-                $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+                $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
                 $duration = 0;
                 if ($templateTask->unit === 'students') {
                     $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -141,8 +141,14 @@ class DatabaseSeeder extends Seeder
                 $newTask = Task::create([
                     'name' => $templateTask->name,
                     'start_time' => $startTime,
-                    'end_time' => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
-                    'status' => '未着手',
+                    'end_time' => date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days')),
+                    'status' => collect([
+                        '未着手',
+                        '進行中',
+                        '完了',
+                        '中断',
+                        '未完了',
+                    ])->random(),
 
                     'milestone_id' => $templateTask->milestone_id,
                     'schedule_id' => $schedule->id,
