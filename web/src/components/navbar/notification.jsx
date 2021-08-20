@@ -5,6 +5,7 @@ import { BellFilled, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
 import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
+import { useRouter } from 'next/router'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -17,6 +18,7 @@ export default function Notification() {
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
   const [checkUpdate, setCheckUpdate] = useState(0)
   const [dataNoti, setDataNoti] = useState([])
+  const router = useRouter()
 
   const fetchData = async () => {
     setLoading(true)
@@ -124,6 +126,18 @@ export default function Notification() {
     })
   }
 
+  const handlerClick = (type, id) => {
+    if(type === 'タスク') {
+      router.push(`/task-detail/${id}`)
+    }
+    if(type === 'メンバ') {
+      router.push(`/member/${id}`)
+    }
+    if(type === 'JF') {
+      router.push(`/jf-toppage/${id}`)
+    }
+  }
+
   const convertDate = (date) => {
     console.log(date)
     const currentdate = new Date(date)
@@ -179,6 +193,7 @@ export default function Notification() {
                         if (!item.read_at) {
                           updateReadAt(item.id)
                         }
+                        handlerClick(item.type, item.subjectable_id)
                       }}
                       avatar={<Avatar src={item.avatar} />}
                       title={(
