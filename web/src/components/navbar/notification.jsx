@@ -43,7 +43,7 @@ export default function Notification() {
         // const length = data.noti.length
         // setLengthNoti(length)
         const newNoti = data.noti.map((item, idx) => {
-          const newItem = { ...item, ...data.userName[idx],taskName: `${data.taskName[idx].name}`, avatar: `/api/avatar/${item.user_id}` }
+          const newItem = { ...item, ...data.userName[idx], taskName: `${data.taskName[idx].name}`, avatar: `/api/avatar/${item.user_id}` }
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -125,13 +125,13 @@ export default function Notification() {
   }
 
   const handlerClick = (type, id) => {
-    if(type === 'タスク') {
+    if (type === 'タスク') {
       window.location.href = `/task-detail/${id}`
     }
-    if(type === 'メンバ') {
+    if (type === 'メンバ') {
       window.location.href = `/member/${id}`
     }
-    if(type === 'JF') {
+    if (type === 'JF') {
       window.location.href = `/jf-toppage/${id}`
     }
   }
@@ -214,7 +214,7 @@ export default function Notification() {
                   </div>
                   <div
                     className="delete-btn"
-                    style={{marginLeft: '10px'}}
+                    style={{ marginLeft: '10px' }}
                   >
                     <DeleteTwoTone
                       onClick={() => deleteNoti(item.id)}

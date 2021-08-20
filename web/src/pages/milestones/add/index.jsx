@@ -153,7 +153,7 @@ export default function AddMilestonePage() {
           </p> */}
 
           <h1 className="title">
-          マイルストーン追加
+            マイルストーン追加
           </h1>
 
           <div className="pt-10">
@@ -171,7 +171,7 @@ export default function AddMilestonePage() {
             >
               <Form.Item
                 label={(
-                  <p style={{margin: 0 }}>
+                  <p style={{ margin: 0 }}>
                     マイルストーン名
                   </p>
                 )}

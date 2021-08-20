@@ -42,7 +42,7 @@ export default function Profile() {
             プロフィール
           </p> */}
           <h1 className="title">
-          プロフィール
+            プロフィール
           </h1>
           <div className="grid grid-cols-12 grid-rows-1 gap-2">
             <div className="row-span-1 col-span-3 justify-self-end">
