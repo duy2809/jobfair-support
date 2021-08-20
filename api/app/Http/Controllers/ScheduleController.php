@@ -75,7 +75,7 @@ class ScheduleController extends Controller
     }
 
     public function checkScheduleNameExist(Request $request) {
-        return count(Schedule::where('name', 'LIKE', '%' . $request->name . '%')->get()) !== 0 ;
+        return count(Schedule::where('name', 'LIKE', '%' . $request->name . '%')->get()) !== 0 ? "exist" : "not exist";
     }
 
     /**
