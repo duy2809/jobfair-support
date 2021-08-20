@@ -48,8 +48,16 @@
 
         .delete-btn {
             margin: auto;
+            height: 100%;
+            display: flex;
+            align-items: center;
         }
     }
+
+    .ant-list-item-meta {
+        align-items: center;
+    }
+
     .ant-list-item:hover {
         background: rgba(0, 0, 0, 0.05);
     }

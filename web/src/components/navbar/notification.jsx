@@ -4,8 +4,8 @@ import { Dropdown, List, Avatar, Checkbox } from 'antd'
 import { BellFilled, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
-import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
 import { useRouter } from 'next/router'
+import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -127,13 +127,13 @@ export default function Notification() {
   }
 
   const handlerClick = (type, id) => {
-    if(type === 'タスク') {
+    if (type === 'タスク') {
       router.push(`/task-detail/${id}`)
     }
-    if(type === 'メンバ') {
+    if (type === 'メンバ') {
       router.push(`/member/${id}`)
     }
-    if(type === 'JF') {
+    if (type === 'JF') {
       router.push(`/jf-toppage/${id}`)
     }
   }
@@ -206,15 +206,16 @@ export default function Notification() {
                           しました
                         </div>
                       )}
+                      description={convertDate(item.created_at)}
                     />
-                    <div className="noti-time">
+                    {/* <div className="noti-time">
                       {convertDate(item.created_at)}
-                    </div>
+                    </div> */}
 
                   </div>
                   <div
                     className="delete-btn"
-                    style={{ margin: 0 }}
+                    style={{marginLeft: '10px'}}
                   >
                     <DeleteTwoTone
                       onClick={() => deleteNoti(item.id)}

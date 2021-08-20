@@ -13,10 +13,10 @@ class Notification extends Model
     // {
     //     return $this->belongsTo(User::class);
     // }
-    
+
     protected $casts = [
-        'id' => 'string'
-        ];
+        'id' => 'string',
+    ];
 
     public function notifiable()
     {
@@ -27,5 +27,4 @@ class Notification extends Model
     {
         return $this->morphTo();
     }
-
 }
