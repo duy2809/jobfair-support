@@ -1,6 +1,6 @@
 import Color from 'color'
 const validPassword = '12345678'; // TODO: change your password in db
-const existValidEmail = 'schamberger.beryl@example.com'; // TODO: change your email in db
+const existValidEmail = 'letitia.kessler@example.net'; // TODO: change your email in db
 describe('User Profile Test', () => {
   const expectTextColor = Color('#2d334a').string() 
     it('Visits Jobfair Support Profile', () => {
@@ -15,5 +15,32 @@ describe('User Profile Test', () => {
       cy.visit('http://jobfair.local:8000/profile')
     })
 
+    it('Check header and footer notification', () =>{
+      cy.get('div.ant-dropdown-trigger').find('span.anticon-bell').click();
+    cy.get('.notification').should('be.visible');
+      cy.get('div.noti-title').contains('通知')
+      cy.get('div.noti-checked').find('span.ant-checkbox')
+      cy.get('div.noti-checked').find('span').contains('未読のみ表示')
+
+      cy.get('div.noti-footer').find('span.ant-checkbox')
+      cy.get('div.noti-footer').find('span').contains('すべて既読にする')
+
+
+    })
     
+  
+
+  it('Check contain notification', () =>{
+    cy.get('div.ant-spin-nested-loading').find('div.ant-spin-container').then(($body) => {
+      if($body.find('div.ant-list-items')){
+        $body.find('div.ant-list-items').find('li.ant-list-item').find('div.delete-btn')
+        $body.find('div.ant-list-items').find('li.ant-list-item').find('span.ant-avatar')
+        $body.find('div.ant-list-items').find('li.ant-list-item').find('div.noti-time')
+
+      }else{
+        $body.find('div.ant-list-items').contains('No Notification')
+      }
+    })
+
   })
+})

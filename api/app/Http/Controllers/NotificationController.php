@@ -89,10 +89,11 @@ class NotificationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-         return Notification::find($id)->update(['read_at'=> $request->only('read_at')]);
-       
+    public function update($id)
+    {    
+        $date = Notification::find($id);
+        $date->read_at = \Carbon\Carbon::now();
+        $date->save();
     }
 
     /**
@@ -132,6 +133,17 @@ class NotificationController extends Controller
              return response()->json(['userName' => $nameUser, 'noti' => $noti]);
              
          }
+    }
+    public function updateAllRead() {
+        $noti = Notification::orderBy('created_at', 'ASC')->where('read_at','=',null)->get();
+        if(count($noti) == 0) {
+            return 0;
+        } else {
+            foreach($noti as $n) {
+                $n->read_at = \Carbon\Carbon::now();
+                $n->save();
+            }
+        }
     }
    
 }
