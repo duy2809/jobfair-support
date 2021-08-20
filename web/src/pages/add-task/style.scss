@@ -3,7 +3,8 @@
     min-height: 30px;
   }
   .lazyload-list {
-    min-height: 350px;
+    max-height: 400px;
+    overflow: auto;
   }
   .ant-spin-nested-loading {
     align-items: center;
