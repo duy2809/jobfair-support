@@ -75,7 +75,6 @@ export default function TaskList() {
   const deletetpl = async () => {
     await deleteTptt(idTplt).then((response) => {
       console.log(response.data)
-      saveNotification()
       router.push('/template-tasts')
     }).catch((error) => {
       console.log(error)
@@ -88,6 +87,7 @@ export default function TaskList() {
       content: '',
       onOk: () => {
         deletetpl()
+        saveNotification()
       },
       onCancel: () => {},
       centered: true,

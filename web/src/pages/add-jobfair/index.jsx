@@ -351,7 +351,7 @@ const index = () => {
 
                     </Form.Item>
 
-                    <span id="error-msg" className="text-red-600" hidden>この名前はすでに存在します</span>
+                    <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
                   </Form.Item>
                   {/* start date */}
                   <Form.Item

@@ -54,19 +54,15 @@ Route::get('/admins', 'AdminController@index');
 
 Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-
-// Route::get('/milestone', 'TemplateMilestoneController@getList');
-
-// Route::get('/milestone', 'TemplateMilestoneController@index');
-
-// Route::get('/milestone/delete/{id}', 'TemplateMilestoneController@destroyMilestone');
-
+//milestone controller
+Route::get('/milestones/{id}/list', 'MilestoneController@getInfoMilestones');
 //member
 
 Route::prefix('member')->group(function () {
     Route::get('/', 'MemberController@index');
     Route::get('/{id}', 'MemberController@showMember');
     Route::patch('/{id}/update', 'MemberController@update');
+    Route::get('/{id}/tasks', 'MemberController@getTaskByID');
 });
 
 // login, logout
@@ -84,7 +80,9 @@ Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
 
-Route::resource('/template-tasks', 'TemplateTaskController');
+Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
+Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
+
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
@@ -127,6 +125,12 @@ Route::get('/notification/delete/{id}', 'NotificationController@destroy');
 Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
 Route::post('/notification/update/{id}', 'NotificationController@update');
 Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+//task
+Route::resource('/task', TaskController::class);
+Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
+Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
+
+
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
