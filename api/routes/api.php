@@ -124,4 +124,5 @@ Route::prefix('/top-page')->group(function () {
 
 // task kanban
 Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
+Route::get('/kanban/{jfId}/{userId}', [TaskController::class, 'getJobfair']);
 Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);

@@ -48,7 +48,7 @@ const Task = (props) => {
             >
               <div style={{ display: '-ms-flexbox', justifyContent: 'start' }}>
                 <div className='text-lg mb-2'>
-                  <a href={`/tasks/${id}`}>{taskName}</a>
+                  <a href={`/task-detail/${id}`}>{taskName}</a>
                 </div>
                 <div
                   style={{

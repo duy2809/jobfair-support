@@ -8,7 +8,7 @@ import { ReactReduxContext } from 'react-redux';
 import JfLayout from '../../layouts/JFLayout';
 import 'antd/dist/antd.css';
 import './style.scss';
-import { getTaskByJfId, updateTask } from '../../api/task-kanban';
+import { getTaskByJfId, updateTask, getJobfair } from '../../api/task-kanban';
 import { columnTask } from './utils/columnTask';
 
 const Column = dynamic(() => import('../../components/kanban/Column'));
@@ -30,6 +30,13 @@ export default function KanBan() {
 
   const currentUserId = store.getState().get('auth').get('user').get('id');
 
+  const getJf = async () => {
+    const { data } = await getJobfair(idJf * 1, currentUserId);
+    if (data.length > 0) {
+      setIsControllable(true);
+    }
+  };
+
   const fetchData = async () => {
     try {
       if (loadingFirst) {
@@ -39,11 +46,13 @@ export default function KanBan() {
       let { data } = await getTaskByJfId(idJf);
       const jobfairName = data[0].jobfairName;
 
-      data.forEach((el) => {
-        if (el.userId === currentUserId) {
-          setIsControllable(true);
-        }
-      });
+      if (!isControllable) {
+        data.forEach((el) => {
+          if (el.userId === currentUserId) {
+            setIsControllable(true);
+          }
+        });
+      }
 
       // Auto update task's status when end_time expired
       /// //////////////////////////////////////
@@ -259,6 +268,7 @@ export default function KanBan() {
 
   useEffect(() => {
     localStorage.setItem('id-jf', idJf);
+    getJf();
     fetchData();
   }, []);
 
