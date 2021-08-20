@@ -7,7 +7,12 @@ import {
   CheckCircleTwoTone,
 } from '@ant-design/icons'
 import JfLayout from '../../layouts/JFLayout'
-import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
+import {
+  taskData,
+  beforeTask,
+  afterTask,
+  deleteTask,
+} from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
 
 export default function TaskList() {
@@ -38,55 +43,65 @@ export default function TaskList() {
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
   const deletetpl = async () => {
-    await deleteTask(idTask).then((response) => {
-      console.log(response.data)
-      router.push('/tasks/1')
-    }).catch((error) => {
-      console.log(error)
-    })
+    await deleteTask(idTask)
+      .then((response) => {
+        console.log(response.data)
+        router.push('/tasks/1')
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const getDataUser = async () => {
-    await webInit().then((response) => {
-      setUser(response.data.auth.user.role)
-      console.log(response.data.auth.user.name)
-    }).catch((error) => {
-      console.log(error)
-    })
+    await webInit()
+      .then((response) => {
+        setUser(response.data.auth.user.role)
+        console.log(response.data.auth.user.name)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const fetchTaskData = async () => {
-    await taskData(idTask).then((response) => {
-      setInfoTask({
-        name: response.data.name,
-        categories: response.data.categories[0].category_name,
-        milestone: response.data.milestone.name,
-        status: response.data.status,
-        start_time: response.data.start_time,
-        end_time: response.data.end_time,
-        effort: response.data.template_task.effort,
-        is_day: response.data.template_task.is_day,
-        unit: response.data.template_task.unit,
-        description_of_detail: response.data.description_of_detail,
+    await taskData(idTask)
+      .then((response) => {
+        setInfoTask({
+          name: response.data.name,
+          categories: response.data.categories[0].category_name,
+          milestone: response.data.milestone.name,
+          status: response.data.status,
+          start_time: response.data.start_time,
+          end_time: response.data.end_time,
+          effort: response.data.template_task.effort,
+          is_day: response.data.template_task.is_day,
+          unit: response.data.template_task.unit,
+          description_of_detail: response.data.description_of_detail,
+        })
+        setListMemberAssignee(response.data.users)
       })
-      setListMemberAssignee(response.data.users)
-    }).catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask).then((response) => {
-      setBeforeTask(response.data.before_tasks)
-    }).catch((error) => {
-      console.log(error)
-    })
+    await beforeTask(idTask)
+      .then((response) => {
+        setBeforeTask(response.data.before_tasks)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const fetchafterTask = async () => {
-    await afterTask(idTask).then((response) => {
-      setAfterTasks(response.data.after_tasks)
-    }).catch((error) => {
-      console.log(error)
-    })
+    await afterTask(idTask)
+      .then((response) => {
+        setAfterTasks(response.data.after_tasks)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const modelDelete = () => {
     Modal.confirm({
@@ -131,7 +146,7 @@ export default function TaskList() {
                 </Button>
               </div>
               <div className="button__right">
-                {user === 'admin' ? (
+                {user === 'admin' || user === 'superadmin' ? (
                   <>
                     <Button
                       style={{ border: 'none' }}
@@ -192,7 +207,9 @@ export default function TaskList() {
                     </div>
                     <div className="col-span-2 mx-4">
                       <span className="ef">{infoTask.effort}</span>
-                      <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                      <span className="ef">
+                        {infoTask.is_day ? '日' : '時間'}
+                      </span>
                       <span>/</span>
                       <span className="ef">{infoTask.unit}</span>
                     </div>
@@ -205,11 +222,11 @@ export default function TaskList() {
                     </div>
                     <div className="col-span-2 mx-4">
                       <ul className="list__member">
-                        {listMemberAssignee ? listMemberAssignee.map((item) => (
-                          <li className="task__chil">
-                            {`${item.name},`}
-                          </li>
-                        )) : null }
+                        {listMemberAssignee
+                          ? listMemberAssignee.map((item) => (
+                            <li className="task__chil">{`${item.name},`}</li>
+                          ))
+                          : null}
                       </ul>
                     </div>
                   </div>
@@ -220,11 +237,52 @@ export default function TaskList() {
                       <p>ステータス:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      {infoTask.status === '未着手' ? (<span style={{ background: '#5EB5A6', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
-                      {infoTask.status === '進行中' ? (<span style={{ background: '#A1AF2F', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
-                      {infoTask.status === '完了' ? (<span style={{ background: '#4488C5', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
-                      {infoTask.status === '中断' ? (<span style={{ background: 'rgb(185, 86, 86)', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
-                      {infoTask.status === '未完了' ? (<span style={{ background: 'rgb(121, 86, 23)', color: '#fff' }} className=" stt item__right">{infoTask.status}</span>) : null}
+                      {infoTask.status === '未着手' ? (
+                        <span
+                          style={{ background: '#5EB5A6', color: '#fff' }}
+                          className=" stt item__right"
+                        >
+                          {infoTask.status}
+                        </span>
+                      ) : null}
+                      {infoTask.status === '進行中' ? (
+                        <span
+                          style={{ background: '#A1AF2F', color: '#fff' }}
+                          className=" stt item__right"
+                        >
+                          {infoTask.status}
+                        </span>
+                      ) : null}
+                      {infoTask.status === '完了' ? (
+                        <span
+                          style={{ background: '#4488C5', color: '#fff' }}
+                          className=" stt item__right"
+                        >
+                          {infoTask.status}
+                        </span>
+                      ) : null}
+                      {infoTask.status === '中断' ? (
+                        <span
+                          style={{
+                            background: 'rgb(185, 86, 86)',
+                            color: '#fff',
+                          }}
+                          className=" stt item__right"
+                        >
+                          {infoTask.status}
+                        </span>
+                      ) : null}
+                      {infoTask.status === '未完了' ? (
+                        <span
+                          style={{
+                            background: 'rgb(121, 86, 23)',
+                            color: '#fff',
+                          }}
+                          className=" stt item__right"
+                        >
+                          {infoTask.status}
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -254,34 +312,47 @@ export default function TaskList() {
                 <div className="rela col-span-1 mx-8">
                   <p className="mb-2">前のタスク </p>
                   <ul className="list__task">
-                    {beforeTasks ? beforeTasks.map((item) => (
-                      <li className="task__chil">
-                        <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
-                          {truncate(item.name)}
-                        </a>
-                      </li>
-                    )) : null }
+                    {beforeTasks
+                      ? beforeTasks.map((item) => (
+                        <li className="task__chil">
+                          <a
+                            href={`/tasks/${item.id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {truncate(item.name)}
+                          </a>
+                        </li>
+                      ))
+                      : null}
                   </ul>
                 </div>
                 <div className="rela col-span-1 mx-8">
                   <p className="mb-2">次のタスク</p>
                   <ul className="list__task">
-                    {afterTasks ? afterTasks.map((item) => (
-                      <li>
-                        <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
-                          {truncate(item.name)}
-                        </a>
-                      </li>
-                    )) : null }
+                    {afterTasks
+                      ? afterTasks.map((item) => (
+                        <li>
+                          <a
+                            href={`/tasks/${item.id}`}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {truncate(item.name)}
+                          </a>
+                        </li>
+                      ))
+                      : null}
                   </ul>
                 </div>
               </div>
 
               <div className="mx-5 mt-5">
-                <div className=" mx-8 des demo-infinite-container">{infoTask.description_of_detail}</div>
+                <div className=" mx-8 des demo-infinite-container">
+                  {infoTask.description_of_detail}
+                </div>
               </div>
             </div>
-
           </div>
         </JfLayout.Main>
       </JfLayout>
