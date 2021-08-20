@@ -5,17 +5,16 @@ import PropTypes from 'prop-types'
 import _get from 'lodash/get'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
+import '../../pages/global.scss'
 
-const { Header, Content } = Layout
-const otherlayout = ({ children }) => {
-  const main = findSlot(otherlayout.Main, children)
+const { Content } = Layout
+const Otherlayout = ({ children }) => {
+  const main = findSlot(Otherlayout.Main, children)
   return (
     <div className="otherlayout">
       <Layout>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}>
-            <Navbar />
-          </Header>
+          <Navbar />
           <Content
             style={{
               margin: '45px 16px',
@@ -31,14 +30,14 @@ const otherlayout = ({ children }) => {
     </div>
   )
 }
-otherlayout.Main = () => null
-otherlayout.propTypes = {
+export default Otherlayout
+Otherlayout.Main = () => null
+Otherlayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node),
   ]),
 }
-otherlayout.defaultProps = {
+Otherlayout.defaultProps = {
   children: [],
 }
-export default otherlayout

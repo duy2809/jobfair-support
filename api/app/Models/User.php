@@ -15,10 +15,13 @@ class User extends Authenticatable
      *
      * @var array
      */
+    public $timestamps = false;
     protected $fillable = [
         'name',
         'email',
         'password',
+        'chatwork_id',
+        'avatar',
     ];
 
     /**
@@ -42,16 +45,21 @@ class User extends Authenticatable
 
     public function schedules()
     {
-        return $this->belongsToMany(Schedule::class);
+        return $this->belongsToMany(Schedule::class, 'list_members');
     }
 
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 
     public function tasks()
     {
-        return $this->belongsToMany(Task::class);
+        return $this->belongsToMany(Task::class, 'assignments');
+    }
+
+    public function categories()
+    {
+        return $this->morphToMany(Category::class, 'categoriable');
     }
 }

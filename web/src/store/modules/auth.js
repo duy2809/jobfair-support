@@ -2,8 +2,7 @@ import { fromJS } from 'immutable'
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { createAction, handleActions } from 'redux-actions'
 import _map from 'lodash/map'
-import { webInit } from '~/api/web-init'
-import { getCookie } from '~/utils/pages'
+import { webInit } from '../../api/web-init'
 
 const initialState = fromJS({
   user: null,
@@ -22,10 +21,8 @@ export const loadSuccess = createAction(LOAD_SUCCESS)
 // Sagas
 function* init(action) {
   const response = yield call(webInit)
-  const xsrf = getCookie(response.headers['set-cookie'], 'XSRF-TOKEN')
   const { res } = action.payload
-  res.cookie('XSRF-TOKEN', xsrf, {})
-
+  res.setHeader('set-cookie', response.headers['set-cookie'])
   try {
     const { user } = response.data.auth
     yield put(loadSuccess(user))

@@ -18,11 +18,11 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('avatar');
+            $table->string('avatar')->default('/images/avatar/default.png');
             $table->unsignedTinyInteger('role');
-            $table->unsignedInteger('number_of_record');
-            $table->string('chatwork_id');
-            $table->unsignedInteger('phone_number');
+            $table->string('chatwork_id')->nullable();
+            $table->dateTime('created_at');
+            $table->dateTime('updated_at');
         });
     }
 
