@@ -6,6 +6,7 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
@@ -72,17 +73,11 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
-Route::resource('/jf-list', JFListController::class);
-Route::get('/jf-list', 'JFListController@index');
-Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
-
-Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
-Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
-
+Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
@@ -138,3 +133,8 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
+
+// task kanban
+Route::get('/kanban/{id}', [TaskController::class, 'getTaskByJfId']);
+Route::get('/kanban/{jfId}/{userId}', [TaskController::class, 'getJobfair']);
+Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
