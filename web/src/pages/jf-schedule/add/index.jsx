@@ -11,25 +11,21 @@ import {
   Col,
   Modal,
 } from 'antd';
-import List from '../../../../components/jf-schedule-edit-list';
+import List from '../../../components/jf-schedule-edit-list';
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons';
 import Layout from '~/layouts/OtherLayout';
 import _ from 'lodash';
 import './styles.scss';
 import {
   getMilestonesList,
-  getSchedule,
   getTemplateTaskList,
-  getAddedMilestonesList,
-  getAddedTemplateTaskList,
   postCheckExistName,
-  putData,
-} from '../../../../api/jf-schedule';
+  postData,
+} from '../../../api/jf-schedule';
 
 function editJobfairSchedule() {
   const [form] = Form.useForm();
   const router = useRouter();
-  const [beforeEditName, setbeforeEditName] = useState('');
   const [milestonesList, setMilestonesList] = useState([]);
   const [templateTaskList, setTemplateTaskList] = useState([]);
   const [addedMilestonesList, setAddedMilestonesList] = useState([]);
@@ -38,18 +34,6 @@ function editJobfairSchedule() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(async () => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname);
-    const id = `${temp[1]}`;
-
-    await getSchedule(id)
-      .then(({ data }) => {
-        setbeforeEditName(data.name);
-        setNameInput(data.name);
-        form.setFieldsValue({
-          jfschedule_name: data.name,
-        });
-      })
-      .catch((err) => console.error(err));
     await getMilestonesList()
       .then(({ data }) => {
         setMilestonesList(data);
@@ -58,27 +42,6 @@ function editJobfairSchedule() {
     await getTemplateTaskList()
       .then(({ data }) => {
         setTemplateTaskList(data);
-      })
-      .catch((err) => console.error(err));
-    await getAddedMilestonesList(id)
-      .then(({ data }) => {
-        let arr = [];
-        data.forEach((item) => {
-          arr.push(item.id);
-        });
-        setAddedMilestonesList(arr);
-        form.setFieldsValue({
-          milestone_select: arr,
-        });
-      })
-      .catch((err) => console.error(err));
-    await getAddedTemplateTaskList(id)
-      .then(({ data }) => {
-        let arr = [];
-        data.forEach((item) => {
-          arr.push(item.id);
-        });
-        setAddedTemplateTaskList(arr);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -101,8 +64,6 @@ function editJobfairSchedule() {
   });
 
   const onFinish = async () => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname);
-    const id = `${temp[1]}`;
     const dataSend = {
       schedule: {
         name: nameInput,
@@ -111,26 +72,24 @@ function editJobfairSchedule() {
       addedTemplateTasks: addedTemplateTaskList,
     };
     console.log(dataSend);
-    if (nameInput !== beforeEditName) {
-      await postCheckExistName(dataSend)
-        .then(async ({ data }) => {
-          console.log(data);
-          if (data === 'exist') {
-            openNotification('error', 'このJFスケジュール名は存在しています。');
-          } else {
-            await putData(id, dataSend)
-              .then((res) => {
-                if (res.status === 200)
-                  openNotification('success', '変更は正常に保存されました。');
-                setTimeout(() => {
-                  router.push(`/jf-schedule/${id}`);
-                }, 2500);
-              })
-              .catch((err) => console.log(err));
-          }
-        })
-        .catch((err) => console.log(err));
-    }
+    await postCheckExistName(dataSend)
+      .then(async ({ data }) => {
+        console.log(data);
+        if (data === 'exist') {
+          openNotification('error', 'このJFスケジュール名は存在しています。');
+        } else {
+          await postData(dataSend)
+            .then((res) => {
+              if (res.status === 200)
+                openNotification('success', '変更は正常に保存されました。');
+              setTimeout(() => {
+                router.push(`/jf-schedule/${id}`);
+              }, 2500);
+            })
+            .catch((err) => console.log(err));
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -167,7 +126,7 @@ function editJobfairSchedule() {
   const selectMilestoneProps = {
     mode: 'multiple',
     optionFilterProp: 'label',
-    // value: addedMilestonesList,
+    value: addedMilestonesList,
     options: milestonesOptions,
     onChange: (newValue) => {
       setAddedMilestonesList(newValue);
@@ -190,21 +149,19 @@ function editJobfairSchedule() {
       name: nameInput,
     };
     console.log(dataSend);
-    if (nameInput !== beforeEditName) {
-      await postCheckExistName(dataSend)
-        .then(({ data }) => {
-          console.log(data);
-          if (data === 'exist') {
-            form.setFields([
-              {
-                name: 'jfschedule_name',
-                errors: ['このJFスケジュール名は存在しています。'],
-              },
-            ]);
-          }
-        })
-        .catch((err) => console.log(err));
-    }
+    await postCheckExistName(dataSend)
+      .then(({ data }) => {
+        console.log(data);
+        if (data === 'exist') {
+          form.setFields([
+            {
+              name: 'jfschedule_name',
+              errors: ['このJFスケジュール名は存在しています。'],
+            },
+          ]);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
