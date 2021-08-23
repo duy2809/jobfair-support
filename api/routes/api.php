@@ -105,4 +105,5 @@ Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
 Route::resource('/file', FileController::class);
-Route::get('/file', [FileController::class, 'search']);
+Route::get('/file/find', [FileController::class, 'search']);
+Route::get('/file/getLatest', [FileController::class, 'Latest']);

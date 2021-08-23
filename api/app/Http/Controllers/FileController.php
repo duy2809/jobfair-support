@@ -25,6 +25,11 @@ class FileController extends Controller
         return response()->json($data);
     }
 
+    public function Latest()
+    {
+        return Document::orderBy('document.updated_at', 'desc')
+        ->take(10);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -43,17 +48,11 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
+        Validator::make($request, ['name', Rule::unique('documents')->where('preFolderID', $request->preFolderId)]);
         if($request->is_file === true)
         {
             $rules = [
-                'name' => 'required',
                 'link' => 'required',
-            ];
-            $validator = Validator::make($request->all(), $rules);
-            $validator->validate();
-        } else {
-            $rules = [
-                'name' => 'required',
             ];
             $validator = Validator::make($request->all(), $rules);
             $validator->validate();
@@ -63,12 +62,17 @@ class FileController extends Controller
     }
 
     /**
-     * Display files and folder in specified folder.
+     * Display the specified resource.
      *
      * @param  int  $pervious folder id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
+    {
+        return Document::find($id);
+    }
+    //  Display files and folder in specified folder.
+    public function getPath($id)
     {
         $data = DB::table('documents')
         ->select('*')
@@ -114,7 +118,17 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        Validator::make($request, ['name', Rule::unique('documents')->where('preFolderID', $request->preFolderId)]);
+        if($request->is_file === true)
+        {
+            $rules = [
+                'link' => 'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            $validator->validate();
+        }
+
+        return Category::find($id)->update($request->all());
     }
 
     /**
