@@ -41,13 +41,13 @@ function index() {
     const fetchAPI = async () => {
       try {
         // TODO: optimize this one by using axios.{all,spread}
-        const jobfairInfo = await addTaskAPI.getJobfair(router.query.id)
+        const info = await addTaskAPI.getJobfair(router.query.id)
         const categories = await addTaskAPI.getCategories()
         const milestones = await addTaskAPI.getMilestones()
         const tasks = await addTaskAPI.getAllTemplateTasks()
         setlistCatergories((categories.data))
         setlistMilestones(Array.from(milestones.data))
-        setJobfair((jobfairInfo.data))
+        setJobfair((info.data))
         // settemplateTasks(Array.from(tasks.data))
         addDataOfTable(tasks)
         setloading(false)
@@ -163,21 +163,24 @@ function index() {
     })
   }
   const addTask = async () => {
-    try {
-      const data = { data: templateTaskSelect }
-      const response = await addTaskAPI.addTasks(jobfair.id, data)
-      console.log(response)
-      if (response.status < 299) {
-        await saveNotification()
-        setRouteLoading(true)
-        // routeTo(`tasks/${jobfair.id}`)
-      } else {
+    if (templateTaskSelect) {
+      try {
+        const data = { data: templateTaskSelect }
+        const response = await addTaskAPI.addTasks(jobfair.id, data)
+        console.log(response)
+        if (response.status < 299) {
+          await saveNotification()
+          setRouteLoading(true)
+          routeTo(`/tasks/${jobfair.id}`)
+        } else {
         // setdisableBtn(false)
+        }
+        return response
+      } catch (error) {
+        return error
       }
-      return response
-    } catch (error) {
-      return error
     }
+    return ''
   }
   const loadingIcon = (
     <LoadingOutlined

@@ -190,6 +190,7 @@ class TaskController extends Controller
 
         return response()->json($afterTasks);
     }
+
     public function getTemplateTaskNotAdd($id)
     {
         $task = Jobfair::with([
