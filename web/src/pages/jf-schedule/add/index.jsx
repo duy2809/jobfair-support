@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import List from '../../../components/jf-schedule-edit-list';
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons';
+import CancelEditJfSechedule from '../../../components/CancelEditJfSechedule';
 import Layout from '~/layouts/OtherLayout';
 import _ from 'lodash';
 import './styles.scss';
@@ -263,8 +264,8 @@ function editJobfairSchedule() {
 
           <Form.Item>
             <div className="mt-5 flex justify-end">
-              <Button className="mr-3">キャンセル</Button>
-              <Button type="primary" htmlType="submit">
+              <CancelEditJfSechedule />
+              <Button type="primary" htmlType="submit" className="ml-3">
                 登録
               </Button>
             </div>
