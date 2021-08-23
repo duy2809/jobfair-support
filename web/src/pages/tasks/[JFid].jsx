@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Input, Empty, Select, Tooltip, Button } from 'antd'
+import { Table, Input, Empty, Select, Tooltip, Button, Tag } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
-import JfLayout from '../../layouts/layout-task'
+import JfLayout from '../../layouts/JFLayout'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { jftask } from '../../api/jf-toppage'
+import { jftask, jfdata } from '../../api/jf-toppage'
 
 function TaskList() {
   const router = useRouter()
@@ -24,6 +24,7 @@ function TaskList() {
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
+  const [JF, setJF] = useState([])
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -175,6 +176,9 @@ function TaskList() {
   useEffect(async () => {
     setLoading(true)
     initPagination()
+    await jfdata(router.query.JFid).then((response) => {
+      setJF(response.data)
+    })
     await jftask(router.query.JFid).then((response) => {
       addDataOfTable(response)
     })
@@ -251,7 +255,7 @@ function TaskList() {
     setActive(arr)
   }
   return (
-    <JfLayout id={router.query.JFid}>
+    <JfLayout>
       <JfLayout.Main>
         <div className="TaskList">
           <div className="container space-y-2 justify-center">
@@ -259,7 +263,13 @@ function TaskList() {
               <div className="flex-col space-y-9">
                 <div className="flex items-center space-x-2">
                   <h1 className="text-3xl float-left">タスクー覧</h1>
-
+                  <h1>
+                    <Tag color="#55acee">
+                      JF:
+                      {' '}
+                      {JF.name}
+                    </Tag>
+                  </h1>
                 </div>
                 <div className={showFilter ? 'space-y-3' : 'space-y-0'}>
                   <div className="flex items-center justify-between">
