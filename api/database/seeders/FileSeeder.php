@@ -26,7 +26,7 @@ class FileSeeder extends Seeder
             '/abc/aaa',
         ];
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             DB::table('documents')->insert([
                 'document_type' => $faker->randomElement($poly),
                 'document_id' => $i + 1,
