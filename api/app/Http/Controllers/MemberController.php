@@ -50,4 +50,9 @@ class MemberController extends Controller
 
         return $user->save();
     }
+
+    public function getTaskByID(Request $request, $id)
+    {
+        return User::findOrFail($id)->tasks;
+    }
 }

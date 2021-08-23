@@ -481,5 +481,5 @@ const index = () => {
     </OtherLayout>
   )
 }
-index.middleware = ['auth:admin']
+index.middleware = ['auth:superadmin', 'auth:admin']
 export default index
