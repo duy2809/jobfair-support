@@ -14,7 +14,7 @@ import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import List from '../../../../components/jf-schedule-edit-list'
 import Layout from '../../../../layouts/OtherLayout'
-import CancelEditJfSechedule from '../../../../components/CancelEditJfSechedule'
+import CancelBtn from '../../../../components/jf-schedule-cancel-button'
 import './styles.scss'
 import {
   getMilestonesList,
@@ -296,7 +296,7 @@ function editJobfairSchedule() {
 
           <Form.Item>
             <div className="mt-5 flex justify-end">
-              <CancelEditJfSechedule />
+              <CancelBtn />
               <Button type="primary" htmlType="submit" className="ml-3">
                 保存
               </Button>
@@ -308,4 +308,5 @@ function editJobfairSchedule() {
   )
 }
 
+editJobfairSchedule.middleware = ['auth:superadmin']
 export default editJobfairSchedule

@@ -13,7 +13,7 @@ import {
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import List from '../../../components/jf-schedule-edit-list'
-import CancelEditJfSechedule from '../../../components/CancelEditJfSechedule'
+import CancelBtn from '../../../components/jf-schedule-cancel-button'
 import Layout from '../../../layouts/OtherLayout'
 import './styles.scss'
 import {
@@ -23,7 +23,7 @@ import {
   postData,
 } from '../../../api/jf-schedule'
 
-function editJobfairSchedule() {
+function addJobfairSchedule() {
   const [form] = Form.useForm()
   const router = useRouter()
   const [milestonesList, setMilestonesList] = useState([])
@@ -244,7 +244,7 @@ function editJobfairSchedule() {
 
           <Form.Item>
             <div className="mt-5 flex justify-end">
-              <CancelEditJfSechedule />
+              <CancelBtn />
               <Button type="primary" htmlType="submit" className="ml-3">
                 登録
               </Button>
@@ -256,4 +256,5 @@ function editJobfairSchedule() {
   )
 }
 
-export default editJobfairSchedule
+addJobfairSchedule.middleware = ['auth:superadmin']
+export default addJobfairSchedule

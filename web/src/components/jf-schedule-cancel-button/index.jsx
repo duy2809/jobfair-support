@@ -1,7 +1,8 @@
 import { Modal, Button } from 'antd'
 import React from 'react'
+import './styles.scss'
 
-class CancelEditJfSechedule extends React.Component {
+class JfScheduleCancelButton extends React.Component {
   state = {
     visible: false,
   };
@@ -13,7 +14,7 @@ class CancelEditJfSechedule extends React.Component {
   };
 
   handleOk = () => {
-    window.location.href = '/jf-schedule'
+    window.location.href = '/schedule'
     this.setState({ visible: false })
   };
 
@@ -48,4 +49,4 @@ class CancelEditJfSechedule extends React.Component {
     )
   }
 }
-export default CancelEditJfSechedule
+export default JfScheduleCancelButton
