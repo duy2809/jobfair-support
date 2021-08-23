@@ -74,7 +74,9 @@ Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
 
-Route::resource('/template-tasks', 'TemplateTaskController');
+Route::post('/template-tasks', [TemplateTaskController::class, 'store']);
+Route::get('/template-tasks', [TemplateTaskController::class, 'index']);
+
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
