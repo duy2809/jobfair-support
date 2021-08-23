@@ -143,9 +143,11 @@ const EditMilestonePage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p>
+          {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p> */}
+          <h1 className="title">
+            マイルストーン編集
+          </h1>
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
-
             <Form
               form={form}
               name="basic"
@@ -160,7 +162,7 @@ const EditMilestonePage = () => {
             >
               <Form.Item
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>マイルストーン名</p>
+                  <p style={{ margin: 0 }}>マイルストーン名</p>
                 }
                 name="name"
                 rules={[
@@ -192,7 +194,7 @@ const EditMilestonePage = () => {
 
               <Form.Item
                 label={
-                  <p style={{ color: '#2d334a', fontSize: '18px', margin: 0 }}>期日</p>
+                  <p style={{ margin: 0 }}>期日</p>
                 }
                 name="time"
                 rules={[

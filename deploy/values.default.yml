@@ -72,6 +72,14 @@ config:
   queue:
     connection: redis
 
+  mail:
+    mailer: smtp
+    host: smtp.mailtrap.io
+    port: 2525
+    username:
+    password:
+    encryption: tls
+
 extra_env_vars: {}
 
 php: {}

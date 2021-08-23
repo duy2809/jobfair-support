@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Milestone;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -60,6 +61,22 @@ class MilestoneController extends Controller
         $validator->validate();
 
         return Milestone::find($id);
+    }
+
+    //use to get milestone with tasks
+    public function getInfoMilestones($id)
+    {
+        $schedule = Schedule::find($id);
+
+        return $schedule->milestones->map(function ($milestone) {
+            $templateTasksOfMilestone = $milestone->templateTasks;
+            $milestone['tasks'] = $templateTasksOfMilestone;
+            $templateTasksOfMilestone->map(function ($task) {
+                return $task->categories;
+            });
+
+            return $milestone;
+        });
     }
 
     /**
