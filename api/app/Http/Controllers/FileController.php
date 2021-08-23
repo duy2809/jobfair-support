@@ -19,7 +19,7 @@ class FileController extends Controller
         $data = DB::table('documents')
         ->select('*')
         ->where('path','/')
-        ->orderBy('documents.updated_at', 'desc')
+        ->orderBy('documents.update_date', 'desc')
         ->get();
 
         return response()->json($data);
@@ -27,7 +27,7 @@ class FileController extends Controller
 
     public function Latest()
     {
-        return Document::orderBy('document.updated_at', 'desc')
+        return Document::orderBy('document.update_date', 'desc')
         ->take(10);
     }
     /**
@@ -77,7 +77,7 @@ class FileController extends Controller
         $data = DB::table('documents')
         ->select('*')
         ->where('path', $path)
-        ->orderBy('documents.updated_at', 'desc')
+        ->orderBy('documents.update_date', 'desc')
         ->get();
 
         return response()->json($data);
@@ -122,7 +122,7 @@ class FileController extends Controller
         return DB::table('documents')
         ->select('*')
         ->where('path', $path)
-        ->orderBy('documents.updated_at', 'desc')
+        ->orderBy('documents.update_date', 'desc')
         ->get();
     }
 

@@ -108,9 +108,9 @@ Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
-Route::resource('/file', FileController::class);
-Route::get('/file/find', [FileController::class, 'search']);
-Route::get('/file/getLatest', [FileController::class, 'Latest']);
+Route::resource('/file', 'FileController');
+Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
+Route::get('/file/getLatest', [App\Http\Controllers\FileController::class, 'Latest']);
 //member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
