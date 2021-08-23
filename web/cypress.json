@@ -1,3 +1,19 @@
 {
-  "baseUrl": "http://jobfair.local:8000"
+  "baseUrl": "http://jobfair.local:8000",
+  "env": {
+    "roles": {
+      "superadmin": {
+        "email": "buckridge.ima@example.org",
+        "password": "12345678"
+      },
+      "admin": {
+        "email": "lgrady@example.net",
+        "password": "12345678"
+      },
+      "member": {
+        "email": "daniel.weston@example.org",
+        "password": "12345678"
+      }
+    }
+  }
 }

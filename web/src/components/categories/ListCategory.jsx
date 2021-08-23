@@ -2,10 +2,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
 import React, { useContext, useEffect, useState } from 'react'
+import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
 
 import { Input, Space, Table, Row, Col, Select } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
@@ -13,29 +14,27 @@ import { getCategories, searchCategory } from '../../api/category'
 
 export default function ListCategories() {
   const [pageS, setPageS] = useState(10)
-  // const [sdata, setSdata] = useState([])
+  const { store } = useContext(ReactReduxContext)
   const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
-  const { Search } = Input
   const [searchValue, setSearchValue] = useState('')
+  const [user, setUser] = useState(store.getState().get('auth').get('user'))
+  const [role, setRole] = useState(user.get('role'))
 
   // fetch data
   useEffect(async () => {
     setReload(false)
     getCategories().then((res) => {
       setCategory(res.data)
-      // console.log(res.data)
-      // console.log(category)
     }).catch((error) => console.log(error.response.request.response))
   }, [reload])
+
   // search data with key
   async function fetch(key) {
     if (key) {
       searchCategory(key).then((res) => {
         const result = Object.values(res.data)
         setCategory(result)
-        console.log('res:', result)
-        console.log(res)
       })
     } else {
       setReload(true)
@@ -61,20 +60,21 @@ export default function ListCategories() {
     },
     {
       key: '3',
-      title: 'アクション',
       width: '25%',
-      render: (record) => (
+      render: (record) => (role === 'superadmin' && (
         <Space size="middle">
           <EditCategory
             record={record}
             reloadPage={reloadPage}
+            role={role}
           />
           <DeleteCategory
             record={record}
             reloadPage={reloadPage}
+            role={role}
           />
         </Space>
-      ),
+      )),
     },
   ]
 
@@ -97,7 +97,8 @@ export default function ListCategories() {
         </Col>
         <Col>
           <div className="add">
-            <AddCategory reloadPage={reloadPage} />
+            {role === 'superadmin' && (
+              <AddCategory reloadPage={reloadPage} role={role} />)}
           </div>
         </Col>
       </Row>
@@ -120,7 +121,7 @@ export default function ListCategories() {
             </Select>
           </p>
           <p>
-            <div className="absolute right-12">
+            <div className="absolute right-12 no-border">
               <Space direction="vertical">
                 <Input
                   placeholder="カテゴリを検索"
