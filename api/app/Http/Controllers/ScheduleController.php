@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Schedule;
 use App\Models\Milestone;
+use App\Models\Schedule;
 use App\Models\TemplateTask;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -45,8 +44,8 @@ class ScheduleController extends Controller
 
     public function store(Request $request)
     {
-        $schedule = new Schedule;
-        $schedule->name = $request->schedule["name"];
+        $schedule = new Schedule();
+        $schedule->name = $request->schedule['name'];
         $schedule->save();
         $schedule->milestones()->attach($request->addedMilestones);
         $schedule->templateTasks()->attach($request->addedTemplateTasks);
@@ -63,24 +62,29 @@ class ScheduleController extends Controller
         return Schedule::findOrFail($id);
     }
 
-    public function getAllMilestones() {
+    public function getAllMilestones()
+    {
         return Milestone::all();
     }
 
-    public function getAllTemplateTasks() {
+    public function getAllTemplateTasks()
+    {
         return TemplateTask::all();
     }
 
-    public function getAddedMilestones($id) {
+    public function getAddedMilestones($id)
+    {
         return Schedule::findOrFail($id)->milestones;
     }
 
-    public function getAddedTemplateTasks($id) {
+    public function getAddedTemplateTasks($id)
+    {
         return Schedule::findOrFail($id)->templateTasks;
     }
 
-    public function checkScheduleNameExist(Request $request) {
-        return count(Schedule::where('name', $request->name)->get()) !== 0 ? "exist" : "not exist";
+    public function checkScheduleNameExist(Request $request)
+    {
+        return count(Schedule::where('name', $request->name)->get()) !== 0 ? 'exist' : 'not exist';
     }
 
     /**
@@ -103,14 +107,14 @@ class ScheduleController extends Controller
     public function update(Request $request, $id)
     {
         $schedule = Schedule::findOrFail($id);
-        $schedule->name = $request->schedule["name"];
+        $schedule->name = $request->schedule['name'];
         $schedule->save();
         $addedMilestones = $request->addedMilestones;
         $addedTemplateTasks = $request->addedTemplateTasks;
         $schedule->templateTasks()->detach();
         $schedule->templateTasks()->attach($addedTemplateTasks);
         $schedule->templateTasks->each(function ($templateTask) use ($schedule, $addedMilestones) {
-            if(!in_array($templateTask->milestone_id, $addedMilestones)) {
+            if (!in_array($templateTask->milestone_id, $addedMilestones)) {
                 $schedule->templateTasks()->detach($templateTask->id);
             }
         });
@@ -144,7 +148,7 @@ class ScheduleController extends Controller
     }
 
     public function getScheduleb($id)
-    {   
+    {
         $schedule = Schedule::where('jobfair_id', '=', $id)->get();
 
         return response()->json([

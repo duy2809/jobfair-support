@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import {
   Button,
   Form,
@@ -9,60 +9,58 @@ import {
   Divider,
   Row,
   Col,
-  Modal,
-} from 'antd';
-import List from '../../../components/jf-schedule-edit-list';
-import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons';
-import CancelEditJfSechedule from '../../../components/CancelEditJfSechedule';
-import Layout from '~/layouts/OtherLayout';
-import _ from 'lodash';
-import './styles.scss';
+} from 'antd'
+import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
+import _ from 'lodash'
+import List from '../../../components/jf-schedule-edit-list'
+import CancelEditJfSechedule from '../../../components/CancelEditJfSechedule'
+import Layout from '../../../layouts/OtherLayout'
+import './styles.scss'
 import {
   getMilestonesList,
   getTemplateTaskList,
   postCheckExistName,
   postData,
-} from '../../../api/jf-schedule';
+} from '../../../api/jf-schedule'
 
 function editJobfairSchedule() {
-  const [form] = Form.useForm();
-  const router = useRouter();
-  const [milestonesList, setMilestonesList] = useState([]);
-  const [templateTaskList, setTemplateTaskList] = useState([]);
-  const [addedMilestonesList, setAddedMilestonesList] = useState([]);
-  const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([]);
-  const [nameInput, setNameInput] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [form] = Form.useForm()
+  const router = useRouter()
+  const [milestonesList, setMilestonesList] = useState([])
+  const [templateTaskList, setTemplateTaskList] = useState([])
+  const [addedMilestonesList, setAddedMilestonesList] = useState([])
+  const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([])
+  const [nameInput, setNameInput] = useState('')
 
   useEffect(async () => {
     await getMilestonesList()
       .then(({ data }) => {
-        setMilestonesList(data);
+        setMilestonesList(data)
       })
-      .catch((err) => console.error(err));
+      .catch()
     await getTemplateTaskList()
       .then(({ data }) => {
-        setTemplateTaskList(data);
+        setTemplateTaskList(data)
       })
-      .catch((err) => console.error(err));
-  }, []);
+      .catch()
+  }, [])
 
   const openNotification = (type, message, description) => {
     notification[type]({
       message,
       description,
       duration: 2.5,
-    });
-  };
+    })
+  }
 
-  const milestonesOptions = [];
+  const milestonesOptions = []
   milestonesList.forEach((item) => {
-    let value = item.id;
+    const value = item.id
     milestonesOptions.push({
       label: item.name,
       value,
-    });
-  });
+    })
+  })
 
   const onFinish = async () => {
     const dataSend = {
@@ -71,58 +69,49 @@ function editJobfairSchedule() {
       },
       addedMilestones: addedMilestonesList,
       addedTemplateTasks: addedTemplateTaskList,
-    };
-    console.log(dataSend);
+    }
     await postCheckExistName(dataSend)
       .then(async ({ data }) => {
-        console.log(data);
         if (data === 'exist') {
-          openNotification('error', 'このJFスケジュール名は存在しています。');
+          openNotification('error', 'このJFスケジュール名は存在しています。')
         } else {
           await postData(dataSend)
             .then((res) => {
-              if (res.status === 200)
-                openNotification('success', '変更は正常に保存されました。');
+              if (res.status === 200) openNotification('success', '変更は正常に保存されました。')
               setTimeout(() => {
-                router.push(`/jf-schedule`);
-              }, 2500);
+                router.push('/schedule')
+              }, 2500)
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
         }
       })
-      .catch((err) => console.log(err));
-  };
+      .catch((err) => console.log(err))
+  }
 
   const onFinishFailed = (errorInfo) => {
-    const { errorFields } = errorInfo;
+    const { errorFields } = errorInfo
     errorFields.forEach((itemError) => {
-      itemError.errors.forEach((error) => openNotification('error', error));
-    });
-  };
+      itemError.errors.forEach((error) => openNotification('error', error))
+    })
+  }
 
   const onDeleteTemplateTask = (id) => {
-    console.log(`Delete template task id:${id}`);
-    const newState = _.filter(addedTemplateTaskList, (item) => item !== id);
-    console.log(newState);
-    setAddedTemplateTaskList(newState);
-  };
+    const newState = _.filter(addedTemplateTaskList, (item) => item !== id)
+    setAddedTemplateTaskList(newState)
+  }
 
   const onDeleteMilestone = (id) => {
-    console.log(`Delete milestone id:${id}`);
-    const newState = _.filter(addedMilestonesList, (item) => item !== id);
-    console.log(newState);
-    setAddedMilestonesList(newState);
+    const newState = _.filter(addedMilestonesList, (item) => item !== id)
+    setAddedMilestonesList(newState)
     form.setFieldsValue({
       milestone_select: newState,
-    });
-  };
+    })
+  }
 
   const onAddTemplateTask = (id) => {
-    console.log(`Add template task id:${id}`);
-    let newState = [...addedTemplateTaskList, id];
-    console.log(newState);
-    setAddedTemplateTaskList(newState);
-  };
+    const newState = [...addedTemplateTaskList, id]
+    setAddedTemplateTaskList(newState)
+  }
 
   const selectMilestoneProps = {
     mode: 'multiple',
@@ -130,40 +119,36 @@ function editJobfairSchedule() {
     value: addedMilestonesList,
     options: milestonesOptions,
     onChange: (newValue) => {
-      setAddedMilestonesList(newValue);
+      setAddedMilestonesList(newValue)
     },
     placeholder: 'マイルストーンを入力してください。',
     maxTagCount: 'responsive',
     showArrow: true,
-  };
+  }
 
   const onValueNameChange = (e) => {
-    setNameInput(e.target.value);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+    setNameInput(e.target.value)
+  }
 
   const onBlur = async () => {
     const dataSend = {
       name: nameInput,
-    };
-    console.log(dataSend);
+    }
     await postCheckExistName(dataSend)
       .then(({ data }) => {
-        console.log(data);
         if (data === 'exist') {
           form.setFields([
             {
               name: 'jfschedule_name',
               errors: ['このJFスケジュール名は存在しています。'],
             },
-          ]);
+          ])
         }
       })
-      .catch((err) => console.log(err));
-  };
+      .catch((err) => console.log(err))
+  }
+
+  const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
 
   return (
     <Layout>
@@ -177,16 +162,16 @@ function editJobfairSchedule() {
           name="edit-jfschedule"
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          requiredMark={'optional'}
+          requiredMark="optional"
         >
           <div className="w-1/2">
             <Form.Item
-              label={
+              label={(
                 <div className="flex items-center justify-between">
                   <ScheduleOutlined style={{ fontSize: '32px' }} />
                   <span className="ml-2">JFスケジュール名</span>
                 </div>
-              }
+              )}
               name="jfschedule_name"
               rules={[
                 {
@@ -202,12 +187,12 @@ function editJobfairSchedule() {
               />
             </Form.Item>
             <Form.Item
-              label={
+              label={(
                 <div className="flex items-center w-full">
                   <FlagOutlined style={{ fontSize: '32px' }} />
                   <span className="ml-2">マイルストーン</span>
                 </div>
-              }
+              )}
               name="milestone_select"
               rules={[
                 {
@@ -221,44 +206,39 @@ function editJobfairSchedule() {
           </div>
           <Divider />
           <Row gutter={[24, 24]}>
-            {milestonesList.map((milestone) => {
-              if (addedMilestonesList.includes(milestone.id)) {
-                const templateTaskChildernList = _.filter(templateTaskList, {
-                  milestone_id: milestone.id,
-                });
-                const templateTaskOptions = [];
-                templateTaskChildernList.forEach((item) => {
-                  let value = item.id;
-                  templateTaskOptions.push({
-                    label: item.name,
-                    value,
-                  });
-                });
-                const addedTemplateTaskChildernList = [];
-                templateTaskChildernList.forEach((item) => {
-                  if (_.includes(addedTemplateTaskList, item.id)) {
-                    addedTemplateTaskChildernList.push(item.id);
-                  }
-                });
-
-                return (
-                  <Col span={12} key={milestone.id}>
-                    <List
-                      milestone={milestone}
-                      templateTaskChildernList={templateTaskChildernList}
-                      addedTemplateTaskChildernList={
-                        addedTemplateTaskChildernList
-                      }
-                      templateTaskOptions={templateTaskOptions}
-                      onDeleteTemplateTask={onDeleteTemplateTask}
-                      onDeleteMilestone={onDeleteMilestone}
-                      onAddTemplateTask={onAddTemplateTask}
-                      selectName={`template_task_select_${milestone.id}`}
-                      form={form}
-                    />
-                  </Col>
-                );
-              }
+            {dataList.map((milestone) => {
+              const templateTaskChildernList = _.filter(templateTaskList, {
+                milestone_id: milestone.id,
+              })
+              const templateTaskOptions = []
+              templateTaskChildernList.forEach((item) => {
+                const value = item.id
+                templateTaskOptions.push({
+                  label: item.name,
+                  value,
+                })
+              })
+              const addedTemplateTaskChildernList = []
+              templateTaskChildernList.forEach((item) => {
+                if (_.includes(addedTemplateTaskList, item.id)) {
+                  addedTemplateTaskChildernList.push(item.id)
+                }
+              })
+              return (
+                <Col span={12} key={milestone.id}>
+                  <List
+                    milestone={milestone}
+                    templateTaskChildernList={templateTaskChildernList}
+                    addedTemplateTaskChildernList={addedTemplateTaskChildernList}
+                    templateTaskOptions={templateTaskOptions}
+                    onDeleteTemplateTask={onDeleteTemplateTask}
+                    onDeleteMilestone={onDeleteMilestone}
+                    onAddTemplateTask={onAddTemplateTask}
+                    selectName={`template_task_select_${milestone.id}`}
+                    form={form}
+                  />
+                </Col>
+              )
             })}
           </Row>
 
@@ -273,7 +253,7 @@ function editJobfairSchedule() {
         </Form>
       </Layout.Main>
     </Layout>
-  );
+  )
 }
 
-export default editJobfairSchedule;
+export default editJobfairSchedule

@@ -1,5 +1,5 @@
-import { Modal, Button } from 'antd';
-import React from 'react';
+import { Modal, Button } from 'antd'
+import React from 'react'
 
 class CancelEditJfSechedule extends React.Component {
   state = {
@@ -9,20 +9,20 @@ class CancelEditJfSechedule extends React.Component {
   showModal = () => {
     this.setState({
       visible: true,
-    });
+    })
   };
 
   handleOk = () => {
-    window.location.href = '/jf-schedule';
-    this.setState({ visible: false });
+    window.location.href = '/jf-schedule'
+    this.setState({ visible: false })
   };
 
   handleCancel = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false })
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible } = this.state
     return (
       <>
         <Button onClick={this.showModal} className="w-32">
@@ -45,7 +45,7 @@ class CancelEditJfSechedule extends React.Component {
           <p>変更内容が保存されません。よろしいですか？</p>
         </Modal>
       </>
-    );
+    )
   }
 }
-export default CancelEditJfSechedule;
+export default CancelEditJfSechedule
