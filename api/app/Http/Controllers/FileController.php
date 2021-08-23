@@ -18,7 +18,7 @@ class FileController extends Controller
     {
         $data = DB::table('documents')
         ->select('*')
-        ->whereNull('preFolderID')
+        ->where('path','/')
         ->orderBy('documents.updated_at', 'desc')
         ->get();
 
@@ -48,7 +48,7 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        Validator::make($request, ['name', Rule::unique('documents')->where('preFolderID', $request->preFolderId)]);
+        Validator::make($request, ['name', Rule::unique('documents')->where('path', $request->path)]);
         if($request->is_file === true)
         {
             $rules = [
@@ -72,11 +72,11 @@ class FileController extends Controller
         return Document::find($id);
     }
     //  Display files and folder in specified folder.
-    public function getPath($id)
+    public function getPath($path)
     {
         $data = DB::table('documents')
         ->select('*')
-        ->where('preFolderID', $id)
+        ->where('path', $path)
         ->orderBy('documents.updated_at', 'desc')
         ->get();
 
@@ -92,23 +92,12 @@ class FileController extends Controller
         {
             $query::whereBetween('update_date', [$request->from,$request->to]);
         }
-        if($request->has('name'))
+        if($request->has('updaterId'))
         {
-            $query::where('name', 'LIKE', "%$request->name%");
+            $query::where('updaterId', 'LIKE', "%$request->updaterId%");
         }
-        return $data->get;
+        return $query->get();
     }
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -118,7 +107,7 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Validator::make($request, ['name', Rule::unique('documents')->where('preFolderID', $request->preFolderId)]);
+        Validator::make($request, ['name', Rule::unique('documents')->where('path', $request->path)]);
         if($request->is_file === true)
         {
             $rules = [
@@ -128,7 +117,13 @@ class FileController extends Controller
             $validator->validate();
         }
 
-        return Category::find($id)->update($request->all());
+        Document::find($id)->update($request->all());
+
+        return DB::table('documents')
+        ->select('*')
+        ->where('path', $path)
+        ->orderBy('documents.updated_at', 'desc')
+        ->get();
     }
 
     /**
@@ -140,5 +135,9 @@ class FileController extends Controller
     public function destroy($id)
     {
         return Document::destroy($id);
+    }
+    public function destroyArrayOfDocument(array $id)
+    {
+        return Document::whereIn('id',$id)->delete(); 
     }
 }

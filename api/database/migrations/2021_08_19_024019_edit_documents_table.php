@@ -16,8 +16,11 @@ class EditDocumentsTable extends Migration
         Schema::table('documents', function (Blueprint $table) {
             $table->string('name');
             $table->string('link')->nullable();
-            $table->unsignedBigInteger('preFolderId')->nullable();
+            $table->string('path')->default();
             $table->boolean('is_file');
+            $table->dropColumn('author');
+            $table->unsignedBigInteger('authorId');
+            $table->unsignedBigInteger('updaterId');
             $table->dropColumn('description');
         });
     }
@@ -32,8 +35,11 @@ class EditDocumentsTable extends Migration
         Schema::table('documents', function (Blueprint $table) {
             $table->dropColumn('name');
             $table->dropColumn('link');
-            $table->dropColumn('preFolderId');
+            $table->dropColumn('path');
             $table->dropColumn('is_file');
+            $table->string('author');
+            $table->dropColumn('authorId');
+            $table->dropColumn('updaterId');
             $table->text('description');
         });
     }

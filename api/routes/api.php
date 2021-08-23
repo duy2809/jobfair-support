@@ -5,12 +5,9 @@ use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
-<<<<<<< HEAD
 use App\Http\Controllers\FileController;
-=======
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
->>>>>>> de75adfdffb4d0a20513090d48bbada02c8c658f
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -110,12 +107,10 @@ Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
-<<<<<<< HEAD
 // file
 Route::resource('/file', FileController::class);
 Route::get('/file/find', [FileController::class, 'search']);
 Route::get('/file/getLatest', [FileController::class, 'Latest']);
-=======
 //member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
@@ -128,4 +123,3 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
->>>>>>> de75adfdffb4d0a20513090d48bbada02c8c658f
