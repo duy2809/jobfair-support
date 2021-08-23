@@ -83,7 +83,7 @@ function editJobfairSchedule() {
               if (res.status === 200)
                 openNotification('success', '変更は正常に保存されました。');
               setTimeout(() => {
-                router.push(`/jf-schedule/${id}`);
+                router.push(`/jf-schedule`);
               }, 2500);
             })
             .catch((err) => console.log(err));
@@ -167,7 +167,7 @@ function editJobfairSchedule() {
   return (
     <Layout>
       <Layout.Main>
-        <h1>JFスケジュール編集</h1>
+        <h1>JFスケジュール登録</h1>
         <Form
           labelAlign="left"
           labelCol={{ span: 7 }}
@@ -265,7 +265,7 @@ function editJobfairSchedule() {
             <div className="mt-5 flex justify-end">
               <Button className="mr-3">キャンセル</Button>
               <Button type="primary" htmlType="submit">
-                保存
+                登録
               </Button>
             </div>
           </Form.Item>

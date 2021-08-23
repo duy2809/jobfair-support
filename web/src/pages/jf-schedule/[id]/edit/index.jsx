@@ -113,21 +113,33 @@ function editJobfairSchedule() {
     console.log(dataSend);
     if (nameInput !== beforeEditName) {
       await postCheckExistName(dataSend)
-        .then(async ({ data }) => {
+        .then(({ data }) => {
           console.log(data);
           if (data === 'exist') {
             openNotification('error', 'このJFスケジュール名は存在しています。');
           } else {
-            await putData(id, dataSend)
+            putData(id, dataSend)
               .then((res) => {
+                console.log(res);
                 if (res.status === 200)
                   openNotification('success', '変更は正常に保存されました。');
                 setTimeout(() => {
-                  router.push(`/jf-schedule/${id}`);
+                  router.push(`/jf-schedule/`);
                 }, 2500);
               })
               .catch((err) => console.log(err));
           }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      putData(id, dataSend)
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200)
+            openNotification('success', '変更は正常に保存されました。');
+          setTimeout(() => {
+            router.push(`/jf-schedule/`);
+          }, 2500);
         })
         .catch((err) => console.log(err));
     }
