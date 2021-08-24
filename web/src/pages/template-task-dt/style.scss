@@ -1,78 +1,56 @@
 .wrapper {
-    padding: 0 20px;
+  // padding: 0 20px;
 
-    .list__button {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
+  .list__button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
 
-        .button__right {
-            button {
-                margin-left: 15px;
-            }
-
-        }
+    .button__right {
+      button {
+        margin-left: 15px;
+      }
     }
+  }
 
-    .big__title {
-        margin-top: 20px;
+  .info__tplt {
+    span {
+      padding-right: 10px;
+      margin-right: 5px;
     }
+  }
 
-    .info__tplt {
-        .rela {
-            margin: 10px 0;
-        }
+  .list__task {
+    display: flex;
+    align-items: center;
+    height: 47px;
+    width: 100%;
+    overflow: auto;
+    border: 1px solid #999;
+    box-shadow: 2px #b5b5b8;
+    margin: 0 5px;
 
-        margin-top: 30px;
-
-        .ef {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 6px;
-        }
+    li {
+      margin: 3px 5px;
+      border: 1px solid #b5b5b8;
+      padding: 5px;
+      box-shadow: #b5b5b8;
     }
+  }
 
-    .list__task {
-        display: flex;
-        align-items: center;
-        height: 47px;
-        width: 100%;
-        overflow: auto;
-        border: 1px solid #999;
-        box-shadow: 2px #b5b5b8;
-        margin: 0 5px;
+  .des {
+    padding: 13px;
+    border: 1px solid #b5b5b8;
+    border-radius: 6px;
+    line-height: 35px;
+    height: 220px;
+    overflow: auto;
+  }
 
-        li {
-
-            margin: 3px 5px;
-            border: 1px solid #b5b5b8;
-            padding: 5px;
-            box-shadow: #b5b5b8;
-
-        }
+  .list-items {
+    a:hover {
+      color: #ffd803;
     }
-
-    .des {
-        padding: 13px;
-        border: 1px solid #b5b5b8;
-        border-radius: 6px;
-        line-height: 35px;
-        height: 260px;
-        overflow: auto;
-    }
-
-    .layber {
-        p {
-            width: 87%;
-            text-align: end;
-        }
-
-    }
-
-    .list-items {
-        a:hover {
-            color: #ffd803;
-        }
-    }
+  }
 }

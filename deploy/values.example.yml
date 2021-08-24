@@ -51,6 +51,10 @@ config:
   sentry:
     dns:
 
+  mail:
+    username:
+    password:
+
 mariadb:
   password: secret
   root_password: root

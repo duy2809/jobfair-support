@@ -3,7 +3,6 @@ import { Select, Input, Table, Empty, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
-import './styles.scss'
 import { webInit } from '~/api/web-init'
 
 import { ListScheduleApi } from '~/api/schedule'

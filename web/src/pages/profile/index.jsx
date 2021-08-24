@@ -35,12 +35,15 @@ export default function Profile() {
     <>
       <Otherlayout>
         <Otherlayout.Main>
-          <p
+          {/* <p
             className="title mb-11 ml-18"
             style={{ fontSize: '36px', marginBottom: '100px' }}
           >
             プロフィール
-          </p>
+          </p> */}
+          <h1 className="title">
+            プロフィール
+          </h1>
           <div className="grid grid-cols-12 grid-rows-1 gap-2">
             <div className="row-span-1 col-span-3 justify-self-end">
               <Avatar
