@@ -106,14 +106,17 @@ Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
+
+Route::get('/file/getLatest', 'FileController@getLatest');
+Route::get('/file/getPath', 'FileController@getPath');
 Route::prefix('file')->group(function () {
     Route::get('/{jfId}', [App\Http\Controllers\FileController::class, 'index']);
     Route::post('/', [App\Http\Controllers\FileController::class, 'store']);
+    Route::post('/{id}', [App\Http\Controllers\FileController::class, 'show']);
     Route::put('/{id}/edit', [App\Http\Controllers\FileController::class, 'update']);
     Route::delete('/{id}/destroy', [App\Http\Controllers\FileController::class, 'destroy']);
     Route::get('/find', [App\Http\Controllers\FileController::class, 'search']);
     Route::get('/getPath',[App\Http\Controllers\FileController::class, 'getPath']);
-    Route::get('/getL', [App\Http\Controllers\FileController::class, 'getL']);
     Route::post('/delArray', [App\Http\Controllers\FileController::class, 'destroyArrayOfDocument']);
 });
 // member detail

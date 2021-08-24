@@ -32,15 +32,16 @@ class FileController extends Controller
         return response()->json($files);
     }
 
-    public function getL()
+    public function getLatest()
     {
-        return "aaaa";
         $file = DB::table('documents')
             ->addSelect(['authorName' => User::select('name')
                 ->whereColumn('id','documents.authorId')])
             ->addSelect(['updaterName' => User::select('name')
                 ->whereColumn('id','documents.updaterId')])
-            ->latest()
+            ->where('is_file',true)
+            ->orderBy('documents.updated_at', 'desc')
+            ->take(10)
             ->get();
         return $file;
         
@@ -62,7 +63,7 @@ class FileController extends Controller
     {
         if($this->checkUnique($request->name, $request->path))
         {
-            if($request->is_file === true)
+            if($request->is_file)
             {
                 $rules = [
                 'link' => 'required',
@@ -99,8 +100,8 @@ class FileController extends Controller
         ->select('*')
         ->where('path', $request->path)
         ->where('document_id', $request->jfId)
-        ->orderBy('documents.is_file', 'asc')
-        ->orderBy('documents.updated_at', 'desc')
+        ->orderBy('is_file', 'asc')
+        ->orderBy('updated_at', 'desc')
         ->get();
 
         return response()->json($data);
@@ -137,7 +138,7 @@ class FileController extends Controller
     {
         if($this->checkUnique($request->name, $request->path))
         {
-            if($request->is_file === true)
+            if($request->is_file)
             {
                 $rules = [
                     'link' => 'required',
