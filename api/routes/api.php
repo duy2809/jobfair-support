@@ -131,4 +131,3 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
-
