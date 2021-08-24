@@ -29,7 +29,7 @@ class FileSeeder extends Seeder
         for ($i = 0; $i < 20; $i++) {
             DB::table('documents')->insert([
                 'document_type' => $faker->randomElement($poly),
-                'document_id' => $i + 1,
+                'document_id' => $faker->numberBetween(1, 4),
                 'created_at' => $faker->date(),
                 'updated_at' => $faker->date(),
                 'name' => $faker->name(),

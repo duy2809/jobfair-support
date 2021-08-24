@@ -63,8 +63,7 @@ class FileController extends Controller
                 $validator = Validator::make($request->all(), $rules);
                 $validator->validate();
             }
-
-            return Document::create($request->all());
+            Document::create(array_merge($request->all(),['document_type' => 'App\Models\Jobfair']));
             return Document::select('*')
                 ->where('path',$request->path)
                 ->orderBy('documents.is_file', 'asc')
@@ -86,7 +85,7 @@ class FileController extends Controller
     {
         return Document::find($id);
     }
-    //  Display files and folder in specified folder.
+    //  Display files and folder in specific folder.
     public function getPath(Request $request)
     {
         $data = DB::table('documents')
@@ -138,8 +137,8 @@ class FileController extends Controller
                 $validator = Validator::make($request->all(), $rules);
                 $validator->validate();
             }
-
-            Document::find($id)->update($request->all());
+            Document::find($id)
+                ->update(array_merge($request->all(), ['updaterId' => auth()->user()->id]));
 
             return DB::table('documents')
                 ->select('*')

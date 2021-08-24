@@ -16,7 +16,7 @@ class EditDocumentsTable extends Migration
         Schema::table('documents', function (Blueprint $table) {
             $table->string('name');
             $table->string('link')->nullable();
-            $table->string('path')->default();
+            $table->string('path')->default('/');
             $table->boolean('is_file');
             $table->dropColumn('author');
             $table->dropColumn('update_date');
@@ -42,10 +42,10 @@ class EditDocumentsTable extends Migration
             $table->dropColumn('is_file');
             $table->string('author');
             $table->dateTime('update_date');
-            $table->dropColumn('authorId');
-            $table->dropColumn('updaterId');
             $table->dropColumn('created_at');
             $table->dropColumn('updated_at');
+            $table->dropColumn('authorId');
+            $table->dropColumn('updaterId');
             $table->text('description');
         });
     }
