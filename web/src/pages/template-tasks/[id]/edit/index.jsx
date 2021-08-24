@@ -122,18 +122,31 @@ const EditTemplateTaskPage = () => {
   const fetchTasks = async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
-    await setTasks1(tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)))
-    await setTasks2(tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)))
+    await setTasks1(
+      tasksList.filter(
+        (o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id),
+      ),
+    )
+    await setTasks2(
+      tasksList.filter(
+        (o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id),
+      ),
+    )
   }
 
   const openNotificationSuccess = () => {
-    notification.success({
-      message: '変更は正常に保存されました。',
-      duration: 3,
-    })
-    setTimeout(() => {
-      // window.location.href = '/template-tasks'
-    }, 3000)
+    if (
+      templateTaskNameInput !== ''
+      && categoryInput !== ''
+      && milestoneInput !== ''
+      && effortNumber !== 0
+      && checkSpace === false
+    ) {
+      notification.success({
+        message: '変更は正常に保存されました。',
+        duration: 3,
+      })
+    }
   }
 
   useEffect(async () => {
@@ -151,21 +164,29 @@ const EditTemplateTaskPage = () => {
   useEffect(() => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
-    setTasks1(tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)))
-    setTasks2(tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)))
+    setTasks1(
+      tasksList.filter(
+        (o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id),
+      ),
+    )
+    setTasks2(
+      tasksList.filter(
+        (o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id),
+      ),
+    )
   }, [prevTasks, nextTasks])
 
-  const showModal = () => {
-    if (
-      templateTaskNameInput !== ''
-      && categoryInput !== ''
-      && milestoneInput !== ''
-      && effortNumber !== 0
-      && checkSpace === false
-    ) {
-      setIsModalVisible(true)
-    }
-  }
+  // const showModal = () => {
+  //   if (
+  //     templateTaskNameInput !== ''
+  //     && categoryInput !== ''
+  //     && milestoneInput !== ''
+  //     && effortNumber !== 0
+  //     && checkSpace === false
+  //   ) {
+  //     setIsModalVisible(true)
+  //   }
+  // }
 
   const handleOk = () => {
     setIsModalVisible(false)
@@ -200,7 +221,9 @@ const EditTemplateTaskPage = () => {
         //   message: 'Error',
         // });
       })
-    // window.location.href = '/template-tasks/' + id;
+    setTimeout(() => {
+      window.location.href = `/template-tasks/${id}`
+    }, 3000)
   }
 
   const handleCancel = () => {
@@ -211,9 +234,7 @@ const EditTemplateTaskPage = () => {
       <OtherLayout>
         <OtherLayout.Main>
           <>
-            <h1>
-              テンプレートタスク編集
-            </h1>
+            <h1>テンプレートタスク編集</h1>
             {/* <div className="h-screen flex flex-col items-center pt-10 bg-white my-8"> */}
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
               <Form
@@ -269,7 +290,10 @@ const EditTemplateTaskPage = () => {
                       okText="はい"
                       centered
                     >
-                      <p className="mb-5">このまま保存してもよろしいですか？ </p>
+                      <p className="mb-5">
+                        このまま保存してもよろしいですか？
+                        {' '}
+                      </p>
                     </Modal>
 
                     <Effort
@@ -315,7 +339,7 @@ const EditTemplateTaskPage = () => {
                       type="primary"
                       htmlType="submit"
                       className="text-base px-10 "
-                      onClick={showModal}
+                      onClick={handleOk}
                     >
                       保存
                     </Button>

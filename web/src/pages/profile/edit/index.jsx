@@ -213,7 +213,7 @@ const EditProfilePage = () => {
                 <ButtonChangePassword />
               </div>
               <div className="container-form">
-                <div className="flex my-8 mx-8">
+                <div className="flex my-14">
                   <Form
                     form={form}
                     name="basic"
@@ -223,7 +223,7 @@ const EditProfilePage = () => {
                     wrapperCol={{
                       span: 12,
                     }}
-                    className="w-3/4 my-6"
+                    className="w-3/4"
                   >
                     <Form.Item
                       label={

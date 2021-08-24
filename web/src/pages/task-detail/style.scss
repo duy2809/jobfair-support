@@ -1,4 +1,7 @@
 .task-details {
+    .title{
+        display: flex;
+    }
     .list__button {
         display: flex;
         align-items: center;
@@ -61,7 +64,7 @@
         border: 1px solid #b5b5b8;
         border-radius: 6px;
         line-height: 35px;
-        height: 220px;
+        height: 260px;
         overflow: auto;
     }
 

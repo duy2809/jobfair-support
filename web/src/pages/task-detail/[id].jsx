@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification } from 'antd'
+import { Button, Modal, notification, Tooltip } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
   beforeTask,
@@ -33,6 +33,10 @@ export default function TaskList() {
     unit: '',
     description_of_detail: '',
   })
+  const [infoJF, setInfoJF] = useState({
+    id: null,
+    name: '',
+  })
   const saveNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
@@ -46,7 +50,7 @@ export default function TaskList() {
     await deleteTask(idTask)
       .then((response) => {
         console.log(response.data)
-        router.push('/tasks/1')
+        router.push(`/tasks/${infoJF.id}`)
       })
       .catch((error) => {
         console.log(error)
@@ -80,6 +84,10 @@ export default function TaskList() {
           description_of_detail: response.data.description_of_detail,
         })
         setListMemberAssignee(response.data.users)
+        setInfoJF({
+          id: response.data.schedule.jobfair.id,
+          name: response.data.schedule.jobfair.name,
+        })
       })
       .catch((error) => {
         console.log(error)
@@ -119,10 +127,10 @@ export default function TaskList() {
     })
   }
   const handleBack = () => {
-    router.push('/template-tasts')
+    router.push(`/tasks/${infoJF.id}`)
   }
   const handleEdit = () => {
-    router.push('/template-tasts')
+    router.push(`/tasks/${infoJF.id}`)
   }
   useEffect(() => {
     getDataUser()
@@ -132,7 +140,7 @@ export default function TaskList() {
   }, [])
   return (
     <div>
-      <JfLayout>
+      <JfLayout id={infoJF.id}>
         <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
@@ -166,7 +174,10 @@ export default function TaskList() {
                 ) : null}
               </div>
             </div>
-            <h1>タスク詳細</h1>
+            <div className="title">
+              <h1>タスク詳細</h1>
+            </div>
+
             <div className="info__tplt">
               <div className="grid grid-cols-2 mx-5 info__center">
                 <div className="col-span-1 mx-4 ">
@@ -206,12 +217,25 @@ export default function TaskList() {
                       <p>工数:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <span className="ef">{infoTask.effort}</span>
-                      <span className="ef">
-                        {infoTask.is_day ? '日' : '時間'}
-                      </span>
-                      <span>/</span>
-                      <span className="ef">{infoTask.unit}</span>
+                      {infoTask.unit === 'none' ? (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+
+                        </>
+                      ) : (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+                          <span>/</span>
+                          <span className="ef">{infoTask.unit}</span>
+                        </>
+                      ) }
+
                     </div>
                   </div>
                 </div>
@@ -315,13 +339,16 @@ export default function TaskList() {
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
-                          <a
-                            href={`/tasks/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {truncate(item.name)}
-                          </a>
+                          <Tooltip placement="top" title={item.name}>
+                            <a
+                              href={`/task-detail/${item.id}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {truncate(item.name)}
+                            </a>
+                          </Tooltip>
+
                         </li>
                       ))
                       : null}
@@ -333,13 +360,15 @@ export default function TaskList() {
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
-                          <a
-                            href={`/tasks/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {truncate(item.name)}
-                          </a>
+                          <Tooltip placement="top" title={item.name}>
+                            <a
+                              href={`/task-detail/${item.id}`}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {truncate(item.name)}
+                            </a>
+                          </Tooltip>
                         </li>
                       ))
                       : null}
