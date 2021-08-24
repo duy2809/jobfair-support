@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './style.scss'
-import { Form, DatePicker, Input, Select, Button, Modal, Table } from 'antd'
+import { Form, DatePicker, Input, Select, Button, Modal, Table, Empty, Tooltip } from 'antd'
 import { FolderFilled, FileFilled } from '@ant-design/icons'
 import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
@@ -14,11 +14,10 @@ export default function Search() {
     {
       key: '0',
       checkbox: true,
-      name: 'abc.jpg',
+      name: '1abc.jpgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       is_file: false,
       updater: 'vu phong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc',
     },
     {
       key: '1',
@@ -27,7 +26,6 @@ export default function Search() {
       name: '0abdsfac',
       updater: 'vu phong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
     },
     {
       key: '2',
@@ -36,8 +34,7 @@ export default function Search() {
       name: 'fdsfasabc.jpg',
       updater: 'vu phongdsf',
       updated_at: '2021-08-20 10:16:15',
-      path: '/abc/ds',
-
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
     },
     {
       key: '3',
@@ -46,8 +43,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
-
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
     },
     {
       key: '4',
@@ -56,8 +52,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
-
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
     },
     {
       key: '5',
@@ -66,7 +61,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
 
     },
     {
@@ -76,7 +71,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
 
     },
     {
@@ -86,7 +81,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
 
     },
     {
@@ -96,7 +91,7 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
 
     },
     {
@@ -106,20 +101,49 @@ export default function Search() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      path: '/abc/ds',
+      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
 
     },
   ])
   const columns = [
     {
+      width: '5%',
+    },
+    {
       title: <div>名前</div>,
       dataIndex: 'name',
       key: 'name',
       render: (name, record) => (
-        <>
+        <div
+          onClick={() => {
+            if (record.is_file) {
+              window.open(record.link)
+            } else {
+              // TODO fetch new folder API
+            }
+          }}
+          className="cursor-pointer flex flex-row items-center"
+        >
           {(record.is_file) ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
-          {name}
-        </>
+          {name.length > 20
+            ? (
+              <Tooltip placement="top" title={name}>
+                <span
+                  className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+                  style={{ maxWidth: '20ch' }}
+                >
+                  {name}
+                </span>
+              </Tooltip>
+            ) : (
+              <span
+                className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+                style={{ maxWidth: '20ch' }}
+              >
+                {name}
+              </span>
+            )}
+        </div>
       ),
     },
     {
@@ -144,6 +168,7 @@ export default function Search() {
     },
   ]
   const [isModalVisible, setIsModalVisible] = useState(false)
+  // my code
   const onFinishSuccess = () => {
     setIsModalVisible(true)
   }
@@ -153,12 +178,12 @@ export default function Search() {
   const handleCancel = () => {
     setIsModalVisible(false)
   }
-  const onRowClick = (record, rowIndex) => ({
-    onClick: (event) => {
-      console.log(record)
-    }, // click row
+  // const onRowClick = (record) => ({
+  //   onClick: () => {
+  //     window.open(record.link)
+  //   }, // click row
 
-  })
+  // })
   return (
     <>
       <Form
@@ -219,7 +244,8 @@ export default function Search() {
           columns={columns}
           dataSource={data}
           pagination={false}
-          onRow={onRowClick}
+          // onRow={onRowClick}
+          locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="満足しているファイルはありません。" /> }}
         />
         <Button
           type="primary"
