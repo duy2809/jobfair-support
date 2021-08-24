@@ -72,7 +72,7 @@ describe('Check website', function () {
         cy.get('.anticon-calendar').should('be.visible');
         cy.get('.anticon-link').should('be.visible');
       });
-      cy.get('.memo--進行中').contains('メモ').should('be.visible');
+      cy.get('.memo--中断').contains('メモ').should('be.visible');
       cy.get('.ant-card__bordered--中断 > .ant-card-body .ant-btn')
         .contains('問 題')
         .should('be.visible');
@@ -107,10 +107,10 @@ describe('Check website', function () {
   });
   
   describe('Check active', function () {
-    // it('task details', function () {
-    //   cy.get('.ant-card-body a').click({ multiple: true });
-    //   cy.url().should('include', '/tasks');
-    // });
+    it('task details', function () {
+      cy.get('.ant-card-body a').click({ multiple: true });
+      cy.url().should('include', '/tasks');
+    });
 
       it('drag and drop', function(){
         const dataTransfer = new DataTransfer();
