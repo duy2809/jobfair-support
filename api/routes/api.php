@@ -5,7 +5,6 @@ use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\FileController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
@@ -66,7 +65,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
-
 Route::resource('/jf-list', JFListController::class);
 Route::get('/jf-list', 'JFListController@index');
 Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
@@ -108,10 +106,11 @@ Route::get('/jf-list/delete/{id}', 'JFListController@destroy');
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
-Route::resource('/file', 'FileController');
+Route::resource('/file', FileController::class);
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
-Route::get('/file/getLatest', [App\Http\Controllers\FileController::class, 'Latest']);
-//member detail
+Route::get('/file/path/{path}',[App\Http\Controllers\FileController::class, 'getPath']);
+Route::get('/file/getLatest', [App\Http\Controllers\FileController::class, 'getLatest']);
+// member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);

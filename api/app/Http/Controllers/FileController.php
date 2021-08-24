@@ -17,18 +17,19 @@ class FileController extends Controller
     public function index()
     {
         $data = DB::table('documents')
-        ->select('*')
-        ->where('path','/')
-        ->orderBy('documents.update_date', 'desc')
-        ->get();
+            ->select('*')
+            ->where('path','/')
+            ->orderBy('documents.update_date', 'desc')
+            ->get();
 
         return response()->json($data);
     }
 
-    public function Latest()
+    public function getLatest()
     {
-        return Document::orderBy('document.update_date', 'desc')
-        ->take(10);
+        $data = Document::latest()
+            ->take(10)->get();
+        return response()->json($data);
     }
     /**
      * Show the form for creating a new resource.
