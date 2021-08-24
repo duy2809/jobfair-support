@@ -16,7 +16,7 @@ class FileController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($jfId)
     {
         $files = DB::table('documents')
             ->addSelect(['authorName' => User::select('name')
@@ -24,6 +24,7 @@ class FileController extends Controller
             ->addSelect(['updaterName' => User::select('name')
                         ->whereColumn('id','documents.updaterId')])
             ->where('path','/')
+            ->where('document_id', $jfId)
             ->orderBy('documents.is_file', 'asc')
             ->orderBy('documents.updated_at', 'desc')
             ->get();
@@ -31,11 +32,18 @@ class FileController extends Controller
         return response()->json($files);
     }
 
-    public function getLatest()
+    public function getL()
     {
-        return Document::latest()
-        ->take(10)
-        ->get();
+        return "aaaa";
+        $file = DB::table('documents')
+            ->addSelect(['authorName' => User::select('name')
+                ->whereColumn('id','documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                ->whereColumn('id','documents.updaterId')])
+            ->latest()
+            ->get();
+        return $file;
+        
     }
 
     /**
@@ -90,6 +98,7 @@ class FileController extends Controller
         $data = DB::table('documents')
         ->select('*')
         ->where('path', $request->path)
+        ->where('document_id', $request->jfId)
         ->orderBy('documents.is_file', 'asc')
         ->orderBy('documents.updated_at', 'desc')
         ->get();
@@ -164,8 +173,8 @@ class FileController extends Controller
     public function destroyArrayOfDocument(Request $request)
     {
         $path = Document::where('id', $request->id[0])->first();
-        // foreach($request->id as $Id)
-        //     Document::destroy($Id);
+        foreach($request->id as $Id)
+            Document::destroy($Id);
 
         return Document::select('*')
             ->where('path', $path->path)
