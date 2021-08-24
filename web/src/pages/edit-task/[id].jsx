@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Form, Input, Select, Tag, DatePicker } from 'antd'
+import { Form, Input, Select, Tag, DatePicker, Button } from 'antd'
 import moment from 'moment'
 import JfLayout from '../../layouts/layout-task'
 import {
-  taskData, beforeTask, afterTask,
+  taskData, beforeTask, afterTask, getUser,
 } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
+import { webInit } from '../../api/web-init'
 
 export default function TaskList() {
   const dateFormat = 'YYYY/MM/DD'
@@ -17,7 +18,14 @@ export default function TaskList() {
   const idTask = router.query.id
   const [form] = Form.useForm()
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
+  const [listUser, setListUser] = useState([])
+  const [allTask, setAllTask] = useState([])
   const [afterTasksNew, setafterTaskNew] = useState([])
+  const [users, setUsers] = useState({
+    id: null,
+    name: '',
+    role: '',
+  })
   const [infoTask, setInfoTask] = useState({
     name: '',
     categories: '',
@@ -78,7 +86,22 @@ export default function TaskList() {
     }
     return Promise.resolve()
   }
-
+  const filtedArr = () => {
+    const before = form.getFieldsValue().taskBefore
+    const after = form.getFieldsValue().afterTask
+    let selectedItems = []
+    if (before && !after) {
+      selectedItems = [...selectedItems, ...before]
+    } else if (!before && after) {
+      selectedItems = [...selectedItems, ...after]
+    } else if (before && after) {
+      selectedItems = [...before, ...after]
+    }
+    const filted = allTask.filter((e) => !selectedItems.includes(e.name))
+    setBeforeTaskNew(filted)
+    setafterTaskNew(filted)
+    return filted
+  }
   function tagRender(props) {
     // eslint-disable-next-line react/prop-types
     const { label, value, closable, onClose } = props
@@ -119,7 +142,97 @@ export default function TaskList() {
       name: e.target.value,
     })
   }
+  const getDataUser = async () => {
+    await webInit().then((response) => {
+      setUsers({
 
+        id: response.data.auth.user.id,
+        name: response.data.auth.user.name,
+        role: response.data.auth.user.role,
+
+      })
+      console.log(response.data.auth.user.role)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+  const onFinishSuccess = async (values) => {
+    try {
+      const beforeID = []
+      const afterIDs = []
+      const adminas = []
+      console.log(allTask)
+      console.log(values.taskBefore)
+      console.log(values.afterTask)
+      if (values.taskBefore && values.afterTask) {
+        // eslint-disable-next-line array-callback-return
+        allTask.map((e) => {
+          if (values.taskBefore.includes(e.name)) {
+            beforeID.push(e.id)
+          }
+          if (values.afterTask.includes(e.name)) {
+            afterIDs.push(e.id)
+          }
+        })
+      }
+      if (values.assignee) {
+        listUser.map((e) => {
+          if (values.assignee.includes(e.name)) {
+            adminas.push(e.id)
+          }
+          return ''
+        })
+      }
+
+      const data = {
+        name: values.name,
+        description_of_detail: values.detail,
+        beforeTasks: beforeID,
+        afterTasks: afterIDs,
+        start_time: values.start_time.format(Extensions.dateFormat),
+        end_time: values.end_time.format(Extensions.dateFormat),
+        admin: adminas,
+        user_id: users.id,
+        status: values.status,
+
+      }
+      console.log(data)
+      // setdisableBtn(true)
+      // setLoading(true)
+      // const response = await addTemplateTasksAPI.addTemplateTask(data)
+
+      // if (response.status < 299) {
+      //   await successNotification()
+      //   routeTo(`/template-task-dt/${response.data.id}`)
+      // } else {
+      //   setdisableBtn(false)
+      //   setLoading(false)
+      // }
+      // return response
+    } catch (error) {
+      // const isDuplicate = JSON.parse(error.request.response).message
+      // if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
+      //   notification.open({
+      //     icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+      //     duration: 3,
+      //     message: 'このJF名は既に使用されています。',
+      //     onClick: () => {},
+      //   })
+      // } else {
+      //   notification.open({
+      //     icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+      //     duration: 3,
+      //     message: '保存に失敗しました。',
+      //     onClick: () => {},
+      //   })
+      // }
+      // setdisableBtn(false)
+      // setLoading(false)
+      return error
+    }
+
+    return ''
+  }
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
@@ -151,26 +264,27 @@ export default function TaskList() {
   }
   const fetchListTask = async () => {
     await jftask(idJF).then((response) => {
+      setAllTask(response.data.schedule.tasks)
       setBeforeTaskNew(response.data.schedule.tasks)
       setafterTaskNew(response.data.schedule.tasks)
     }).catch((error) => {
       console.log(error)
     })
   }
-  const options = []
-  const optionsAt = []
+  const fetchListMember = async () => {
+    await getUser().then((response) => {
+      setListUser(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
     fetchafterTask()
+    getDataUser()
     fetchListTask()
-    beforeTasksNew.forEach((element) => {
-      options.push({ value: element.name })
-    })
-
-    afterTasksNew.forEach((element) => {
-      optionsAt.push({ value: element.name })
-    })
+    fetchListMember()
   }, [idJF])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
   return (
@@ -190,8 +304,8 @@ export default function TaskList() {
               layout="horizontal"
               colon={false}
               initialValues={{ defaultInputValue: 0 }}
-            //   onFinish={onFinishSuccess}
-            //   onFinishFailed={onFinishFailed}
+              onFinish={onFinishSuccess}
+              // onFinishFailed={onFinishFailed}
             >
               <div className="grid grid-cols-2 mx-10">
                 <div className="col-span-1 mx-4">
@@ -271,8 +385,8 @@ export default function TaskList() {
                       tagRender={tagRender}
                       style={{ width: '100%' }}
                     >
-                      {beforeTasksNew.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
+                      {listUser.map((element) => (
+                        <Select.Option key={element.id} value={element.name}>
                           {element.name}
                         </Select.Option>
                       ))}
@@ -336,8 +450,9 @@ export default function TaskList() {
 
                 </div>
                 <div className="col-span-1 mx-4">
+                  <p className="mb-2">前のタスク</p>
                   <Form.Item
-                    label="前のタスク"
+                    // label="前のタスク"
                     name="taskBefore"
                   >
                     <Select
@@ -345,10 +460,10 @@ export default function TaskList() {
                       showArrow
                       tagRender={tagRender}
                       style={{ width: '100%' }}
-
+                      onChange={filtedArr}
                     >
                       {beforeTasksNew.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
+                        <Select.Option key={element.id} value={element.name}>
                           {element.name}
                         </Select.Option>
                       ))}
@@ -357,8 +472,9 @@ export default function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-4">
+                  <p className="mb-2">次のタスク</p>
                   <Form.Item
-                    label="次のタスク"
+                    // label="次のタスク"
                     name="afterTask"
                   >
                     <Select
@@ -366,10 +482,10 @@ export default function TaskList() {
                       showArrow
                       tagRender={tagRender}
                       style={{ width: '100%' }}
-
+                      onChange={filtedArr}
                     >
                       {afterTasksNew.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
+                        <Select.Option key={element.id} value={element.name}>
                           {element.name}
                         </Select.Option>
                       ))}
@@ -384,6 +500,32 @@ export default function TaskList() {
                     <TextArea rows={10} placeholder="何かを入力してください" />
                   </Form.Item>
                 </div>
+              </div>
+              <div className="flex justify-end mr-11">
+                <Form.Item
+                  label=" "
+                  className=" "
+                >
+                  <div className="flex ">
+                    <Button
+                      htmlType="button"
+                      type="primary"
+                      // onClick={cancelConfirmModle}
+                      // disabled={disableBtn}
+                      className="button_cacel mx-3"
+                    >
+                      キャンセル
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                    // disabled={disableBtn}
+                    // loading={disableBtn}
+                    >
+                      保存
+                    </Button>
+                  </div>
+                </Form.Item>
               </div>
             </Form>
           </div>
