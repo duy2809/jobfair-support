@@ -1,0 +1,25 @@
+@use 'sass:map';
+
+$colors: (
+  0: red,
+  1: green,
+  2: blue
+);
+.schedule-gantt {
+  @each $index, $color in $colors {
+    .bg-category-#{$index} {
+      background-color: #{$color};
+    }
+  }
+
+  .ant-table-thead > tr > th,
+  .ant-table-tbody > tr > td,
+  .ant-table tfoot > tr > th,
+  .ant-table tfoot > tr > td {
+    padding: 4px 10px;
+  }
+
+  // .ant-table-cell {
+  //   padding: ;
+  // }
+}
