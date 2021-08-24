@@ -160,10 +160,6 @@ class FileController extends Controller
      */
     public function destroy($id)
     {
-        return Document::destroy($id);
-    }
-    public function destroyArrayOfDocument(array $id)
-    {
         return Document::whereIn('id',$id)->delete(); 
     }
 }
