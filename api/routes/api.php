@@ -42,6 +42,13 @@ Route::resource('/jobfair', 'JobfairController');
 // schedule
 
 Route::resource('/schedules', 'ScheduleController');
+Route::get('jf-schedules/all-milestones', 'ScheduleController@getAllMilestones');
+Route::get('jf-schedules/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
+Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
+Route::prefix('schedules/{id}')->group(function () {
+    Route::get('/added-milestones', 'ScheduleController@getAddedMilestones');
+    Route::get('/added-template-tasks', 'ScheduleController@getAddedTemplateTasks');
+});
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
 Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
 Route::prefix('schedule')->group(function () {
