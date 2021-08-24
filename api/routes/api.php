@@ -108,7 +108,7 @@ Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 // file
 Route::resource('/file', FileController::class);
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
-Route::get('/file/path/{path}',[App\Http\Controllers\FileController::class, 'getPath']);
+Route::get('/file/path',[App\Http\Controllers\FileController::class, 'getPath']);
 Route::get('/file/getLatest', [App\Http\Controllers\FileController::class, 'getLatest']);
 // member detail
 Route::prefix('members')->group(function () {

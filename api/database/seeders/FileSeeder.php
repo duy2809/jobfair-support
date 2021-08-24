@@ -17,8 +17,8 @@ class FileSeeder extends Seeder
     {
         $faker = Faker::create();
         $poly = [
-            'App\Models\TemplateTask',
-            'App\Models\Task',
+            'App\Models\Jobfair',
+            // 'App\Models\Task',
         ];
         $path = [
             '/',
@@ -29,8 +29,9 @@ class FileSeeder extends Seeder
         for ($i = 0; $i < 20; $i++) {
             DB::table('documents')->insert([
                 'document_type' => $faker->randomElement($poly),
-                'document_id' => $i + 1,
-                'update_date' => $faker->date(),
+                'document_id' => $faker->numberBetween(1, 4),
+                'created_at' => $faker->date(),
+                'updated_at' => $faker->date(),
                 'name' => $faker->name(),
                 'link' => $faker->url(),
                 'path' => $faker->randomElement($path),

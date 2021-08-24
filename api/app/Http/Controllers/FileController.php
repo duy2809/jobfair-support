@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Document;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class FileController extends Controller
 {
@@ -16,13 +18,17 @@ class FileController extends Controller
      */
     public function index()
     {
-        $data = DB::table('documents')
-            ->select('*')
+        $files = DB::table('documents')
+            ->addSelect(['authorName' => User::select('name')
+                        ->whereColumn('id','documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                        ->whereColumn('id','documents.updaterId')])
             ->where('path','/')
-            ->orderBy('documents.update_date', 'desc')
+            ->orderBy('documents.is_file', 'asc')
+            ->orderBy('documents.updated_at', 'desc')
             ->get();
 
-        return response()->json($data);
+        return response()->json($files);
     }
 
     public function getLatest()
@@ -39,19 +45,34 @@ class FileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    private function checkUnique($name, $path)
+    {
+        $data = Document::where('path', '=', $path)->where('name', '=', $name)->get();
+        if($data->isEmpty()) return true;
+        return false;
+    }
     public function store(Request $request)
     {
-        Validator::make($request, ['name', Rule::unique('documents')->where('path', $request->path)]);
-        if($request->is_file === true)
+        if($this->checkUnique($request->name, $request->path))
         {
-            $rules = [
+            if($request->is_file === true)
+            {
+                $rules = [
                 'link' => 'required',
-            ];
-            $validator = Validator::make($request->all(), $rules);
-            $validator->validate();
+                ];
+                $validator = Validator::make($request->all(), $rules);
+                $validator->validate();
+            }
+            Document::create(array_merge($request->all(),['document_type' => 'App\Models\Jobfair']));
+            return Document::select('*')
+                ->where('path',$request->path)
+                ->orderBy('documents.is_file', 'asc')
+                ->orderBy('documents.updated_at', 'desc')
+                ->get();
         }
-
-        return Document::create($request->all());
+        return $messages = [
+            'document.name.unique' => 'Given name already have in folder',
+        ];
     }
 
     /**
@@ -64,32 +85,38 @@ class FileController extends Controller
     {
         return Document::find($id);
     }
-    //  Display files and folder in specified folder.
-    public function getPath($path)
+    //  Display files and folder in specific folder.
+    public function getPath(Request $request)
     {
         $data = DB::table('documents')
         ->select('*')
-        ->where('path', $path)
-        ->orderBy('documents.update_date', 'desc')
+        ->where('path', $request->path)
+        ->orderBy('documents.is_file', 'asc')
+        ->orderBy('documents.updated_at', 'desc')
         ->get();
 
         return response()->json($data);
     }
     public function search(Request $request)
     {
+        $query = document::all()->get();
         if($request->has('name'))
         {
             $query::where('name', 'LIKE', "%$request->name%");
         }
-        if($request->has('update_date'))
+        if($request->has('updated_at'))
         {
-            $query::whereBetween('update_date', [$request->from,$request->to]);
+            $query::whereBetween('updated_at', [$request->from,$request->to]);
         }
         if($request->has('updaterId'))
         {
             $query::where('updaterId', 'LIKE', "%$request->updaterId%");
         }
-        return $query->get();
+
+        return $query
+            ->orderBy('documents.is_file', 'asc')
+            ->orderBy('documents.updated_at', 'desc')
+            ->get();
     }
     /**
      * Update the specified resource in storage.
@@ -100,23 +127,29 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Validator::make($request, ['name', Rule::unique('documents')->where('path', $request->path)]);
-        if($request->is_file === true)
+        if($this->checkUnique($request->name, $request->path))
         {
-            $rules = [
-                'link' => 'required',
-            ];
-            $validator = Validator::make($request->all(), $rules);
-            $validator->validate();
+            if($request->is_file === true)
+            {
+                $rules = [
+                    'link' => 'required',
+                ];
+                $validator = Validator::make($request->all(), $rules);
+                $validator->validate();
+            }
+            Document::find($id)
+                ->update(array_merge($request->all(), ['updaterId' => auth()->user()->id]));
+
+            return DB::table('documents')
+                ->select('*')
+                ->where('path', $request->path)
+                ->orderBy('documents.is_file', 'asc')
+                ->orderBy('documents.updated_at', 'desc')
+                ->get();
         }
-
-        Document::find($id)->update($request->all());
-
-        return DB::table('documents')
-        ->select('*')
-        ->where('path', $path)
-        ->orderBy('documents.update_date', 'desc')
-        ->get();
+        return $messages = [
+            'document.name.unique' => 'Given name already have in folder',
+        ];
     }
 
     /**
@@ -126,10 +159,6 @@ class FileController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    {
-        return Document::destroy($id);
-    }
-    public function destroyArrayOfDocument(array $id)
     {
         return Document::whereIn('id',$id)->delete(); 
     }
