@@ -28,17 +28,9 @@ class FileController extends Controller
     public function getLatest()
     {
         $data = Document::latest()
-            ->take(10)->get();
+            ->take(10)
+            ->get();
         return response()->json($data);
-    }
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
