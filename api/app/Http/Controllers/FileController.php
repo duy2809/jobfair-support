@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Document;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -17,14 +18,17 @@ class FileController extends Controller
      */
     public function index()
     {
-        $data = DB::table('documents')
-            ->select('*')
+        $files = DB::table('documents')
+            ->addSelect(['authorName' => User::select('name')
+                        ->whereColumn('id','documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                        ->whereColumn('id','documents.updaterId')])
             ->where('path','/')
             ->orderBy('documents.is_file', 'asc')
             ->orderBy('documents.updated_at', 'desc')
             ->get();
 
-        return response()->json($data);
+        return response()->json($files);
     }
 
     public function getLatest()
@@ -83,11 +87,11 @@ class FileController extends Controller
         return Document::find($id);
     }
     //  Display files and folder in specified folder.
-    public function getPath($path)
+    public function getPath(Request $request)
     {
         $data = DB::table('documents')
         ->select('*')
-        ->where('path', $path)
+        ->where('path', $request->path)
         ->orderBy('documents.is_file', 'asc')
         ->orderBy('documents.updated_at', 'desc')
         ->get();

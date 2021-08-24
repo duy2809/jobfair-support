@@ -17,8 +17,8 @@ class FileSeeder extends Seeder
     {
         $faker = Faker::create();
         $poly = [
-            'App\Models\TemplateTask',
-            'App\Models\Task',
+            'App\Models\Jobfair',
+            // 'App\Models\Task',
         ];
         $path = [
             '/',
