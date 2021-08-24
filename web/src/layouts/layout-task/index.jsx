@@ -83,21 +83,24 @@ const JfLayout = ({ children, id }) => {
                 </div>
               </div>
             </div>
-            <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href={`/tasks/${id}`}>タスク</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href={`/kanban/${id}`}>カンバン</Link>
-            </Menu.Item>
-            <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href={`/file/${id}`}>ファイル</Link>
-            </Menu.Item>
+            <div className="font-icon">
+              <Menu.Item key="1" icon={<HomeOutlined />}>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              </Menu.Item>
+              <Menu.Item key="2" icon={<FileProtectOutlined />}>
+                <Link href={`/tasks/${id}`}>タスク</Link>
+              </Menu.Item>
+              <Menu.Item key="3" icon={<BarChartOutlined />}>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              </Menu.Item>
+              <Menu.Item key="4" icon={<TableOutlined />}>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
+              </Menu.Item>
+              <Menu.Item key="5" icon={<FileOutlined />}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            </div>
+
           </Menu>
         </Sider>
         <Layout className="site-layout">
