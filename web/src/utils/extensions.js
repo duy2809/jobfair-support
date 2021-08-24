@@ -1,6 +1,7 @@
 const fullwidthReg = /[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/g
 const onlyNumberReg = new RegExp(/^[0-9]+$/)
-const specialCharacterReg = new RegExp(/[!@#$%^&*()_+\-=\]{};':"\\|,.<>?]/g)
+const floatNumberReg = new RegExp(/^[+-]?\d+(\.\d+)?$/)
+const specialCharacterReg = new RegExp(/[!@#$%^&*()_[+\-=\]{};':"\\|,.<>?]/g)
 const alphanumericReg = new RegExp(/^[a-z0-9]+$/i)
 const vietnameseReg = new RegExp(/[àÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬđĐèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆìÌỉỈĩĨíÍịỊòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰỳỲỷỶỹỸýÝỵỴ]/g)
 /*
@@ -26,6 +27,7 @@ export const Reg = {
   specialCharacter: specialCharacterReg,
   alphanumeric: alphanumericReg,
   vietnamese: vietnameseReg,
+  floatNumber: floatNumberReg,
 }
 
 export const unSaveChangeConfirm = (active) => {

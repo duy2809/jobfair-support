@@ -53,7 +53,7 @@ class MemberDetailTable extends React.Component {
         this.setState({
           listJF: listJobfair.map((element) => (
             <tr className="assigned-jf border-none block mx-auto">
-              <td className="border-none inline-block">{element.name}</td>
+              <td className="border-none inline-block mr-2">{element.name}</td>
               <td className="border-none inline-block">{element.start_date}</td>
             </tr>
           )),
@@ -113,22 +113,6 @@ class MemberDetailTable extends React.Component {
               style={{ minHeight: '10px', marginRight: '200px' }}
             >
               {this.state.listCate}
-            </td>
-          </tr>
-          <tr>
-            <th>チャットワークID：</th>
-            <td
-              className=" ml-auto mr-auto  py-3 text-left"
-              style={{
-                minWidth: '50%',
-                minHeight: '10px',
-                display: 'block',
-                color: '#99ccff',
-              }}
-            >
-              <a href={`https://www.chatwork.com/${this.state.member.chatworkID}`}>
-                {this.state.member.chatworkID}
-              </a>
             </td>
           </tr>
           <tr className="ml-auto mr-auto  py-3  text-left">
