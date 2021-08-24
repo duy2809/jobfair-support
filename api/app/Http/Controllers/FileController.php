@@ -33,10 +33,9 @@ class FileController extends Controller
 
     public function getLatest()
     {
-        $data = Document::latest()
-            ->take(10)
-            ->get();
-        return response()->json($data);
+        return Document::latest()
+        ->take(10)
+        ->get();
     }
 
     /**
@@ -164,13 +163,14 @@ class FileController extends Controller
     }
     public function destroyArrayOfDocument(Request $request)
     {
-        foreach($request->id as $Id)
-        Document::destroy($Id);
-        return DB::table('documents')
-        ->select('*')
-        ->where('path', $request->path)
-        ->orderBy('documents.is_file', 'asc')
-        ->orderBy('documents.updated_at', 'desc')
-        ->get();
+        $path = Document::where('id', $request->id[0])->first();
+        // foreach($request->id as $Id)
+        //     Document::destroy($Id);
+
+        return Document::select('*')
+            ->where('path', $path->path)
+            ->orderBy('is_file', 'asc')
+            ->orderBy('updated_at', 'desc')
+            ->get();
     }
 }
