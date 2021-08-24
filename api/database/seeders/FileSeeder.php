@@ -30,7 +30,8 @@ class FileSeeder extends Seeder
             DB::table('documents')->insert([
                 'document_type' => $faker->randomElement($poly),
                 'document_id' => $i + 1,
-                'update_date' => $faker->date(),
+                'created_at' => $faker->date(),
+                'updated_at' => $faker->date(),
                 'name' => $faker->name(),
                 'link' => $faker->url(),
                 'path' => $faker->randomElement($path),
