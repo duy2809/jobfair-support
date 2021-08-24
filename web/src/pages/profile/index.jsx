@@ -5,7 +5,7 @@ import { ReactReduxContext } from 'react-redux'
 import Otherlayout from '../../layouts/OtherLayout'
 import { getProfile, getAvatar } from '../../api/profile'
 
-const Profile=() => {
+const Profile = () => {
   const [avatarUser, setAvatarUser] = useState('')
   const [nameUser, setNameUser] = useState('')
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
