@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropUniqueNameToSchedules extends Migration
+class AddIdToScheduleTemplateTaskTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class DropUniqueNameToSchedules extends Migration
      */
     public function up()
     {
-        Schema::table('schedules', function (Blueprint $table) {
-            $table->dropUnique(['name']);
+        Schema::table('schedule_template_task', function (Blueprint $table) {
+            $table->id();
         });
     }
 
@@ -25,7 +25,8 @@ class DropUniqueNameToSchedules extends Migration
      */
     public function down()
     {
-        Schema::table('schedules', function (Blueprint $table) {
+        Schema::table('schedule_template_task', function (Blueprint $table) {
+            $table->dropColumn('id');
         });
     }
 }

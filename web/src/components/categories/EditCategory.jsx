@@ -3,7 +3,7 @@
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
-import { Modal, Form, notification } from 'antd'
+import { Modal, Form, notification, Input } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../api/category'
 
@@ -106,7 +106,7 @@ const EditCategory = (props) => {
         cancelText="キャンセル"
         centered
       >
-        <Form form={form}>
+        <Form form={form} layout="vertical">
           <Form.Item
             label={
               <span>カテゴリ名</span>
@@ -128,7 +128,7 @@ const EditCategory = (props) => {
               }),
             ]}
           >
-            <input
+            <Input
               type="text"
               required="required"
               className="input-category"
