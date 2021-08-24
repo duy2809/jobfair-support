@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Form, Input, Select, Tag, DatePicker, Button } from 'antd'
+import {
+  CheckCircleTwoTone, ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import moment from 'moment'
 import JfLayout from '../../layouts/layout-task'
 import {
@@ -10,6 +13,7 @@ import {
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
+import { editTask } from '../../api/edit-task'
 
 export default function TaskList() {
   const dateFormat = 'YYYY/MM/DD'
@@ -17,6 +21,7 @@ export default function TaskList() {
   const router = useRouter()
   const idTask = router.query.id
   const [form] = Form.useForm()
+  const [disableBtn, setdisableBtn] = useState(false)
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
   const [listUser, setListUser] = useState([])
   const [allTask, setAllTask] = useState([])
@@ -86,9 +91,40 @@ export default function TaskList() {
     }
     return Promise.resolve()
   }
+  const tagRender = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { label, value, closable, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+      >
+        <Tooltip title={label}>
+          <span
+            onClick={() => {
+              const id = allTask.find((e) => e.name === value)
+              router.push(`/task-detail/${id}`)
+            }}
+            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+
+          >
+            {label}
+            {/* <a href="" className="my-1">{label}</a> */}
+          </span>
+
+        </Tooltip>
+      </Tag>
+    )
+  }
   const filtedArr = () => {
-    const before = form.getFieldsValue().taskBefore
-    const after = form.getFieldsValue().afterTask
+    const before = form.getFieldsValue().beforeTasks
+    const after = form.getFieldsValue().afterTasks
     let selectedItems = []
     if (before && !after) {
       selectedItems = [...selectedItems, ...before]
@@ -101,25 +137,6 @@ export default function TaskList() {
     setBeforeTaskNew(filted)
     setafterTaskNew(filted)
     return filted
-  }
-  function tagRender(props) {
-    // eslint-disable-next-line react/prop-types
-    const { label, value, closable, onClose } = props
-    const onPreventMouseDown = (event) => {
-      event.preventDefault()
-      event.stopPropagation()
-    }
-    return (
-      <Tag
-        color={value}
-        onMouseDown={onPreventMouseDown}
-        closable={closable}
-        onClose={onClose}
-        style={{ marginRight: 3 }}
-      >
-        {label}
-      </Tag>
-    )
   }
   const TaskNameValidator = (_, value) => {
     if (!value) {
@@ -156,16 +173,20 @@ export default function TaskList() {
       console.log(error)
     })
   }
+  const saveNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      message: '変更は正常に保存されました。',
+      onClick: () => {},
+    })
+  }
   const onFinishSuccess = async (values) => {
     try {
       const beforeID = []
       const afterIDs = []
       const adminas = []
-      console.log(allTask)
-      console.log(values.taskBefore)
-      console.log(values.afterTask)
       if (values.taskBefore && values.afterTask) {
-        // eslint-disable-next-line array-callback-return
+      // eslint-disable-next-line array-callback-return
         allTask.map((e) => {
           if (values.taskBefore.includes(e.name)) {
             beforeID.push(e.id)
@@ -196,42 +217,39 @@ export default function TaskList() {
         status: values.status,
 
       }
+      setdisableBtn(true)
       console.log(data)
-      // setdisableBtn(true)
-      // setLoading(true)
-      // const response = await addTemplateTasksAPI.addTemplateTask(data)
-
-      // if (response.status < 299) {
-      //   await successNotification()
-      //   routeTo(`/template-task-dt/${response.data.id}`)
-      // } else {
-      //   setdisableBtn(false)
-      //   setLoading(false)
-      // }
-      // return response
+      await editTask(idTask, data).then((response) => {
+        saveNotification()
+        console.log(response.data)
+        router.push(`/task-detail/${idTask}`)
+      }).catch((error) => {
+        console.log(error)
+        setdisableBtn(false)
+      })
+      setdisableBtn(true)
     } catch (error) {
-      // const isDuplicate = JSON.parse(error.request.response).message
-      // if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
-      //   notification.open({
-      //     icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-      //     duration: 3,
-      //     message: 'このJF名は既に使用されています。',
-      //     onClick: () => {},
-      //   })
-      // } else {
-      //   notification.open({
-      //     icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-      //     duration: 3,
-      //     message: '保存に失敗しました。',
-      //     onClick: () => {},
-      //   })
-      // }
-      // setdisableBtn(false)
-      // setLoading(false)
+      setdisableBtn(false)
       return error
     }
 
     return ''
+  }
+  const onFinishFailed = (errorInfo) => errorInfo
+  const cancelConfirmModle = () => {
+    Modal.confirm({
+      title: '変更内容が保存されません。よろしいですか？',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      centered: true,
+      onOk: () => {
+        router.push('/jobfairs')
+      },
+
+      onCancel: () => {},
+      okText: 'はい',
+      cancelText: 'いいえ',
+    })
   }
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
@@ -305,13 +323,14 @@ export default function TaskList() {
               colon={false}
               initialValues={{ defaultInputValue: 0 }}
               onFinish={onFinishSuccess}
-              // onFinishFailed={onFinishFailed}
+              onFinishFailed={onFinishFailed}
             >
               <div className="grid grid-cols-2 mx-10">
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="タスク名"
+                    label="タスク名:"
                     name="name"
+                    required
                     rules={[
                       {
                         validator: TaskNameValidator,
@@ -328,7 +347,7 @@ export default function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="カテゴリ"
+                    label="カテゴリ:"
                     name="category"
                   >
                     <Input
@@ -338,7 +357,7 @@ export default function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="マイルストーン"
+                    label="マイルストーン:"
                     name="milestone"
                   >
                     <Input
@@ -349,7 +368,7 @@ export default function TaskList() {
                 <div className="col-span-1 mx-4">
                   <div className="ef-label">
                     <div className="laybel">
-                      <span>工数</span>
+                      <span>工数:</span>
                     </div>
                     <div className="row-ef">
                       {infoTask.unit === 'none' ? (
@@ -376,8 +395,9 @@ export default function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="担当者"
+                    label="担当者:"
                     name="assignee"
+                    required
                   >
                     <Select
                       mode="multiple"
@@ -396,8 +416,9 @@ export default function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="ステータス"
+                    label="ステータス:"
                     name="status"
+                    required
                     rules={[
                       {
                         validator: TaskNameValidator,
@@ -416,7 +437,8 @@ export default function TaskList() {
                 <div className="col-span-1 mx-4">
                   <Form.Item
                     name="start_time"
-                    label="開始日"
+                    label="開始日:"
+                    required
                     rules={[
                       {
                         validator: startDayValidator,
@@ -434,7 +456,8 @@ export default function TaskList() {
                 <div className="col-span-1 mx-4">
                   <Form.Item
                     name="end_time"
-                    label="開始日"
+                    label="開始日:"
+                    required
                     rules={[
                       {
                         validator: startDayValidator,
@@ -450,10 +473,11 @@ export default function TaskList() {
 
                 </div>
                 <div className="col-span-1 mx-4">
-                  <p className="mb-2">前のタスク</p>
+
                   <Form.Item
-                    // label="前のタスク"
+                    label="前のタスク:"
                     name="taskBefore"
+                    required
                   >
                     <Select
                       mode="multiple"
@@ -472,10 +496,11 @@ export default function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-4">
-                  <p className="mb-2">次のタスク</p>
+
                   <Form.Item
-                    // label="次のタスク"
+                    label="次のタスク:"
                     name="afterTask"
+                    required
                   >
                     <Select
                       mode="multiple"
@@ -510,8 +535,8 @@ export default function TaskList() {
                     <Button
                       htmlType="button"
                       type="primary"
-                      // onClick={cancelConfirmModle}
-                      // disabled={disableBtn}
+                      onClick={cancelConfirmModle}
+                      disabled={disableBtn}
                       className="button_cacel mx-3"
                     >
                       キャンセル
@@ -519,8 +544,8 @@ export default function TaskList() {
                     <Button
                       type="primary"
                       htmlType="submit"
-                    // disabled={disableBtn}
-                    // loading={disableBtn}
+                      disabled={disableBtn}
+                      loading={disableBtn}
                     >
                       保存
                     </Button>

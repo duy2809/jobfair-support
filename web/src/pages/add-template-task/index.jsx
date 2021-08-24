@@ -150,9 +150,6 @@ const index = () => {
       try {
         const beforeID = []
         const afterIDs = []
-        console.log(values.beforeTasks)
-        console.log(values.afterTasks)
-        console.log(templateTasks)
         if (values.beforeTasks && values.afterTasks) {
           templateTasks.forEach((e) => {
             if (values.beforeTasks.includes(e.name)) {

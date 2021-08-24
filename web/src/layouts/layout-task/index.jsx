@@ -32,15 +32,17 @@ const JfLayout = ({ children, id }) => {
     Setcollapsed(!collapsed)
   }
   const fetchJF = async () => {
-    await jfdata(id).then((response) => {
-      setName(response.data.name)
-      setStartDate(response.data.start_date.split('-').join('/'))
-      setAvt(response.data.user.avatar)
-      setNumberOfStudents(response.data.number_of_students)
-      setNumberOfCompanies(response.data.number_of_companies)
-    }).catch((error) => {
-      console.log(error)
-    })
+    if (id) {
+      await jfdata(id).then((response) => {
+        setName(response.data.name)
+        setStartDate(response.data.start_date.split('-').join('/'))
+        setAvt(response.data.user.avatar)
+        setNumberOfStudents(response.data.number_of_students)
+        setNumberOfCompanies(response.data.number_of_companies)
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
   }
 
   useEffect(() => {
