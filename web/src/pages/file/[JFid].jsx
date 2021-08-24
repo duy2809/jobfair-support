@@ -7,6 +7,7 @@ import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import Search from '../../components/file/search'
 import JfLayout from '../../layouts/JFLayout'
+import { addFile, addFolder } from '../../api/file'
 // TODO call API + visit the exactly link of file + Modal Edit + handle file name and directory name too long
 export default function File() {
   const formatter = buildFormatter(frenchStrings)
@@ -15,8 +16,12 @@ export default function File() {
   const [isLoadingBtnEdit, setIsLoadingEdit] = useState(false)
   const [isLoadingBtnDelete, setIsLoadingBtnDelete] = useState(false)
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false)
-  const [isModalEditVisible, setIsModalEditVisible] = useState(false)
+  const [isModalEditFileVisible, setIsModalEditFileVisible] = useState(false)
+  const [isModalEditFolderVisible, setIsModalEditFolderVisible] = useState(false)
   const [directory, setDirectory] = useState(['ファイル', 'abc', 'dsaffdsfadsf', 'dsfsfdsafsadf'])
+  const [currentRowIndex, setcurrentRowIndex] = useState(-1)
+  const [isDisableEditFile, setIsDisableEditFile] = useState(false)
+  const [isDisableEditFolder, setIsDisableEditFolder] = useState(false)
   // tu's code
   const [isDisableFile, setIsDisableFile] = useState(true)
   const [isDisableFolder, setIsDisableFolder] = useState(true)
@@ -27,6 +32,8 @@ export default function File() {
   })
   const [formFile] = Form.useForm()
   const [formFolder] = Form.useForm()
+  const [formEditFile] = Form.useForm()
+  const [formEditFolder] = Form.useForm()
 
   const handleAddFileCancel = () => {
     formFile.setFieldsValue({ name_file: '', link: '' })
@@ -43,6 +50,16 @@ export default function File() {
     setIsDisableFile(false)
   }
 
+  const onEditFileChange = () => {
+    const nameFile = formEditFile.getFieldValue('name_file')
+    const link = formEditFile.getFieldValue('link')
+    if (!nameFile || !link) {
+      setIsDisableEditFile(true)
+      return
+    }
+    setIsDisableEditFile(false)
+  }
+
   const onChangeDisableFolder = () => {
     const nameFolder = formFolder.getFieldValue('name_folder')
     if (!nameFolder) {
@@ -51,95 +68,26 @@ export default function File() {
     }
     setIsDisableFolder(false)
   }
+  const onChangeDisableEditFolder = () => {
+    const nameFolder = formEditFolder.getFieldValue('name_folder')
+    if (!nameFolder) {
+      setIsDisableEditFolder(true)
+      return
+    }
+    setIsDisableEditFolder(false)
+  }
+
+  const handleAddFileOk = () => {
+
+  }
 
   // my code
-  const [recentUpdated, setRecentUpdated] = useState([
-    {
-      key: '0',
-      checkbox: true,
-      name: '1abc.jpgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      is_file: false,
-      updater: 'vu phongaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '1',
-      checkbox: false,
-      is_file: false,
-      name: '0abdsfac',
-      updater: 'vu phong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '2',
-      checkbox: false,
-      is_file: true,
-      name: 'fdsfasabc.jpg',
-      updater: 'vu phongdsf',
-      updated_at: '2021-08-20 10:16:15',
-    },
-    {
-      key: '3',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '4',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '5',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '6',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '7',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '8',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '9',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-  ])
+  const [recentUpdated, setRecentUpdated] = useState([])
   const [data, setData] = useState([
     {
       key: '0',
       checkbox: true,
-      name: '1abc.jpgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      name: 'abc.jpgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       is_file: false,
       updater: 'vu phong',
       updated_at: '2021-08-20 03:16:15',
@@ -159,7 +107,7 @@ export default function File() {
       name: 'fdsfasabc.jpg',
       updater: 'vu phongdsf',
       updated_at: '2021-08-20 10:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
     },
     {
       key: '3',
@@ -168,7 +116,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
     },
     {
       key: '4',
@@ -177,7 +125,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
     },
     {
       key: '5',
@@ -186,7 +134,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
 
     },
     {
@@ -196,7 +144,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
 
     },
     {
@@ -206,7 +154,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
 
     },
     {
@@ -216,7 +164,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
 
     },
     {
@@ -226,7 +174,7 @@ export default function File() {
       name: 'dfsafdsabc',
       updater: 'vu pfdsahong',
       updated_at: '2021-08-20 03:16:15',
-      link: 'https://stackoverflow.com/questions/65632698/how-to-open-a-link-in-a-new-tab-in-nextjs',
+      link: 'fb.me',
 
     },
   ])
@@ -309,7 +257,10 @@ export default function File() {
   useEffect(() => {
     let count = 0
     isChecked.forEach((elem, index) => {
-      if (elem && data[index].checkbox) count += 1
+      if (elem && data[index].checkbox) {
+        setcurrentRowIndex(index)
+        count += 1
+      }
     })
     if (count > 1) {
       setDisableBtnDelete(false)
@@ -326,7 +277,17 @@ export default function File() {
     setIsModalDeleteVisible(true)
   }
   const onBtnEditClick = () => {
-    console.log('x')
+    if (data[currentRowIndex].is_file) {
+      setIsModalEditFileVisible(true)
+    } else {
+      setIsModalEditFolderVisible(true)
+    }
+  }
+  const handleEditFileOk = () => {
+
+  }
+  const handleEditFolderOk = () => {
+
   }
   const onClickDirectory = (e) => {
     console.log(e.target)
@@ -371,6 +332,7 @@ export default function File() {
                     cancelText="キャンセル"
                     centered
                     visible={isModalAddVisible.addFile}
+                    onOk={handleAddFileOk}
                     onCancel={handleAddFileCancel}
                     okButtonProps={{ disabled: isDisableFile }}
                   >
@@ -491,6 +453,93 @@ export default function File() {
                       >
                         編集
                       </Button>
+                      <Modal
+                        title="新しいファイル"
+                        okText="保存"
+                        cancelText="キャンセル"
+                        centered
+                        visible={isModalEditFileVisible}
+                        onOk={handleEditFileOk}
+                        onCancel={() => { setIsModalEditFileVisible(false) }}
+                        okButtonProps={{ disabled: isDisableEditFile }}
+                      >
+                        <Form
+                          form={formEditFile}
+                          onValuesChange={onEditFileChange}
+                          layout="vertical"
+                          name="basic"
+                        >
+                          <Form.Item
+                            label={
+                              <p>名前</p>
+                            }
+                            name="name_file"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'この項目は必須です。',
+                              }]}
+                          >
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="新しいファイル名"
+                            />
+                          </Form.Item>
+                          <Form.Item
+                            label={
+                              <p>リンク</p>
+                            }
+                            name="link"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'この項目は必須です。',
+                              }]}
+                          >
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="グーグルドライブリンク"
+                            />
+                          </Form.Item>
+                        </Form>
+                      </Modal>
+                      <Modal
+                        title="新しいフォルダ"
+                        okText="保存"
+                        cancelText="キャンセル"
+                        centered
+                        visible={isModalEditFolderVisible}
+                        onOk={handleEditFolderOk}
+                        onCancel={() => { setIsModalEditFolderVisible(false) }}
+                        okButtonProps={{ disabled: isDisableEditFolder }}
+                      >
+                        <Form
+                          form={formEditFolder}
+                          onValuesChange={onChangeDisableEditFolder}
+                          layout="vertical"
+                          name="basic"
+                        >
+                          <Form.Item
+                            label={
+                              <p>名前</p>
+                            }
+                            name="name_folder"
+                            rules={[
+                              {
+                                required: true,
+                                message: 'この項目は必須です。',
+                              }]}
+                          >
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="新しいフォルダ名"
+                            />
+                          </Form.Item>
+                        </Form>
+                      </Modal>
                       <Button
                         type="primary"
                         className="w-14 md:w-24"
