@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Form, Input, Select, Tag } from 'antd'
+import { Form, Input, Select, Tag, DatePicker } from 'antd'
+import moment from 'moment'
 import JfLayout from '../../layouts/layout-task'
 import {
   taskData, beforeTask, afterTask,
@@ -10,12 +11,12 @@ import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 
 export default function TaskList() {
+  const dateFormat = 'YYYY/MM/DD'
   const router = useRouter()
   const idTask = router.query.id
   const [form] = Form.useForm()
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
   const [afterTasksNew, setafterTaskNew] = useState([])
-  const [listMemberAssignee, setListMemberAssignee] = useState([])
   const [infoTask, setInfoTask] = useState({
     name: '',
     categories: '',
@@ -44,23 +45,38 @@ export default function TaskList() {
           unit: response.data.template_task.unit,
           description_of_detail: response.data.description_of_detail,
         })
-        setListMemberAssignee(response.data.users)
+
         setIdJF(
           response.data.schedule.jobfair.id,
 
         )
         // eslint-disable-next-line no-use-before-define
         fetchListTask()
+        const listmember = []
+        response.data.users.forEach((element) => {
+          listmember.push(element.name)
+        })
         form.setFieldsValue({
           name: response.data.name,
           category: response.data.categories[0].category_name,
           milestone: response.data.milestone.name,
+          assignee: listmember,
+          status: response.data.status,
+          start_time: moment(response.data.start_time.split('-').join('/'), dateFormat),
+          end_time: moment(response.data.end_time.split('-').join('/'), dateFormat),
         })
       })
       .catch((error) => {
         console.log(error)
       })
   }
+  const startDayValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+    return Promise.resolve()
+  }
+
   function tagRender(props) {
     // eslint-disable-next-line react/prop-types
     const { label, value, closable, onClose } = props
@@ -154,7 +170,7 @@ export default function TaskList() {
       optionsAt.push({ value: element.name })
     })
   }, [idJF])
-
+  const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
   return (
     <div>
       <JfLayout id={idJF}>
@@ -261,6 +277,61 @@ export default function TaskList() {
                     </Select>
 
                   </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    label="ステータス"
+                    name="status"
+                    rules={[
+                      {
+                        validator: TaskNameValidator,
+                      },
+                    ]}
+                  >
+                    <Select className="addJF-selector" placeholder="管理者を選択">
+                      {listStatus.map((element) => (
+                        <Select.Option value={element}>
+                          {element}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    name="start_time"
+                    label="開始日"
+                    rules={[
+                      {
+                        validator: startDayValidator,
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      help="Please select the correct date"
+                      format={Extensions.dateFormat}
+                      placeholder={Extensions.dateFormat}
+                    />
+                  </Form.Item>
+
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    name="end_time"
+                    label="開始日"
+                    rules={[
+                      {
+                        validator: startDayValidator,
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      help="Please select the correct date"
+                      format={Extensions.dateFormat}
+                      placeholder={Extensions.dateFormat}
+                    />
+                  </Form.Item>
+
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
