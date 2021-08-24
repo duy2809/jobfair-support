@@ -51,6 +51,7 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
+        return Schedule::find($id);
     }
 
     /**
@@ -82,6 +83,10 @@ class ScheduleController extends Controller
      */
     public function destroy($id)
     {
+        $schedule=Schedule::find($id);
+        $schedule->delete();
+        return response()->json(['message' => 'Delete Successfully'], 200);
+
     }
 
     public function getMilestones($id)

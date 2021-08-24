@@ -13,15 +13,15 @@ const columns = [
     dataIndex: 'id',
     key: 'No.',
     width: '10%',
-    render: (id) => id,
+    render: (id) => id
   },
   {
     title: 'スケジュール',
     dataIndex: 'name',
     key: 'スケジュール',
     width: '90%',
-    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
-  },
+    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
+  }
 ]
 
 export default function ScheduleList() {
@@ -29,13 +29,18 @@ export default function ScheduleList() {
   const [filterSchedules, setFilterSchedules] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
+  const [pagination, setPagination] = useState({
+    position: ['bottomCenter'],
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: false
+  })
   const [user, setUser] = useState({})
   const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
-      pageSize: value,
+      pageSize: value
     }))
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
@@ -44,12 +49,14 @@ export default function ScheduleList() {
   const handleChange = (e) => {
     setPagination((preState) => ({
       ...preState,
-      current: e.current,
+      current: e.current
     }))
   }
 
   const handleInput = (e) => {
-    const result = schedules.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
+    const result = schedules.filter(
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+    )
     setFilterSchedules(result)
   }
 
@@ -60,7 +67,7 @@ export default function ScheduleList() {
     } else {
       setPagination((preState) => ({
         ...preState,
-        pageSize: paginationData.pageSize,
+        pageSize: paginationData.pageSize
       }))
       setItemCount(paginationData.pageSize)
     }
@@ -76,13 +83,15 @@ export default function ScheduleList() {
         router.push('/login')
       }
     })
-    ListScheduleApi.getListShedule().then((res) => {
-      const { data } = res
-      setSchedules(data)
-      setFilterSchedules(data)
-    }).finally(() => {
-      setDataLoading(false)
-    })
+    ListScheduleApi.getListShedule()
+      .then((res) => {
+        const { data } = res
+        setSchedules(data)
+        setFilterSchedules(data)
+      })
+      .finally(() => {
+        setDataLoading(false)
+      })
   })
 
   const handleClick = (e) => {
@@ -90,9 +99,11 @@ export default function ScheduleList() {
     router.push('/schedule/add')
   }
 
-  const handleRow = (record) => ({ onClick: () => {
-    router.push(`/schedule/${record.id}`)
-  } })
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/schedule/${record.id}`)
+    }
+  })
 
   useEffect(() => {
     fetchData()
@@ -106,7 +117,7 @@ export default function ScheduleList() {
           <div className="flex w-full justify-between">
             <div className="text-4xl title">JFスケジュール一覧</div>
             <div>
-              { role === 'superadmin' ? (
+              {role === 'superadmin' ? (
                 <Button
                   type="primary"
                   className="px-12"
@@ -116,7 +127,9 @@ export default function ScheduleList() {
                 >
                   追加
                 </Button>
-              ) : ''}
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="flex w-full justify-between">
@@ -130,7 +143,12 @@ export default function ScheduleList() {
             </div>
             <div>
               <div className="text-2xl ml-auto flex items-center">
-                <Input placeholder="スケジュール" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+                <Input
+                  placeholder="スケジュール"
+                  onChange={handleInput}
+                  bordered
+                  prefix={<SearchOutlined />}
+                />
               </div>
             </div>
           </div>
@@ -144,7 +162,14 @@ export default function ScheduleList() {
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="該当結果が見つかりませんでした"
+                />
+              )
+            }}
           />
         </div>
       </Layout.Main>
