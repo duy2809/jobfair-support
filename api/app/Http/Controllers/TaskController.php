@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Models\Task;
-
+use Illuminate\Http\Request;
 class TaskController extends Controller
 {
     /**
@@ -47,8 +44,9 @@ class TaskController extends Controller
             'milestone:id,name',
             'categories:id,category_name',
             'users:id,name',
-            'templateTask:id,effort,is_day,unit'
+            'templateTask:id,effort,is_day,unit',
         ])->find($id);
+        
         return response()->json($tasks);
     }
 
@@ -89,6 +87,7 @@ class TaskController extends Controller
 
         return response()->json(['message' => 'Delete Successfully'], 200);
     }
+    
     public function getBeforeTasks($id)
     {
         $beforeTasks = Task::with('beforeTasks:id,name')->find($id, ['id', 'name']);
