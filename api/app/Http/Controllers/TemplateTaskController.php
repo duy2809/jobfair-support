@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TemplateTaskRequest;
 use App\Models\Category;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class TemplateTaskController extends Controller
      */
     public function index()
     {
-        $templateTasks = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])
+        $templateTasks = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])
             ->orderBy('template_tasks.created_at', 'DESC')
             ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
 
@@ -28,9 +29,16 @@ class TemplateTaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TemplateTaskRequest $request)
     {
-        $newTemplateTask = TemplateTask::create($request->all());
+        $newTemplateTask = TemplateTask::create([
+            'name' => $request->name,
+            'description_of_detail' => $request->description_of_detail,
+            'milestone_id' => $request->milestone_id,
+            'is_day' => $request->is_day,
+            'unit' => $request->unit,
+            'effort' => $request->effort,
+        ]);
         $newTemplateTask->categories()->attach($request->category_id);
         if (!empty($request->beforeTasks)) {
             $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
@@ -40,7 +48,19 @@ class TemplateTaskController extends Controller
             $newTemplateTask->afterTasks()->attach($request->afterTasks);
         }
 
-        return response()->json(['message' => 'Save Successfully'], 200);
+        return $newTemplateTask;
+
+        // $newTemplateTask = TemplateTask::create($request->validated());
+        // $newTemplateTask->categories()->attach($request->category_id);
+        // if (!empty($request->beforeTasks)) {
+        //     $newTemplateTask->beforeTasks()->attach($request->beforeTasks);
+        // }
+
+        // if (!empty($request->afterTasks)) {
+        //     $newTemplateTask->afterTasks()->attach($request->afterTasks);
+        // }
+
+        // return $newTemplateTask;
     }
 
     /**
@@ -51,7 +71,7 @@ class TemplateTaskController extends Controller
      */
     public function show($id)
     {
-        $templateTask = TemplateTask::with(['categories:id,category_name', 'templateMilestone:id,name'])->find($id);
+        $templateTask = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])->find($id);
 
         return response()->json($templateTask);
     }
@@ -66,6 +86,20 @@ class TemplateTaskController extends Controller
     public function update(Request $request, $id)
     {
         $templateTask = TemplateTask::find($id);
+        $check = false;
+        $existTemp = TemplateTask::whereRaw('BINARY `name`= ?', [$request->name])->first();
+        if (isset($existTemp)) {
+            $check = true;
+        }
+
+        if ($templateTask->name === $request->name) {
+            $check = false;
+        }
+
+        if ($check) {
+            return response()->json(['message' => 'Edit Failed'], 422);
+        }
+
         $templateTask->update($request->all());
         $templateTask->categories()->sync($request->category_id);
         if (!empty($request->beforeTasks)) {
@@ -115,5 +149,10 @@ class TemplateTaskController extends Controller
         $afterTasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
 
         return response()->json($afterTasks);
+    }
+
+    public function checkNameExisted(Request $request)
+    {
+        return TemplateTask::where('name', '=', $request->name)->get();
     }
 }

@@ -23,13 +23,13 @@ export default function TaskList() {
   const [isDay, setIsDay] = useState([])
   const [unit, setUnit] = useState([])
   const [des, setDes] = useState([])
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState('')
 
   const fetchInfo = async () => {
     await templateTask(idTplt).then((response) => {
       setName(response.data.name)
       setCategory(response.data.categories[0].category_name)
-      setMilestone(response.data.template_milestone.name)
+      setMilestone(response.data.milestone.name)
       setEf(response.data.effort)
       setIsDay(response.data.is_day)
       setUnit(response.data.unit)
@@ -75,8 +75,7 @@ export default function TaskList() {
   const deletetpl = async () => {
     await deleteTptt(idTplt).then((response) => {
       console.log(response.data)
-      saveNotification()
-      router.push('/template-tasts')
+      router.push('/template-tasks')
     }).catch((error) => {
       console.log(error)
     })
@@ -88,6 +87,7 @@ export default function TaskList() {
       content: '',
       onOk: () => {
         deletetpl()
+        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -102,10 +102,10 @@ export default function TaskList() {
     getDataUser()
   }, [])
   const handleBack = () => {
-    router.push('/template-tasts')
+    router.push('/template-tasks')
   }
   const handleEdit = () => {
-    router.push('/template-tasts')
+    router.push(`/template-tasks/${idTplt}/edit`)
   }
   return (
     <div>
@@ -117,7 +117,7 @@ export default function TaskList() {
                 <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>戻る</Button>
               </div>
               <div className="button__right">
-                {user === 2 ? (
+                {user === 'admin' ? (
                   <>
                     <Button style={{ border: 'none' }} type="primary" onClick={handleEdit}>編集</Button>
                     <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>削除</Button>
@@ -130,99 +130,92 @@ export default function TaskList() {
             <h1>テンプレートタスク詳細</h1>
 
             <div className="info__tplt">
-              <div className="info__center">
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2 " />
-                  <div className=" layber col-span-2 ">
-                    <p>テンプレートタスク名:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <div className="item__right">{name}</div>
-                  </div>
-                  <div className="col-span-2 " />
-                </div>
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2 " />
-                  <div className="layber col-span-2 ">
-                    <p>カテゴリ:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <div className="item__right">{categoryName}</div>
-                  </div>
-                  <div className="col-span-2 " />
-                </div>
-
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2" />
-                  <div className="layber col-span-2 ">
-                    <p>マイルストーン:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <div className="item__right">{milestoneName}</div>
-                  </div>
-                  <div className="col-span-2 " />
-                </div>
-
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2" />
-                  <div className="layber col-span-2 ">
-                    <p>リレーション:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <div className="rela">
-                      <p>前のタスク </p>
-                      <ul className="list__task">
-                        {beforeTasks ? beforeTasks.map((item) => (
-                          <li className="task__chil">
-                            <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
-                              {truncate(item.name)}
-                            </a>
-                          </li>
-                        )) : null }
-                      </ul>
-
+              <div className="grid grid-cols-2 mx-16 info__center">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-3 ">
+                    <div className=" layber col-span-1 mx-4">
+                      <p>テンプレートタスク名:</p>
                     </div>
-                    <div className="rela">
-                      <p>次のタスク</p>
-                      <ul className="list__task">
-                        {afterTasks ? afterTasks.map((item) => (
-                          <li>
-                            <a href={`/tasks/${item.id}`} target="_blank" rel="noreferrer">
-                              {truncate(item.name)}
-                            </a>
-                          </li>
-                        )) : null }
-                      </ul>
+                    <div className="col-span-2 mx-4">
+                      <div className="item__right">{name}</div>
+                    </div>
+
+                  </div>
+
+                </div>
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-3 ">
+                    <div className="layber  col-span-1 mx-4">
+                      <p>カテゴリ:</p>
+                    </div>
+                    <div className="col-span-2 mx-4">
+                      <div className="item__right">{categoryName}</div>
                     </div>
                   </div>
-                  <div className="col-span-2 " />
+
                 </div>
 
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2" />
-                  <div className="layber col-span-2 ">
-                    <p>工数:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <span className="ef">{ef}</span>
-                    <span className="ef">{isDay ? '日' : '時間'}</span>
-                    <span>/</span>
-                    <span className="ef">{unit}</span>
-                  </div>
-                  <div className="col-span-2 " />
-                </div>
-                <div className="grid grid-cols-9 mt-3">
-                  <div className="col-span-2" />
-                  <div className="layber col-span-2 ">
-                    <p>詳細:</p>
-                  </div>
-                  <div className="col-span-3">
-                    <div className="des demo-infinite-container">
-                      {des}
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-3 ">
+                    <div className="layber col-span-1 mx-4">
+                      <p>マイルストーン:</p>
+                    </div>
+                    <div className="col-span-2 mx-4">
+                      <div className="item__right">{milestoneName}</div>
                     </div>
                   </div>
-                  <div className="col-span-2 " />
+
                 </div>
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-3 ">
+                    <div className="layber col-span-1 mx-4">
+                      <p>工数:</p>
+                    </div>
+                    <div className="col-span-2 mx-4">
+                      <span className="ef">{ef}</span>
+                      <span className="ef">{isDay ? '日' : '時間'}</span>
+                      <span>/</span>
+                      <span className="ef">{unit}</span>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div className="grid grid-cols-2 mx-16 mt-5">
+                <div className="rela col-span-1 mx-8">
+                  <p className="mb-2">前のタスク </p>
+                  <ul className="list__task">
+                    {beforeTasks ? beforeTasks.map((item) => (
+                      <li className="task__chil">
+                        <a href={`/task-detail/${item.id}`} target="_blank" rel="noreferrer">
+                          {truncate(item.name)}
+                        </a>
+                      </li>
+                    )) : null }
+                  </ul>
+
+                </div>
+                <div className="rela col-span-1 mx-8">
+                  <p className="mb-2">次のタスク</p>
+                  <ul className="list__task">
+                    {afterTasks ? afterTasks.map((item) => (
+                      <li>
+                        <a href={`/task-detail/${item.id}`} target="_blank" rel="noreferrer">
+                          {truncate(item.name)}
+                        </a>
+                      </li>
+                    )) : null }
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mx-16 mt-5">
+                <div className=" mx-8 des demo-infinite-container">
+                  {des}
+                </div>
+
               </div>
             </div>
           </div>

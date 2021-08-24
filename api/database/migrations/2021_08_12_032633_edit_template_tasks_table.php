@@ -15,6 +15,7 @@ class EditTemplateTasksTable extends Migration
     {
         Schema::table('template_tasks', function (Blueprint $table) {
             $table->text('description_of_detail')->nullable()->change();
+            $table->boolean('is_day')->default(0)->change();
         });
     }
 
@@ -27,6 +28,7 @@ class EditTemplateTasksTable extends Migration
     {
         Schema::table('template_tasks', function (Blueprint $table) {
             $table->text('description_of_detail')->change();
+            $table->boolean('is_day')->change();
         });
     }
 }

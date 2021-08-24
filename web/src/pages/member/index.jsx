@@ -4,7 +4,6 @@ import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
-import './styles.scss'
 
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
@@ -116,8 +115,8 @@ export default function MemberList() {
     <Layout>
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="text-5xl w-full flex justify-between items-center title">
-            <div>メンバ一覧</div>
+          <div className="w-full flex justify-between items-center title">
+            <h1 className="m-0">メンバ一覧</h1>
             <div>
               { role === 'superadmin' ? (
                 <Button
@@ -143,7 +142,7 @@ export default function MemberList() {
             </div>
             <div>
               <div className="text-2xl flex items-center">
-                <Input placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+                <Input className="no-border" placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
               </div>
             </div>
           </div>

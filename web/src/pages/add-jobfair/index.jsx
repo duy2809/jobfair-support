@@ -139,34 +139,34 @@ const index = () => {
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
       }
       setdisableBtn(true)
-      const response = await addJFAPI.addJF(data)
 
+      const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
       } else {
         setdisableBtn(false)
       }
-
       return response
     } catch (error) {
       setdisableBtn(false)
-      const isDuplicate = JSON.parse(error.request.response).message
-      if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
+      const errorResponse = JSON.parse(error.request.response)
+      if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: 'このJF名は既に使用されています。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           duration: 3,
-          message: '保存に失敗しました。',
+          message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       }
+      // console.log(JSON.parse(error.request.response).errors.name[0])
       return error
     }
   }
@@ -182,8 +182,8 @@ const index = () => {
   // call api get milestone  when selector change schedule
   const getTask = async (id) => {
     const tasks = await addJFAPI.getTaskList(id)
-    if (tasks.data.tasks) {
-      setlistTask(Array.from(tasks.data.tasks))
+    if (tasks.data.template_tasks) {
+      setlistTask(Array.from(tasks.data.template_tasks))
     }
   }
 
@@ -195,18 +195,20 @@ const index = () => {
     getTask(scheduleId)
   }
   const checkIsJFNameExisted = async () => {
-    const name = form.getFieldValue('name')
-    const response = await addJFAPI.isJFExisted({ name })
+    try {
+      const name = form.getFieldValue('name')
+      if (name) {
+        const response = await addJFAPI.isJFExisted({ name })
 
-    if (response.data.length) {
-      return notification.open({
-        icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
-        duration: 3,
-        message: 'このJF名は既に使用されています。',
-        onClick: () => {},
-      })
+        if (response.data.length) {
+          document.getElementById('validate_name').style.border = '1px solid red'
+          return document.getElementById('error-msg').removeAttribute('hidden')
+        }
+      }
+      return false
+    } catch (error) {
+      return error
     }
-    return false
   }
 
   /* Validator of all input. */
@@ -324,27 +326,33 @@ const index = () => {
                   {/* jobfair name */}
                   <Form.Item
                     label="JF名"
-                    name="name"
                     required
-                    // hasFeedback
-                    rules={[
-                      {
-                        validator: JFNameValidator,
-                      },
-
-                    ]}
                   >
-                    <Input
-                      type="text"
-                      name="JFName"
-                      onBlur={checkIsJFNameExisted}
-                      // onFocus={checkIsJFNameExisted}
-                      placeholder="JF名を入力する"
-                      maxLength={200}
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                    />
-                  </Form.Item>
+                    <Form.Item
+                      name="name"
+                      noStyle
+                      rules={[
+                        {
+                          validator: JFNameValidator,
+                        },
+                      ]}
+                    >
+                      <Input
+                        type="text"
+                        id="validate_name"
+                        onBlur={checkIsJFNameExisted}
+                        onChange={() => {
+                          document.getElementById('error-msg').setAttribute('hidden', 'true')
+                          document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                        }}
+                        placeholder="JF名を入力する"
+                        maxLength={200}
+                      />
 
+                    </Form.Item>
+
+                    <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
+                  </Form.Item>
                   {/* start date */}
                   <Form.Item
                     required
@@ -359,6 +367,7 @@ const index = () => {
                   >
                     <DatePicker
                       help="Please select the correct date"
+                      className="py-2"
                       // style={{ backgroundColor: '#e3f6f5' }}
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
@@ -426,7 +435,11 @@ const index = () => {
                       },
                     ]}
                   >
-                    <Select className="addJF-selector" placeholder="管理者を選択">
+                    <Select
+                      size="large"
+                      className="addJF-selector"
+                      placeholder="管理者を選択"
+                    >
                       {listAdminJF.map((element) => (
                         <Select.Option key={element.id} value={element.id}>
                           {element.name}
@@ -448,6 +461,7 @@ const index = () => {
                     ]}
                   >
                     <Select
+                      size="large"
                       className="addJF-selector"
                       placeholder="JF-スケジュールを選択"
                       onSelect={onScheduleSelect}
@@ -462,7 +476,7 @@ const index = () => {
 
                   {/* list milestones */}
                   <Form.Item label=" ">
-                    マイルストーン一覧
+                    <span className="label">マイルストーン一覧</span>
                     <List
                       className="demo-infinite-container"
                       bordered
@@ -482,7 +496,7 @@ const index = () => {
 
                   {/* list task */}
                   <Form.Item label=" ">
-                    タスク一賜
+                    <span className="label">タスク一賜</span>
                     <List
                       className="demo-infinite-container"
                       bordered

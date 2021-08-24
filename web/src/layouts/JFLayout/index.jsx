@@ -30,7 +30,9 @@ const JfLayout = ({ children }) => {
   }, [children])
   return (
     <div className="menuu">
+      <Navbar />
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
+
         <Sider
           style={{
             background: '#bae8e8',
@@ -81,14 +83,8 @@ const JfLayout = ({ children }) => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Navbar />
+
           <Content
-            style={{
-              margin: '24px 16px',
-              padding: 24,
-              minHeight: 280,
-            }}
-            // style={{ margin: '24px 16px 0', overflow: 'initial' }}
             className="site-layout-background"
           >
             {_get(main, 'props.children')}
