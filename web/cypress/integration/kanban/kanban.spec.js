@@ -107,18 +107,18 @@ describe('Check website', function () {
   });
   
   describe('Check active', function () {
-    it('task details', function () {
+    it('Check task detail', function () {
       cy.get('.ant-card-body a').click({ multiple: true });
-      cy.url().should('include', '/tasks');
+      cy.url().should('include', '/task-detail');
+      cy.go('back')
     });
 
-      it('drag and drop', function(){
+    it('pendding to in progress', function(){
         const dataTransfer = new DataTransfer();
-        cy.vist("https://www.seleniumeasy.com/test/drag-and-drop-demo.html");
-        cy.get('#todrag>span:nth-child(2)').trigger('dragstart', {dataTransfer});
-        cy.get('#mydropzone').trigger('drop', {dataTransfer});
-        cy.get('#todrag>span:nth-child(2)').trigger('dragend');        
-        cy.get('#droppedlist span').contains('Draggable 1').should('be.visible');
-      })     
+        cy.get('.中断 .container__column--task').eq(0).trigger('dragstart', {dataTransfer});
+        cy.get('.進行中').trigger('drop', {dataTransfer});
+        cy.get('.中断 .container__column--task').eq(0).trigger('dragend');  
+        // cy.get('.進行中:nth-child(1) button').contains('問 題').should('not.be.visible');
+    }) ;
   });
   
