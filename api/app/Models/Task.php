@@ -17,6 +17,7 @@ class Task extends Model
         'description_of_detail',
         'milestone_id',
         'user_id',
+        'memo',
         'schedule_id',
         'template_task_id',
     ];
