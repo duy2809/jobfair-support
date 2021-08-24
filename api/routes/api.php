@@ -110,6 +110,7 @@ Route::resource('/file', FileController::class);
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
 Route::get('/file/path',[App\Http\Controllers\FileController::class, 'getPath']);
 Route::get('/file/getLatest', [App\Http\Controllers\FileController::class, 'getLatest']);
+Route::post('/file/delArray', [App\Http\Controllers\FileController::class, 'destroyArrayOfDocument']);
 // member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);

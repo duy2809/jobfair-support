@@ -160,6 +160,17 @@ class FileController extends Controller
      */
     public function destroy($id)
     {
-        return Document::whereIn('id',$id)->delete(); 
+        return Document::destroy($id);
+    }
+    public function destroyArrayOfDocument(Request $request)
+    {
+        foreach($request->id as $Id)
+        Document::destroy($Id);
+        return DB::table('documents')
+        ->select('*')
+        ->where('path', $request->path)
+        ->orderBy('documents.is_file', 'asc')
+        ->orderBy('documents.updated_at', 'desc')
+        ->get();
     }
 }
