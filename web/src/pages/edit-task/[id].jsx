@@ -153,7 +153,7 @@ export default function TaskList() {
     afterTasksNew.forEach((element) => {
       optionsAt.push({ value: element.name })
     })
-  }, [fetchListTask])
+  }, [idJF])
 
   return (
     <div>
