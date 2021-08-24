@@ -12,6 +12,7 @@ import * as Extensions from '../../utils/extensions'
 
 export default function TaskList() {
   const dateFormat = 'YYYY/MM/DD'
+  const { TextArea } = Input
   const router = useRouter()
   const idTask = router.query.id
   const [form] = Form.useForm()
@@ -64,6 +65,7 @@ export default function TaskList() {
           status: response.data.status,
           start_time: moment(response.data.start_time.split('-').join('/'), dateFormat),
           end_time: moment(response.data.end_time.split('-').join('/'), dateFormat),
+          detail: response.data.description_of_detail,
         })
       })
       .catch((error) => {
@@ -373,6 +375,13 @@ export default function TaskList() {
                       ))}
                     </Select>
 
+                  </Form.Item>
+                </div>
+                <div className="col-span-2 mx-4">
+                  <Form.Item
+                    name="detail"
+                  >
+                    <TextArea rows={10} placeholder="何かを入力してください" />
                   </Form.Item>
                 </div>
               </div>
