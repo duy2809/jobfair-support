@@ -20,9 +20,7 @@
       padding: 7px 10px;
       border-radius: 6px;
       font-size: 15px;
-      border: 1.2px solid rgb(172, 169, 169);
       margin: 0 10px;
-      background-color: #f5f5f5;
     }
   }
   .ef-label {
@@ -38,11 +36,12 @@
   .ant-tag a {
     color: rgb(16, 85, 189);
   }
+
   .ant-tag > .anticon + span,
   .ant-tag > span + .anticon {
     padding: 1px;
     margin-left: 7px;
-    font-size: 11px;
+    font-size: 17px;
     transform: translateY(-8px);
     border-radius: 100%;
   }
@@ -51,11 +50,11 @@
     background-color: gray;
     border: 1px solid black;
   }
-  .anticon, .layout-task .anticon-home, .layout-task .ant-menu-item-icon {
+  .anticon,
+  .layout-task .anticon-home,
+  .layout-task .ant-menu-item-icon {
     font-size: 10px;
     margin-bottom: 3px;
-
-
   }
   .ant-col-18 {
     max-width: 100% !important;
@@ -86,5 +85,31 @@
   .ant-form-item-explain.ant-form-item-explain-error {
     width: 100%;
     margin: 0 auto;
+  }
+  .ant-spin-nested-loading > div > .ant-spin {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    z-index: 4;
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+  }
+  .ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-dot {
+    font-size: 30px;
+    color: #ffd803;
+  }
+  .ant-form-item .ant-mentions,
+  .ant-form-item textarea.ant-input {
+    height: 175px;
+    overflow: auto;
+  }
+
+  .anticon,
+  .edit-task .layout-task .anticon-home,
+  .edit-task .layout-task .ant-menu-item-icon {
+    font-size: 16px;
   }
 }

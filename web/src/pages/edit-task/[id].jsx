@@ -91,6 +91,7 @@ export default function TaskList() {
     }
     return Promise.resolve()
   }
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, value, closable, onClose } = props
@@ -109,8 +110,36 @@ export default function TaskList() {
           <span
             onClick={() => {
               const id = allTask.find((e) => e.name === value)
-              router.push(`/task-detail/${id}`)
+              router.push(`/task-detail/${id.id}`)
             }}
+            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+
+          >
+            {truncate(label)}
+            {/* <a href="" className="my-1">{label}</a> */}
+          </span>
+
+        </Tooltip>
+      </Tag>
+    )
+  }
+
+  const tagRenderr = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { label, value, closable, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+      >
+        <Tooltip title={label}>
+          <span
             className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
 
           >
@@ -243,7 +272,7 @@ export default function TaskList() {
       content: '',
       centered: true,
       onOk: () => {
-        router.push('/jobfairs')
+        router.push('/tasks')
       },
 
       onCancel: () => {},
@@ -296,6 +325,7 @@ export default function TaskList() {
       console.log(error)
     })
   }
+
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
@@ -350,9 +380,7 @@ export default function TaskList() {
                     label="カテゴリ:"
                     name="category"
                   >
-                    <Input
-                      disabled
-                    />
+                    <span>{infoTask.categories}</span>
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-4">
@@ -360,9 +388,7 @@ export default function TaskList() {
                     label="マイルストーン:"
                     name="milestone"
                   >
-                    <Input
-                      disabled
-                    />
+                    <span>{infoTask.milestone}</span>
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-4">
@@ -402,7 +428,7 @@ export default function TaskList() {
                     <Select
                       mode="multiple"
                       showArrow
-                      tagRender={tagRender}
+                      tagRender={tagRenderr}
                       style={{ width: '100%' }}
                     >
                       {listUser.map((element) => (
@@ -439,6 +465,7 @@ export default function TaskList() {
                     name="start_time"
                     label="開始日:"
                     required
+                    className="big-icon"
                     rules={[
                       {
                         validator: startDayValidator,
@@ -456,7 +483,8 @@ export default function TaskList() {
                 <div className="col-span-1 mx-4">
                   <Form.Item
                     name="end_time"
-                    label="開始日:"
+                    className="big-icon"
+                    label="終了日:"
                     required
                     rules={[
                       {
@@ -477,7 +505,6 @@ export default function TaskList() {
                   <Form.Item
                     label="前のタスク:"
                     name="taskBefore"
-                    required
                   >
                     <Select
                       mode="multiple"
@@ -500,7 +527,6 @@ export default function TaskList() {
                   <Form.Item
                     label="次のタスク:"
                     name="afterTask"
-                    required
                   >
                     <Select
                       mode="multiple"

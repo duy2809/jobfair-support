@@ -35,15 +35,15 @@
     .list__task {
         display: flex;
         align-items: center;
-        height: 47px;
+      
         width: 100%;
-        overflow: auto;
+        overflow-y: auto;
         border: 1px solid #999;
         box-shadow: 2px #b5b5b8;
         margin: 0 5px;
 
         li {
-
+            white-space: nowrap;
             margin: 3px 5px;
             border: 1px solid #b5b5b8;
             padding: 5px;
