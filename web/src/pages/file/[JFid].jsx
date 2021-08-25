@@ -595,81 +595,56 @@ export default function File() {
                 <div className="pt-12">
                   <h2 className="font-bold">最近更新されたファイル</h2>
                   <div className="h-60 recently mt-1 border border-black rounded-md flex flex-col justify-start">
-                    {recentUpdated.map((el, index) => {
-                      if (index !== recentUpdated.length - 1) {
-                        return (
-                          <>
-                            <div className="my-2 px-6 border-b border-black ">
-                              <div className="flex flex-row items-center">
-                                <FileFilled className="mr-2 " />
-                                {el.name.length > 20
-                                  ? (
-                                    <Tooltip placement="top" title={el.name}>
-                                      <span
-                                        className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                        style={{ maxWidth: '20ch' }}
-                                      >
-                                        {el.name}
-                                      </span>
-                                    </Tooltip>
-                                  ) : (
-                                    <span
-                                      className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                      style={{ maxWidth: '20ch' }}
-                                    >
-                                      {el.name}
-                                    </span>
-                                  )}
-                              </div>
-                              <div className="py-2 flex flex-row items-center">
-                                <TimeAgo date={el.updated_at} formatter={formatter} />
-
-                                {el.updater.length > 20
-                                  ? (
-                                    <Tooltip placement="top" title={el.updater}>
-                                      <span
-                                        className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                        style={{ maxWidth: '20ch' }}
-                                      >
-                                        {' '}
-                                        {` / ${el.updater}`}
-                                      </span>
-                                    </Tooltip>
-                                  ) : (
-                                    <span
-                                      className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                      style={{ maxWidth: '20ch' }}
-                                    >
-                                      {' '}
-                                      {` / ${el.updater}`}
-                                    </span>
-                                  )}
-                              </div>
-                            </div>
-
-                          </>
-                        )
-                      } return (
-                        <>
-                          <div className="my-2 px-6">
-                            <FileFilled className="mr-2" />
-                            {el.name}
-                            <div className="py-2">
-                              <TimeAgo date={el.updated_at} formatter={formatter} />
-                              <span
-                                className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                style={{ maxWidth: '20ch' }}
-                              >
-                                {' '}
-                                {` / ${el.updater}`}
-                              </span>
-
-                            </div>
+                    {recentUpdated.map((el, index) => (
+                      <>
+                        <div className={`my-2 px-6 ${(index !== recentUpdated.length - 1) ? 'border-b border-black' : ''}`}>
+                          <div className="flex flex-row items-center">
+                            <FileFilled className="mr-2 " />
+                            {el.name.length > 20
+                              ? (
+                                <Tooltip placement="top" title={el.name}>
+                                  <span
+                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                    style={{ maxWidth: '20ch' }}
+                                  >
+                                    {el.name}
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {el.name}
+                                </span>
+                              )}
                           </div>
+                          <div className="py-2 flex flex-row items-center gap-2">
+                            <TimeAgo date={el.updated_at} formatter={formatter} />
+                            <span>/</span>
+                            {el.updater.length > 20
+                              ? (
+                                <Tooltip placement="top" title={el.updater}>
+                                  <span
+                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                    style={{ maxWidth: '20ch' }}
+                                  >
+                                    {el.updater}
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {el.updater}
+                                </span>
+                              )}
+                          </div>
+                        </div>
 
-                        </>
-                      )
-                    })}
+                      </>
+                    ))}
                   </div>
                 </div>
                 <div className="mt-5">

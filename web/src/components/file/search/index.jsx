@@ -137,6 +137,12 @@ export default function Search() {
       setData(result)
     }
     setIsModalVisible(true)
+    form.setFieldsValue({
+      name: '',
+      start_date: '',
+      end_date: '',
+      updater: '',
+    })
   }
   const onFinishFailed = () => {
     console.log(1)

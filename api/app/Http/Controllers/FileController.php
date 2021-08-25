@@ -208,6 +208,7 @@ class FileController extends Controller
 
     public function getMember($id)
     {
-        return Jobfair::find($id)->schedule->users;
+        $jobfair = Jobfair::find($id);
+        return User::where('role', 1)->orWhere('id', $jobfair->user->id)->orWhereIn('id', $jobfair->schedule->users->pluck('id'))->get();
     }
 }
