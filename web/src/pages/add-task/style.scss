@@ -46,4 +46,16 @@
     height: 100%;
     max-height: 400px;
   }
+
+  .ant-table-body {
+    max-height: 380px !important;
+  }
+
+  .anticon-search {
+    font-size: 15px;
+  }
+
+  .anticon-down.ant-select-suffix {
+    font-size: 15px;
+  }
 }

@@ -1,9 +1,10 @@
-import { CheckCircleTwoTone, ExclamationCircleOutlined, SearchOutlined, SyncOutlined, LoadingOutlined } from '@ant-design/icons'
-import { Button, Spin, Input, Modal, Select, Space, Table, Tag, notification } from 'antd'
+import { CheckCircleTwoTone, ExclamationCircleOutlined, SearchOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Button, Spin, Input, Modal, Select, Space, Table, notification } from 'antd'
+// import { route } from 'next/dist/next-server/server/router'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import addTaskAPI from '../../api/add-task'
-import OtherLayout from '../../layouts/OtherLayout'
+import OtherLayout from '../../layouts/layout-task'
 import './style.scss'
 
 function index() {
@@ -53,7 +54,7 @@ function index() {
         setloading(false)
         return null
       } catch (error) {
-        return Error(error.toString())
+        return Error('内容が登録されません。よろしいですか？')
       }
     }
     fetchAPI()
@@ -191,7 +192,7 @@ function index() {
     />
   )
   return (
-    <OtherLayout>
+    <OtherLayout id={router.query.id}>
       <OtherLayout.Main>
         <div id="loading">
           <Spin
@@ -204,13 +205,6 @@ function index() {
               <div className="page-title">
                 <h1>
                   夕スク登録
-                  <Tag
-                    className="ml-4 text-sm p-1 "
-                    color="#55acee"
-                    icon={loading ? <SyncOutlined spin /> : ''}
-                  >
-                    {loading ? 'processing' : jobfair.name}
-                  </Tag>
                 </h1>
 
               </div>
@@ -277,7 +271,7 @@ function index() {
                     />
                   </div>
                   {/* 2 button */}
-                  <div className="data-controller mr-5">
+                  <div className="data-controller">
                     <Space size={20} className="flex justify-end">
                       <Button
                         htmlType="button"
