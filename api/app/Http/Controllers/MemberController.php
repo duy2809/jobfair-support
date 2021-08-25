@@ -58,7 +58,7 @@ class MemberController extends Controller
 
     public function getUser()
     {
-        $user = User::select('id', 'name')->where('role', '=', 2)->get();
+        $user = User::select('id', 'name')->where('role', '=', 3)->get();
 
         return response()->json($user);
     }
