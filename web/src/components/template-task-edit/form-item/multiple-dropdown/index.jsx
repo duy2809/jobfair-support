@@ -72,7 +72,7 @@ function tagRender(props) {
   const handleClick = (e) => {
     e.preventDefault()
     const id = tasksList.find((item) => item.name === e.target.innerHTML).id
-    window.location.href = `/template-tasks/${id}`
+    window.location.href = `/template-task-dt/${id}`
   }
   const onPreventMouseDown = (event) => {
     event.preventDefault()

@@ -222,7 +222,7 @@ const EditTemplateTaskPage = () => {
         // });
       })
     setTimeout(() => {
-      window.location.href = `/template-tasks/${id}`
+      window.location.href = `/template-task-dt/${id}`
     }, 3000)
   }
 
