@@ -77,7 +77,17 @@ export default function ButtonAddFolder(props) {
         updated_at: element.updated_at,
         link: element.link,
       }))
-      props.setData(result)
+      if (props.path.length > 1) {
+        props.setData([{
+          key: -1,
+          name: '..',
+          checkbox: false,
+          is_file: false,
+          updater: '',
+          updated_at: '',
+          link: '',
+        }, ...result])
+      } else props.setData(result)
       props.setIsCheckAll(false)
       openNotificationSuccess()
       setNull()
