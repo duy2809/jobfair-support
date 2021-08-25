@@ -3,11 +3,7 @@
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
-<<<<<<< HEAD
 import { Modal, Form, notification, Input } from 'antd'
-=======
-import { Modal, Form, notification,Input } from 'antd'
->>>>>>> feat/kanban
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../api/category'
 
@@ -110,13 +106,10 @@ const EditCategory = (props) => {
         cancelText="キャンセル"
         centered
       >
-<<<<<<< HEAD
-        <Form form={form} layout="vertical">
-=======
+
         <Form form={form}
           layout="vertical"
         >
->>>>>>> feat/kanban
           <Form.Item
             label={
               <span>カテゴリ名</span>
