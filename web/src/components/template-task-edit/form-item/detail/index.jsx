@@ -16,10 +16,7 @@ const Detail = ({ form, input, setInput }) => {
   }
   return (
     <div className="description">
-      <Form.Item
-        name="description"
-        className="justify-evenly w-full"
-      >
+      <Form.Item name="description" className="justify-evenly w-full">
         <TextArea
           rows={7}
           placeholder="何かを入力してください"
@@ -28,7 +25,6 @@ const Detail = ({ form, input, setInput }) => {
         />
       </Form.Item>
     </div>
-
   )
 }
 

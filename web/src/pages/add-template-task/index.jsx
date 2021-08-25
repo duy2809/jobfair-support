@@ -376,7 +376,7 @@ const index = () => {
                           onFinishFailed={onFinishFailed}
                         >
                           <div className="flex ">
-                            <div className="left-side  w-1/2">
+                            <div className="left-side mx-4 w-1/2">
                               <div className="container ">
                                 {/* template task name */}
                                 <Form.Item
@@ -394,6 +394,7 @@ const index = () => {
                                   >
                                     <Input
                                       type="text"
+                                      size="large"
                                       id="validate_name"
                                       onBlur={isTemplateTaskExisted}
                                       onChange={() => {
@@ -437,34 +438,35 @@ const index = () => {
                                 </Form.Item>
 
                                 {/* relation */}
-                                <Form.Item
+                                {/* <Form.Item
                                   label=" "
                                   colon={false}
                                 >
-                                  <p className="">前のタスク:</p>
-                                  <Form.Item noStyle name="beforeTasks">
-                                    <Select
-                                      mode="multiple"
-                                      showArrow
-                                      allowClear
-                                      tagRender={tagRender}
-                                      className="w-100"
-                                      placeholder="リレーションを選択"
-                                      onChange={filtedArr}
-                                    >
-                                      {beforeTasks.map((element) => (
-                                        <Select.Option key={element.id} value={element.name}>
-                                          {element.name}
-                                        </Select.Option>
-                                      ))}
-                                    </Select>
-                                  </Form.Item>
+                                  <p className="label">前のタスク:</p>
 
+                                </Form.Item> */}
+                                <Form.Item label="前のタスク" className="task ml-3" name="beforeTasks">
+                                  <Select
+                                    mode="multiple"
+                                    size="large"
+                                    showArrow
+                                    allowClear
+                                    tagRender={tagRender}
+                                    className="w-100"
+                                    placeholder="リレーションを選択"
+                                    onChange={filtedArr}
+                                  >
+                                    {beforeTasks.map((element) => (
+                                      <Select.Option key={element.id} value={element.name}>
+                                        {element.name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
                                 </Form.Item>
 
                               </div>
                             </div>
-                            <div className="right-side  w-1/2">
+                            <div className="right-side mx-4 w-1/2">
                               {/* category */}
                               <Form.Item
                                 required
@@ -577,30 +579,31 @@ const index = () => {
 
                               </Form.Item>
 
-                              <Form.Item
+                              {/* <Form.Item
                                 label=" "
                                 colon={false}
 
                               >
-                                <p className="">前のタスク:</p>
-                                <Form.Item noStyle name="afterTasks">
-                                  <Select
-                                    mode="multiple"
-                                    showArrow
-                                    allowClear
-                                    tagRender={tagRender}
-                                    className="w-100"
-                                    placeholder="リレーション"
-                                    onChange={filtedArr}
-                                  >
-                                    {afterTasks.map((element) => (
-                                      <Select.Option key={element.id} value={element.name}>
-                                        {element.name}
-                                      </Select.Option>
-                                    ))}
-                                  </Select>
-                                </Form.Item>
+                                <p className="label">次のタスク:</p>
 
+                              </Form.Item> */}
+                              <Form.Item name="afterTasks" className="task ml-3" label="次のタスク">
+                                <Select
+                                  mode="multiple"
+                                  size="large"
+                                  showArrow
+                                  allowClear
+                                  tagRender={tagRender}
+                                  className="w-100"
+                                  placeholder="リレーション"
+                                  onChange={filtedArr}
+                                >
+                                  {afterTasks.map((element) => (
+                                    <Select.Option key={element.id} value={element.name}>
+                                      {element.name}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
                               </Form.Item>
 
                             </div>
@@ -609,16 +612,17 @@ const index = () => {
                           {/* details    */}
                           <Form.Item
                             label="詳細"
+                            className="block mx-7"
                             name="detail"
                           >
-                            <TextArea rows={10} placeholder="何かを入力してください" />
+                            <TextArea className="text-area-description w-100" rows={10} placeholder="何かを入力してください" />
                           </Form.Item>
 
                           {/* 2 button */}
                           <Form.Item
                             label=" "
                             colon={false}
-                            className="my-10"
+                            className="my-10 mx-4"
                           >
                             <Space size={20} className="flex justify-end ">
                               <Button

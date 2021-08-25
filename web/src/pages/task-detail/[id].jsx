@@ -223,7 +223,6 @@ export default function TaskList() {
                           <span className="ef">
                             {infoTask.is_day ? '日' : '時間'}
                           </span>
-
                         </>
                       ) : (
                         <>
@@ -234,8 +233,7 @@ export default function TaskList() {
                           <span>/</span>
                           <span className="ef">{infoTask.unit}</span>
                         </>
-                      ) }
-
+                      )}
                     </div>
                   </div>
                 </div>
@@ -333,9 +331,9 @@ export default function TaskList() {
               </div>
 
               <div className="grid grid-cols-2 mx-5 mt-5">
-                <div className="rela col-span-1 mx-8">
-                  <p className="mb-2">前のタスク </p>
-                  <ul className="list__task">
+                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
+                  <p className="mb-2 col-span-1">前のタスク </p>
+                  <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
@@ -348,15 +346,14 @@ export default function TaskList() {
                               {truncate(item.name)}
                             </a>
                           </Tooltip>
-
                         </li>
                       ))
                       : null}
                   </ul>
                 </div>
-                <div className="rela col-span-1 mx-8">
-                  <p className="mb-2">次のタスク</p>
-                  <ul className="list__task">
+                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
+                  <p className="mb-2 col-span-1">次のタスク</p>
+                  <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>

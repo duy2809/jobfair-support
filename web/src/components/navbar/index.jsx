@@ -4,10 +4,25 @@ import { Menu, Dropdown } from 'antd'
 import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
-
+import { useRouter } from 'next/router'
+import { logout } from '../../api/authenticate'
 import Notification from './notification'
+// import { route } from 'next/dist/next-server/server/router'
 
 export default function Navbar() {
+  const router = useRouter()
+  const handleLogout = async () => {
+    try {
+      const response = await logout()
+      if (response.request.status === 200) {
+        router.push('/login')
+      }
+    } catch (error) {
+      if (error.request.status === 400) {
+        console.log(error)
+      }
+    }
+  }
   const moreNavbarOptions = (
     <Menu className="border-2 rounded-2xl py-2 top-5 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
@@ -16,13 +31,18 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="/jf-schedules">
+        <Link href="/schedule">
           <a>スケジュール</a>
         </Link>
       </Menu.Item>
       <Menu.Item key="2">
         <Link href="/milestones">
           <a>マスター設定</a>
+        </Link>
+      </Menu.Item>
+      <Menu.Item key="3">
+        <Link href="/Category">
+          <a>カテゴリー覧</a>
         </Link>
       </Menu.Item>
     </Menu>
@@ -49,8 +69,8 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="/logout">
-          <a>ログアウト</a>
+        <Link href="">
+          <a onClick={handleLogout}>ログアウト</a>
         </Link>
       </Menu.Item>
     </Menu>
@@ -60,7 +80,7 @@ export default function Navbar() {
     <div className="flex justify-between items-center border-2 navbar select-none">
       <div className="flex">
         <div className="w-20 ml-16">
-          <Link href="top">
+          <Link href="/top-page">
             <a>
               <img src="/images/logo.png" alt="logo" />
             </a>
@@ -73,7 +93,7 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="px-8">
-            <Link href="/members">
+            <Link href="/member">
               <a href="">メンバ</a>
             </Link>
           </div>
