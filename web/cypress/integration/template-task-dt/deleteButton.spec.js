@@ -1,11 +1,12 @@
 describe('delete button test',()=>{
     var templatetask,beforetask,aftertask,len;
     before(()=>{
-        cy.visit('http://jobfair.local:8000/login')
-        cy.get('#login_email.ant-input').type('nitzsche.arne@example.org')
-        cy.get('#login_password').type('12345678')
-        cy.get('.ant-btn').click()
-        cy.url({timeout:100000}).should('contain','jobfair.local:8000/top')
+        // cy.visit('http://jobfair.local:8000/login')
+        // cy.get('#login_email.ant-input').type('nitzsche.arne@example.org')
+        // cy.get('#login_password').type('12345678')
+        // cy.get('.ant-btn').click()
+        // cy.url({timeout:100000}).should('contain','jobfair.local:8000/top')
+        cy.loginAs('superadmin')
         cy.request('GET','http://jobfair.local:8000/api/template-tasks').then((response)=>{
             var obj=response.body;
             const arrays=Object.keys(obj);

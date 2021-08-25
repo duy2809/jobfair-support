@@ -11,13 +11,17 @@
     thead[class*="ant-table-thead"] th {
         background-color: #bae8e8 !important;
     }
-    .anticon {
-        font-size: 12px !important;
-    }
     h1 {
         font-size: 40px;
         margin-left: 0px;
         margin-bottom: 0px;
         color: #272343;
       }
+      .icon {
+        font-size: 18px !important;
+        font-weight: 600;
+        :hover {
+            color: #ffd803;
+        }
+    }
 }

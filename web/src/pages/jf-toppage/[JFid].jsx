@@ -7,35 +7,20 @@ import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jfdata, jftask, deleteJF } from '../../api/jf-toppage'
+import { jftask, deleteJF } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
 import { webInit } from '../../api/web-init'
 
 export default function jftoppage() {
   const [listTask, setlistTask] = useState([])
-  const [name, setName] = useState('')
+
   const router = useRouter()
   const idJf = router.query.JFid
   const [users, setUsers] = useState('')
-  const [startDate, setStartDate] = useState()
-  const [avt, setAvt] = useState('')
-  const [numberOfStudents, setNumberOfStudents] = useState()
-  const [numberOfCompanies, setNumberOfCompanies] = useState()
-  const fetchJF = async () => {
-    await jfdata(idJf).then((response) => {
-      setName(response.data.name)
-      setStartDate(response.data.start_date.split('-').join('/'))
-      setAvt(response.data.user.avatar)
-      setNumberOfStudents(response.data.number_of_students)
-      setNumberOfCompanies(response.data.number_of_companies)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
   const getDataUser = async () => {
     await webInit().then((response) => {
       setUsers(response.data.auth.user.role)
@@ -87,7 +72,7 @@ export default function jftoppage() {
   }
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
-    fetchJF()
+
     fetchTasks()
     getDataUser()
   }, [])
@@ -97,19 +82,7 @@ export default function jftoppage() {
       <JfLayout id={idJf}>
         <JfLayout.Main>
           <div className="Jf__top">
-            <div className="Jf__header">
-              <h1>{name}</h1>
-              <div className="admin__jf">
-                <h3>{startDate}</h3>
-                <h3>
-                  {`企業:${numberOfStudents}`}
-                </h3>
-                <h3>
-                  {`学生:${numberOfCompanies}`}
-                </h3>
-                <img className="avt" src={avt} alt="avatar" />
-              </div>
-            </div>
+
             <div className="jf__main">
               <div className="grid grid-cols-11">
                 <div className="col-span-7">

@@ -449,10 +449,11 @@ const index = () => {
               </div>
 
             </div>
-            <div className="flex justify-center ...">
+            <div className="flex justify-end mr-10">
               <Form.Item
                 label=" "
-                className="my-5 "
+                className="my-5 mr-10"
+
               >
                 <Space size={30}>
                   <Button
@@ -469,6 +470,7 @@ const index = () => {
                     htmlType="submit"
                     disabled={disableBtn}
                     loading={disableBtn}
+                    className="mr-10"
                   >
                     保存
                   </Button>
@@ -481,5 +483,5 @@ const index = () => {
     </OtherLayout>
   )
 }
-index.middleware = ['auth:admin']
+index.middleware = ['auth:superadmin', 'auth:admin']
 export default index

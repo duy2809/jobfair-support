@@ -395,7 +395,6 @@ const index = () => {
                                     <Input
                                       type="text"
                                       size="large"
-
                                       id="validate_name"
                                       onBlur={isTemplateTaskExisted}
                                       onChange={() => {
