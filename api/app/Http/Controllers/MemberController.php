@@ -56,7 +56,7 @@ class MemberController extends Controller
         return User::findOrFail($id)->tasks;
     }
 
-    public function getUser()
+    public function getMember()
     {
         $user = User::select('id', 'name')->where('role', '=', 3)->get();
 
