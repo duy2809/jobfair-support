@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -20,10 +21,10 @@ class FileController extends Controller
     {
         $files = DB::table('documents')
             ->addSelect(['authorName' => User::select('name')
-                        ->whereColumn('id','documents.authorId')])
+                    ->whereColumn('id', 'documents.authorId')])
             ->addSelect(['updaterName' => User::select('name')
-                        ->whereColumn('id','documents.updaterId')])
-            ->where('path','/')
+                    ->whereColumn('id', 'documents.updaterId')])
+            ->where('path', '/')
             ->where('document_id', $jfId)
             ->orderBy('documents.is_file', 'asc')
             ->orderBy('documents.updated_at', 'desc')
@@ -36,15 +37,15 @@ class FileController extends Controller
     {
         $file = DB::table('documents')
             ->addSelect(['authorName' => User::select('name')
-                ->whereColumn('id','documents.authorId')])
+                    ->whereColumn('id', 'documents.authorId')])
             ->addSelect(['updaterName' => User::select('name')
-                ->whereColumn('id','documents.updaterId')])
-            ->where('is_file',true)
+                    ->whereColumn('id', 'documents.updaterId')])
+            ->where('is_file', true)
             ->orderBy('documents.updated_at', 'desc')
             ->take(10)
             ->get();
         return $file;
-        
+
     }
 
     /**
@@ -56,24 +57,26 @@ class FileController extends Controller
     private function checkUnique($name, $path)
     {
         $data = Document::where('path', '=', $path)->where('name', '=', $name)->get();
-        if($data->isEmpty()) return true;
+
+        if ($data->isEmpty()) {
+            return true;
+        }
+
         return false;
     }
     public function store(Request $request)
     {
-        if($this->checkUnique($request->name, $request->path))
-        {
-            if($request->is_file)
-            {
+        if ($this->checkUnique($request->name, $request->path)) {
+            if ($request->is_file) {
                 $rules = [
-                'link' => 'required',
+                    'link' => 'required',
                 ];
                 $validator = Validator::make($request->all(), $rules);
                 $validator->validate();
             }
-            Document::create(array_merge($request->all(),['document_type' => 'App\Models\Jobfair']));
+            Document::create(array_merge($request->all(), ['document_type' => 'App\Models\Jobfair']));
             return Document::select('*')
-                ->where('path',$request->path)
+                ->where('path', $request->path)
                 ->orderBy('documents.is_file', 'asc')
                 ->orderBy('documents.updated_at', 'desc')
                 ->get();
@@ -97,28 +100,25 @@ class FileController extends Controller
     public function getPath(Request $request)
     {
         $data = DB::table('documents')
-        ->select('*')
-        ->where('path', $request->path)
-        ->where('document_id', $request->jfId)
-        ->orderBy('is_file', 'asc')
-        ->orderBy('updated_at', 'desc')
-        ->get();
+            ->select('*')
+            ->where('path', $request->path)
+            ->where('document_id', $request->jfId)
+            ->orderBy('is_file', 'asc')
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         return response()->json($data);
     }
     public function search(Request $request)
     {
         $query = document::all()->get();
-        if($request->has('name'))
-        {
+        if ($request->has('name')) {
             $query::where('name', 'LIKE', "%$request->name%");
         }
-        if($request->has('updated_at'))
-        {
-            $query::whereBetween('updated_at', [$request->from,$request->to]);
+        if ($request->has('updated_at')) {
+            $query::whereBetween('updated_at', [$request->from, $request->to]);
         }
-        if($request->has('updaterId'))
-        {
+        if ($request->has('updaterId')) {
             $query::where('updaterId', 'LIKE', "%$request->updaterId%");
         }
 
@@ -136,29 +136,25 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($this->checkUnique($request->name, $request->path))
-        {
-            if($request->is_file)
-            {
-                $rules = [
-                    'link' => 'required',
-                ];
-                $validator = Validator::make($request->all(), $rules);
-                $validator->validate();
-            }
-            Document::find($id)
-                ->update(array_merge($request->all(), ['updaterId' => auth()->user()->id]));
-
-            return DB::table('documents')
-                ->select('*')
-                ->where('path', $request->path)
-                ->orderBy('documents.is_file', 'asc')
-                ->orderBy('documents.updated_at', 'desc')
-                ->get();
-        }
-        return $messages = [
-            'document.name.unique' => 'Given name already have in folder',
+        $document = Document::find($id);
+        $rules = [
+            'name' => Rule::unique('documents')->where('path', $document->path)->where('document_id', $document->document_id)->where('is_file', $document->is_file)->whereNot('id', $id),
+            'link' => 'url',
         ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+        $document->update(array_merge($request->all(), ['updaterId' => 1]));
+
+        return DB::table('documents')
+            ->select('*')
+            ->where('path', $document->path)
+            ->where('document_id', $document->document_id)
+            ->orderBy('documents.is_file', 'asc')
+            ->orderBy('documents.updated_at', 'desc')
+            ->get();
     }
 
     /**
@@ -171,14 +167,15 @@ class FileController extends Controller
     {
         return Document::destroy($id);
     }
-    public function destroyArrayOfDocument(Request $request)
+    public function destroyArrayOfDocument(Request $request, $id)
     {
         $path = Document::where('id', $request->id[0])->first();
-        foreach($request->id as $Id)
+        foreach ($request->id as $Id) {
             Document::destroy($Id);
-
+        }
         return Document::select('*')
             ->where('path', $path->path)
+            ->where('document_id', $id)
             ->orderBy('is_file', 'asc')
             ->orderBy('updated_at', 'desc')
             ->get();

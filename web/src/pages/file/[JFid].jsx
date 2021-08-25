@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { useRouter } from 'next/router'
 import { Table, Checkbox, Button, notification, Divider, Breadcrumb, Empty, Modal, Tooltip, Form, Input } from 'antd'
 import { FolderFilled, FileFilled } from '@ant-design/icons'
 import './style.scss'
 import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+import { ReactReduxContext } from 'react-redux'
 import Search from '../../components/file/search'
 import JfLayout from '../../layouts/JFLayout'
-import { addFile, addFolder } from '../../api/file'
-// TODO call API + visit the exactly link of file + Modal Edit + handle file name and directory name too long
+import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } from '../../api/file'
+// TODO call API add file + folder + search + visit folder
 export default function File() {
+  const { store } = useContext(ReactReduxContext)
+  const router = useRouter()
+  const JFid = router.query.JFid
   const formatter = buildFormatter(frenchStrings)
   const [disableBtnEdit, setDisableBtnEdit] = useState(true)
   const [disableBtnDelete, setDisableBtnDelete] = useState(true)
@@ -18,10 +23,11 @@ export default function File() {
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false)
   const [isModalEditFileVisible, setIsModalEditFileVisible] = useState(false)
   const [isModalEditFolderVisible, setIsModalEditFolderVisible] = useState(false)
-  const [directory, setDirectory] = useState(['ファイル', 'abc', 'dsaffdsfadsf', 'dsfsfdsafsadf'])
-  const [currentRowIndex, setcurrentRowIndex] = useState(-1)
+  const [directory, setDirectory] = useState(['ファイル'])
+  const [currentRowIndex, setCurrentRowIndex] = useState(-1)
   const [isDisableEditFile, setIsDisableEditFile] = useState(false)
   const [isDisableEditFolder, setIsDisableEditFolder] = useState(false)
+  const [isCheckAll, setIsCheckAll] = useState(false)
   // tu's code
   const [isDisableFile, setIsDisableFile] = useState(true)
   const [isDisableFolder, setIsDisableFolder] = useState(true)
@@ -34,6 +40,8 @@ export default function File() {
   const [formFolder] = Form.useForm()
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
+
+  const user = store.getState().get('auth').get('user')
 
   const handleAddFileCancel = () => {
     formFile.setFieldsValue({ name_file: '', link: '' })
@@ -83,118 +91,21 @@ export default function File() {
 
   // my code
   const [recentUpdated, setRecentUpdated] = useState([])
-  const [data, setData] = useState([
-    {
-      key: '0',
-      checkbox: true,
-      name: 'abc.jpgaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-      is_file: false,
-      updater: 'vu phong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '1',
-      checkbox: false,
-      is_file: false,
-      name: '0abdsfac',
-      updater: 'vu phong',
-      updated_at: '2021-08-20 03:16:15',
-    },
-    {
-      key: '2',
-      checkbox: false,
-      is_file: true,
-      name: 'fdsfasabc.jpg',
-      updater: 'vu phongdsf',
-      updated_at: '2021-08-20 10:16:15',
-      link: 'fb.me',
-    },
-    {
-      key: '3',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-    },
-    {
-      key: '4',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-    },
-    {
-      key: '5',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
+  const [data, setData] = useState([])
 
-    },
-    {
-      key: '6',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-
-    },
-    {
-      key: '7',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-
-    },
-    {
-      key: '8',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-
-    },
-    {
-      key: '9',
-      checkbox: true,
-      is_file: true,
-      name: 'dfsafdsabc',
-      updater: 'vu pfdsahong',
-      updated_at: '2021-08-20 03:16:15',
-      link: 'fb.me',
-
-    },
-  ])
-  const temp = []
-  for (let index = 0; index < data.length; index += 1) {
-    temp.push(false)
-  }
-  const [isChecked, setIsChecked] = useState(temp)
+  const [isChecked, setIsChecked] = useState([])
   const columns = [
     {
       dataIndex: 'checkbox',
       key: 'checkbox',
       width: '5%',
-      render: (checkbox, record) => (
+      render: (checkbox, record, rowIndex) => (
         <>
           {(!checkbox) || (
             <Checkbox
-              checked={isChecked[record.key]}
+              checked={isChecked[rowIndex]}
               onChange={(e) => {
-                setIsChecked((prev) => prev.map((el, i) => ((i === parseInt(record.key, 10)) ? e.target.checked : el)))
+                setIsChecked((prev) => prev.map((el, i) => ((i === rowIndex) ? e.target.checked : el)))
               }}
             />
           )}
@@ -207,11 +118,37 @@ export default function File() {
       key: 'name',
       render: (name, record) => (
         <div
-          onClick={() => {
+          onClick={async () => {
             if (record.is_file) {
               window.open(record.link)
             } else {
-              // TODO fetch new folder API
+              let queryPath = ''
+              for (let i = 0; i < directory.length; i += 1) {
+                if (i !== 0) {
+                  queryPath += `${directory[i]}/`
+                } else {
+                  queryPath += '/'
+                }
+              }
+              queryPath += `${record.name}`
+              const res = await getPath({
+                params: {
+                  jfId: JFid,
+                  path: queryPath,
+                },
+              })
+
+              const result = res.data.map((element) => ({
+                key: element.id,
+                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                is_file: element.is_file,
+                name: element.name,
+                updater: element.updaterName,
+                updated_at: element.updated_at,
+                link: element.link,
+              }))
+              setData(result)
+              setIsCheckAll(false)
             }
           }}
           className="cursor-pointer flex flex-row items-center"
@@ -254,11 +191,42 @@ export default function File() {
       ),
     },
   ]
+  useEffect(async () => {
+    let res = await getRootPathFile(JFid)
+    let result = res.data.map((element) => ({
+      key: element.id,
+      checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+      is_file: element.is_file,
+      name: element.name,
+      updater: element.updaterName,
+      updated_at: element.updated_at,
+      link: element.link,
+    }))
+    setData(result)
+    res = await getLatest()
+    result = res.data.map((element) => ({
+      key: element.id,
+      checkbox: true,
+      is_file: element.is_file,
+      name: element.name,
+      updater: element.updaterName,
+      updated_at: element.updated_at,
+      link: element.link,
+    }))
+    setRecentUpdated(result)
+  }, [])
+  useEffect(() => {
+    const temp = []
+    for (let index = 0; index < data.length; index += 1) {
+      temp.push(false)
+    }
+    setIsChecked(temp)
+  }, [data])
   useEffect(() => {
     let count = 0
     isChecked.forEach((elem, index) => {
       if (elem && data[index].checkbox) {
-        setcurrentRowIndex(index)
+        setCurrentRowIndex(index)
         count += 1
       }
     })
@@ -279,31 +247,108 @@ export default function File() {
   const onBtnEditClick = () => {
     if (data[currentRowIndex].is_file) {
       setIsModalEditFileVisible(true)
+      formEditFile.setFieldsValue({
+        name_file: data[currentRowIndex].name,
+        link: data[currentRowIndex].link,
+      })
     } else {
+      formEditFolder.setFieldsValue({
+        name_folder: data[currentRowIndex].name,
+      })
       setIsModalEditFolderVisible(true)
     }
   }
   const handleEditFileOk = () => {
-
+    const nameInput = formEditFile.getFieldValue('name_file')
+    const linkInput = formEditFile.getFieldValue('link')
+    editDocument(data[currentRowIndex].key, {
+      name: nameInput,
+      link: linkInput,
+    }).then((res) => {
+      if (res.data.name) {
+        if (res.data.name[0] === 'The name has already been taken.') {
+          formEditFile.setFields([
+            {
+              name: 'name_file',
+              errors: ['このファイル名は既に使用されています。'],
+            },
+          ])
+          setIsDisableEditFile(true)
+          return
+        }
+      }
+      notification.success({
+        message: '成功に編集しました。',
+        duration: 2,
+      })
+      const result = res.data.map((element) => ({
+        key: element.id,
+        checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+        is_file: element.is_file,
+        name: element.name,
+        updater: element.updaterName,
+        updated_at: element.updated_at,
+        link: element.link,
+      }))
+      setData(result)
+      setIsModalEditFileVisible(false)
+      setIsCheckAll(false)
+    })
   }
   const handleEditFolderOk = () => {
-
+    const nameInput = formEditFolder.getFieldValue('name_folder')
+    editDocument(data[currentRowIndex].key, {
+      name: nameInput,
+    }).then((res) => {
+      if (res.data.name) {
+        if (res.data.name[0] === 'The name has already been taken.') {
+          formEditFolder.setFields([
+            {
+              name: 'name_folder',
+              errors: ['このフォルダ名は既に使用されています。'],
+            },
+          ])
+          setIsDisableEditFolder(true)
+          return
+        }
+      }
+      notification.success({
+        message: '成功に編集しました。',
+        duration: 2,
+      })
+      const result = res.data.map((element) => ({
+        key: element.id,
+        checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+        is_file: element.is_file,
+        name: element.name,
+        updater: element.updaterName,
+        updated_at: element.updated_at,
+        link: element.link,
+      }))
+      setData(result)
+      setIsModalEditFolderVisible(false)
+      setIsCheckAll(false)
+    })
   }
-  const onClickDirectory = (e) => {
-    console.log(e.target)
-  }
-  // const onRowClick = (record) => ({
-  //   onClick: () => {
-  //     if (record.is_file) {
-  //       window.open(record.link)
-  //     } else {
-  //       // TODO fetch new folder API
-  //     }
-  //   }, // click row
+  const handleOkDelete = async () => {
+    const idArray = []
+    data.forEach((element, index) => {
+      if (isChecked[index] && element.checkbox) idArray.push(element.key)
+    })
+    const res = await deleteDocument(JFid, { id: idArray })
 
-  // })
-  const handleOkDelete = () => {
-
+    const result = res.data.map((element) => ({
+      key: element.id,
+      checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+      is_file: element.is_file,
+      name: element.name,
+      updater: element.updaterName,
+      updated_at: element.updated_at,
+      link: element.link,
+    }))
+    setData(result)
+    setIsModalDeleteVisible(false)
+    setIsCheckAll(false)
   }
   return (
     <div className="File">
@@ -430,15 +475,49 @@ export default function File() {
                     <div className="flex flex-col justify-center gap-2 pl-20 items-start col-span-2">
                       <Checkbox
                         className="w-100"
+                        checked={isCheckAll}
                         onChange={(e) => {
                           setIsChecked((prev) => prev.map(() => e.target.checked))
+                          setIsCheckAll(e.target.checked)
                         }}
                       >
                         全て選択
                       </Checkbox>
                       <Breadcrumb>
-                        {directory.map((ele) => (
-                          <Breadcrumb.Item onClick={onClickDirectory} className="underline text-xl cursor-pointer">
+                        {directory.map((ele, index) => (
+                          <Breadcrumb.Item
+                            onClick={async () => {
+                              let queryPath = ''
+                              for (let i = 0; i <= index; i += 1) {
+                                if (i !== index && i !== 0) {
+                                  queryPath += `${directory[i]}/`
+                                } if (i === 0) {
+                                  queryPath += '/'
+                                } else {
+                                  queryPath += directory[i]
+                                }
+                              }
+                              const res = await getPath({
+                                params: {
+                                  jfId: JFid,
+                                  path: queryPath,
+                                },
+                              })
+
+                              const result = res.data.map((element) => ({
+                                key: element.id,
+                                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                                is_file: element.is_file,
+                                name: element.name,
+                                updater: element.updaterName,
+                                updated_at: element.updated_at,
+                                link: element.link,
+                              }))
+                              setData(result)
+                              setIsCheckAll(false)
+                            }}
+                            className="underline text-xl cursor-pointer"
+                          >
                             {ele}
                           </Breadcrumb.Item>
                         ))}
