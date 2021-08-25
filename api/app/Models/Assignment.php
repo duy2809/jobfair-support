@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Assignment extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = ['notification', 'join_date', 'completed_date', 'user_id', 'task_id'];
 }
