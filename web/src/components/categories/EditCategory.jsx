@@ -107,7 +107,8 @@ const EditCategory = (props) => {
         centered
       >
 
-        <Form form={form}
+        <Form
+          form={form}
           layout="vertical"
         >
           <Form.Item

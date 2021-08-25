@@ -10,6 +10,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,13 +43,6 @@ Route::resource('/jobfair', 'JobfairController');
 // schedule
 
 Route::resource('/schedules', 'ScheduleController');
-Route::get('jf-schedules/all-milestones', 'ScheduleController@getAllMilestones');
-Route::get('jf-schedules/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
-Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
-Route::prefix('schedules/{id}')->group(function () {
-    Route::get('/added-milestones', 'ScheduleController@getAddedMilestones');
-    Route::get('/added-template-tasks', 'ScheduleController@getAddedTemplateTasks');
-});
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
 Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
 Route::prefix('schedule')->group(function () {
@@ -79,7 +73,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
-
 
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
@@ -113,7 +106,7 @@ Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
-//member detail
+// member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
@@ -131,7 +124,6 @@ Route::post('/notification/update_all_read', 'NotificationController@updateAllRe
 Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
-
 
 // top-page
 Route::prefix('/top-page')->group(function () {

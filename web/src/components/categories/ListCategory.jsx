@@ -1,11 +1,10 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import React, { useContext, useEffect, useState,useRef } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
 // import List from '../list'
-
 
 import { Input, Space, Table, Row, Col, Select, Button } from 'antd'
 import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'

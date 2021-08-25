@@ -6,7 +6,6 @@ import React, { useState } from 'react'
 import { Modal, Button, notification, Form, Input } from 'antd'
 import { addCategory, checkUniqueAdd } from '../../api/category'
 
-
 const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [category, setCategory] = useState({ })
@@ -102,7 +101,8 @@ const AddCategory = (props) => {
         centered
       >
 
-        <Form form={form}
+        <Form
+          form={form}
           layout="vertical"
         >
           <Form.Item
