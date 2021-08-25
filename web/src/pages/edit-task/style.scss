@@ -36,7 +36,7 @@
   .ant-tag a {
     color: rgb(16, 85, 189);
   }
-
+  
   .ant-tag > .anticon + span,
   .ant-tag > span + .anticon {
     padding: 1px;
@@ -50,11 +50,11 @@
     background-color: gray;
     border: 1px solid black;
   }
-  .anticon,
-  .layout-task .anticon-home,
-  .layout-task .ant-menu-item-icon {
+  .anticon, .layout-task .anticon-home, .layout-task .ant-menu-item-icon {
     font-size: 10px;
     margin-bottom: 3px;
+
+
   }
   .ant-col-18 {
     max-width: 100% !important;
@@ -101,15 +101,15 @@
     font-size: 30px;
     color: #ffd803;
   }
-  .ant-form-item .ant-mentions,
-  .ant-form-item textarea.ant-input {
+  .ant-form-item .ant-mentions, .ant-form-item textarea.ant-input {
     height: 175px;
     overflow: auto;
-  }
+}
 
-  .anticon,
-  .edit-task .layout-task .anticon-home,
-  .edit-task .layout-task .ant-menu-item-icon {
+  .anticon, .edit-task .layout-task .anticon-home, .edit-task .layout-task .ant-menu-item-icon {
     font-size: 16px;
   }
+
+
 }
+

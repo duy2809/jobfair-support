@@ -94,7 +94,7 @@ export default function TaskList() {
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
-    const { label, value, closable, onClose } = props
+    const { label, closable, onClose } = props
     const onPreventMouseDown = (event) => {
       event.preventDefault()
       event.stopPropagation()
