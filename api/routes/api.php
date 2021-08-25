@@ -10,6 +10,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -73,7 +74,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
-
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
 //template-task
@@ -106,7 +106,22 @@ Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController
 
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
-//member detail
+// file
+
+Route::get('/file/getLatest', 'FileController@getLatest');
+Route::get('/file/getPath', 'FileController@getPath');
+Route::post('/file/{jfId}/delArray', 'FileController@destroyArrayOfDocument');
+Route::prefix('file')->group(function () {
+    Route::get('/{jfId}', [App\Http\Controllers\FileController::class, 'index']);
+    Route::post('/', [App\Http\Controllers\FileController::class, 'store']);
+    Route::post('/{id}', [App\Http\Controllers\FileController::class, 'show']);
+    Route::put('/{id}/edit', [App\Http\Controllers\FileController::class, 'update']);
+    Route::delete('/{id}/destroy', [App\Http\Controllers\FileController::class, 'destroy']);
+    Route::get('/find', [App\Http\Controllers\FileController::class, 'search']);
+    Route::get('/getPath', [App\Http\Controllers\FileController::class, 'getPath']);
+
+});
+// member detail
 Route::prefix('members')->group(function () {
     Route::get('/{id}', [MemberDetailController::class, 'memberDetail']);
     Route::delete('/{id}', [MemberDetailController::class, 'deleteMember']);
@@ -124,7 +139,6 @@ Route::post('/notification/update_all_read', 'NotificationController@updateAllRe
 Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
-
 
 // top-page
 Route::prefix('/top-page')->group(function () {
