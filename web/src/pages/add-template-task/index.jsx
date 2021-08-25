@@ -1,20 +1,10 @@
+import { CheckCircleTwoTone,
+  ExclamationCircleOutlined, ExclamationCircleTwoTone,
+  LoadingOutlined } from '@ant-design/icons'
 import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-  ExclamationCircleTwoTone,
-  LoadingOutlined,
-} from '@ant-design/icons'
-import {
-  Button,
-  Form,
-  Spin,
-  Input,
-  Modal,
-  notification,
-  Select,
-  Space,
-  Tag,
-  Tooltip,
+  Button, Form, Spin,
+  Input, Modal, notification,
+  Select, Space, Tag, Tooltip,
 } from 'antd'
 
 import { useRouter } from 'next/router'
@@ -160,6 +150,7 @@ const index = () => {
       try {
         const beforeID = []
         const afterIDs = []
+
         if (values.beforeTasks && values.afterTasks) {
           templateTasks.forEach((e) => {
             if (values.beforeTasks.includes(e.name)) {
@@ -266,13 +257,13 @@ const index = () => {
       return Promise.reject(new Error('0以上の数字で入力してください'))
     }
     if (Extensions.isFullWidth(value)) {
+
       // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
 
     // setinputTest(Extention.toHalfWidth(value.toString()))
-    if (
-      !Extensions.isFullWidth(value)
-      && !Extensions.Reg.floatNumber.test(value * 1.0)
+    if (!Extensions.isFullWidth(value)
+      && (!Extensions.Reg.floatNumber.test(value * 1.0))
     ) {
       return Promise.reject(new Error('使用できない文字が含まれています。'))
     }
@@ -292,7 +283,7 @@ const index = () => {
         onMouseDown={onPreventMouseDown}
         closable={closable}
         onClose={onClose}
-        // style={{ marginRight: 3, paddingTop: "4px", marginBottom: "4px" }}
+        style={{ marginRight: 3, paddingTop: '4px', marginBottom: '4px' }}
       >
         <Tooltip title={label}>
           <span
@@ -306,6 +297,7 @@ const index = () => {
             {label}
             {/* <a href="" className="my-1">{label}</a> */}
           </span>
+
         </Tooltip>
       </Tag>
     )
@@ -314,9 +306,7 @@ const index = () => {
     try {
       const templateName = form.getFieldValue('template_name')
       if (templateName) {
-        const response = await addTemplateTasksAPI.isTemplateTaskExisted({
-          name: templateName,
-        })
+        const response = await addTemplateTasksAPI.isTemplateTaskExisted({ name: templateName })
         if (response.data.length) {
           setIsTemplateExisted(true)
           document.getElementById('validate_name').style.border = '1px solid red'
@@ -348,340 +338,329 @@ const index = () => {
   }
 
   const loadingIcon = (
-    <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
+    <LoadingOutlined
+      style={{ fontSize: 30,
+        color: '#ffd803' }}
+      spin
+    />
   )
   return (
     <>
+
       <OtherLayout>
         <OtherLayout.Main>
+
           <div className="add-template-task-page">
             <div id="loading">
-              <Spin
-                style={{ fontSize: '30px', color: '#ffd803' }}
-                spinning={loading}
-                indicator={loadingIcon}
-                size="large"
-              >
+              <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large">
                 <h1>テンプレートタスク追加 </h1>
-                <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
-                  <Form
-                    className="place-self-center add-template-form space-y-12 w-5/6"
-                    form={form}
-                    labelCol={{
-                      span: 6,
-                    }}
-                    wrapperCol={{
-                      span: 16,
-                    }}
-                    initialValues={{ defaultInputValue: 0 }}
-                    onFinish={onFinishSuccess}
-                    onFinishFailed={onFinishFailed}
-                  >
-                    <div className="grid grid-cols-2">
-                      <div className="col-span-1 mx-4">
-                        {/* template task name */}
-                        <Form.Item
-                          label="テンプレートタスク名"
-                          labelAlign="left"
-                          name="template_name"
-                          className="justify-evenly"
-                          required
-                          rules={[
-                            {
-                              validator: templateTaskNameValidator,
-                            },
-                          ]}
-                        >
-                          <Input
-                            type="text"
-                            id="validate_name"
-                            onBlur={isTemplateTaskExisted}
-                            onChange={() => {
-                              document
-                                .getElementById('error-msg')
-                                .setAttribute('hidden', 'true')
-                              document.getElementById(
-                                'validate_name',
-                              ).style.border = '1px solid #e5e7eb'
-                            }}
-                            placeholder="タスクテンプレート名を入力する"
-                            maxLength={200}
-                          />
-                        </Form.Item>
-
-                        <span
-                          id="error-msg"
-                          style={{
-                            color: '#ff3860',
-                            fontSize: '14px',
+                <div className="container mx-auto flex-1 justify-center px-4  pb-20">
+                  {/* page title */}
+                  {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
+                  <div>
+                    <div className="container mt-20">
+                      <div className="grid justify-items-center">
+                        <Form
+                          className="place-self-center  add-template-form"
+                          form={form}
+                          labelCol={{
+                            span: 6,
                           }}
-                          className="text-red-600"
-                          hidden
+                          wrapperCol={{
+                            span: 13,
+                          }}
+                          layout="horizontal"
+                          colon
+                          initialValues={{ defaultInputValue: 0 }}
+                          onFinish={onFinishSuccess}
+                          onFinishFailed={onFinishFailed}
                         >
-                          この名前はすでに存在します
-                        </span>
-                      </div>
+                          <div className="flex ">
+                            <div className="left-side mx-4 w-1/2">
+                              <div className="container ">
+                                {/* template task name */}
+                                <Form.Item
+                                  label="テンプレートタスク名"
+                                  required
+                                >
+                                  <Form.Item
+                                    name="template_name"
+                                    noStyle
+                                    rules={[
+                                      {
+                                        validator: templateTaskNameValidator,
+                                      },
+                                    ]}
+                                  >
+                                    <Input
+                                      type="text"
+                                      size="large"
+                                      id="validate_name"
+                                      onBlur={isTemplateTaskExisted}
+                                      onChange={() => {
+                                        document.getElementById('error-msg').setAttribute('hidden', 'true')
+                                        document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                                      }}
+                                      placeholder="タスクテンプレート名を入力する"
+                                      maxLength={200}
+                                    />
 
-                      <div className="col-span-1 mx-4">
-                        {/* category */}
-                        <Form.Item
-                          labelAlign="left"
-                          className="justify-evenly"
-                          required
-                          // hasFeedback
-                          label="カテゴリ"
-                          name="category_id"
-                          rules={[
-                            {
-                              validator: categoryValidator,
-                            },
-                          ]}
-                        >
-                          <Select
-                            size="large"
-                            showArrow
-                            allowClear
-                            className="addJF-selector "
-                            placeholder="カテゴリを選択"
-                          >
-                            {listCatergories.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.id}
-                              >
-                                {element.category_name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </div>
+                                  </Form.Item>
 
-                      <div className="col-span-1 mx-4">
-                        {/* milestone */}
-                        <Form.Item
-                          required
-                          // hasFeedback
-                          labelAlign="left"
-                          className="justify-evenly"
-                          name="milestone_id"
-                          label="マイルストーン"
-                          rules={[
-                            {
-                              validator: milestoneValidator,
-                            },
-                          ]}
-                        >
-                          <Select
-                            showArrow
-                            allowClear
-                            size="large"
-                            className="addJF-selector "
-                            placeholder="マイルストーンを選択"
-                          >
-                            {listMilestones.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.id}
-                              >
-                                {element.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </div>
+                                  <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
+                                </Form.Item>
 
-                      <div className="col-span-1 mx-4">
-                        {/* Kōsū - effort  */}
-                        <Form.Item
-                          label="工数"
-                          required
-                          labelAlign="left"
-                          className="justify-evenly"
-                        >
-                          <div className="flex flex-row justify-between ">
-                            <Form.Item
-                              className="w-1/2 max-w-xs flex-1"
-                              name="effort"
-                              rules={[
-                                {
-                                  validator: numberInputValidator,
-                                },
-                              ]}
-                            >
-                              <Input
-                                style={{ width: '80px' }}
-                                type="text"
-                                min={1}
-                                value={0}
-                                onChange={autoConvertHalfwidth}
-                              />
-                            </Form.Item>
+                                {/* milestone */}
+                                <Form.Item
+                                  required
+                                  // hasFeedback
+                                  name="milestone_id"
+                                  label="マイルストーン"
+                                  rules={[
+                                    {
+                                      validator: milestoneValidator,
+                                    },
+                                  ]}
+                                >
+                                  <Select
+                                    showArrow
+                                    allowClear
+                                    size="large"
+                                    className="addJF-selector "
+                                    placeholder="マイルストーンを選択"
+                                  >
+                                    {listMilestones.map((element) => (
+                                      <Select.Option key={element.id} value={element.id}>
+                                        {element.name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
 
-                            <Space>
-                              {/* ----------------- */}
+                                {/* relation */}
+                                {/* <Form.Item
+                                  label=" "
+                                  colon={false}
+                                >
+                                  <p className="label">前のタスク:</p>
+
+                                </Form.Item> */}
+                                <Form.Item label="前のタスク" className="task ml-3" name="beforeTasks">
+                                  <Select
+                                    mode="multiple"
+                                    size="large"
+                                    showArrow
+                                    allowClear
+                                    tagRender={tagRender}
+                                    className="w-100"
+                                    placeholder="リレーションを選択"
+                                    onChange={filtedArr}
+                                  >
+                                    {beforeTasks.map((element) => (
+                                      <Select.Option key={element.id} value={element.name}>
+                                        {element.name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
+
+                              </div>
+                            </div>
+                            <div className="right-side mx-4 w-1/2">
+                              {/* category */}
                               <Form.Item
-                                name="isDay"
                                 required
+                                // hasFeedback
+                                label="カテゴリ"
+                                name="category_id"
                                 rules={[
                                   {
-                                    validator: isDayAndUnitValidator,
+                                    validator: categoryValidator,
                                   },
                                 ]}
                               >
                                 <Select
-                                  style={{ width: '150px' }}
+                                  size="large"
                                   showArrow
-                                  showSearch={false}
-                                  placeholder="時間"
+                                  allowClear
+                                  className="addJF-selector "
+                                  placeholder="カテゴリを選択"
                                 >
-                                  {isDayData.map((element) => (
-                                    <Select.Option
-                                      key={element.id}
-                                      value={element.id}
+                                  {listCatergories.map((element) => (
+                                    <Select.Option key={element.id} value={element.id}>
+                                      {element.category_name}
+                                    </Select.Option>
+                                  ))}
+                                </Select>
+
+                              </Form.Item>
+
+                              {/* Kōsū - effort  */}
+                              <Form.Item
+                                label="工数"
+                                required
+                              >
+                                <Space className="space-items-special flex justify-between ">
+                                  <div className="w-1/2 max-w-xs flex-grow ">
+                                    <Form.Item
+                                      noStyle
+                                      name="effort"
+                                      required
+                                      rules={[
+                                        {
+                                          validator: numberInputValidator,
+                                        },
+                                      ]}
                                     >
+                                      <Input
+                                        className="h-1/2 py-1"
+                                        style={{ padding: '9px', minWidth: '53px' }}
+                                        type="text"
+                                        size="large"
+                                        min={1}
+                                        value={0}
+                                        onChange={autoConvertHalfwidth}
+                                      />
+                                    </Form.Item>
+                                  </div>
+                                  {/* ----------------- */}
+                                  <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
+                                    <Form.Item
+                                      noStyle
+                                      name="isDay"
+                                      required
+                                      rules={[
+                                        {
+                                          validator: isDayAndUnitValidator,
+                                        },
+                                      ]}
+                                    >
+                                      <Select
+                                        className="special-selector w-100 "
+                                        showArrow
+                                        size="large"
+                                        showSearch={false}
+                                        placeholder="時間"
+                                      >
+                                        {isDayData.map((element) => (
+                                          <Select.Option key={element.id} value={element.id}>
+                                            {element.name}
+                                          </Select.Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                    <p className="slash-devider text-3xl font-extrabold leading-10"> / </p>
+                                    <Form.Item
+                                      noStyle
+                                      name="unit"
+                                      required
+                                      rules={[
+                                        {
+                                          validator: isDayAndUnitValidator,
+                                        },
+                                      ]}
+                                    >
+                                      <Select
+                                        size="large"
+                                        className="special-selector"
+                                        showArrow
+                                        showSearch={false}
+                                        placeholder="学生数"
+                                      >
+                                        {unitData.map((element) => (
+                                          <Select.Option key={element.id} value={element.id}>
+                                            {element.name}
+                                          </Select.Option>
+                                        ))}
+                                      </Select>
+                                    </Form.Item>
+                                  </div>
+                                </Space>
+
+                              </Form.Item>
+
+                              {/* <Form.Item
+                                label=" "
+                                colon={false}
+
+                              >
+                                <p className="label">次のタスク:</p>
+
+                              </Form.Item> */}
+                              <Form.Item name="afterTasks" className="task ml-3" label="次のタスク">
+                                <Select
+                                  mode="multiple"
+                                  size="large"
+                                  showArrow
+                                  allowClear
+                                  tagRender={tagRender}
+                                  className="w-100"
+                                  placeholder="リレーション"
+                                  onChange={filtedArr}
+                                >
+                                  {afterTasks.map((element) => (
+                                    <Select.Option key={element.id} value={element.name}>
                                       {element.name}
                                     </Select.Option>
                                   ))}
                                 </Select>
                               </Form.Item>
-                              <p className="slash-devider text-2xl font-extrabold mb-7">
-                                {' '}
-                                /
-                                {' '}
-                              </p>
-                              <Form.Item
-                                name="unit"
-                                required
-                                rules={[
-                                  {
-                                    validator: isDayAndUnitValidator,
-                                  },
-                                ]}
-                              >
-                                <Select
-                                  style={{ width: '150px' }}
-                                  showArrow
-                                  showSearch={false}
-                                  placeholder="学生数"
-                                >
-                                  {unitData.map((element) => (
-                                    <Select.Option
-                                      key={element.id}
-                                      value={element.id}
-                                    >
-                                      {element.name}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-                              </Form.Item>
-                            </Space>
+
+                            </div>
+
                           </div>
-                        </Form.Item>
-                      </div>
-
-                      <div className="col-span-1 mx-4">
-                        <Form.Item
-                          label="前のタスク:"
-                          name="beforeTasks"
-                          className="justify-evenly"
-                          labelAlign="left"
-                        >
-                          <Select
-                            mode="multiple"
-                            showArrow
-                            allowClear
-                            tagRender={tagRender}
-                            className="w-100"
-                            placeholder="リレーションを選択"
-                            onChange={filtedArr}
+                          {/* details    */}
+                          <Form.Item
+                            label="詳細"
+                            className="block mx-7"
+                            name="detail"
                           >
-                            {beforeTasks.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.name}
-                              >
-                                {element.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
-                      </div>
+                            <TextArea className="text-area-description w-100" rows={10} placeholder="何かを入力してください" />
+                          </Form.Item>
 
-                      <div className="col-span-1 mx-4">
-                        <Form.Item
-                          label="次のタスク:"
-                          name="afterTasks"
-                          className="justify-evenly"
-                          labelAlign="left"
-                        >
-                          <Select
-                            mode="multiple"
-                            showArrow
-                            allowClear
-                            tagRender={tagRender}
-                            className="w-100"
-                            placeholder="リレーション"
-                            onChange={filtedArr}
+                          {/* 2 button */}
+                          <Form.Item
+                            label=" "
+                            colon={false}
+                            className="my-10 mx-4"
                           >
-                            {afterTasks.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.name}
+                            <Space size={20} className="flex justify-end ">
+                              <Button
+                                htmlType="button"
+                                className="ant-btn"
+                                onClick={cancelConfirmModle}
+                                disabled={disableBtn}
+                                loading={disableBtn}
                               >
-                                {element.name}
-                              </Select.Option>
-                            ))}
-                          </Select>
-                        </Form.Item>
+                                キャンセル
+                              </Button>
+                              {/* --------------------------- */}
+                              <Button
+                                type="primary"
+                                htmlType="submit"
+                                disabled={disableBtn}
+                                loading={disableBtn}
+                                style={{ letterSpacing: '-1px' }}
+                              >
+                                登録
+                              </Button>
+                            </Space>
+                          </Form.Item>
+
+                          {/* end form */}
+                        </Form>
+
                       </div>
                     </div>
-                    <div className="description-add">
-                      <Form.Item
-                        name="detail"
-                        className="justify-evenly w-full"
-                      >
-                        <TextArea
-                          rows={7}
-                          placeholder="何かを入力してください"
-                        />
-                      </Form.Item>
-                    </div>
-
-                    {/* 2 button */}
-
-                    <Form.Item label=" " colon={false} className="my-10">
-                      <div className="submit-btn-add flex justify-end ">
-                        <Button
-                          htmlType="button"
-                          className="ant-btn"
-                          onClick={cancelConfirmModle}
-                          disabled={disableBtn}
-                          loading={disableBtn}
-                        >
-                          キャンセル
-                        </Button>
-                        {/* --------------------------- */}
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          disabled={disableBtn}
-                          loading={disableBtn}
-                          className="text-base px-10"
-                          style={{ letterSpacing: '-1px', marginLeft: '2rem' }}
-                        >
-                          登録
-                        </Button>
-                      </div>
-                    </Form.Item>
-
-                    {/* end form */}
-                  </Form>
+                  </div>
                 </div>
               </Spin>
             </div>
           </div>
+
         </OtherLayout.Main>
       </OtherLayout>
+
     </>
   )
 }
