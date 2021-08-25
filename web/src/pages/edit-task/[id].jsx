@@ -399,7 +399,7 @@ export default function TaskList() {
                     <div className="row-ef">
                       {infoTask.unit === 'none' ? (
                         <>
-                          <span className="ef">{infoTask.effort}</span>
+                          <span className="eff">{infoTask.effort}</span>
                           <span className="ef">
                             {infoTask.is_day ? '日' : '時間'}
                           </span>
@@ -407,7 +407,7 @@ export default function TaskList() {
                         </>
                       ) : (
                         <>
-                          <span className="ef">{infoTask.effort}</span>
+                          <span className="eff">{infoTask.effort}</span>
                           <span className="ef">
                             {infoTask.is_day ? '日' : '時間'}
                           </span>
