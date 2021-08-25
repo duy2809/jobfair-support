@@ -188,7 +188,6 @@ export default function ListCategories() {
                             <Input
                               placeholder="カテゴリを検索"
                               onChange={(e) => fetch(e.target.value)}
-                              // style={{ width: 250 }}
                               value={searchValue}
                               bordered
                               prefix={<SearchOutlined />}
