@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
   beforeTask,
@@ -140,7 +140,7 @@ export default function TaskList() {
   }, [])
   return (
     <div>
-      <JfLayout>
+      <JfLayout id={infoJF.id}>
         <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
@@ -176,7 +176,6 @@ export default function TaskList() {
             </div>
             <div className="title">
               <h1>タスク詳細</h1>
-              <span>{infoJF.name}</span>
             </div>
 
             <div className="info__tplt">
@@ -218,12 +217,25 @@ export default function TaskList() {
                       <p>工数:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <span className="ef">{infoTask.effort}</span>
-                      <span className="ef">
-                        {infoTask.is_day ? '日' : '時間'}
-                      </span>
-                      <span>/</span>
-                      <span className="ef">{infoTask.unit}</span>
+                      {infoTask.unit === 'none' ? (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+
+                        </>
+                      ) : (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+                          <span>/</span>
+                          <span className="ef">{infoTask.unit}</span>
+                        </>
+                      ) }
+
                     </div>
                   </div>
                 </div>
