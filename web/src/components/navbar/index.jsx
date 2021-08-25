@@ -4,8 +4,8 @@ import { Menu, Dropdown } from 'antd'
 import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
-import { logout } from '../../api/authenticate';
 import { useRouter } from 'next/router'
+import { logout } from '../../api/authenticate'
 import Notification from './notification'
 // import { route } from 'next/dist/next-server/server/router'
 
@@ -15,11 +15,11 @@ export default function Navbar() {
     try {
       const response = await logout()
       if (response.request.status === 200) {
-        router.push('/login');
-      } 
+        router.push('/login')
+      }
     } catch (error) {
       if (error.request.status === 400) {
-        console.log(error);
+        console.log(error)
       }
     }
   }
@@ -70,7 +70,7 @@ export default function Navbar() {
       </Menu.Item>
       <Menu.Item key="1">
         <Link href="">
-          <a onClick = {handleLogout}>ログアウト</a>
+          <a onClick={handleLogout}>ログアウト</a>
         </Link>
       </Menu.Item>
     </Menu>
