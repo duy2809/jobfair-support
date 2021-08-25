@@ -7,7 +7,6 @@ use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
