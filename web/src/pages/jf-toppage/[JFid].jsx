@@ -21,7 +21,6 @@ export default function jftoppage() {
   const router = useRouter()
   const idJf = router.query.JFid
   const [users, setUsers] = useState('')
-
   const getDataUser = async () => {
     await webInit().then((response) => {
       setUsers(response.data.auth.user.role)

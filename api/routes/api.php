@@ -131,7 +131,7 @@ Route::post('/notification/update_all_read', 'NotificationController@updateAllRe
 Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
-
+Route::get('/users', 'MemberController@getMember');
 
 // top-page
 Route::prefix('/top-page')->group(function () {

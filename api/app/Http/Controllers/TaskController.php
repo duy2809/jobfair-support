@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -127,6 +128,23 @@ class TaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $task = Task::find($id);
+        $task->update($request->all());
+        if (!empty($request->beforeTasks)) {
+            $task->beforeTasks()->sync($request->beforeTasks);
+        }
+
+        if (!empty($request->afterTasks)) {
+            $task->afterTasks()->sync($request->afterTasks);
+        }
+
+        if (!empty($request->admin)) {
+            $task->users()->syncWithPivotValues($request->admin, [
+                'join_date' => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        return response()->json(['message' => 'Edit Successfully'], 200);
     }
 
     /**

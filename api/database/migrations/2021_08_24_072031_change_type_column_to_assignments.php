@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddTimestampToTemplateTasks extends Migration
+class ChangeTypeColumnToAssignments extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddTimestampToTemplateTasks extends Migration
      */
     public function up()
     {
-        Schema::table('template_tasks', function (Blueprint $table) {
-            $table->timestamps();
+        Schema::table('assignments', function (Blueprint $table) {
+            $table->text('notification')->nullable()->change();
         });
     }
 
@@ -25,8 +25,8 @@ class AddTimestampToTemplateTasks extends Migration
      */
     public function down()
     {
-        Schema::table('template_tasks', function (Blueprint $table) {
-            $table->dropTimestamps();
+        Schema::table('assignments', function (Blueprint $table) {
+            $table->text('notification')->nullable(false)->change();
         });
     }
 }

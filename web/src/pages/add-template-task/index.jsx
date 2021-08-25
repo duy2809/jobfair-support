@@ -160,7 +160,6 @@ const index = () => {
       try {
         const beforeID = []
         const afterIDs = []
-
         if (values.beforeTasks && values.afterTasks) {
           templateTasks.forEach((e) => {
             if (values.beforeTasks.includes(e.name)) {
