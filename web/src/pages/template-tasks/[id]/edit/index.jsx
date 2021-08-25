@@ -333,7 +333,7 @@ const EditTemplateTaskPage = () => {
                   setInput={setDescription}
                 />
                 <Form.Item className="justify-end">
-                  <div className="submit-btn">
+                  <div className="submit-btn flex justify-end ">
                     <CancelEditTemplateTask id={pathId} />
                     <Button
                       type="primary"

@@ -651,7 +651,7 @@ const index = () => {
                     {/* 2 button */}
 
                     <Form.Item label=" " colon={false} className="my-10">
-                      <div className="submit-btn-add">
+                      <div className="submit-btn-add flex justify-end ">
                         <Button
                           htmlType="button"
                           className="ant-btn"
