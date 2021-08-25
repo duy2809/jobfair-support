@@ -1,11 +1,13 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState,useRef } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
+// import List from '../list'
 
-import { Input, Space, Table, Row, Col, Select } from 'antd'
+
+import { Input, Space, Table, Row, Col, Select, Button } from 'antd'
 import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
@@ -21,6 +23,9 @@ export default function ListCategories() {
   const [user, setUser] = useState(store.getState().get('auth').get('user'))
   const [role, setRole] = useState(user.get('role'))
 
+  const ref = useRef()
+  const [show, setShow] = useState(false)
+  const [showSearchIcon, setShowSearchIcon] = useState()
   // fetch data
   useEffect(async () => {
     setReload(false)
@@ -41,6 +46,30 @@ export default function ListCategories() {
     }
     setSearchValue(key)
   }
+
+  useEffect(() => {
+    const onBodyClick = (event) => {
+      if (ref.current.contains(event.target)) {
+        return
+      }
+      setShow(false)
+      setShowSearchIcon(true)
+    }
+
+    document.body.addEventListener('click', onBodyClick, { capture: true })
+
+    return () => {
+      document.body.removeEventListener('click', onBodyClick, {
+        capture: true,
+      })
+    }
+  }, [])
+
+  const onClick = () => {
+    setShow(!show)
+    setShowSearchIcon(!showSearchIcon)
+  }
+
   // set reload state
   const reloadPage = () => {
     setReload(true)
@@ -123,14 +152,53 @@ export default function ListCategories() {
           <p>
             <div className="absolute right-12 no-border">
               <Space direction="vertical">
-                <Input
+                {/* <Input
                   placeholder="カテゴリを検索"
                   onChange={(e) => fetch(e.target.value)}
-                  style={{ width: 250 }}
+                  // style={{ width: 250 }}
                   value={searchValue}
-                  // onPressEnter={(e) => search(searchValue)}
+                  bordered
                   prefix={<SearchOutlined />}
-                />
+                /> */}
+                <div ref={ref}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '10px',
+                    }}
+                  >
+                    <div className="flex items-center">
+                      <span className="queue-demo">
+                        {showSearchIcon && (
+                          <Button
+                            style={{ border: 'none' }}
+                            shape="circle"
+                            icon={(
+                              <SearchOutlined
+                                style={{ marginLeft: '4px', fontSize: '30px' }}
+                              />
+                            )}
+                            onClick={onClick}
+                          />
+                        )}
+
+                        <span>
+                          {show ? (
+                            <Input
+                              placeholder="カテゴリを検索"
+                              onChange={(e) => fetch(e.target.value)}
+                              // style={{ width: 250 }}
+                              value={searchValue}
+                              bordered
+                              prefix={<SearchOutlined />}
+                            />
+                          ) : null}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </Space>
             </div>
           </p>

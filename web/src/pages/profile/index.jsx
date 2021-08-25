@@ -5,7 +5,7 @@ import { ReactReduxContext } from 'react-redux'
 import Otherlayout from '../../layouts/OtherLayout'
 import { getProfile, getAvatar } from '../../api/profile'
 
-export default function Profile() {
+const Profile = () => {
   const [avatarUser, setAvatarUser] = useState('')
   const [nameUser, setNameUser] = useState('')
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
@@ -99,3 +99,5 @@ export default function Profile() {
     </>
   )
 }
+Profile.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+export default Profile

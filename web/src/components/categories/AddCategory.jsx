@@ -3,8 +3,13 @@
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState } from 'react'
+<<<<<<< HEAD
 import { Modal, Button, notification, Form, Input } from 'antd'
+=======
+import { Modal, Button, notification, Form,Input } from 'antd'
+>>>>>>> feat/kanban
 import { addCategory, checkUniqueAdd } from '../../api/category'
+
 
 const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -100,7 +105,13 @@ const AddCategory = (props) => {
         cancelText="キャンセル"
         centered
       >
+<<<<<<< HEAD
         <Form form={form} layout="vertical">
+=======
+        <Form form={form}
+          layout="vertical"
+        >
+>>>>>>> feat/kanban
           <Form.Item
             label={
               <span>カテゴリ名</span>

@@ -270,5 +270,5 @@ const EditMilestonePage = () => {
     </div>
   )
 }
-
+EditMilestonePage.middleware = ['auth:superadmin']
 export default EditMilestonePage
