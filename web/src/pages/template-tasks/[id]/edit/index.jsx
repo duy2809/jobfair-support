@@ -241,7 +241,7 @@ const EditTemplateTaskPage = () => {
                 form={form}
                 name="basic"
                 labelCol={{
-                  span: 4,
+                  span: 6,
                 }}
                 wrapperCol={{
                   span: 16,
