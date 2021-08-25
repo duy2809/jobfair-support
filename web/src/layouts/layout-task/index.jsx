@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
+import './style.scss'
 import _get from 'lodash/get'
 import '../../pages/global.scss'
 import {
@@ -16,7 +17,6 @@ import {
 import { jfdata } from '../../api/jf-toppage'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
-import './style.scss'
 
 const JfLayout = ({ children, id }) => {
   const main = findSlot(JfLayout.Main, children)
@@ -85,24 +85,21 @@ const JfLayout = ({ children, id }) => {
                 </div>
               </div>
             </div>
-            <div className="font-icon">
-              <Menu.Item key="1" icon={<HomeOutlined />}>
-                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
-              </Menu.Item>
-              <Menu.Item key="2" icon={<FileProtectOutlined />}>
-                <Link href={`/tasks/${id}`}>タスク</Link>
-              </Menu.Item>
-              <Menu.Item key="3" icon={<BarChartOutlined />}>
-                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
-              </Menu.Item>
-              <Menu.Item key="4" icon={<TableOutlined />}>
-                <Link href={`/kanban/${id}`}>カンバン</Link>
-              </Menu.Item>
-              <Menu.Item key="5" icon={<FileOutlined />}>
-                <Link href={`/file/${id}`}>ファイル</Link>
-              </Menu.Item>
-            </div>
-
+            <Menu.Item key="1" icon={<HomeOutlined />}>
+              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+            </Menu.Item>
+            <Menu.Item key="2" icon={<FileProtectOutlined />}>
+              <Link href={`/tasks/${id}`}>タスク</Link>
+            </Menu.Item>
+            <Menu.Item key="3" icon={<BarChartOutlined />}>
+              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+            </Menu.Item>
+            <Menu.Item key="4" icon={<TableOutlined />}>
+              <Link href={`/kanban/${id}`}>カンバン</Link>
+            </Menu.Item>
+            <Menu.Item key="5" icon={<FileOutlined />}>
+              <Link href={`/file/${id}`}>ファイル</Link>
+            </Menu.Item>
           </Menu>
         </Sider>
         <Layout className="site-layout">
@@ -122,6 +119,7 @@ const JfLayout = ({ children, id }) => {
           <Content
             className="site-layout-background"
           >
+
             {_get(main, 'props.children')}
           </Content>
         </Layout>
