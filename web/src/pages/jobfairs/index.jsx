@@ -4,9 +4,11 @@ import './style.scss'
 import { SearchOutlined, UpOutlined, DownOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getJFList } from '../../api/jf-list'
+import { webInit } from '../../api/web-init'
 
-export default function JFList() {
+function JFList() {
   // state of table
+  const [users, setUsers] = useState('')
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
@@ -109,6 +111,9 @@ export default function JFList() {
     await getJFList().then((response) => {
       addDataOfTable(response)
     })
+    await webInit().then((response) => {
+      setUsers(response.data.auth.user.role)
+    })
       .catch((error) => Error(error.toString()))
     setLoading(false)
   }, [])
@@ -142,7 +147,7 @@ export default function JFList() {
     setRangeStudentsNumber(value)
     const filteredData = originalData.filter((JF) => (JF.推定参加学生数 <= value[1] && JF.推定参加学生数 >= value[0])
       && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-              || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
+        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0])
       && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
     setTemperaryData(filteredData)
@@ -153,7 +158,7 @@ export default function JFList() {
     setRangeBussinessesNumber(value)
     const filteredData = originalData.filter((JF) => (JF.参加企業社数 <= value[1] && JF.参加企業社数 >= value[0])
       && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-                || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
+        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
     setTemperaryData(filteredData)
@@ -165,7 +170,7 @@ export default function JFList() {
     setStartDate(dateString)
     const filteredData = originalData.filter((JF) => (dateString ? !JF.開始日.localeCompare(dateString) : JF.開始日)
       && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-              || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
+        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
       && (JF.推定参加学生数 <= rangeStudentsNumber[1] && JF.推定参加学生数 >= rangeStudentsNumber[0])
       && (JF.参加企業社数 <= rangeBussinessesNumber[1] && JF.参加企業社数 >= rangeBussinessesNumber[0]))
     setTemperaryData(filteredData)
@@ -177,31 +182,44 @@ export default function JFList() {
     <OtherLayout>
       <OtherLayout.Main>
         <div className="JFList">
-          <div className="container mx-auto flex flex-col space-y-2 justify-center">
+          <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="flex-col space-y-9">
               <div className="flex items-center">
                 <h1 className="text-3xl float-left">JF一覧</h1>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Button
-                    type="primary"
-                    className="flex items-center"
-                    onClick={() => {
-                      setShowFilter(!showFilter)
-                    }}
-                  >
-                    {showFilter ? <UpOutlined /> : <DownOutlined />}
-                    <span>フィルタ</span>
-                  </Button>
-                  <Button
-                    className="float-right"
-                    href="/add-jobfair"
-                    type="primary"
-                    style={{ letterSpacing: '-1px' }}
-                  >
-                    追加
-                  </Button>
+                  <div className="flex items-center font-semibold">
+                    {showFilter ? (
+                      <UpOutlined
+                        className="icon"
+                        onClick={() => {
+                          setShowFilter(!showFilter)
+                        }}
+                      />
+                    ) : (
+                      <DownOutlined
+                        className="icon"
+                        onClick={() => {
+                          setShowFilter(!showFilter)
+                        }}
+                      />
+                    )}
+                    <div>&nbsp;フィルタ</div>
+                  </div>
+                  {users === 'superadmin' ? (
+                    <>
+                      <Button
+                        className="float-right"
+                        href="/add-jobfair"
+                        type="primary"
+                        style={{ letterSpacing: '-2px' }}
+                      >
+                        追加
+                      </Button>
+                    </>
+                  )
+                    : null}
                 </div>
                 <div className="flex items-center space-x-8" style={{ display: showFilter ? '' : 'none' }}>
                   <DatePicker
@@ -281,3 +299,5 @@ export default function JFList() {
     </OtherLayout>
   )
 }
+JFList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default JFList
