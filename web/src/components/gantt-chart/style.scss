@@ -1,0 +1,10 @@
+.milestone-row {
+  font-size: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  border-right: 1px solid rgb(255, 0, 0);
+  border-left: 1px solid rgb(255, 0, 0);
+  //   max-width: 3ch;
+}

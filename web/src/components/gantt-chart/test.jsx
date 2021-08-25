@@ -1,5 +1,6 @@
 import React, { Component, useEffect } from 'react'
 import { gantt } from 'dhtmlx-gantt'
+import { Tooltip, Button } from 'antd'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 // import './Gantt.css'
 import './material.css'

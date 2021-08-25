@@ -1,8 +1,10 @@
 import React, { Component, useEffect } from 'react'
+
 import { gantt } from 'dhtmlx-gantt'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 // import './Gantt.css'
 import './material.css'
+import './style.scss'
 import './export'
 import { CopyrightCircleFilled } from '@ant-design/icons'
 
@@ -13,14 +15,14 @@ export default class Gantt extends Component {
     /* Full List of Extensions */
     gantt.plugins({
       click_drag: true,
-      // drag_timeline: true,
+      drag_timeline: true,
       tooltip: true,
       overlay: true,
       auto_scheduling: true,
       fullscreen: true,
       keyboard_navigation: true,
       multiselect: true,
-      quick_info: true,
+      // quick_info: true,
       undo: true,
       marker: true,
     })
@@ -46,17 +48,18 @@ export default class Gantt extends Component {
         { view: 'scrollbar', scroll: 'x', id: 'scrollHor' },
       ],
     }
+    gantt.config.lightbox.sections = []
+    gantt.attachEvent('onBeforeLightbox', () => false)
     const weekScaleTemplate = (date) => {
       // const dateToStr = gantt.date.date_to_str('%d %M')
       const dateToStr = 'マイルストーン名'
+      console.log(tasks)
       // const endDate = gantt.date.add(gantt.date.add(date, 1, 'week'), -1, 'day')
       return `<div style="display:flex" >
-                  <div  style="background-color:pink ;width:50%" >0</div>
-                  <div style="background-color:blue ; width:30%" > 1 </div>
-                  <div style="background-color:red ; width:30%" > 2 </div>
-                  <div style="background-color:red ; width:30%" > 3 </div>
-                  <div style="background-color:red ; width:30%" > 4 </div>
-                  <div style="background-color:red ; width:30%" > 5 </div>
+                  
+           
+                  <div class="milestone-row" id="${tasks}" style="background-color:pink ;width:70%" >1</div>
+               
               </div>`
     }
     // custom link style
@@ -89,39 +92,55 @@ export default class Gantt extends Component {
       { unit: 'month', step: 1, format: '%F' },
       { unit: 'week', step: 1, format: weekScaleTemplate },
       { unit: 'day', step: 1, format: '%d', css: daysStyle },
+      // { unit: 'hour', step: 1, format: '%h', css: daysStyle },
     ]
-    gantt.ext.quickInfo.setContainer(gantt.ext.quickInfo.getNode())
-    // const quickInfo = gantt.ext.quickInfo
-    // console.log(quos);
-    // const task = gantt.getTask(0)
-    // // quickInfo.show(task.id)
-    // quickInfo.setContent({
-    //   // taskId: task.id,
-    //   header: {
-    //     title: 'he',
-    //     date: 'meme',
-    //   },
-    //   content: 'jashdfj',
-    //   buttons: [],
+
+    // const dateToStr = gantt.date.date_to_str(gantt.config.task_date)
+
+    // const id = gantt.addMarker({
+    //   start_date: new Date(),
+
+    //   text: 'Today',
+    //   title: dateToStr(new Date()),
     // })
-    const dateToStr = gantt.date.date_to_str(gantt.config.task_date)
 
-    const id = gantt.addMarker({
-      start_date: new Date(),
-      css: 'today',
-      text: 'Now',
-      title: dateToStr(new Date()),
+    // setInterval(() => {
+    //   const today = gantt.getMarker(id)
+    //   today.start_date = new Date()
+    //   today.title = 'Now'
+    //   gantt.updateMarker(id)
+    // }, 1000 * 1)
+    // gantt.getMarker(id)
+    gantt.attachEvent('onGanttReady', () => {
+      const tooltips = gantt.ext.tooltips
+      tooltips.tooltip.setViewport(gantt.$task_data)
     })
-    setInterval(() => {
-      const today = gantt.getMarker(id)
-      today.start_date = new Date()
-      today.title = 'Now'
-      gantt.updateMarker(id)
-    }, 1000 * 1)
+    const dateToStr = gantt.date.date_to_str('%F %j, %Y')
+    console.log(new Date())
+    const today = new Date()
+    gantt.addMarker({
+      start_date: today,
+      css: 'today',
+      text: 'Today',
+      title: `Today: ${dateToStr(today)}`,
+    })
+    gantt.config.columns = [
+      {
+        name: `task-${1}`,
+        label: '',
+        width: 300,
+        align: 'start',
+        template(item) {
+          return `Task ${item.id}`
+        },
+      },
 
-    // alert(new Date())
-    gantt.getMarker(id) // ->{css:"today", text:"Now", id:...}
+    ]
+    gantt.config.autofit = true
+    gantt.config.bar_height = 30
+    gantt.config.autosize = 'y'
 
+    gantt.i18n.setLocale('jp')
     gantt.attachEvent('onBeforeTaskDrag', () => false)
     gantt.init(this.ganttContainer)
     gantt.parse(tasks)
@@ -133,7 +152,7 @@ export default class Gantt extends Component {
       <>
         <div
           ref={(input) => { this.ganttContainer = input }}
-          style={{ width: '100%', height: '500px' }}
+          style={{ width: '100%', minHeight: 500 }}
         />
         <input type="button" value="Export" onClick={this.exportExcel} />
 
