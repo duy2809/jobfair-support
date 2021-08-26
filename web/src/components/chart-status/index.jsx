@@ -68,7 +68,7 @@ export default function ChartStatus({ task, id }) {
               <div className="new__if">
                 完了
               </div>
-              <span onClick={() => { router.push('/tasks?status=完了') }} style={{ background: '#4488C5' }}>{status.done}</span>
+              <span onClick={() => { router.push(`/tasks/${id}?status=完了`) }} style={{ background: '#4488C5' }}>{status.done}</span>
             </div>
             <div className="stt__If">
               <div className="new__if">
