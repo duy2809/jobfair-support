@@ -38,7 +38,7 @@ const ItemMultipleDropdown = ({
     form.setFieldsValue(temp)
   }
   return (
-    <div className="">
+    <div className="multiple-dropdown">
       <Form.Item
         label={label}
         name={name}
