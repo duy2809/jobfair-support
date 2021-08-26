@@ -110,6 +110,7 @@ export default function ButtonAddFile(props) {
     <div className="file">
       <Button
         type="primary"
+        className="flex"
         shape="round"
         size="large"
         icon={<FileAddFilled />}

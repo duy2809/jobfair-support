@@ -100,6 +100,7 @@ export default function ButtonAddFolder(props) {
         type="primary"
         shape="round"
         size="large"
+        className="flex"
         icon={<FolderAddFilled />}
         onClick={() => setIsModalVisible(true)}
       >
