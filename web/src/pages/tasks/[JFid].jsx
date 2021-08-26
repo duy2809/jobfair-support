@@ -268,13 +268,6 @@ function TaskList() {
               <div className="flex-col space-y-9">
                 <div className="flex items-center space-x-2">
                   <h1 className="text-3xl float-left">タスクー覧</h1>
-                  <h1>
-                    <Tag color="#55acee">
-                      JF:
-                      {' '}
-                      {JF.name}
-                    </Tag>
-                  </h1>
                 </div>
                 <div className={showFilter ? 'space-y-3' : 'space-y-0'}>
                   <div className="flex items-center justify-between">
@@ -302,9 +295,8 @@ function TaskList() {
                           className="float-right"
                           href={`/add-task/${router.query.JFid}`}
                           type="primary"
-                          style={{ letterSpacing: '-2px' }}
                         >
-                          追加
+                          <span> 追加 </span>
                         </Button>
                       </>
                     )
