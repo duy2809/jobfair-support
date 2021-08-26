@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip } from 'antd'
+import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
+import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
@@ -13,12 +14,13 @@ import {
   afterTask,
   deleteTask,
 } from '../../api/task-detail'
-import { webInit } from '../../api/web-init'
 
-export default function TaskList() {
+function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState(null)
+  const [role, setRole] = useState(null)
+  const { store } = useContext(ReactReduxContext)
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
   const [infoTask, setInfoTask] = useState({
@@ -58,17 +60,6 @@ export default function TaskList() {
       })
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
-  const getDataUser = async () => {
-    await webInit()
-      .then((response) => {
-        setUser(response.data.auth.user.role)
-        console.log(response.data.auth.user.name)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
@@ -135,11 +126,14 @@ export default function TaskList() {
     router.push(`/edit-task/${infoTask.id}`)
   }
   useEffect(() => {
-    getDataUser()
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      setRole(user.get('role'))
+    }
     fetchTaskData()
     fetchBeforeTask()
     fetchafterTask()
-  }, [])
+  }, [user])
   return (
     <div>
       <JfLayout id={infoJF.id}>
@@ -156,21 +150,22 @@ export default function TaskList() {
                 </Button>
               </div>
               <div className="button__right">
-                {user === 'admin' || user === 'superadmin' ? (
+                {role === 'admin' || role === 'superadmin' ? (
                   <>
                     <Button
                       style={{ border: 'none' }}
                       type="primary"
                       onClick={handleEdit}
                     >
-                      編集
+                      <span> 編集 </span>
                     </Button>
                     <Button
                       style={{ border: 'none' }}
                       type="primary"
                       onClick={modelDelete}
                     >
-                      削除
+                      <span> 削除 </span>
+
                     </Button>
                   </>
                 ) : null}
@@ -181,44 +176,44 @@ export default function TaskList() {
             </div>
 
             <div className="info__tplt">
-              <div className="grid grid-cols-2 mx-5 info__center">
+              <div className="grid grid-cols-2 mx-4 info__center">
                 <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-3 ">
-                    <div className=" layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className=" layber col-span-2 mx-4">
                       <p>タスク名:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.name}</div>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber  col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber  col-span-2 mx-4">
                       <p>カテゴリ:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.categories}</div>
                     </div>
                   </div>
                 </div>
 
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
                       <p>マイルストーン:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.milestone}</div>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
                       <p>工数:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
@@ -240,11 +235,11 @@ export default function TaskList() {
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
                       <p>担当者:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       <ul className="list__member">
                         {listMemberAssignee
                           ? listMemberAssignee.map((item) => (
@@ -256,11 +251,11 @@ export default function TaskList() {
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
                       <p>ステータス:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       {infoTask.status === '未着手' ? (
                         <span
                           style={{ background: '#5EB5A6', color: '#fff' }}
@@ -311,21 +306,21 @@ export default function TaskList() {
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
                       <p>開始日:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-5 mx-4">
                       <span className="item__right">{infoTask.start_time}</span>
                     </div>
                   </div>
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
                       <p>終了日:</p>
                     </div>
-                    <div className="col-span-2 mx-4">
+                    <div className="col-span-6 mx-4">
                       <span className="item__right">{infoTask.end_time}</span>
                     </div>
                   </div>
@@ -333,41 +328,49 @@ export default function TaskList() {
               </div>
 
               <div className="grid grid-cols-2 mx-5 mt-5">
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="mb-2 col-span-1">前のタスク </p>
-                  <ul className="list__task col-span-2">
+                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
+                  <p className="mb-2 col-span-2">前のタスク: </p>
+                  <ul className="list__task col-span-6">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
-                        <li className="task__chil">
-                          <Tooltip placement="top" title={item.name}>
-                            <a
-                              href={`/task-detail/${item.id}`}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {truncate(item.name)}
-                            </a>
-                          </Tooltip>
+                        <li>
+                          <Tag
+                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                          >
+                            <Tooltip placement="top" title={item.name}>
+                              <a
+                                href={`/task-detail/${item.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {truncate(item.name)}
+                              </a>
+                            </Tooltip>
+                          </Tag>
                         </li>
                       ))
                       : null}
                   </ul>
                 </div>
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="mb-2 col-span-1">次のタスク</p>
-                  <ul className="list__task col-span-2">
+                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
+                  <p className="mb-2 col-span-2">次のタスク:</p>
+                  <ul className="list__task col-span-6">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
-                          <Tooltip placement="top" title={item.name}>
-                            <a
-                              href={`/task-detail/${item.id}`}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {truncate(item.name)}
-                            </a>
-                          </Tooltip>
+                          <Tag
+                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                          >
+                            <Tooltip placement="top" title={item.name}>
+                              <a
+                                href={`/task-detail/${item.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {truncate(item.name)}
+                              </a>
+                            </Tooltip>
+                          </Tag>
                         </li>
                       ))
                       : null}
@@ -376,7 +379,7 @@ export default function TaskList() {
               </div>
 
               <div className="mx-5 mt-5">
-                <div className=" mx-8 des demo-infinite-container">
+                <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
                 </div>
               </div>
@@ -387,3 +390,5 @@ export default function TaskList() {
     </div>
   )
 }
+TaskDetail.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default TaskDetail
