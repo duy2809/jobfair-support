@@ -190,12 +190,22 @@ class FileController extends Controller
     }
     public function destroyArrayOfDocument(Request $request, $id)
     {
-        $path = Document::where('id', $request->id[0])->first();
+        $path = Document::where('id', $request->id[0])->first()->path;
         foreach ($request->id as $Id) {
+            $document = Document::find($Id);
+            if (!$document->is_file) {
+                if ($path === '/') {
+                    $pathD = $path . $document->name;
+                } else {
+                    $pathD = $path . '/' . $document->name;
+                }
+                Document::where('path', 'LIKE', $pathD . '/' . '%')->orWhere('path', $pathD)->delete();
+
+            }
             Document::destroy($Id);
         }
         return Document::select('*')
-            ->where('path', $path->path)
+            ->where('path', $path)
             ->where('document_id', $id)
             ->addSelect(['authorName' => User::select('name')
                     ->whereColumn('id', 'documents.authorId')])
