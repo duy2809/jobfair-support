@@ -472,7 +472,7 @@ const index = () => {
                     loading={disableBtn}
                     className="mr-10"
                   >
-                    保存
+                    <span> 保存 </span>
                   </Button>
                 </Space>
               </Form.Item>
