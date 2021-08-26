@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Input, Empty, Select, Tooltip, Button, Tag } from 'antd'
+import { Table, Input, Empty, Select, Tooltip, Button } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { jftask, jfdata } from '../../api/jf-toppage'
+import { jftask } from '../../api/jf-toppage'
 import { webInit } from '../../api/web-init'
 
 function TaskList() {
@@ -26,7 +26,6 @@ function TaskList() {
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
-  const [JF, setJF] = useState([])
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -178,9 +177,6 @@ function TaskList() {
   useEffect(async () => {
     setLoading(true)
     initPagination()
-    await jfdata(router.query.JFid).then((response) => {
-      setJF(response.data)
-    })
     await jftask(router.query.JFid).then((response) => {
       addDataOfTable(response)
     })
