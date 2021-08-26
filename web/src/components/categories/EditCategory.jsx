@@ -106,7 +106,11 @@ const EditCategory = (props) => {
         cancelText="キャンセル"
         centered
       >
-        <Form form={form} layout="vertical">
+
+        <Form
+          form={form}
+          layout="vertical"
+        >
           <Form.Item
             label={
               <span>カテゴリ名</span>
