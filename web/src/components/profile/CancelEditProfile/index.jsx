@@ -20,7 +20,7 @@ const CancelEditProfile = () => {
 
   return (
     <>
-      <Button onClick={showModal} className="text-base px-8 mr-10" style={{ backgroundColor: '#fff' }}>
+      <Button onClick={showModal} className="text-base px-8 mr-2" style={{ backgroundColor: '#fff' }}>
         キャンセル
       </Button>
       <Modal

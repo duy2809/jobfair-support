@@ -99,6 +99,7 @@ export default function TaskList() {
       event.preventDefault()
       event.stopPropagation()
     }
+    const id = allTask.find((e) => e.name === value)
     return (
       <Tag
         onMouseDown={onPreventMouseDown}
@@ -107,18 +108,28 @@ export default function TaskList() {
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
       >
         <Tooltip title={label}>
-          <span
-            onClick={() => {
-              const id = allTask.find((e) => e.name === value)
-              router.push(`/task-detail/${id.id}`)
-            }}
-            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+          {
+            id ? (
+              <a
+                target="_blank"
+                href={`/task-detail/${id.id}`}
+                className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+                rel="noreferrer"
+              >
+                {truncate(label)}
+              </a>
+            )
+              : (
+                <a
+                  target="_blank"
+                  className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+                  rel="noreferrer"
+                >
+                  {truncate(label)}
+                </a>
+              )
 
-          >
-            {truncate(label)}
-            {/* <a href="" className="my-1">{label}</a> */}
-          </span>
-
+          }
         </Tooltip>
       </Tag>
     )
@@ -144,7 +155,6 @@ export default function TaskList() {
 
           >
             {label}
-            {/* <a href="" className="my-1">{label}</a> */}
           </span>
 
         </Tooltip>
@@ -344,7 +354,7 @@ export default function TaskList() {
             <Form
               form={form}
               labelCol={{
-                span: 4,
+                span: 6,
               }}
               wrapperCol={{
                 span: 18,
@@ -355,7 +365,7 @@ export default function TaskList() {
               onFinish={onFinishSuccess}
               onFinishFailed={onFinishFailed}
             >
-              <div className="grid grid-cols-2 mx-10">
+              <div className="grid grid-cols-2 mx-8 ">
                 <div className="col-span-1 mx-4">
                   <Form.Item
                     label="タスク名:"
@@ -369,7 +379,7 @@ export default function TaskList() {
                   >
                     <Input
                       type="text"
-                      placeholder="タスク名入力する"
+                      placeholder="タスク名を入力する"
                       maxLength={20}
                       onChange={onValueNameChange}
                     />
@@ -451,7 +461,7 @@ export default function TaskList() {
                       },
                     ]}
                   >
-                    <Select className="addJF-selector" placeholder="管理者を選択">
+                    <Select className="addJF-selector" placeholder="ステータス">
                       {listStatus.map((element) => (
                         <Select.Option value={element}>
                           {element}
@@ -505,6 +515,7 @@ export default function TaskList() {
                   <Form.Item
                     label="前のタスク:"
                     name="taskBefore"
+                    className="tag_a"
                   >
                     <Select
                       mode="multiple"
@@ -527,6 +538,7 @@ export default function TaskList() {
                   <Form.Item
                     label="次のタスク:"
                     name="afterTask"
+                    className="tag_a"
                   >
                     <Select
                       mode="multiple"

@@ -1,7 +1,7 @@
 import { Form, Modal, Button, Input, notification } from 'antd'
 import React, { useState } from 'react'
-import { updatePassword } from '../../../../api/profile'
-import { webInit } from '../../../../api/web-init'
+import { updatePassword } from '../../../api/profile'
+import { webInit } from '../../../api/web-init'
 
 const ButtonChangePassword = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)

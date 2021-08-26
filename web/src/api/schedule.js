@@ -1,10 +1,10 @@
 import axios from './axios'
 
-const getListShedule = () => axios.get('/schedule')
+const getListSchedule = () => axios.get('/schedule')
 
-const searchListShedule = (params) => axios.get('/search', { params })
+const searchListSchedule = (params) => axios.get('/search', { params })
 
 export const ListScheduleApi = {
-  getListShedule,
-  searchListShedule,
+  getListSchedule,
+  searchListSchedule,
 }
