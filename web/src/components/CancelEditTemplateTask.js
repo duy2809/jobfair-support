@@ -14,7 +14,7 @@ class CancelEditTemplateTask extends React.Component {
   };
 
   handleOk = () => {
-    window.location.href = `/template-tasks/${this.props.id}`
+    window.location.href = `/template-task-dt/${this.props.id}`
     this.setState({ visible: false })
   };
 
@@ -26,7 +26,7 @@ class CancelEditTemplateTask extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="text-base px-8 mr-10">
+        <Button onClick={this.showModal} className="text-base px-8 mr-5">
           キャンセル
         </Button>
         <Modal
