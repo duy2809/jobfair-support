@@ -10,7 +10,7 @@ import {
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
-const AddMilestonePage = () =>  {
+const AddMilestonePage = () => {
   const [form] = Form.useForm()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
