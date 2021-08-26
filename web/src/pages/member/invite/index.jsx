@@ -153,7 +153,7 @@ function InviteMember() {
                     >
                       キャンセル
                     </Button>
-                    <Button id="btn-submit" type="primary" size="middle">
+                    <Button id="btn-submit" type="primary" size="middle" htmlType="submit">
                       招待
                     </Button>
                   </Space>
