@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Faker\Factory as Faker;
+use App\Models\Document;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class FileSeeder extends Seeder
 {
@@ -15,30 +14,23 @@ class FileSeeder extends Seeder
      */
     public function run()
     {
-        $faker = Faker::create();
-        $poly = [
-            'App\Models\Jobfair',
-            // 'App\Models\Task',
-        ];
-        $path = [
-            '/',
-            '/abc',
-            '/abc/aaa',
-        ];
-
-        for ($i = 0; $i < 20; $i++) {
-            DB::table('documents')->insert([
-                'document_type' => $faker->randomElement($poly),
-                'document_id' => $faker->numberBetween(1, 4),
-                'created_at' => $faker->date(),
-                'updated_at' => $faker->date(),
-                'name' => $faker->name(),
-                'link' => $faker->url(),
-                'path' => $faker->randomElement($path),
-                'is_file' => $faker->boolean(),
-                'authorId' => $faker->numberBetween(1, 4),
-                'updaterId' => $faker->numberBetween(1, 4),
-            ]);
-        }
+        Document::factory(50)->create()->each(function ($folder) {
+            if (!$folder->is_file) {
+                $path = $folder->path;
+                $path .= $folder->name;
+                Document::factory(rand(1, 5))->create([
+                    'path' => $path,
+                ])->each(function ($folder2) {
+                    if (!$folder2->is_file) {
+                        $path2 = $folder2->path;
+                        $path2 .= '/';
+                        $path2 .= $folder2->name;
+                        Document::factory(rand(0, 5))->create([
+                            'path' => $path2,
+                        ]);
+                    }
+                });
+            }
+        });
     }
 }

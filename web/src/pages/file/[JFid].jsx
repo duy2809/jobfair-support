@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import { Table, Checkbox, Button, notification, Divider, Breadcrumb, Empty, Modal, Tooltip, Form, Input } from 'antd'
+import { Table, Checkbox, Button, notification, Breadcrumb, Empty, Modal, Tooltip, Form, Input } from 'antd'
 import { FolderFilled, FileFilled } from '@ant-design/icons'
 import './style.scss'
 import TimeAgo from 'react-timeago'
@@ -10,6 +10,8 @@ import { ReactReduxContext } from 'react-redux'
 import Search from '../../components/file/search'
 import JfLayout from '../../layouts/JFLayout'
 import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } from '../../api/file'
+import ButtonAddFile from '../../components/file/ButtonAddFile'
+import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 // TODO call API add file + folder + search + visit folder
 export default function File() {
   const { store } = useContext(ReactReduxContext)
@@ -18,8 +20,6 @@ export default function File() {
   const formatter = buildFormatter(frenchStrings)
   const [disableBtnEdit, setDisableBtnEdit] = useState(true)
   const [disableBtnDelete, setDisableBtnDelete] = useState(true)
-  const [isLoadingBtnEdit, setIsLoadingEdit] = useState(false)
-  const [isLoadingBtnDelete, setIsLoadingBtnDelete] = useState(false)
   const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false)
   const [isModalEditFileVisible, setIsModalEditFileVisible] = useState(false)
   const [isModalEditFolderVisible, setIsModalEditFolderVisible] = useState(false)
@@ -28,35 +28,11 @@ export default function File() {
   const [isDisableEditFile, setIsDisableEditFile] = useState(false)
   const [isDisableEditFolder, setIsDisableEditFolder] = useState(false)
   const [isCheckAll, setIsCheckAll] = useState(false)
-  // tu's code
-  const [isDisableFile, setIsDisableFile] = useState(true)
-  const [isDisableFolder, setIsDisableFolder] = useState(true)
 
-  const [isModalAddVisible, setIsModalAddVisible] = useState({
-    addFile: false,
-    addFolder: false,
-  })
-  const [formFile] = Form.useForm()
-  const [formFolder] = Form.useForm()
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
 
   const user = store.getState().get('auth').get('user')
-
-  const handleAddFileCancel = () => {
-    formFile.setFieldsValue({ name_file: '', link: '' })
-    formFolder.setFieldsValue({ name_folder: '' })
-    setIsModalAddVisible({ addFile: false, addFolder: false })
-  }
-  const onFileChange = () => {
-    const nameFile = formFile.getFieldValue('name_file')
-    const link = formFile.getFieldValue('link')
-    if (!nameFile || !link) {
-      setIsDisableFile(true)
-      return
-    }
-    setIsDisableFile(false)
-  }
 
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')
@@ -67,15 +43,6 @@ export default function File() {
     }
     setIsDisableEditFile(false)
   }
-
-  const onChangeDisableFolder = () => {
-    const nameFolder = formFolder.getFieldValue('name_folder')
-    if (!nameFolder) {
-      setIsDisableFolder(true)
-      return
-    }
-    setIsDisableFolder(false)
-  }
   const onChangeDisableEditFolder = () => {
     const nameFolder = formEditFolder.getFieldValue('name_folder')
     if (!nameFolder) {
@@ -85,14 +52,9 @@ export default function File() {
     setIsDisableEditFolder(false)
   }
 
-  const handleAddFileOk = () => {
-
-  }
-
   // my code
   const [recentUpdated, setRecentUpdated] = useState([])
   const [data, setData] = useState([])
-
   const [isChecked, setIsChecked] = useState([])
   const columns = [
     {
@@ -121,7 +83,7 @@ export default function File() {
           onClick={async () => {
             if (record.is_file) {
               window.open(record.link)
-            } else {
+            } else if (record.key !== -1) {
               let queryPath = ''
               for (let i = 0; i < directory.length; i += 1) {
                 if (i !== 0) {
@@ -149,6 +111,37 @@ export default function File() {
               }))
               setData(result)
               setIsCheckAll(false)
+              setDirectory([...directory, record.name])
+            } else {
+              let queryPath = ''
+              for (let i = 0; i < directory.length - 1; i += 1) {
+                if (i !== 0 && i !== directory.length - 2) {
+                  queryPath += `${directory[i]}/`
+                } else if (i === 0) {
+                  queryPath += '/'
+                } else {
+                  queryPath += directory[i]
+                }
+              }
+              const res = await getPath({
+                params: {
+                  jfId: JFid,
+                  path: queryPath,
+                },
+              })
+
+              const result = res.data.map((element) => ({
+                key: element.id,
+                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                is_file: element.is_file,
+                name: element.name,
+                updater: element.updaterName,
+                updated_at: element.updated_at,
+                link: element.link,
+              }))
+              setData(result)
+              setIsCheckAll(false)
+              setDirectory(directory.slice(0, directory.length - 1))
             }
           }}
           className="cursor-pointer flex flex-row items-center"
@@ -241,6 +234,19 @@ export default function File() {
       setDisableBtnDelete(true)
     }
   }, [isChecked])
+  useEffect(() => {
+    if (directory.length !== 1) {
+      setData([{
+        key: -1,
+        name: '..',
+        checkbox: false,
+        is_file: false,
+        updater: '',
+        updated_at: '',
+        link: '',
+      }, ...data])
+    }
+  }, [directory])
   const onBtnDeleteClick = () => {
     setIsModalDeleteVisible(true)
   }
@@ -290,7 +296,17 @@ export default function File() {
         updated_at: element.updated_at,
         link: element.link,
       }))
-      setData(result)
+      if (directory.length > 1) {
+        setData([{
+          key: -1,
+          name: '..',
+          checkbox: false,
+          is_file: false,
+          updater: '',
+          updated_at: '',
+          link: '',
+        }, ...result])
+      } else setData(result)
       setIsModalEditFileVisible(false)
       setIsCheckAll(false)
     })
@@ -325,7 +341,17 @@ export default function File() {
         updated_at: element.updated_at,
         link: element.link,
       }))
-      setData(result)
+      if (directory.length > 1) {
+        setData([{
+          key: -1,
+          name: '..',
+          checkbox: false,
+          is_file: false,
+          updater: '',
+          updated_at: '',
+          link: '',
+        }, ...result])
+      } else setData(result)
       setIsModalEditFolderVisible(false)
       setIsCheckAll(false)
     })
@@ -346,7 +372,17 @@ export default function File() {
       updated_at: element.updated_at,
       link: element.link,
     }))
-    setData(result)
+    if (directory.length > 1) {
+      setData([{
+        key: -1,
+        name: '..',
+        checkbox: false,
+        is_file: false,
+        updater: '',
+        updated_at: '',
+        link: '',
+      }, ...result])
+    } else setData(result)
     setIsModalDeleteVisible(false)
     setIsCheckAll(false)
   }
@@ -359,116 +395,20 @@ export default function File() {
               <div className="md:col-span-5">
                 <h1 className="text-3xl inline">ファイル</h1>
                 <div className="w-full h-14 flex flex-row justify-end gap-x-6">
-                  <Button
-                    type="primary"
-                    size="large"
-                    className="h-10"
-                    icon={<FileFilled />}
-                    onClick={() => setIsModalAddVisible((prevState) => ({
-                      ...prevState,
-                      addFile: true,
-                    }))}
-                  >
-                    新しいファイル
-                  </Button>
-                  <Modal
-                    title="新しいファイル"
-                    okText="保存"
-                    cancelText="キャンセル"
-                    centered
-                    visible={isModalAddVisible.addFile}
-                    onOk={handleAddFileOk}
-                    onCancel={handleAddFileCancel}
-                    okButtonProps={{ disabled: isDisableFile }}
-                  >
-                    <Form
-                      form={formFile}
-                      onValuesChange={onFileChange}
-                      layout="vertical"
-                      name="basic"
-                    >
-                      <Form.Item
-                        label={
-                          <p>名前</p>
-                        }
-                        name="name_file"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'この項目は必須です。',
-                          }]}
-                      >
-                        <Input
-                          type="text"
-                          size="large"
-                          placeholder="新しいファイル名"
-                        />
-                      </Form.Item>
-                      <Form.Item
-                        label={
-                          <p>リンク</p>
-                        }
-                        name="link"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'この項目は必須です。',
-                          }]}
-                      >
-                        <Input
-                          type="text"
-                          size="large"
-                          placeholder="グーグルドライブリンク"
-                        />
-                      </Form.Item>
-                    </Form>
-                  </Modal>
-                  <Button
-                    type="primary"
-                    size="large"
-                    className="h-10"
-                    icon={<FolderFilled />}
-                    onClick={() => setIsModalAddVisible((prevState) => ({
-                      ...prevState,
-                      addFolder: true,
-                    }))}
-                  >
-                    新しいフォルダ
-                  </Button>
-                  <Modal
-                    title="新しいフォルダ"
-                    okText="保存"
-                    cancelText="キャンセル"
-                    centered
-                    visible={isModalAddVisible.addFolder}
-                    onCancel={handleAddFileCancel}
-                    okButtonProps={{ disabled: isDisableFolder }}
-                  >
-                    <Form
-                      form={formFolder}
-                      onValuesChange={onChangeDisableFolder}
-                      layout="vertical"
-                      name="basic"
-                    >
-                      <Form.Item
-                        label={
-                          <p>名前</p>
-                        }
-                        name="name_folder"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'この項目は必須です。',
-                          }]}
-                      >
-                        <Input
-                          type="text"
-                          size="large"
-                          placeholder="新しいフォルダ名"
-                        />
-                      </Form.Item>
-                    </Form>
-                  </Modal>
+                  <ButtonAddFile
+                    updater={user}
+                    path={directory}
+                    documentId={JFid}
+                    setData={setData}
+                    setIsCheckAll={setIsCheckAll}
+                  />
+                  <ButtonAddFolder
+                    updater={user}
+                    path={directory}
+                    documentId={JFid}
+                    setData={setData}
+                    setIsCheckAll={setIsCheckAll}
+                  />
                 </div>
                 <div className="w-full">
                   <div className="h-24 grid grid-cols-3 table-top border-t border-r border-l border-black rounded-t-md">
@@ -515,6 +455,7 @@ export default function File() {
                               }))
                               setData(result)
                               setIsCheckAll(false)
+                              setDirectory(directory.slice(0, index + 1))
                             }}
                             className="underline text-xl cursor-pointer"
                           >
@@ -654,81 +595,56 @@ export default function File() {
                 <div className="pt-12">
                   <h2 className="font-bold">最近更新されたファイル</h2>
                   <div className="h-60 recently mt-1 border border-black rounded-md flex flex-col justify-start">
-                    {recentUpdated.map((el, index) => {
-                      if (index !== recentUpdated.length - 1) {
-                        return (
-                          <>
-                            <div className="my-2 px-6 border-b border-black ">
-                              <div className="flex flex-row items-center">
-                                <FileFilled className="mr-2 " />
-                                {el.name.length > 20
-                                  ? (
-                                    <Tooltip placement="top" title={el.name}>
-                                      <span
-                                        className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                        style={{ maxWidth: '20ch' }}
-                                      >
-                                        {el.name}
-                                      </span>
-                                    </Tooltip>
-                                  ) : (
-                                    <span
-                                      className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                      style={{ maxWidth: '20ch' }}
-                                    >
-                                      {el.name}
-                                    </span>
-                                  )}
-                              </div>
-                              <div className="py-2 flex flex-row items-center">
-                                <TimeAgo date={el.updated_at} formatter={formatter} />
-
-                                {el.updater.length > 20
-                                  ? (
-                                    <Tooltip placement="top" title={el.updater}>
-                                      <span
-                                        className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                        style={{ maxWidth: '20ch' }}
-                                      >
-                                        {' '}
-                                        {` / ${el.updater}`}
-                                      </span>
-                                    </Tooltip>
-                                  ) : (
-                                    <span
-                                      className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                      style={{ maxWidth: '20ch' }}
-                                    >
-                                      {' '}
-                                      {` / ${el.updater}`}
-                                    </span>
-                                  )}
-                              </div>
-                            </div>
-
-                          </>
-                        )
-                      } return (
-                        <>
-                          <div className="my-2 px-6">
-                            <FileFilled className="mr-2" />
-                            {el.name}
-                            <div className="py-2">
-                              <TimeAgo date={el.updated_at} formatter={formatter} />
-                              <span
-                                className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                style={{ maxWidth: '20ch' }}
-                              >
-                                {' '}
-                                {` / ${el.updater}`}
-                              </span>
-
-                            </div>
+                    {recentUpdated.map((el, index) => (
+                      <>
+                        <div className={`my-2 px-6 ${(index !== recentUpdated.length - 1) ? 'border-b border-black' : ''}`}>
+                          <div className="flex flex-row items-center">
+                            <FileFilled className="mr-2 " />
+                            {el.name.length > 20
+                              ? (
+                                <Tooltip placement="top" title={el.name}>
+                                  <span
+                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                    style={{ maxWidth: '20ch' }}
+                                  >
+                                    {el.name}
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {el.name}
+                                </span>
+                              )}
                           </div>
+                          <div className="py-2 flex flex-row items-center gap-2">
+                            <TimeAgo date={el.updated_at} formatter={formatter} />
+                            <span>/</span>
+                            {el.updater.length > 20
+                              ? (
+                                <Tooltip placement="top" title={el.updater}>
+                                  <span
+                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                    style={{ maxWidth: '20ch' }}
+                                  >
+                                    {el.updater}
+                                  </span>
+                                </Tooltip>
+                              ) : (
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {el.updater}
+                                </span>
+                              )}
+                          </div>
+                        </div>
 
-                        </>
-                      )
-                    })}
+                      </>
+                    ))}
                   </div>
                 </div>
                 <div className="mt-5">

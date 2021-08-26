@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\Jobfair;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -66,24 +67,34 @@ class FileController extends Controller
     }
     public function store(Request $request)
     {
-        if ($this->checkUnique($request->name, $request->path)) {
+        {
+            $rules = [
+                'name' => [
+                    'required',
+                    Rule::unique('documents')->where('path', $request->path)->where('document_id', $request->document_id)->where('is_file', $request->is_file),
+                ],
+            ];
             if ($request->is_file) {
-                $rules = [
-                    'link' => 'required',
-                ];
-                $validator = Validator::make($request->all(), $rules);
-                $validator->validate();
+                $rules['link'] = 'required';
             }
-            Document::create(array_merge($request->all(), ['document_type' => 'App\Models\Jobfair']));
-            return Document::select('*')
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 200);
+            }
+
+            Document::create(array_merge($request->all(), ['authorId' => auth()->user()->id],
+                ['updaterId' => auth()->user()->id],
+                ['document_type' => 'App\Models\Jobfair']
+            ));
+
+            return DB::table('documents')
+                ->select('*')
                 ->where('path', $request->path)
+                ->where('document_id', $request->document_id)
                 ->orderBy('documents.is_file', 'asc')
                 ->orderBy('documents.updated_at', 'desc')
                 ->get();
         }
-        return $messages = [
-            'document.name.unique' => 'Given name already have in folder',
-        ];
     }
 
     /**
@@ -101,6 +112,10 @@ class FileController extends Controller
     {
         $data = DB::table('documents')
             ->select('*')
+            ->addSelect(['authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId')])
             ->where('path', $request->path)
             ->where('document_id', $request->jfId)
             ->orderBy('is_file', 'asc')
@@ -111,21 +126,24 @@ class FileController extends Controller
     }
     public function search(Request $request)
     {
-        $query = document::all()->get();
+        $query = Document::query();
         if ($request->has('name')) {
-            $query::where('name', 'LIKE', "%$request->name%");
+            $query->where('name', 'LIKE', "%$request->name%");
         }
-        if ($request->has('updated_at')) {
-            $query::whereBetween('updated_at', [$request->from, $request->to]);
+        if ($request->has('start_date')) {
+            $query->where('updated_at', '>=', $request->start_date);
+        }
+        if ($request->has('end_date')) {
+            $query->where('updated_at', '<=', $request->end_date);
         }
         if ($request->has('updaterId')) {
-            $query::where('updaterId', 'LIKE', "%$request->updaterId%");
+            $query->where('updaterId', $request->updaterId);
         }
-
-        return $query
-            ->orderBy('documents.is_file', 'asc')
-            ->orderBy('documents.updated_at', 'desc')
-            ->get();
+        return $query->where('is_file', true)->where('document_id', $request->jfID)->addSelect(['authorName' => User::select('name')
+                ->whereColumn('id', 'documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId')])
+            ->orderBy('documents.updated_at', 'desc')->get();
     }
     /**
      * Update the specified resource in storage.
@@ -139,17 +157,20 @@ class FileController extends Controller
         $document = Document::find($id);
         $rules = [
             'name' => Rule::unique('documents')->where('path', $document->path)->where('document_id', $document->document_id)->where('is_file', $document->is_file)->whereNot('id', $id),
-            'link' => 'url',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json($validator->messages(), 200);
         }
 
-        $document->update(array_merge($request->all(), ['updaterId' => 1]));
+        $document->update(array_merge($request->all(), ['updaterId' => auth()->user()->id]));
 
         return DB::table('documents')
             ->select('*')
+            ->addSelect(['authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId')])
             ->where('path', $document->path)
             ->where('document_id', $document->document_id)
             ->orderBy('documents.is_file', 'asc')
@@ -176,8 +197,18 @@ class FileController extends Controller
         return Document::select('*')
             ->where('path', $path->path)
             ->where('document_id', $id)
+            ->addSelect(['authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId')])
+            ->addSelect(['updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId')])
             ->orderBy('is_file', 'asc')
             ->orderBy('updated_at', 'desc')
             ->get();
+    }
+
+    public function getMember($id)
+    {
+        $jobfair = Jobfair::find($id);
+        return User::where('role', 1)->orWhere('id', $jobfair->user->id)->orWhereIn('id', $jobfair->schedule->users->pluck('id'))->get();
     }
 }
