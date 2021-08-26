@@ -3,6 +3,7 @@ import { redirect } from '~/modules/http'
 
 const handle = ({ store, res, args = [], isLast }) => {
   const user = store.getState().get('auth').get('user')
+  console.log(user)
   const userRole = user ? user.get('role') : null
   const isGuest = user === null || user.size === 0
 

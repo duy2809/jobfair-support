@@ -15,7 +15,7 @@ export default function Navbar() {
     try {
       const response = await logout()
       if (response.request.status === 200) {
-        router.push('/login')
+        router.push('/')
       }
     } catch (error) {
       if (error.request.status === 400) {
