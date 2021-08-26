@@ -3,7 +3,9 @@
 $colors: (
   0: red,
   1: green,
-  2: blue
+  2: blue,
+  3: orange,
+  4: violet
 );
 .schedule-gantt {
   @each $index, $color in $colors {
