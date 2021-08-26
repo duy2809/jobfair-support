@@ -6,7 +6,7 @@ import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
   beforeTask,
@@ -22,6 +22,7 @@ export default function TaskList() {
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
   const [infoTask, setInfoTask] = useState({
+    id: null,
     name: '',
     categories: '',
     milestone: '',
@@ -72,6 +73,7 @@ export default function TaskList() {
     await taskData(idTask)
       .then((response) => {
         setInfoTask({
+          id: response.data.id,
           name: response.data.name,
           categories: response.data.categories[0].category_name,
           milestone: response.data.milestone.name,
@@ -130,7 +132,7 @@ export default function TaskList() {
     router.push(`/tasks/${infoJF.id}`)
   }
   const handleEdit = () => {
-    router.push(`/tasks/${infoJF.id}`)
+    router.push(`/edit-task/${infoTask.id}`)
   }
   useEffect(() => {
     getDataUser()
@@ -140,7 +142,7 @@ export default function TaskList() {
   }, [])
   return (
     <div>
-      <JfLayout>
+      <JfLayout id={infoJF.id}>
         <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
@@ -176,7 +178,6 @@ export default function TaskList() {
             </div>
             <div className="title">
               <h1>タスク詳細</h1>
-              <span>{infoJF.name}</span>
             </div>
 
             <div className="info__tplt">
@@ -218,12 +219,23 @@ export default function TaskList() {
                       <p>工数:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <span className="ef">{infoTask.effort}</span>
-                      <span className="ef">
-                        {infoTask.is_day ? '日' : '時間'}
-                      </span>
-                      <span>/</span>
-                      <span className="ef">{infoTask.unit}</span>
+                      {infoTask.unit === 'none' ? (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="ef">{infoTask.effort}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
+                          <span>/</span>
+                          <span className="ef">{infoTask.unit}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -321,9 +333,9 @@ export default function TaskList() {
               </div>
 
               <div className="grid grid-cols-2 mx-5 mt-5">
-                <div className="rela col-span-1 mx-8">
-                  <p className="mb-2">前のタスク </p>
-                  <ul className="list__task">
+                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
+                  <p className="mb-2 col-span-1">前のタスク </p>
+                  <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
@@ -336,15 +348,14 @@ export default function TaskList() {
                               {truncate(item.name)}
                             </a>
                           </Tooltip>
-
                         </li>
                       ))
                       : null}
                   </ul>
                 </div>
-                <div className="rela col-span-1 mx-8">
-                  <p className="mb-2">次のタスク</p>
-                  <ul className="list__task">
+                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
+                  <p className="mb-2 col-span-1">次のタスク</p>
+                  <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
