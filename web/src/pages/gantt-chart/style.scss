@@ -1,18 +1,72 @@
-.gantt-chart {
-  table {
-    font-family: arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
+.gantt-chart-page {
+  .radio-button {
+    border-radius: 5px;
+  }
+  .radio-button:hover {
+    opacity: 0.8;
+  }
+  .radio-button:nth-child(1) {
+    background-color: yellow;
+  }
+  .radio-button:nth-child(2) {
+    background-color: rgb(0, 255, 238);
+  }
+  .radio-button:nth-child(3) {
+    background-color: rgb(255, 251, 0);
+  }
+  .radio-button:nth-child(4) {
+    background-color: rgb(0, 255, 102);
+  }
+  .radio-button:nth-child(5) {
+    background-color: rgb(255, 81, 0);
+  }
+  .radio-button:nth-child(6) {
+    span {
+      border-radius: 5px;
+
+      color: white;
+    }
+    background-color: rgb(0, 0, 0);
+  }
+  .ant-radio-button-wrapper:last-child {
+    border: none;
+  }
+  .ant-radio-button-wrapper:first-child {
+    border: none;
   }
 
-  td,
-  th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background-color: white;
+    color: #272343;
+    border: 1px solid yellow;
+    span {
+      color: #272343;
+    }
+  }
+  .ant-radio-button-wrapper:not(:first-child)::before {
+    display: none;
+  }
+  .ant-radio-button {
+    border-radius: 5px;
+    border-color: yellow;
   }
 
-  tr:nth-child(even) {
-    // background-color: #dddddd;
+  .gantt-chart {
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      // background-color: #dddddd;
+    }
   }
 }

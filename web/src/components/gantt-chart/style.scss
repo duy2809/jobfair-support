@@ -1,10 +1,41 @@
-.milestone-row {
-  font-size: 17px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-  white-space: nowrap;
-  border-right: 1px solid rgb(255, 0, 0);
-  border-left: 1px solid rgb(255, 0, 0);
-  //   max-width: 3ch;
+.gantt-chart_G1-3 {
+  .milestone-row {
+    font-size: 17px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+  }
+  .task-column {
+    width: 100%;
+    // border: 1px solid rgb(53, 53, 53);
+  }
+  .gantt_cell {
+    border-bottom: 1px solid #a6a6a6;
+  }
+  .gantt_link_target .gantt_link_control div,
+  .gantt_task_line.gantt_drag_move .gantt_link_control div,
+  .gantt_task_line.gantt_drag_move .gantt_task_drag,
+  .gantt_task_line.gantt_drag_move .gantt_task_progress_drag,
+  .gantt_task_line.gantt_drag_progress .gantt_link_control div,
+  .gantt_task_line.gantt_drag_progress .gantt_task_drag,
+  .gantt_task_line.gantt_drag_progress .gantt_task_progress_drag,
+  .gantt_task_line.gantt_drag_resize .gantt_link_control div,
+  .gantt_task_line.gantt_drag_resize .gantt_task_drag,
+  .gantt_task_line.gantt_drag_resize .gantt_task_progress_drag,
+  .gantt_task_line.gantt_selected .gantt_link_control div,
+  .gantt_task_line.gantt_selected .gantt_task_drag,
+  .gantt_task_line.gantt_selected .gantt_task_progress_drag,
+  .gantt_task_line:hover .gantt_link_control div,
+  .gantt_task_line:hover .gantt_task_drag,
+  .gantt_task_line:hover .gantt_task_progress_drag {
+    display: none;
+  }
+  .gantt_marker.today {
+    background: #cbe40d;
+    width: 3px;
+  }
+  .gantt_marker .gantt_marker_content {
+    color: black;
+  }
 }
