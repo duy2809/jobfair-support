@@ -50,8 +50,8 @@ const ItemMultipleDropdown = ({
           showArrow
           mode="multiple"
           placeholder={label}
-          className="overflow-hidden w-full"
-          maxTagCount="responsive"
+          // className="overflow-hidden w-full"
+          // maxTagCount="responsive"
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}
