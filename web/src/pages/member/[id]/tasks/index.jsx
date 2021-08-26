@@ -3,11 +3,10 @@ import { Select, Table, Input, Button, Empty, DatePicker } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import moment from 'moment'
-import Layout from '../../../layouts/OtherLayout'
+import Layout from '../../../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
-import * as Extensions from '../../../utils/extensions'
+import * as Extensions from '../../../../utils/extensions'
 import { MemberApi } from '~/api/member'
-import { webInit } from '~/api/web-init'
 import './style.scss'
 
 const columns = [
@@ -46,9 +45,14 @@ export default function TaskList() {
   const [tasks, setTasks] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [itemCount, setItemCount] = useState(10)
-  const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
+  const [id, setID] = useState(0)
+  const [pagination, setPagination] = useState({
+    position: ['bottomCenter'],
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: false,
+  })
   const [optionStatus, setOptionStatus] = useState('すべて')
 
   const [searchNameValue, setSearchNameValue] = useState('')
@@ -97,40 +101,38 @@ export default function TaskList() {
   }
 
   const handleInput = () => {
-    const result = tasks.filter((obj) => obj.name.toLowerCase().indexOf(searchNameValue.toLowerCase()) > -1
-      && checkDate(obj)
-      && check(obj))
+    const result = tasks.filter(
+      (obj) => obj.name.toLowerCase().indexOf(searchNameValue.toLowerCase()) > -1
+        && checkDate(obj)
+        && check(obj),
+    )
     setFilteredData(result)
   }
 
   const fetchData = useCallback(() => {
     setDataLoading(true)
     initPagination()
-    webInit().then((res) => {
-      if (res.data.auth != null) {
-        setUser(res.data.auth.user)
-        MemberApi.getTasksOfMember(res.data.auth.user.id).then((response) => {
-          const { data } = response
-          setFilteredData(data)
-          setTasks(data)
-        }).catch((error) => {
-          console.log(error)
-          router.push('/login')
-        })
-      } else {
-        router.push('/login')
-      }
-    }).finally(() => {
-      setDataLoading(false)
-    })
+    MemberApi.getTasksOfMember(router.query.id)
+      .then((response) => {
+        setID(router.query.id)
+        const { data } = response
+        setFilteredData(data)
+        setTasks(data)
+        setDataLoading(false)
+      })
+      .catch(() => {
+        setDataLoading(false)
+      })
   })
 
-  const handleRow = (record) => ({ onClick: () => {
-    router.push(`/tasks/${record.id}`)
-  } })
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/tasks/${record.id}`)
+    },
+  })
 
   const handleBackButton = () => {
-    router.push(`/member/${user.id}`)
+    router.push(`/member/${id}`)
   }
 
   const handleSelectStatus = (value) => {
@@ -171,12 +173,42 @@ export default function TaskList() {
           <div className="text-xl w-full flex justify-between items-center">
             <div className="flex items-center">
               <div className="my-5 mr-5">ステータス:</div>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}
+              >
+                すべて
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}
+              >
+                未着手
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}
+              >
+                進行中
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}
+              >
+                完了
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}
+              >
+                中断
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}
+              >
+                未完了
+              </Button>
             </div>
             <DatePicker
               className=""
@@ -197,8 +229,12 @@ export default function TaskList() {
               </Select>
             </div>
             <div>
-              <Input size="large" onChange={handleInputName} placeholder="タスク名" prefix={<SearchOutlined />} />
-
+              <Input
+                size="large"
+                onChange={handleInputName}
+                placeholder="タスク名"
+                prefix={<SearchOutlined />}
+              />
             </div>
           </div>
           <Table
@@ -211,7 +247,14 @@ export default function TaskList() {
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="該当結果が見つかりませんでした"
+                />
+              ),
+            }}
           />
         </div>
       </Layout.Main>

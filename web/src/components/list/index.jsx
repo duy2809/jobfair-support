@@ -17,16 +17,13 @@ const List = ({
   dataColumn,
   dataSource,
   route,
-  routeToAdd
+  routeToAdd,
 }) => {
   const ref = useRef()
-
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
   const [list, setList] = useState([])
-  const [filter, setFilter] = useState(() => {
-    return { name: '', milestone: '', category: '', date: '' }
-  })
+  const [filter, setFilter] = useState(() => ({ name: '', milestone: '', category: '', date: '' }))
 
   useEffect(() => {
     setList(dataSource)
@@ -45,7 +42,7 @@ const List = ({
 
     return () => {
       document.body.removeEventListener('click', onBodyClick, {
-        capture: true
+        capture: true,
       })
     }
   }, [])
@@ -56,25 +53,25 @@ const List = ({
       if (filter.name) {
         console.log('fil name')
         datas = datas.filter(
-          (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1
+          (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
         )
       }
       if (filter.milestone) {
         console.log('fil mil')
         datas = datas.filter(
-          (data) => data.milestone.toLowerCase().indexOf(filter.milestone.toLowerCase()) !== -1
+          (data) => data.milestone.toLowerCase().indexOf(filter.milestone.toLowerCase()) !== -1,
         )
       }
       if (filter.category) {
         console.log('fil cate')
         datas = datas.filter(
-          (data) => data.category.toLowerCase().indexOf(filter.category.toLowerCase()) !== -1
+          (data) => data.category.toLowerCase().indexOf(filter.category.toLowerCase()) !== -1,
         )
       }
       if (filter.date) {
         if (dataColumn[1].dataIndex === 'type') dateString = filter.date.replace('-', '/')
         datas = datas.filter(
-          (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1
+          (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1,
         )
       }
       setList(datas)
@@ -83,14 +80,6 @@ const List = ({
   const onClick = () => {
     setShow(!show)
     setShowSearchIcon(!showSearchIcon)
-  }
-  const searchByTime = (date, dateString) => {
-    console.log(date)
-    if (dataColumn[1].dataIndex === 'type') dateString = dateString.replace('-', '/')
-    const datas = dataSource.filter(
-      (data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1
-    )
-    setList(datas)
   }
 
   const searchInput = (e, dateString = '') => {
@@ -132,7 +121,7 @@ const List = ({
       tasks = response.data.map((data) => ({
         name: data.name,
         jfName: data.jobfair.name,
-        time: data.start_time
+        time: data.start_time,
       }))
       setList(tasks)
     }
@@ -144,20 +133,32 @@ const List = ({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          marginBottom: '10px'
+          marginBottom: '10px',
         }}
       >
         <Link href={route}>
-          <a style={{ fontSize: '30px' }}>{text}</a>
+          <a
+            style={{
+              fontSize: '30px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {text}
+          </a>
         </Link>
+
         <div className="flex items-center">
-          <Link href={routeToAdd}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
-            />
-          </Link>
+          {text === 'タスク一覧' ? null : (
+            <Link href={routeToAdd}>
+              <Button
+                style={{ border: 'none', marginBottom: '5px' }}
+                shape="circle"
+                icon={<PlusOutlined style={{ fontSize: '30px' }} />}
+              />
+            </Link>
+          )}
 
           <span className="queue-demo">
             {showSearchIcon && (
@@ -193,12 +194,12 @@ const List = ({
           height: '480px',
           backgroundColor: 'white',
           border: '1px solid black',
-          borderRadius: '10px'
+          borderRadius: '10px',
         }}
       >
         <div
           style={{
-            display: 'grid'
+            display: 'grid',
           }}
         >
           <div className="flex items-center justify-end px-2">
@@ -288,7 +289,7 @@ List.propTypes = {
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
-  routeToAdd: PropTypes.string.isRequired
+  routeToAdd: PropTypes.string.isRequired,
 }
 
 export default List

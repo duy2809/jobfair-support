@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
+import { ReactReduxContext } from 'react-redux'
 import List from '../../components/list'
 import { tasks, members, jobfairs } from '../../api/top-page'
-import { getTaskList } from '../../api/template-task'
+import { getTaskList as getTemplateTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
 
@@ -85,6 +86,15 @@ const Top = () => {
   const [templateData, setTemplateData] = useState([])
   const [scheduleData, setScheduleData] = useState([])
 
+  const { store } = useContext(ReactReduxContext)
+  const [user, setUser] = useState(null)
+  const [id, setId] = useState(0)
+  useEffect(() => {
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      setId(user.get('id'))
+    }
+  }, [user])
   useEffect(() => {
     const getTask = async () => {
       const response = await tasks()
@@ -102,7 +112,7 @@ const Top = () => {
     }
 
     const getTemplate = async () => {
-      await getTaskList().then((res) => {
+      await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
           const categoriesName = data.categories.map((category) => category.category_name)
@@ -229,7 +239,7 @@ const Top = () => {
                 showCategoryInput={false}
                 showMilestoneInput={false}
                 showSearchByJFInput
-                route="/tasks"
+                route={`member/${id}/tasks`}
                 routeToAdd=""
               />
             </div>
