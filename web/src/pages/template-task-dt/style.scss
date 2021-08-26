@@ -1,6 +1,8 @@
-.wrapper {
-  // padding: 0 20px;
-
+.template-task-dt {
+  ::-webkit-scrollbar {
+    width: 12px !important;
+    height: 12px !important;
+  }
   .list__button {
     display: flex;
     align-items: center;
@@ -24,19 +26,22 @@
   .list__task {
     display: flex;
     align-items: center;
-    height: 65px;
+    height: 50px;
     width: 100%;
-    overflow: auto;
+    overflow-y: auto;
     border: 1px solid #999;
     box-shadow: 2px #b5b5b8;
     margin: 0 5px;
-
+    border-radius: 5px;
     li {
       white-space: nowrap;
-      margin: 3px 5px;
-      border: 1px solid #b5b5b8;
-      padding: 5px;
-      box-shadow: #b5b5b8;
+
+      padding: 0 3px;
+    }
+    .ant-tag,
+    .ant-tag a,
+    .ant-tag a {
+      color: rgb(16, 85, 189);
     }
   }
 
@@ -44,10 +49,10 @@
     padding: 13px;
     border: 1px solid #b5b5b8;
     border-radius: 6px;
-    line-height: 35px;
-    height: 220px;
+    height: 175px;
     overflow: auto;
-  }
+}
+
 
   .list-items {
     a:hover {
