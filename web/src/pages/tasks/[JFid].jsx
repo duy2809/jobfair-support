@@ -3,13 +3,15 @@ import { Table, Input, Empty, Select, Tooltip, Button, Tag } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { jftask, jfdata } from '../../api/jf-toppage'
+import { webInit } from '../../api/web-init'
 
 function TaskList() {
   const router = useRouter()
+  const [users, setUsers] = useState('')
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
@@ -52,9 +54,9 @@ function TaskList() {
     const dataResponse = response.data.schedule.tasks
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
-      const users = []
+      const manager = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
-        users.push(dataResponse[i].users[j].name)
+        manager.push(dataResponse[i].users[j].name)
       }
       data.push({
         id: i + 1,
@@ -65,25 +67,25 @@ function TaskList() {
         status: dataResponse[i].status,
         category_name: dataResponse[i].categories[0].category_name,
         milestone_name: dataResponse[i].milestone.name,
-        managers: users,
+        managers: manager,
       })
     }
     setTemperaryData(data)
     setOriginalData(data)
-    // if (valueSearch) {
-    //   const taskNameParameter = router.query.name.toLowerCase()
-    //   const filteredData = data.filter((task) => (task.taskName.toLowerCase().includes(taskNameParameter)))
-    //   setTemperaryData(filteredData)
-    // }
-    // if (status) {
-    //   const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
-    //   const index = arrayStatus.indexOf(router.query.status)
-    //   const arr = [0, 0, 0, 0, 0, 0]
-    //   arr[index] = 1
-    //   setActive(arr)
-    //   const filteredData = data.filter((task) => (!task.status.localeCompare(router.query.status)))
-    //   setTemperaryData(filteredData)
-    // }
+    if (valueSearch) {
+      const taskNameParameter = router.query.name.toLowerCase()
+      const filteredData = data.filter((task) => (task.taskName.toLowerCase().includes(taskNameParameter)))
+      setTemperaryData(filteredData)
+    }
+    if (status) {
+      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
+      const index = arrayStatus.indexOf(router.query.status)
+      const arr = [0, 0, 0, 0, 0, 0]
+      arr[index] = 1
+      setActive(arr)
+      const filteredData = data.filter((task) => (!task.status.localeCompare(router.query.status)))
+      setTemperaryData(filteredData)
+    }
   }
 
   const addOptionCategory = (response) => {
@@ -118,7 +120,7 @@ function TaskList() {
     },
     {
       title: 'タスク名',
-      width: 80,
+      width: '15%',
       dataIndex: 'taskName',
       fixed: 'left',
       ellipsis: {
@@ -128,37 +130,37 @@ function TaskList() {
     },
     {
       title: '開始日',
-      width: 50,
+      width: '12%',
       dataIndex: 'start_date',
       fixed: 'left',
     },
     {
       title: '終了日',
-      width: 50,
+      width: '12%',
       dataIndex: 'end_date',
       fixed: 'left',
     },
     {
       title: 'スターテス',
-      width: 50,
+      width: '10%',
       dataIndex: 'status',
       fixed: 'left',
     },
     {
       title: 'カテゴリ',
-      width: 80,
+      width: '12%',
       dataIndex: 'category_name',
       fixed: 'left',
     },
     {
       title: 'マイルストーン',
-      fixed: 'left',
+      fixed: '14%',
       dataIndex: 'milestone_name',
       width: 80,
     },
     {
       title: '担当者',
-      width: 120,
+      width: '20%',
       dataIndex: 'managers',
       fixed: 'left',
       render: (managers) => (
@@ -188,6 +190,9 @@ function TaskList() {
     await getAllMileStone().then((response) => {
       addOptionMilestone(response)
     })
+    await webInit().then((response) => {
+      setUsers(response.data.auth.user.role)
+    })
       .catch((error) => Error(error.toString()))
     setLoading(false)
   }, [])
@@ -215,7 +220,7 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
         && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
@@ -227,7 +232,7 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
         && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
@@ -239,7 +244,7 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value ? !task.status.localeCompare(value) : task.status)
         && (valueSearch ? (task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
+        || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))) : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
     )
@@ -255,10 +260,10 @@ function TaskList() {
     setActive(arr)
   }
   return (
-    <JfLayout>
+    <JfLayout id={router.query.JFid}>
       <JfLayout.Main>
         <div className="TaskList">
-          <div className="container space-y-2 justify-center">
+          <div className="space-y-2 justify-center">
             <div className="space-y-2">
               <div className="flex-col space-y-9">
                 <div className="flex items-center space-x-2">
@@ -273,24 +278,37 @@ function TaskList() {
                 </div>
                 <div className={showFilter ? 'space-y-3' : 'space-y-0'}>
                   <div className="flex items-center justify-between">
-                    <Button
-                      type="primary"
-                      className="flex items-center"
-                      onClick={() => {
-                        setShowFilter(!showFilter)
-                      }}
-                    >
-                      {showFilter ? <UpOutlined /> : <DownOutlined />}
-                      <span>フィルタ</span>
-                    </Button>
-                    <Button
-                      className="flex float-right"
-                      href="/add-task"
-                      type="primary"
-                      style={{ letterSpacing: '-2px' }}
-                    >
-                      追加
-                    </Button>
+                    <div className="flex items-center font-semibold">
+                      {showFilter ? (
+                        <UpOutlined
+                          className="icon"
+                          onClick={() => {
+                            setShowFilter(!showFilter)
+                          }}
+                        />
+                      ) : (
+                        <DownOutlined
+                          className="icon"
+                          onClick={() => {
+                            setShowFilter(!showFilter)
+                          }}
+                        />
+                      )}
+                      <div>&nbsp;フィルタ</div>
+                    </div>
+                    {users === 'superadmin' ? (
+                      <>
+                        <Button
+                          className="float-right"
+                          href={`/add-task/${router.query.JFid}`}
+                          type="primary"
+                          style={{ letterSpacing: '-2px' }}
+                        >
+                          追加
+                        </Button>
+                      </>
+                    )
+                      : null}
                   </div>
                   <div className="flex justify-between">
                     <div className="flex items-center justify-center space-x-1" style={{ display: showFilter ? '' : 'none' }}>
@@ -349,5 +367,6 @@ function TaskList() {
 
   )
 }
+TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
 export default TaskList
 // TaskList.middleware = ['auth:superadmin']

@@ -3,7 +3,7 @@
 /* eslint-disable react/prop-types */
 import 'antd/dist/antd.css'
 import React, { useState } from 'react'
-import { Modal, Button, notification, Form } from 'antd'
+import { Modal, Button, notification, Form, Input } from 'antd'
 import { addCategory, checkUniqueAdd } from '../../api/category'
 
 const AddCategory = (props) => {
@@ -100,7 +100,11 @@ const AddCategory = (props) => {
         cancelText="キャンセル"
         centered
       >
-        <Form form={form}>
+
+        <Form
+          form={form}
+          layout="vertical"
+        >
           <Form.Item
             label={
               <span>カテゴリ名</span>
@@ -122,7 +126,7 @@ const AddCategory = (props) => {
               }),
             ]}
           >
-            <input
+            <Input
               type="text"
               placeholder="例: 2次面接練習"
               className="input-category"

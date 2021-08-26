@@ -222,7 +222,7 @@ const EditTemplateTaskPage = () => {
         // });
       })
     setTimeout(() => {
-      window.location.href = `/template-tasks/${id}`
+      window.location.href = `/template-task-dt/${id}`
     }, 3000)
   }
 
@@ -241,7 +241,7 @@ const EditTemplateTaskPage = () => {
                 form={form}
                 name="basic"
                 labelCol={{
-                  span: 4,
+                  span: 6,
                 }}
                 wrapperCol={{
                   span: 16,
@@ -333,7 +333,7 @@ const EditTemplateTaskPage = () => {
                   setInput={setDescription}
                 />
                 <Form.Item className="justify-end">
-                  <div className="submit-btn">
+                  <div className="submit-btn flex justify-end ">
                     <CancelEditTemplateTask id={pathId} />
                     <Button
                       type="primary"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
+import './style.scss'
 import _get from 'lodash/get'
 import '../../pages/global.scss'
 import {
@@ -16,7 +17,6 @@ import {
 import { jfdata } from '../../api/jf-toppage'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
-import './style.scss'
 
 const JfLayout = ({ children, id }) => {
   const main = findSlot(JfLayout.Main, children)
@@ -32,15 +32,17 @@ const JfLayout = ({ children, id }) => {
     Setcollapsed(!collapsed)
   }
   const fetchJF = async () => {
-    await jfdata(id).then((response) => {
-      setName(response.data.name)
-      setStartDate(response.data.start_date.split('-').join('/'))
-      setAvt(response.data.user.avatar)
-      setNumberOfStudents(response.data.number_of_students)
-      setNumberOfCompanies(response.data.number_of_companies)
-    }).catch((error) => {
-      console.log(error)
-    })
+    if (id) {
+      await jfdata(id).then((response) => {
+        setName(response.data.name)
+        setStartDate(response.data.start_date.split('-').join('/'))
+        setAvt(response.data.user.avatar)
+        setNumberOfStudents(response.data.number_of_students)
+        setNumberOfCompanies(response.data.number_of_companies)
+      }).catch((error) => {
+        console.log(error)
+      })
+    }
   }
 
   useEffect(() => {
@@ -117,6 +119,7 @@ const JfLayout = ({ children, id }) => {
           <Content
             className="site-layout-background"
           >
+
             {_get(main, 'props.children')}
           </Content>
         </Layout>

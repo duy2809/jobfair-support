@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Input, Empty, Select, Tooltip, Button } from 'antd'
 import './style.scss'
-import { SearchOutlined } from '@ant-design/icons'
+import { SearchOutlined, UpOutlined, DownOutlined } from '@ant-design/icons'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getTaskList, getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
+import { webInit } from '../../api/web-init'
 
-export default function TemplateTaskList() {
+function TemplateTaskList() {
   // state of table
+  const [users, setUsers] = useState('')
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
   const [loading, setLoading] = useState(false)
@@ -124,6 +126,9 @@ export default function TemplateTaskList() {
     await getAllMileStone().then((response) => {
       addOptionMilestone(response)
     })
+    await webInit().then((response) => {
+      setUsers(response.data.auth.user.role)
+    })
       .catch((error) => Error(error.toString()))
     setLoading(false)
   }, [])
@@ -133,8 +138,8 @@ export default function TemplateTaskList() {
   const searchDataOnTable = (value) => {
     const filteredData = originalData.filter(
       (templateTask) => (value ? templateTask.templateTaskName.toLowerCase().includes(value) : templateTask.templateTaskName)
-      && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name)
-      && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
+        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name)
+        && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
     setTemperaryData(filteredData)
   }
@@ -148,8 +153,8 @@ export default function TemplateTaskList() {
     setCategory(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
-      && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
-      && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
+        && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
+        && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
     setTemperaryData(filteredData)
   }
@@ -158,25 +163,57 @@ export default function TemplateTaskList() {
     setMilestone(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
-      && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
-      && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name),
+        && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
+        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name),
     )
     setTemperaryData(filteredData)
   }
-
+  const [showFilter, setShowFilter] = useState(true)
   return (
     <OtherLayout>
       <OtherLayout.Main>
-        <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
-          <div className="container mx-auto flex flex-col space-y-2 justify-center">
+          <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
               <div className="flex-col space-y-9">
                 <div className="flex items-center">
-                  {/* <h1 className="text-3xl float-left">テンプレートタスクー覧</h1> */}
+                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
                 </div>
-                <div className="flex justify-between">
-                  <div className="flex items-center space-x-4 w-9/12">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center font-semibold">
+                      {showFilter ? (
+                        <UpOutlined
+                          className="icon"
+                          onClick={() => {
+                            setShowFilter(!showFilter)
+                          }}
+                        />
+                      ) : (
+                        <DownOutlined
+                          className="icon"
+                          onClick={() => {
+                            setShowFilter(!showFilter)
+                          }}
+                        />
+                      )}
+                      <div>&nbsp;フィルタ</div>
+                    </div>
+                    {users === 'superadmin' ? (
+                      <>
+                        <Button
+                          className="float-right"
+                          href="/add-template-task"
+                          type="primary"
+                          style={{ letterSpacing: '-2px' }}
+                        >
+                          追加
+                        </Button>
+                      </>
+                    )
+                      : null}
+                  </div>
+                  <div className="flex items-center space-x-4 w-9/12" style={{ display: showFilter ? '' : 'none' }}>
                     <Select className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                       {optionCategory}
                     </Select>
@@ -184,14 +221,6 @@ export default function TemplateTaskList() {
                       {optionMilestone}
                     </Select>
                   </div>
-                  <Button
-                    className="flex float-right"
-                    href="/add-template-task"
-                    type="primary"
-                    style={{ letterSpacing: '-2px' }}
-                  >
-                    追加
-                  </Button>
                 </div>
               </div>
               <div className="flex items-center justify-between">
@@ -229,3 +258,5 @@ export default function TemplateTaskList() {
     </OtherLayout>
   )
 }
+TemplateTaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default TemplateTaskList

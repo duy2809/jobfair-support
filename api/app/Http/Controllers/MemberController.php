@@ -55,4 +55,11 @@ class MemberController extends Controller
     {
         return User::findOrFail($id)->tasks;
     }
+
+    public function getMember()
+    {
+        $user = User::select('id', 'name')->where('role', '=', 3)->get();
+
+        return response()->json($user);
+    }
 }

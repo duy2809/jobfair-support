@@ -84,13 +84,16 @@
 
         opacity: 0.7;
     }
-
+.font-icon{
     .anticon,
     .anticon-home,
     .ant-menu-item-icon {
         font-size: 25px;
+        margin-left: 15px;
     }
 
+}
+   
     .ant-layout-sider,
     .ant-layout-sider-dark {
         flex: 0 0 216px !important;
@@ -112,7 +115,7 @@
         justify-content: space-between;
         margin-bottom: 30px;
     //    background-color: #e6e6e9;  
-    background-color: #eeedd8;  
+        background-color: #eeedd8;  
         .admin__jf{
             display: flex;
             align-items: center;
