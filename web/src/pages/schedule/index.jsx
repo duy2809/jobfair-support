@@ -76,7 +76,7 @@ export default function ScheduleList() {
         router.push('/login')
       }
     })
-    ListScheduleApi.getListShedule().then((res) => {
+    ListScheduleApi.getListSchedule().then((res) => {
       const { data } = res
       setSchedules(data)
       setFilterSchedules(data)
