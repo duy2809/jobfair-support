@@ -6,7 +6,7 @@ import OtherLayout from '../../../../layouts/OtherLayout'
 import { updateMilestone, getMilestone, getNameExitEdit } from '../../../../api/milestone'
 import './styles.scss'
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+const toHalfWidth = (v) => v.replace(/[ａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
 const EditMilestonePage = () => {
   // {query['id']}
