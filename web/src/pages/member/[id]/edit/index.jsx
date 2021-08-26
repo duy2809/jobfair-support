@@ -210,7 +210,7 @@ const EditMember = ({ data }) => {
             <Form.Item>
               <div className="flex justify-end">
                 <Modal
-                  title="変更は保存されていません。続行してもよろしいですか？"
+                  title="メンバ編集"
                   visible={isModalCancelVisible}
                   onOk={handleClick}
                   onCancel={handleCancelModal}
@@ -218,7 +218,7 @@ const EditMember = ({ data }) => {
                   okText="はい"
                   centered
                 >
-                  <p className="mb-5">このまま保存してもよろしいですか？ </p>
+                  <p className="mb-5">変更内容が保存されません。よろしいですか？</p>
                 </Modal>
 
                 <Button size="middle" onClick={showCancelModal}>
