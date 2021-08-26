@@ -22,6 +22,7 @@ export default function TaskList() {
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
   const [infoTask, setInfoTask] = useState({
+    id: null,
     name: '',
     categories: '',
     milestone: '',
@@ -72,6 +73,7 @@ export default function TaskList() {
     await taskData(idTask)
       .then((response) => {
         setInfoTask({
+          id: response.data.id,
           name: response.data.name,
           categories: response.data.categories[0].category_name,
           milestone: response.data.milestone.name,
@@ -130,7 +132,7 @@ export default function TaskList() {
     router.push(`/tasks/${infoJF.id}`)
   }
   const handleEdit = () => {
-    router.push(`/tasks/${infoJF.id}`)
+    router.push(`/edit-task/${infoTask.id}`)
   }
   useEffect(() => {
     getDataUser()
