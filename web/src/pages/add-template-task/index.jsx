@@ -613,6 +613,7 @@ const index = () => {
                           <Form.Item
                             label="詳細"
                             className="block mx-7"
+                            style={{ display: 'block' }}
                             name="detail"
                           >
                             <TextArea className="text-area-description w-100" rows={10} placeholder="何かを入力してください" />
