@@ -10,6 +10,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,6 +35,8 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/tasks', 'JobfairController@getTasks');
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
+    Route::post('/add-task', 'TaskController@store');
+    Route::get('/get-template-task-not-add', 'TaskController@getTemplateTaskNotAdd');
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
