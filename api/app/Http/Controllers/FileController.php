@@ -171,9 +171,9 @@ class FileController extends Controller
         $document = Document::find($id);
         $rules = [
             'name' => Rule::unique('documents')->where('path', $document->path)
-            ->where('document_id', $document->document_id)
-            ->where('is_file', $document->is_file)
-            ->whereNot('id', $id),
+                ->where('document_id', $document->document_id)
+                ->where('is_file', $document->is_file)
+                ->whereNot('id', $id),
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
