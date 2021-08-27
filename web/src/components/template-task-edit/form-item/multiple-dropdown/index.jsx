@@ -55,6 +55,7 @@ const ItemMultipleDropdown = ({
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}
+          size="large"
         >
           {options.map((item) => (
             <Option key={item.id} value={item.name}>
