@@ -95,12 +95,11 @@ export default function ButtonAddFolder(props) {
   }
 
   return (
-    <div className="file">
+    <div className="file-add">
       <Button
         type="primary"
         shape="round"
         size="large"
-        className="flex"
         icon={<FolderAddFilled />}
         onClick={() => setIsModalVisible(true)}
       >

@@ -117,7 +117,7 @@ Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
 Route::get('/{JFid}/member', 'FileController@getMember');
-Route::get('/file/getLatest', 'FileController@getLatest');
+Route::get('/file/{id}/getLatest', 'FileController@getLatest');
 Route::get('/file/getPath', 'FileController@getPath');
 Route::post('/file/{jfId}/delArray', 'FileController@destroyArrayOfDocument');
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
