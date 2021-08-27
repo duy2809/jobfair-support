@@ -40,7 +40,7 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }
         },
       ]}
     >
-      <Select onChange={onValueNameChange} placeholder={label}>
+      <Select onChange={onValueNameChange} placeholder={label} size="large">
         {data.map((item) => (
           <Option key={item.id} value={item[fieldName]}>
             {item[fieldName]}
