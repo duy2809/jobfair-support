@@ -37,7 +37,7 @@ class FileController extends Controller
         return response()->json($files);
     }
 
-    public function getLatest()
+    public function getLatest($id)
     {
         return DB::table('documents')
             ->addSelect([
@@ -49,6 +49,7 @@ class FileController extends Controller
                     ->whereColumn('id', 'documents.updaterId'),
             ])
             ->where('is_file', true)
+            ->where('document_id', $id)
             ->orderBy('documents.updated_at', 'desc')
             ->take(10)
             ->get();
