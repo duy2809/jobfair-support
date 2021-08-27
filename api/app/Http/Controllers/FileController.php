@@ -7,7 +7,6 @@ use App\Models\Jobfair;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -21,10 +20,14 @@ class FileController extends Controller
     public function index($jfId)
     {
         $files = DB::table('documents')
-            ->addSelect(['authorName' => User::select('name')
-                    ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+            ->addSelect([
+                'authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId'),
+            ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->where('path', '/')
             ->where('document_id', $jfId)
             ->orderBy('documents.is_file', 'asc')
@@ -36,17 +39,19 @@ class FileController extends Controller
 
     public function getLatest()
     {
-        $file = DB::table('documents')
-            ->addSelect(['authorName' => User::select('name')
-                    ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+        return DB::table('documents')
+            ->addSelect([
+                'authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId'),
+            ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->where('is_file', true)
             ->orderBy('documents.updated_at', 'desc')
             ->take(10)
             ->get();
-        return $file;
-
     }
 
     /**
@@ -65,6 +70,7 @@ class FileController extends Controller
 
         return false;
     }
+
     public function store(Request $request)
     {
         {
@@ -77,12 +83,15 @@ class FileController extends Controller
             if ($request->is_file) {
                 $rules['link'] = 'required';
             }
+
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 200);
             }
 
-            Document::create(array_merge($request->all(), ['authorId' => auth()->user()->id],
+            Document::create(array_merge(
+                $request->all(),
+                ['authorId' => auth()->user()->id],
                 ['updaterId' => auth()->user()->id],
                 ['document_type' => 'App\Models\Jobfair']
             ));
@@ -107,15 +116,20 @@ class FileController extends Controller
     {
         return Document::find($id);
     }
+
     //  Display files and folder in specific folder.
     public function getPath(Request $request)
     {
         $data = DB::table('documents')
             ->select('*')
-            ->addSelect(['authorName' => User::select('name')
-                    ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+            ->addSelect([
+                'authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId'),
+            ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->where('path', $request->path)
             ->where('document_id', $request->jfId)
             ->orderBy('is_file', 'asc')
@@ -124,27 +138,37 @@ class FileController extends Controller
 
         return response()->json($data);
     }
+
     public function search(Request $request)
     {
         $query = Document::query();
         if ($request->has('name')) {
             $query->where('name', 'LIKE', "%$request->name%");
         }
+
         if ($request->has('start_date')) {
             $query->where('updated_at', '>=', $request->start_date);
         }
+
         if ($request->has('end_date')) {
             $query->where('updated_at', '<=', $request->end_date);
         }
+
         if ($request->has('updaterId')) {
             $query->where('updaterId', $request->updaterId);
         }
-        return $query->where('is_file', true)->where('document_id', $request->jfID)->addSelect(['authorName' => User::select('name')
-                ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+
+        return $query->where('is_file', true)->where('document_id', $request->jfID)->addSelect([
+            'authorName' => User::select('name')
+                ->whereColumn('id', 'documents.authorId'),
+        ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->orderBy('documents.updated_at', 'desc')->get();
     }
+
     /**
      * Update the specified resource in storage.
      *
@@ -167,10 +191,14 @@ class FileController extends Controller
 
         return DB::table('documents')
             ->select('*')
-            ->addSelect(['authorName' => User::select('name')
-                    ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+            ->addSelect([
+                'authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId'),
+            ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->where('path', $document->path)
             ->where('document_id', $document->document_id)
             ->orderBy('documents.is_file', 'asc')
@@ -188,6 +216,7 @@ class FileController extends Controller
     {
         return Document::destroy($id);
     }
+
     public function destroyArrayOfDocument(Request $request, $id)
     {
         $path = Document::where('id', $request->id[0])->first()->path;
@@ -195,22 +224,28 @@ class FileController extends Controller
             $document = Document::find($Id);
             if (!$document->is_file) {
                 if ($path === '/') {
-                    $pathD = $path . $document->name;
+                    $pathD = $path.$document->name;
                 } else {
-                    $pathD = $path . '/' . $document->name;
+                    $pathD = $path.'/'.$document->name;
                 }
-                Document::where('path', 'LIKE', $pathD . '/' . '%')->orWhere('path', $pathD)->delete();
 
+                Document::where('path', 'LIKE', $pathD.'/'.'%')->orWhere('path', $pathD)->delete();
             }
+
             Document::destroy($Id);
         }
+
         return Document::select('*')
             ->where('path', $path)
             ->where('document_id', $id)
-            ->addSelect(['authorName' => User::select('name')
-                    ->whereColumn('id', 'documents.authorId')])
-            ->addSelect(['updaterName' => User::select('name')
-                    ->whereColumn('id', 'documents.updaterId')])
+            ->addSelect([
+                'authorName' => User::select('name')
+                    ->whereColumn('id', 'documents.authorId'),
+            ])
+            ->addSelect([
+                'updaterName' => User::select('name')
+                    ->whereColumn('id', 'documents.updaterId'),
+            ])
             ->orderBy('is_file', 'asc')
             ->orderBy('updated_at', 'desc')
             ->get();
@@ -219,6 +254,7 @@ class FileController extends Controller
     public function getMember($id)
     {
         $jobfair = Jobfair::find($id);
+
         return User::where('role', 1)->orWhere('id', $jobfair->user->id)->orWhereIn('id', $jobfair->schedule->users->pluck('id'))->get();
     }
 }

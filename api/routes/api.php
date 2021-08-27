@@ -128,7 +128,6 @@ Route::prefix('file')->group(function () {
     Route::put('/{id}/edit', [App\Http\Controllers\FileController::class, 'update']);
     Route::delete('/{id}/destroy', [App\Http\Controllers\FileController::class, 'destroy']);
     Route::get('/getPath', [App\Http\Controllers\FileController::class, 'getPath']);
-
 });
 // member detail
 Route::prefix('members')->group(function () {

@@ -25,6 +25,7 @@ class DocumentFactory extends Factory
             'App\Models\Jobfair',
             // 'App\Models\Task',
         ];
+
         return [
             'document_type' => $this->faker->randomElement($poly),
             'document_id' => $this->faker->numberBetween(1, 4),
