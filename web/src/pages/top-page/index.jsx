@@ -174,7 +174,7 @@ const Top = () => {
     <Layout>
       <Layout.Main>
         <div>
-          <div style={{ width: "90%", margin: "auto" }}>
+          <div>
             <div
               style={{
                 display: "grid",
@@ -229,7 +229,7 @@ const Top = () => {
                 showCategoryInput
                 showMilestoneInput
                 route="/template-tasks"
-                routeToAdd=""
+                routeToAdd="/add-template-task"
               />
               <List
                 key={5}
@@ -242,7 +242,6 @@ const Top = () => {
                 showMilestoneInput={false}
                 showSearchByJFInput
                 route={`member/${id}/tasks`}
-                routeToAdd=""
               />
             </div>
           </div>

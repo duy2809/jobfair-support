@@ -281,7 +281,7 @@ const List = ({
         {/* Table data */}
         <div>
           <Table
-            scroll={{ y: 280 }}
+            scroll={{ y: 280, x: 240 }}
             pagination={false}
             dataSource={list}
             columns={dataColumn}
