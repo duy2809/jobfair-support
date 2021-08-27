@@ -6,8 +6,9 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { getSchedule, deleteSchedule } from '../../../api/schedule-detail'
 import { ReactReduxContext } from 'react-redux'
-import ScheduleDetail from './schedule-detail-list'
+import ScheduleDetail from './list'
 import { RightCircleOutlined } from '@ant-design/icons'
+import GanttChart from './gantt'
 function ScheduleDetailGeneral(props) {
   const [status, setStatus] = useState(false) //false is lsit,true is gantt
   const [id, setID] = useState(0) //get ID
@@ -67,38 +68,39 @@ function ScheduleDetailGeneral(props) {
       <header>
         <Navbar />
       </header>
-      <Spin spinning={loading}>
-        <div className="px-12">
-          <span className="text-3xl inline-block mt-4 " id="title">
-            {scheduleName}
-          </span>
-          <div
-            className="flex justify-end"
-            style={{ visibility: role === 'admin' ? 'visible' : 'hidden' }}
-          >
-            <Button type="primary" size="default" className="mr-4" onClick={showModal}>
-              削除
+      <div className="px-12">
+        <span className="text-3xl inline-block mt-4 " id="title">
+          {scheduleName}
+        </span>
+        <div
+          className="flex justify-end"
+          style={{ visibility: role === 'admin' ? 'visible' : 'hidden' }}
+        >
+          <Button type="primary" size="default" className="mr-4" onClick={showModal}>
+            削除
+          </Button>
+          <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
+            <p>削除してもよろしいですか？</p>
+          </Modal>
+          <Link href={`/schedule/${id}.edit`}>
+            <Button type="primary" size="default">
+              編集
             </Button>
-            <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
-              <p>削除してもよろしいですか？</p>
-            </Modal>
-            <Link href={`/schedule/${id}.edit`}>
-              <Button type="primary" size="default">
-                編集
-              </Button>
-            </Link>
-          </div>
-          <div className="mt-12 flex items-center	">
-            <ScheduleDetail></ScheduleDetail>
+          </Link>
+        </div>
+        <Spin spinning={loading}>
+          <div className="mt-12 relative">
+            {status ? <GanttChart id={id}></GanttChart> : <ScheduleDetail></ScheduleDetail>}
             <span className="mb-12 ml-2">
               <RightCircleOutlined
-                className="text-4xl gantt-chart inline cursor-pointer"
+                className="text-4xl gantt-chart inline cursor-pointer absolute bottom-1/2"
+                style={{ right: '-4%', marginBottom: !status ? '1.5%' : '0' }}
                 onClick={changeScreen}
               />
             </span>
           </div>
-        </div>
-      </Spin>
+        </Spin>
+      </div>
     </div>
   )
 }

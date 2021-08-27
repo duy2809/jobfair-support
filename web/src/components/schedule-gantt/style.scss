@@ -5,7 +5,17 @@ $colors: (
   1: green,
   2: blue,
   3: orange,
-  4: violet
+  4: violet,
+  5: 'GreenYellow',
+  6: 'HoneyDew',
+  7: 'HotPink',
+  8: 'IndianRed',
+  9: 'Indigo',
+  10: 'Ivory',
+  11: 'Khaki',
+  12: 'Lavender',
+  13: 'LavenderBlush',
+  14: 'LawnGreen'
 );
 .schedule-gantt {
   @each $index, $color in $colors {

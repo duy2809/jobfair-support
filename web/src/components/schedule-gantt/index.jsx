@@ -4,7 +4,7 @@ import { ListScheduleApi } from '~/api/schedule'
 import './style.scss'
 import colors from './_colors'
 
-export default function ScheduleTable({ id }) {
+export default function ScheduleGantt({ id }) {
   const [tasks, setTasks] = useState([])
   const [milestones, setMilestones] = useState([])
   const [categories, setCategories] = useState([])
@@ -15,8 +15,8 @@ export default function ScheduleTable({ id }) {
       name: '',
       categoryId: null,
       milestoneId: null,
-      orderIndex: null,
-    },
+      orderIndex: null
+    }
   }
   function compareTask(a, b) {
     if (a.categoryId < b.categoryId) {
@@ -66,7 +66,6 @@ export default function ScheduleTable({ id }) {
           return {
             props: {
               style: {
-                // TODO: change red => color of categories
                 backgroundImage: `-webkit-linear-gradient(
                                 left,
                                 transparent ${percent - step}%,
@@ -74,14 +73,14 @@ export default function ScheduleTable({ id }) {
                                 ${colors[task.categoryId]} ${percent}%,
                                 transparent ${percent}%,
                                 transparent 100%
-                              )`,
-              },
-            },
+                              )`
+              }
+            }
           }
         }
       }
       return null
-    },
+    }
   }))
 
   const getStartRowIndex = (categoryId) => {
@@ -106,7 +105,7 @@ export default function ScheduleTable({ id }) {
       render: (task, _, rowIndex) => {
         const obj = {
           children: '',
-          props: {},
+          props: {}
         }
         if (task.categoryId == null) {
           obj.children = 'カテゴリ名'
@@ -122,7 +121,7 @@ export default function ScheduleTable({ id }) {
           }
         }
         return obj
-      },
+      }
     },
     {
       title: '',
@@ -138,12 +137,12 @@ export default function ScheduleTable({ id }) {
             <a href={`/template-task-dt/${task.id}`}>{task.name}</a>
           </>
         )
-      },
+      }
     },
-    ...milestoneColumns,
+    ...milestoneColumns
   ]
   return (
-    <div className="schedule-gantt">
+    <div className="schedule-gantt mx-auto">
       <Table
         id="myTable"
         scroll={{ x: 'max-content', y: 'max-content' }}

@@ -50,9 +50,7 @@ function ScheduleDetail() {
 
   return (
     <div className="app pb-2 w-full">
-      {currentURL.includes('schedule-detail-list') ? (
-        <ScheduleDetailHeader id={id}></ScheduleDetailHeader>
-      ) : null}
+      {currentURL.includes('list') ? <ScheduleDetailHeader id={id}></ScheduleDetailHeader> : null}
       <div>
         <Swiper
           spaceBetween={40}
