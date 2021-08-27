@@ -23,7 +23,7 @@ const AddMilestonePage = () => {
   const { Option } = Select
 
   function toHalfWidth(fullWidthStr) {
-    return fullWidthStr.replace(/[ａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+    return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
 
   const openNotificationSuccess = () => {

@@ -5,7 +5,7 @@ import './style.scss'
 
 const { TextArea } = Input
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 const Detail = ({ form, input, setInput }) => {
   const onValueNameChange = (e) => {
