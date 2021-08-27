@@ -341,6 +341,7 @@ const EditProfilePage = () => {
                   </Form>
                 </div>
               </div>
+
             </div>
             <div className="container-btn justify-end gap-1">
               <CancelEditProfile />
@@ -359,5 +360,5 @@ const EditProfilePage = () => {
     </div>
   )
 }
-
+EditProfilePage.middleware = ['auth:superadmin', 'auth:admin', 'auth']
 export default EditProfilePage
