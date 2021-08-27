@@ -28,7 +28,8 @@ const index = () => {
   const [form] = Form.useForm()
   const router = useRouter()
   const idJf = router.query.id
-  // check if all input is empty.
+  const [isEdit, setIsEdit] = useState(false)
+
   const checkIsFormInputEmpty = () => {
     const inputValues = form.getFieldsValue()
     const inputs = Object.values(inputValues)
@@ -87,6 +88,7 @@ const index = () => {
   }, [])
   // onValueNameChange
   const onValueNameChange = (e) => {
+    setIsEdit(true)
     form.setFieldsValue({
       name: e.target.value,
     })
@@ -100,6 +102,7 @@ const index = () => {
   }
 
   const autoConvertHalfwidth = (event) => {
+    setIsEdit(true)
     setAdmin(false)
     const inputRef = event.target.id
     const dummyObject = {}
@@ -111,7 +114,7 @@ const index = () => {
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
-    if (checkIsFormInputEmpty()) {
+    if (checkIsFormInputEmpty() || isEdit === false) {
       router.push('/jobfairs')
     } else {
       Modal.confirm({
@@ -139,6 +142,7 @@ const index = () => {
     })
   }
   const onScheduleSelect = (_, event) => {
+    setIsEdit(true)
     setSchedule(true)
     const scheduleId = event.key
 
@@ -146,6 +150,7 @@ const index = () => {
     getTask(scheduleId)
   }
   const adminSelect = () => {
+    setIsEdit(true)
     setAdmin(true)
   }
   // eslint-disable-next-line consistent-return
@@ -188,23 +193,7 @@ const index = () => {
       return error
     }
   }
-  /* Validator of all input. */
   const companiesJoinValidator = (_, value) => {
-    // if (!value) {
-    //   return Promise.reject(new Error('この項目は必須です'))
-    // }
-    // if (value < 0) {
-    //   return Promise.reject(new Error('1以上の半角の整数で入力してください'))
-    // }
-    // // check case when user set number of company that join JF smaller than 1
-    // if (Extensions.isFullWidth(value)) {
-
-    //   // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
-    // }
-    // // setinputTest(Extention.toHalfWidth(value.toString()))
-    // if (!value.match(Extensions.Reg.onlyNumber)) {
-    //   return Promise.reject(new Error('使用できない文字が含まれています。'))
-    // }
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
     }
@@ -220,14 +209,6 @@ const index = () => {
     if (value * 1.0 < 1) {
       return Promise.reject(new Error('1以上の整数で入力してください。'))
     }
-    // if (!value.match(Extensions.Reg.onlyNumber)) {
-    //   return Promise.reject(new Error('使用できない文字が含まれています。'))
-    // }
-
-    // if (Extensions.isFullWidth(value)) {
-    //   return Promise.reject(new Error('1以上の半角の整数で入力してください'))
-    // }
-
     return Promise.resolve()
   }
   const JFNameValidator = (_, value) => {
@@ -290,7 +271,7 @@ const index = () => {
             <div className="grid grid-cols-2 mx-10">
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="JF名"
+                  label="JF名:"
                   name="name"
                   rules={[
                     {
@@ -309,7 +290,7 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="start_date"
-                  label="開始日"
+                  label="開始日:"
                   rules={[
                     {
                       validator: startDayValidator,
@@ -317,6 +298,8 @@ const index = () => {
                   ]}
                 >
                   <DatePicker
+                    size="large"
+                    onChange={() => { setIsEdit(true) }}
                     help="Please select the correct date"
                     format={Extensions.dateFormat}
                     placeholder={Extensions.dateFormat}
@@ -326,7 +309,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="参加企業社数"
+                  label="参加企業社数:"
                   name="number_of_companies"
                   rules={[
                     {
@@ -347,7 +330,7 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="number_of_students"
-                  label="推定参加学生数"
+                  label="推定参加学生数:"
                   rules={[
                     {
                       validator: studentsJoinValidator,
@@ -366,7 +349,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="管理者"
+                  label="管理者:"
                   name="jobfair_admin_id"
                   onSelect={adminSelect}
                   rules={[
@@ -375,7 +358,7 @@ const index = () => {
                     },
                   ]}
                 >
-                  <Select className="addJF-selector" placeholder="管理者を選択">
+                  <Select size="large" onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="管理者を選択">
                     {listAdminJF.map((element) => (
                       <Select.Option key={element.id} value={element.id}>
                         {element.name}
@@ -387,7 +370,7 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="schedule_id"
-                  label="JF-スケジュール"
+                  label="JF-スケジュール:"
                   rules={[
                     {
                       validator: JFScheduleValidator,
@@ -398,6 +381,7 @@ const index = () => {
                     className="addJF-selector"
                     placeholder="JF-スケジュールを選択"
                     onSelect={onScheduleSelect}
+                    size="large"
                   >
                     {listSchedule.map((element) => (
                       <Select.Option key={element.id} value={element.id}>
@@ -409,7 +393,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  マイルストーン一覧
+                  マイルストーン一覧:
                   <List
                     className="demo-infinite-container"
                     bordered
@@ -429,7 +413,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  タスク一賜
+                  タスク一賜:
                   <List
                     className="demo-infinite-container"
                     bordered
@@ -452,10 +436,10 @@ const index = () => {
             <div className="flex justify-end mr-10">
               <Form.Item
                 label=" "
-                className="my-5 mr-10"
+                className=" mr-10 mt-4"
 
               >
-                <Space size={30}>
+                <Space size={20}>
                   <Button
                     htmlType="button"
                     type="primary"
@@ -483,5 +467,5 @@ const index = () => {
     </OtherLayout>
   )
 }
-index.middleware = ['auth:superadmin', 'auth:admin']
+index.middleware = ['auth:superadmin']
 export default index

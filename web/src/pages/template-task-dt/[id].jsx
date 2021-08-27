@@ -204,7 +204,7 @@ function templatetTaskDt() {
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
                           <span>/</span>
-                          <span className="ef">{unit}</span>
+                          {unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
                         </>
                       )}
                     </div>

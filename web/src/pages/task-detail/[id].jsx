@@ -125,6 +125,7 @@ function TaskDetail() {
   const handleEdit = () => {
     router.push(`/edit-task/${infoTask.id}`)
   }
+
   useEffect(() => {
     setUser(store.getState().get('auth').get('user'))
     if (user) {
@@ -228,7 +229,7 @@ function TaskDetail() {
                             {infoTask.is_day ? '日' : '時間'}
                           </span>
                           <span>/</span>
-                          <span className="ef">{infoTask.unit}</span>
+                          {infoTask.unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
                         </>
                       )}
                     </div>

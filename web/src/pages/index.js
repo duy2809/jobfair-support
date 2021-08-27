@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Form, Input, Button, Checkbox, Modal, notification } from 'antd'
 import { useRouter } from 'next/router'
+import { ReactReduxContext } from 'react-redux'
 import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
+import { LOAD_SUCCESS } from '../store/modules/auth'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -12,8 +14,12 @@ const LoginPage = () => {
   const [form2] = Form.useForm()
   const router = useRouter()
 
+  const { store } = useContext(ReactReduxContext)
+
   // To disable submit button at the beginning.
   useEffect(() => {
+    const user = store.getState().get('auth').get('user')
+    if (user) router.push('/top-page')
     forceUpdate({})
   }, [])
 
@@ -41,10 +47,14 @@ const LoginPage = () => {
   const onFinish = async (values) => {
     try {
       const response = await login(values)
-      if (response.request.status === 200) openNotification('success', '正常にログインしました')
-      setTimeout(() => {
-        router.push('/top-page')
-      }, 2500)
+      if (response.request.status === 200) {
+        const { auth } = response.data
+        openNotification('success', '正常にログインしました')
+        store.dispatch({ type: LOAD_SUCCESS, payload: auth })
+        setTimeout(() => {
+          router.push('/top-page')
+        }, 1000)
+      }
     } catch (error) {
       if (error.request.status === 400) {
         openNotification(

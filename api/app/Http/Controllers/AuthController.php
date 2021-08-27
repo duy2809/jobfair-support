@@ -23,7 +23,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            return response()->json(['message' => 'Login successfully'], 200);
+            return response()->json(['message' => 'Login successfully', 'auth' => auth()->user()], 200);
         }
 
         return response()->json(['message' => 'Email or password is incorrect'], 400);
