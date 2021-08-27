@@ -60,16 +60,6 @@ class FileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    private function checkUnique($name, $path)
-    {
-        $data = Document::where('path', '=', $path)->where('name', '=', $name)->get();
-
-        if ($data->isEmpty()) {
-            return true;
-        }
-
-        return false;
-    }
 
     public function store(Request $request)
     {
@@ -180,7 +170,10 @@ class FileController extends Controller
     {
         $document = Document::find($id);
         $rules = [
-            'name' => Rule::unique('documents')->where('path', $document->path)->where('document_id', $document->document_id)->where('is_file', $document->is_file)->whereNot('id', $id),
+            'name' => Rule::unique('documents')->where('path', $document->path)
+            ->where('document_id', $document->document_id)
+            ->where('is_file', $document->is_file)
+            ->whereNot('id', $id),
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -220,19 +213,20 @@ class FileController extends Controller
     public function destroyArrayOfDocument(Request $request, $id)
     {
         $path = Document::where('id', $request->id[0])->first()->path;
-        foreach ($request->id as $Id) {
-            $document = Document::find($Id);
+        foreach ($request->id as $index) {
+            $document = Document::find($index);
             if (!$document->is_file) {
                 if ($path === '/') {
                     $pathD = $path.$document->name;
                 } else {
-                    $pathD = $path.'/'.$document->name;
+                    $pathD = $path.'/';
+                    $pathD .= $document->name;
                 }
 
                 Document::where('path', 'LIKE', $pathD.'/'.'%')->orWhere('path', $pathD)->delete();
             }
 
-            Document::destroy($Id);
+            Document::destroy($index);
         }
 
         return Document::select('*')
