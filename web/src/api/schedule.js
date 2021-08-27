@@ -8,5 +8,5 @@ const getGanttChart = (id) => axios.get(`/schedule/${id}/gantt`)
 export const ListScheduleApi = {
   getListSchedule,
   searchListSchedule,
-  getGanttChart
+  getGanttChart,
 }

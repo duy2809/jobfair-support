@@ -168,7 +168,6 @@ export default function KanBan() {
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result
-
     if (
       !destination
       || source.droppableId === '未完了'
@@ -243,7 +242,14 @@ export default function KanBan() {
 
       setVisible(true)
     }
-
+    if (source.droppableId === '中断' && destination.droppableId === '進行中') {
+      finishTaskIds.forEach((taskId) => {
+        if (typeof taskId === 'string') {
+          updateTask(taskId, { memo: null })
+          fetchData()
+        }
+      })
+    }
     if (destination.droppableId !== '中断') {
       finishTaskIds.forEach(async (taskId) => {
         if (typeof taskId === 'string') {

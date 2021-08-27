@@ -370,7 +370,7 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="schedule_id"
-                  label="JF-スケジュール:"
+                  label="JFスケジュール:"
                   rules={[
                     {
                       validator: JFScheduleValidator,
@@ -413,7 +413,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  タスク一賜:
+                  タスク一覧:
                   <List
                     className="demo-infinite-container"
                     bordered
@@ -439,7 +439,7 @@ const index = () => {
                 className=" mr-10 mt-4"
 
               >
-                <Space size={20}>
+                <Space size={12}>
                   <Button
                     htmlType="button"
                     type="primary"
@@ -454,7 +454,7 @@ const index = () => {
                     htmlType="submit"
                     disabled={disableBtn}
                     loading={disableBtn}
-                    className="mr-10"
+                    className="mr-20"
                   >
                     <span> 保存 </span>
                   </Button>

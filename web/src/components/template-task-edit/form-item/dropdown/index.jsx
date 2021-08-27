@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 const { Option } = Select
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }) => {
   const [fieldName, setFieldName] = useState('')
   const onValueNameChange = (value) => {

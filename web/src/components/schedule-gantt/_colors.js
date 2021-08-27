@@ -36,6 +36,6 @@ const colors = [
   'Khaki',
   'Lavender',
   'LavenderBlush',
-  'LawnGreen'
+  'LawnGreen',
 ]
 export default colors

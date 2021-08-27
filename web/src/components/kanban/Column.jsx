@@ -40,7 +40,6 @@ const Column = ({ column, tasks, isControllable }) => {
   } else {
     containerColumnList = 'container__column--list 未完了'
   }
-
   return (
     <div className="container__column">
       <h3

@@ -14,12 +14,6 @@ import colors from '../../../../components/schedule-gantt/_colors'
 
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 const { Text, Paragraph } = Typography
-const getRandomColor = () => {
-  const colors = ['pink', 'red', 'blue', 'green', 'black', 'yellow']
-  const index = Math.ceil(Math.random() * colors.length)
-  console.log(colors[index])
-  return colors[index]
-}
 function ScheduleDetail() {
   const [milestone, setMilestone] = useState([])
   const router = useRouter()
@@ -28,16 +22,15 @@ function ScheduleDetail() {
   useEffect(() => {
     console.log(window.location.href.toString())
     setCurrentURL(window.location.href.toString())
-    const { id } = router.query
-    setID(id)
-    getMilestone(id).then((res) => {
+    setID(router.query.id)
+    getMilestone(router.query.id).then((res) => {
       console.log(res.data)
       const milestoneCopy = res.data
       milestoneCopy.forEach((element) => {
         if (element.name.length > 10) {
           element.wrapped = true
         }
-        element.tasks.forEach((task, index) => {
+        element.tasks.forEach((task) => {
           task.categories.forEach((category) => {
             category.colorBorder = colors[category.id]
           })
@@ -51,7 +44,7 @@ function ScheduleDetail() {
 
   return (
     <div className="app pb-2 w-full">
-      {currentURL.includes('list') ? <ScheduleDetailHeader id={id}></ScheduleDetailHeader> : null}
+      {currentURL.includes('list') ? <ScheduleDetailHeader id={id} /> : null}
       <div>
         <Swiper
           spaceBetween={40}
@@ -154,7 +147,9 @@ function ScheduleDetail() {
         </Swiper>
       </div>
       <Text className="text-2xl ml-4 mt-2 inline-block" id="total">
-        トタル: {milestone.length}
+        トタル:
+        {' '}
+        {milestone.length}
       </Text>
     </div>
   )

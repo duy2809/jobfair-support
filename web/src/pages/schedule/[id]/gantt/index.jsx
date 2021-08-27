@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import ScheduleGantt from '~/components/schedule-gantt'
-import { useRouter } from 'next/router'
-GanttChart.propTypes = {}
+import ScheduleGantt from '../../../../components/schedule-gantt/index'
+
 function GanttChart({ id }) {
-  //   const router = useRouter()
-  //   const [id, setId] = useState(0)
-  //   useEffect(() => {
-  //     const { id } = router.query
-  //     setId(id)
-  //   }, [])
   console.log(id)
   return (
     <div>
-      <ScheduleGantt id={id}></ScheduleGantt>
+      <ScheduleGantt id={id} />
     </div>
   )
+}
+GanttChart.propTypes = {
+  id: PropTypes.string.isRequired,
 }
 
 export default GanttChart

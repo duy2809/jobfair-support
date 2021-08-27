@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Table } from 'antd'
+import PropTypes from 'prop-types'
+import { Table, Typography } from 'antd'
 import { ListScheduleApi } from '~/api/schedule'
 import './style.scss'
 import colors from './_colors'
 
-export default function ScheduleGantt({ id }) {
+const { Paragraph } = Typography
+
+function ScheduleGantt({ id }) {
   const [tasks, setTasks] = useState([])
   const [milestones, setMilestones] = useState([])
   const [categories, setCategories] = useState([])
@@ -15,14 +18,23 @@ export default function ScheduleGantt({ id }) {
       name: '',
       categoryId: null,
       milestoneId: null,
-      orderIndex: null
-    }
+      orderIndex: null,
+    },
   }
   function compareTask(a, b) {
     if (a.categoryId < b.categoryId) {
       return -1
     }
     if (a.categoryId > b.categoryId) {
+      return 1
+    }
+    return 0
+  }
+  function compareCategories(a, b) {
+    if (a.id < b.id) {
+      return -1
+    }
+    if (a.id > b.id) {
       return 1
     }
     return 0
@@ -36,7 +48,7 @@ export default function ScheduleGantt({ id }) {
     try {
       const response = await ListScheduleApi.getGanttChart(id)
       setMilestones(response.data.milestones)
-      setCategories(response.data.categories)
+      setCategories(response.data.categories.sort(compareCategories))
       const data = [taskHeader, ...response.data.tasks]
       setTasks(formatTask(data))
     } catch (error) {
@@ -73,14 +85,14 @@ export default function ScheduleGantt({ id }) {
                                 ${colors[task.categoryId]} ${percent}%,
                                 transparent ${percent}%,
                                 transparent 100%
-                              )`
-              }
-            }
+                              )`,
+              },
+            },
           }
         }
       }
       return null
-    }
+    },
   }))
 
   const getStartRowIndex = (categoryId) => {
@@ -105,7 +117,7 @@ export default function ScheduleGantt({ id }) {
       render: (task, _, rowIndex) => {
         const obj = {
           children: '',
-          props: {}
+          props: {},
         }
         if (task.categoryId == null) {
           obj.children = 'カテゴリ名'
@@ -121,7 +133,7 @@ export default function ScheduleGantt({ id }) {
           }
         }
         return obj
-      }
+      },
     },
     {
       title: '',
@@ -134,18 +146,22 @@ export default function ScheduleGantt({ id }) {
         }
         return (
           <>
-            <a href={`/template-task-dt/${task.id}`}>{task.name}</a>
+            <a href={`/template-task-dt/${task.id}`}>
+              <Paragraph className="break-words" ellipsis={{ rows: 1, tooltip: task.name }}>
+                {task.name}
+              </Paragraph>
+            </a>
           </>
         )
-      }
+      },
     },
-    ...milestoneColumns
+    ...milestoneColumns,
   ]
   return (
     <div className="schedule-gantt mx-auto">
       <Table
         id="myTable"
-        scroll={{ x: 'max-content', y: 'max-content' }}
+        scroll={{ x: '100vw', y: '100vh' }}
         columns={columns}
         dataSource={tasks}
         pagination={false}
@@ -154,3 +170,7 @@ export default function ScheduleGantt({ id }) {
     </div>
   )
 }
+ScheduleGantt.propTypes = {
+  id: PropTypes.string.isRequired,
+}
+export default ScheduleGantt

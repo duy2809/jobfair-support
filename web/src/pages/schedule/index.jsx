@@ -13,18 +13,18 @@ const columns = [
     dataIndex: 'id',
     key: 'No.',
     width: '10%',
-    render: (id) => id
+    render: (id) => id,
   },
   {
     title: 'スケジュール',
     dataIndex: 'name',
     key: 'スケジュール',
     width: '90%',
-    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`
-  }
+    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+  },
 ]
 
-export default function ScheduleList() {
+function ScheduleList() {
   const [schedules, setSchedules] = useState([])
   const [filterSchedules, setFilterSchedules] = useState([])
   const [itemCount, setItemCount] = useState(10)
@@ -33,14 +33,14 @@ export default function ScheduleList() {
     position: ['bottomCenter'],
     current: 1,
     pageSize: 10,
-    showSizeChanger: false
+    showSizeChanger: false,
   })
   const [user, setUser] = useState({})
   const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
-      pageSize: value
+      pageSize: value,
     }))
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
@@ -49,13 +49,13 @@ export default function ScheduleList() {
   const handleChange = (e) => {
     setPagination((preState) => ({
       ...preState,
-      current: e.current
+      current: e.current,
     }))
   }
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
     )
     setFilterSchedules(result)
   }
@@ -67,7 +67,7 @@ export default function ScheduleList() {
     } else {
       setPagination((preState) => ({
         ...preState,
-        pageSize: paginationData.pageSize
+        pageSize: paginationData.pageSize,
       }))
       setItemCount(paginationData.pageSize)
     }
@@ -79,8 +79,6 @@ export default function ScheduleList() {
     webInit().then((res) => {
       if (res.data.auth != null) {
         setUser(res.data.auth.user)
-      } else {
-        router.push('/login')
       }
     })
     ListScheduleApi.getListSchedule()
@@ -96,13 +94,13 @@ export default function ScheduleList() {
 
   const handleClick = (e) => {
     e.preventDefault()
-    router.push('/schedule/add')
+    router.push('/jf-schedule/add')
   }
 
   const handleRow = (record) => ({
     onClick: () => {
       router.push(`/schedule/${record.id}`)
-    }
+    },
   })
 
   useEffect(() => {
@@ -168,7 +166,7 @@ export default function ScheduleList() {
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                   description="該当結果が見つかりませんでした"
                 />
-              )
+              ),
             }}
           />
         </div>
@@ -176,3 +174,6 @@ export default function ScheduleList() {
     </Layout>
   )
 }
+
+ScheduleList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default ScheduleList

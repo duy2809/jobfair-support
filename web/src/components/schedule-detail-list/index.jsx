@@ -1,11 +1,11 @@
 import React from 'react'
 import { Button } from 'antd'
 import { RightCircleOutlined } from '@ant-design/icons'
-import Navbar from '../../components/navbar/index'
 import Link from 'next/link'
+import PropTypes from 'prop-types'
+import Navbar from '../navbar/index'
 
-function ScheduleDetailHeader(props) {
-  const { id } = props
+function ScheduleDetailHeader({ id }) {
   return (
     <div>
       <Navbar className="navbar" />
@@ -26,6 +26,9 @@ function ScheduleDetailHeader(props) {
       </div>
     </div>
   )
+}
+ScheduleDetailHeader.propTypes = {
+  id: PropTypes.string.isRequired,
 }
 
 export default ScheduleDetailHeader

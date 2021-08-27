@@ -1,27 +1,28 @@
 import React, { useEffect, useState, useContext } from 'react'
 // import Swiper core and required modules
 import { Modal, Button, notification, Spin } from 'antd'
-import Navbar from '../../../components/navbar/index'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { getSchedule, deleteSchedule } from '../../../api/schedule-detail'
 import { ReactReduxContext } from 'react-redux'
-import ScheduleDetail from './list'
 import { RightCircleOutlined } from '@ant-design/icons'
+import { getSchedule, deleteSchedule } from '../../../api/schedule-detail'
+import ScheduleDetail from './list'
+import Navbar from '../../../components/navbar/index'
 import GanttChart from './gantt'
-function ScheduleDetailGeneral(props) {
-  const [status, setStatus] = useState(false) //false is lsit,true is gantt
-  const [id, setID] = useState(0) //get ID
+
+function ScheduleDetailGeneral() {
+  const [status, setStatus] = useState(false) // false is lsit,true is gantt
+  const [id, setID] = useState(0) // get ID
   const [scheduleName, setScheduleName] = useState('')
-  const [role, setRole] = useState('member') //get Role
+  const [role, setRole] = useState('member') // get Role
   const { store } = useContext(ReactReduxContext)
-  const [user, setUser] = useState(null) //get User
-  const router = useRouter() //router
-  const [isModalVisible, setIsModalVisible] = useState(false) //state of Modal
+  const [user, setUser] = useState(null) // get User
+  const router = useRouter() // router
+  const [isModalVisible, setIsModalVisible] = useState(false) // state of Modal
   const [loading, setLoading] = useState(false)
   useEffect(() => {
-    const { id } = router.query //get ID
-    setID(id)
+    // get ID
+    setID(router.query.id)
     getSchedule(id).then((res) => {
       setScheduleName(res.data.name)
     })
@@ -40,19 +41,19 @@ function ScheduleDetailGeneral(props) {
     setIsModalVisible(false)
 
     deleteSchedule(id)
-      .then((res) => {
-        notification['success']({
+      .then(() => {
+        notification.success({
           message: '成功',
-          description: '正常に削除されました'
+          description: '正常に削除されました',
         })
         setTimeout(() => {
           router.push('/schedule')
         }, 3000)
       })
       .catch(() => {
-        notification['error']({
+        notification.error({
           message: '失敗',
-          description: '削除に失敗しました'
+          description: '削除に失敗しました',
         })
       })
   }
@@ -90,7 +91,7 @@ function ScheduleDetailGeneral(props) {
         </div>
         <Spin spinning={loading}>
           <div className="mt-12 relative">
-            {status ? <GanttChart id={id}></GanttChart> : <ScheduleDetail></ScheduleDetail>}
+            {status ? <GanttChart id={id} /> : <ScheduleDetail id={id} />}
             <span className="mb-12 ml-2">
               <RightCircleOutlined
                 className="text-4xl gantt-chart inline cursor-pointer absolute bottom-1/2"

@@ -4,7 +4,7 @@ import './style.scss'
 import PropTypes from 'prop-types'
 import { getTemplateTasksList } from '../../../../api/template-task-edit'
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 let tasksList = []
 getTemplateTasksList().then((res) => {

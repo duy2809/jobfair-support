@@ -150,7 +150,7 @@ class ScheduleController extends Controller
         return Schedule::where('name', 'like', '%' . $request->input('name') . '%')->get();
     }
 
-    public function getScheduleb($id)
+    public function getSchedule($id)
     {
         $schedule = Schedule::where('jobfair_id', '=', $id)->get();
 
@@ -349,16 +349,19 @@ class ScheduleController extends Controller
 
     public static function getCategories($scheduleId)
     {
-        $categories = Category::whereHas('templateTasks', function (EloquentBuilder $query) {
-            $query->whereIn('id', Schedule::find(1)->templateTasks->pluck('template_tasks.id'));
-        })->with(['templateTasks' => function ($query) use ($scheduleId) {
+        $templateTasks = Schedule::find($scheduleId)->templateTasks
+            ->pluck('id');
+        $categories = Category::whereHas('templateTasks',
+            function (EloquentBuilder $query) use ($templateTasks) {
+                $query->whereIn('template_tasks.id', $templateTasks);
+            })->with(['templateTasks' => function ($query) use ($scheduleId) {
             $query->whereHas('schedules', function (EloquentBuilder $query) use ($scheduleId) {
-                $query->where('id', $scheduleId);
+                $query->where('schedules.id', $scheduleId);
             });
         }])->get()->map(function ($item) {
             return [
-                'id'            => $item->id,
-                'name'          => $item->category_name,
+                'id' => $item->id,
+                'name' => $item->category_name,
                 'numberOfTasks' => count($item->templateTasks),
             ];
         });

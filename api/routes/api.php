@@ -39,7 +39,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::post('/add-task', 'TaskController@store');
     Route::get('/get-template-task-not-add', 'TaskController@getTemplateTaskNotAdd');
 });
-Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
