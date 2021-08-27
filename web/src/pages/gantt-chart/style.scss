@@ -9,16 +9,16 @@
     background-color: yellow;
   }
   .radio-button:nth-child(2) {
-    background-color: rgb(0, 255, 238);
+    background-color: #5eb5a6;
   }
   .radio-button:nth-child(3) {
-    background-color: rgb(255, 251, 0);
+    background-color: #a1af2f;
   }
   .radio-button:nth-child(4) {
-    background-color: rgb(0, 255, 102);
+    background-color: #4488c5;
   }
   .radio-button:nth-child(5) {
-    background-color: rgb(255, 81, 0);
+    background-color: rgb(185, 86, 86);
   }
   .radio-button:nth-child(6) {
     span {
@@ -26,7 +26,7 @@
 
       color: white;
     }
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(121, 86, 23);
   }
   .ant-radio-button-wrapper:last-child {
     border: none;
@@ -68,5 +68,11 @@
     tr:nth-child(even) {
       // background-color: #dddddd;
     }
+  }
+  .gantt_layout_content {
+    // cursor: grab;
+  }
+  .gantt_tree_content {
+    cursor: pointer;
   }
 }

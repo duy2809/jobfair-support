@@ -16,61 +16,72 @@ const DynamicComponentWithNoSSR = dynamic(
   { ssr: false },
 )
 
-const data = {
-  data: [
-    { id: 2,
-      text: 'タスク',
-      start_date: '01-07-2021',
-      end_date: '01-09-2021',
-      open: true,
-      color: '#bebebe',
-      row_height: 35,
-      bar_height: 30 },
-    { id: 1,
-      text: 'タスク',
-      start_date: '24-08-2021',
-      end_date: '01-09-2021',
-      open: true,
-      row_height: 35,
-      bar_height: 30 },
-    { id: 4,
-      text: 'タスク',
-      start_date: '24-08-2021',
-      end_date: '01-09-2021',
-      open: true,
-      row_height: 35,
-      bar_height: 30 },
-    { id: 3,
-      text: 'タスク',
-      start_date: '24-08-2021',
-      end_date: '01-09-2021',
-      open: true,
-      row_height: 35,
-      bar_height: 30 },
-    { id: 5,
-      text: 'タスク',
-      start_date: '24-08-2021',
-      end_date: '01-09-2021',
-      open: true,
-      row_height: 35,
-      bar_height: 30 },
-  ],
-  links: [
-    { id: 1, source: 1, target: 2, type: '0' },
-  ],
-}
-
 export default function index() {
   // const [data, setData] = useState({})
   const [status, setStatus] = useState('0')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [tasks, setTask] = useState({})
+
+  const data = {
+    data: [
+
+      { id: 1,
+        text: 'タスク',
+        start_date: '29-08-2021',
+        end_date: '06-09-2021',
+        open: true,
+        row_height: 35,
+        bar_height: 30 },
+      { id: 2,
+        text: 'タスク',
+        start_date: '01-07-2021',
+        end_date: '01-09-2021',
+        open: false,
+        color: '#bebebe',
+        row_height: 35,
+        bar_height: 30 },
+
+      { id: 3,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        row_height: 35,
+        bar_height: 30 },
+      { id: 4,
+        text: 'タスク',
+        start_date: '21-09-2021',
+        end_date: '01-10-2021',
+        open: true,
+        row_height: 35,
+        bar_height: 30 },
+      { id: 5,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        row_height: 35,
+        bar_height: 30 },
+    ],
+    links: [
+      { id: 1, source: 1, target: 2, type: '0' },
+      { id: 2, source: 2, target: 3, type: '0' },
+      { id: 3, source: 3, target: 4, type: '0' },
+      { id: 4, source: 4, target: 5, type: '0' },
+
+    ],
+  }
   useEffect(() => {
-    console.log(new Date())
-    console.log(!<DynamicComponentWithNoSSR />)
-    setLoading(false)
+    setTask(data)
   }, [])
 
   const onStatusChange = (e) => {
+    console.log(e.target.value)
+    if (e.target.value == 1) {
+      setTask({ data: [], links: [] })
+      console.log(tasks)
+      console.log(status)
+    }
     setStatus(e.target.value)
   }
   const scrollToToday = async () => {
@@ -151,7 +162,7 @@ export default function index() {
                   <div>
                     <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large" />
 
-                    <DynamicComponentWithNoSSR tasks={data} />
+                    <DynamicComponentWithNoSSR tasks={tasks} />
                   </div>
                 </div>
               </div>
