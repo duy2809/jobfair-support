@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 const { Option } = Select
 
-const toHalfWidth = (v) => v.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 const Effort = ({
   form,
@@ -95,6 +95,7 @@ const Effort = ({
         <Space>
           <Form.Item name="is_day">
             <Select
+              size="large"
               placeholder="時間"
               style={{ width: '150px' }}
               onChange={onValueIsDayChange}
@@ -111,6 +112,7 @@ const Effort = ({
 
           <Form.Item name="unit">
             <Select
+              size="large"
               placeholder="学生数"
               style={{ width: '150px' }}
               onChange={onValueUnitChange}

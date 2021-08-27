@@ -17,7 +17,7 @@ export const isFullWidth = (string) => {
   return false
 }
 
-export const toHalfWidth = (fullwidthNum) => fullwidthNum.replace(/[Ａ-Ｚａ-ｚ０-９]/g,
+export const toHalfWidth = (fullwidthNum) => fullwidthNum.replace(/[０-９]/g,
   (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
 
 export const dateFormat = 'YYYY/MM/DD'

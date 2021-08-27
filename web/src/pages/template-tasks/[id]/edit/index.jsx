@@ -341,7 +341,7 @@ const EditTemplateTaskPage = () => {
                       className="text-base px-10 "
                       onClick={handleOk}
                     >
-                      保存
+                      <span> 保存 </span>
                     </Button>
                   </div>
                 </Form.Item>
@@ -354,4 +354,5 @@ const EditTemplateTaskPage = () => {
   )
 }
 
+EditTemplateTaskPage.middleware = ['auth:superadmin']
 export default EditTemplateTaskPage

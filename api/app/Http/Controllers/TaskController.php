@@ -24,6 +24,65 @@ class TaskController extends Controller
 
     public function getTaskByJfId($id)
     {
+        // $jobfair = Jobfair::find($id);
+        // $tasks = $jobfair->schedule->tasks()->with('users')->get();
+        // $result = collect([]);
+        // foreach ($tasks as $task) {
+        //     $temp = collect([]);
+
+        //     foreach ($task->users as $assignee) {
+        //         $temp->push([
+        //             "jobfairName" => $jobfair->name,
+        //             "userId" => $assignee->id,
+        //             "userName" => $assignee->name,
+        //             "avatar" => $assignee->avatar,
+        //             "id" => $task->id,
+        //             "name" => $task->name,
+        //             "start_time" => $task->start_time,
+        //             "end_time" => $task->end_time,
+        //             "status" => $task->status,
+        //             "remind_member" => $task->remind_member,
+        //             "description_of_detail" => $task->description_of_detail,
+        //             "relation_task_id" => null,
+        //             "milestone_id" => $task->milestone,
+        //             "user_id" => $task->user_id,
+        //             "created_at" => $task->created_at,
+        //             "updated_at" => $task->updated_at,
+        //             "schedule_id" => $task->schedule_d,
+        //             "memo" => $task->memo,
+        //             "template_task_id" => $task->template_task_id,
+        //             "taskName" => $task->name,
+        //         ]);
+
+        //     }
+
+        //     $result->merge($temp);
+        // }
+        // return $result;
+        $jobfair = Jobfair::find($id);
+        $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
+            return [
+                'jobfairName' => $jobfair->name,
+
+                'id' => $item->id,
+                'name' => $item->name,
+                'start_time' => $item->start_time,
+                'end_time' => $item->end_time,
+                'status' => $item->status,
+                'remind_member' => $item->remind_member,
+                'description_of_detail' => $item->description_of_detail,
+                'relation_task_id' => null,
+                'milestone_id' => $item->milestone,
+                'user_id' => $item->user_id,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'schedule_id' => $item->schedule_d,
+                'memo' => $item->memo,
+                'template_task_id' => $item->template_task_id,
+                'taskName' => $item->name,
+            ];
+        });
+
         return DB::table('jobfairs')
             ->join('schedules', 'jobfairs.id', '=', 'schedules.jobfair_id')
             ->join('tasks', 'schedules.id', '=', 'tasks.schedule_id')
@@ -31,7 +90,7 @@ class TaskController extends Controller
             ->join('users', 'assignments.user_id', '=', 'users.id')
             ->select('jobfairs.name as jobfairName', 'users.id as userId', 'users.name as userName', 'users.avatar', 'tasks.*', 'tasks.name as taskName')
             ->where('jobfairs.id', '=', $id)
-            ->get();
+            ->get()->merge($first);
     }
 
     public function getJobfair($jfId, $userId)
@@ -218,7 +277,7 @@ class TaskController extends Controller
         ])->find($id);
 
         $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
-                                      ->with(['categories:id,category_name', 'milestone:id,name'])->get(['id', 'name', 'milestone_id']);
+            ->with(['categories:id,category_name', 'milestone:id,name'])->get(['id', 'name', 'milestone_id']);
 
         return response()->json($templateTask);
     }

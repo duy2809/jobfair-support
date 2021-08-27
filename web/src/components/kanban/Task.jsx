@@ -81,7 +81,8 @@ const Task = (props) => {
                       </Tooltip>
                     </Button>
                   )}
-                  <AvatarKanban user={user} />
+                  {(user[0].uName !== undefined) ? <AvatarKanban user={user} /> : '' }
+
                 </div>
               </div>
               <div
