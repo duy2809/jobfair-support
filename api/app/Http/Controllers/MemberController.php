@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -17,6 +18,12 @@ class MemberController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->role === 2) {
+            return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->orWhere('role', '=', 3)->get();
+        } else if (Auth::user()->role === 1) {
+            return User::select('id', 'name', 'email', 'created_at')->get();
+        }
+
         return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
     }
 

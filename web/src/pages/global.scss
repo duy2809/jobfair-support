@@ -70,6 +70,10 @@ body {
     border: #ffd803 solid 1.2px;
   }
 
+  .ant-table-row:hover {
+    cursor: pointer;
+  }
+  
   .ant-input::placeholder {
     color: #afadb1;
   }
