@@ -196,7 +196,7 @@ export default function File() {
       link: element.link,
     }))
     setData(result)
-    res = await getLatest()
+    res = await getLatest(JFid)
     result = res.data.map((element) => ({
       key: element.id,
       checkbox: true,

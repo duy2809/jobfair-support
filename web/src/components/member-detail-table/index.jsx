@@ -61,7 +61,9 @@ class MemberDetailTable extends React.Component {
         const categorires = res.data.categories
         this.setState({
           listCate: categorires.map((element) => (
-            <tr className="category-name border-none block mx-auto">{element.category_name}</tr>
+            <tr className="category-name border-none block mx-auto">
+              {element.category_name}
+            </tr>
           )),
         })
       })
@@ -74,20 +76,19 @@ class MemberDetailTable extends React.Component {
 
   render() {
     return (
-      <div className="flex css_all">
+      <div className="flex css_all items-center justify-center">
         <img
           alt="イメージがない"
           src={url(`../${this.state.member.avatar}`)}
           style={{
             width: '150px',
             height: '150px',
-            display: 'block',
             borderRadius: '50%',
-            margin: '30px 0 auto 200px',
           }}
           id="avatar"
+          className="mr-10"
         />
-        <table className="member_table">
+        <table className="member_table m-5">
           <tr>
             <th>フルネーム：</th>
             <td
@@ -117,9 +118,7 @@ class MemberDetailTable extends React.Component {
           </tr>
           <tr className="ml-auto mr-auto  py-3  text-left">
             <th>アサインされたJF：</th>
-            <td style={{ minWidth: '50%', minHeight: '10px', display: 'block' }}>
-              {this.state.listJF}
-            </td>
+            <td>{this.state.listJF}</td>
           </tr>
         </table>
       </div>

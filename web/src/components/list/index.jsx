@@ -20,10 +20,15 @@ const List = ({
   routeToAdd,
 }) => {
   const ref = useRef()
-
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
   const [list, setList] = useState([])
+  const [filter, setFilter] = useState(() => ({
+    name: '',
+    milestone: '',
+    category: '',
+    date: '',
+  }))
 
   useEffect(() => {
     setList(dataSource)
@@ -46,39 +51,77 @@ const List = ({
       })
     }
   }, [])
-
+  useEffect(() => {
+    let datas = [...list]
+    console.log(filter)
+    if (filter) {
+      if (filter.name) {
+        console.log('fil name')
+        datas = datas.filter(
+          (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
+        )
+      }
+      if (filter.milestone) {
+        console.log('fil mil')
+        datas = datas.filter(
+          (data) => data.milestone
+            .toLowerCase()
+            .indexOf(filter.milestone.toLowerCase()) !== -1,
+        )
+      }
+      if (filter.category) {
+        console.log('fil cate')
+        datas = datas.filter(
+          (data) => data.category
+            .toLowerCase()
+            .indexOf(filter.category.toLowerCase()) !== -1,
+        )
+      }
+      if (filter.date) {
+        if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
+        datas = datas.filter(
+          (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1,
+        )
+      }
+      setList(datas)
+    }
+  }, [filter])
   const onClick = () => {
     setShow(!show)
     setShowSearchIcon(!showSearchIcon)
   }
 
-  const searchByName = (e) => {
-    const datas = dataSource.filter(
-      (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
-  const searchByTime = (date, dateString) => {
-    if (dataColumn[1].dataIndex === 'type') dateString = dateString.replace('-', '/')
-    const datas = dataSource.filter(
-      (data) => data.time.toLowerCase().indexOf(dateString.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
-
-  const searchByCategory = (e) => {
-    const datas = dataSource.filter(
-      (data) => data.category.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
-    )
-    setList(datas)
-  }
-
-  const searchByMilestone = (e) => {
-    const datas = dataSource.filter(
-      (data) => data.milestone.toLowerCase().indexOf(e.target.value.toLowerCase())
-        !== -1,
-    )
-    setList(datas)
+  const searchInput = (e, dateString = '') => {
+    if (!dateString) {
+      console.log(e)
+      if (e.target.name === 'name') {
+        setFilter({ ...filter, name: e.target.value })
+        if (e.target.value === '') {
+          setFilter({ ...filter, name: '' })
+          setList(dataSource)
+        }
+      }
+      if (e.target.name === 'milestone') {
+        setFilter({ ...filter, milestone: e.target.value })
+        if (e.target.value === '') {
+          setFilter({ ...filter, milestone: '' })
+          setList(dataSource)
+        }
+      }
+      if (e.target.name === 'category') {
+        setFilter({ ...filter, category: e.target.value })
+        if (e.target.value === '') {
+          setFilter({ ...filter, category: '' })
+          setList(dataSource)
+        }
+      }
+    } else {
+      setFilter({ ...filter, date: dateString })
+      if (dateString === '') {
+        setFilter({ ...filter, date: '' })
+        setList(dataSource)
+      }
+    }
   }
   const searchByJobfairName = (e) => {
     const getTask = async () => {
@@ -93,7 +136,6 @@ const List = ({
     }
     getTask()
   }
-
   return (
     <div ref={ref}>
       <div
@@ -104,16 +146,28 @@ const List = ({
         }}
       >
         <Link href={route}>
-          <a style={{ fontSize: '30px' }}>{text}</a>
+          <a
+            style={{
+              fontSize: '30px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {text}
+          </a>
         </Link>
+
         <div className="flex items-center">
-          <Link href={routeToAdd}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
-            />
-          </Link>
+          {text === 'タスク一覧' ? null : (
+            <Link href={routeToAdd}>
+              <Button
+                style={{ border: 'none', marginBottom: '5px' }}
+                shape="circle"
+                icon={<PlusOutlined style={{ fontSize: '30px' }} />}
+              />
+            </Link>
+          )}
 
           <span className="queue-demo">
             {showSearchIcon && (
@@ -133,9 +187,10 @@ const List = ({
               {show ? (
                 <Input
                   // key="demo"
+                  name="name"
                   className="no-border"
                   placeholder="名前"
-                  onChange={searchByName}
+                  onChange={searchInput}
                   bordered
                   prefix={<SearchOutlined />}
                 />
@@ -165,10 +220,11 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div>
                   <DatePicker
+                    name="date"
                     size="large"
                     placeholder="タイム"
                     format="YYYY/MM/DD"
-                    onChange={searchByTime}
+                    onChange={searchInput}
                   />
                 </div>
               </div>
@@ -178,6 +234,7 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div>
                   <Input
+                    name="jobfairName"
                     placeholder="就職フェアの名前"
                     type="text"
                     onChange={searchByJobfairName}
@@ -192,9 +249,10 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div>
                   <Input
+                    name="category"
                     placeholder="カテゴリ"
                     type="text"
-                    onChange={searchByCategory}
+                    onChange={searchInput}
                   />
                 </div>
               </div>
@@ -204,9 +262,10 @@ const List = ({
               <div className="flex items-center justify-end px-2">
                 <div>
                   <Input
+                    name="milestone"
                     placeholder="マイルストーン"
                     type="text"
-                    onChange={searchByMilestone}
+                    onChange={searchInput}
                   />
                 </div>
               </div>
@@ -217,12 +276,7 @@ const List = ({
         {/* Table data */}
         <div>
           <Table
-            // pagination={{
-            //   position: ["bottomCenter"],
-            //   responsive: true,
-            //   defaultPageSize: 5,
-            // }}
-            scroll={{ y: 280 }}
+            scroll={{ y: 280, x: 240 }}
             pagination={false}
             dataSource={list}
             columns={dataColumn}

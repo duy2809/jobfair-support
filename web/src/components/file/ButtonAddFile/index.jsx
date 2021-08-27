@@ -107,10 +107,9 @@ export default function ButtonAddFile(props) {
   }
 
   return (
-    <div className="file">
+    <div className="file-add">
       <Button
         type="primary"
-        className="flex"
         shape="round"
         size="large"
         icon={<FileAddFilled />}
@@ -135,7 +134,7 @@ export default function ButtonAddFile(props) {
         >
           <Form.Item
             label={
-              <p>名前</p>
+              <p style={{ margin: 0 }}>名前</p>
             }
             name="name_file"
             rules={[
@@ -153,7 +152,7 @@ export default function ButtonAddFile(props) {
           </Form.Item>
           <Form.Item
             label={
-              <p>リンク</p>
+              <p style={{ margin: 0 }}>リンク</p>
             }
             name="link"
             rules={[

@@ -3,11 +3,10 @@ import { Select, Table, Input, Button, Empty, DatePicker } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import moment from 'moment'
-import Layout from '../../../layouts/OtherLayout'
+import Layout from '../../../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
-import * as Extensions from '../../../utils/extensions'
+import * as Extensions from '../../../../utils/extensions'
 import { MemberApi } from '~/api/member'
-import { webInit } from '~/api/web-init'
 import './style.scss'
 
 const columns = [
@@ -40,15 +39,20 @@ const columns = [
   },
 ]
 
-export default function TaskList() {
+function TaskList() {
   const { Option } = Select
   const router = useRouter()
   const [tasks, setTasks] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [itemCount, setItemCount] = useState(10)
-  const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
+  const [id, setID] = useState(0)
+  const [pagination, setPagination] = useState({
+    position: ['bottomCenter'],
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: false,
+  })
   const [optionStatus, setOptionStatus] = useState('すべて')
 
   const [searchNameValue, setSearchNameValue] = useState('')
@@ -59,7 +63,10 @@ export default function TaskList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
 
   const handleChange = (e) => {
@@ -93,44 +100,44 @@ export default function TaskList() {
     if (searchDateValue === 'Invalid date') {
       return true
     }
-    return obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+    return (
+      obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+    )
   }
 
   const handleInput = () => {
-    const result = tasks.filter((obj) => obj.name.toLowerCase().indexOf(searchNameValue.toLowerCase()) > -1
-      && checkDate(obj)
-      && check(obj))
+    const result = tasks.filter(
+      (obj) => obj.name.toLowerCase().indexOf(searchNameValue.toLowerCase()) > -1
+        && checkDate(obj)
+        && check(obj),
+    )
     setFilteredData(result)
   }
 
   const fetchData = useCallback(() => {
     setDataLoading(true)
     initPagination()
-    webInit().then((res) => {
-      if (res.data.auth != null) {
-        setUser(res.data.auth.user)
-        MemberApi.getTasksOfMember(res.data.auth.user.id).then((response) => {
-          const { data } = response
-          setFilteredData(data)
-          setTasks(data)
-        }).catch((error) => {
-          console.log(error)
-          router.push('/login')
-        })
-      } else {
-        router.push('/login')
-      }
-    }).finally(() => {
-      setDataLoading(false)
-    })
+    MemberApi.getTasksOfMember(router.query.id)
+      .then((response) => {
+        setID(router.query.id)
+        const { data } = response
+        setFilteredData(data)
+        setTasks(data)
+        setDataLoading(false)
+      })
+      .catch(() => {
+        setDataLoading(false)
+      })
   })
 
-  const handleRow = (record) => ({ onClick: () => {
-    router.push(`/tasks/${record.id}`)
-  } })
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/task-detail/${record.id}`)
+    },
+  })
 
   const handleBackButton = () => {
-    router.push(`/member/${user.id}`)
+    router.push(`/member/${id}`)
   }
 
   const handleSelectStatus = (value) => {
@@ -167,16 +174,60 @@ export default function TaskList() {
           </Button>
         </div>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <h1 className="m-0 flex justify-start w-full">メンバ詳細（タスク一覧）</h1>
+          <h1 className="m-0 flex justify-start w-full">
+            メンバ詳細（タスク一覧）
+          </h1>
           <div className="text-xl w-full flex justify-between items-center">
             <div className="flex items-center">
               <div className="my-5 mr-5">ステータス:</div>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}>すべて</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}>未着手</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}>進行中</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}>完了</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}>中断</Button>
-              <Button onClick={handleSelectStatus} className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}>未完了</Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === 'すべて' ? 'option-active' : ''
+                }`}
+              >
+                すべて
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === '未着手' ? 'option-active' : ''
+                }`}
+              >
+                未着手
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === '進行中' ? 'option-active' : ''
+                }`}
+              >
+                進行中
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === '完 了' ? 'option-active' : ''
+                }`}
+              >
+                完了
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === '中 断' ? 'option-active' : ''
+                }`}
+              >
+                中断
+              </Button>
+              <Button
+                onClick={handleSelectStatus}
+                className={`border-0 mx-4 ${
+                  optionStatus === '未完了' ? 'option-active' : ''
+                }`}
+              >
+                未完了
+              </Button>
             </div>
             <DatePicker
               className=""
@@ -190,15 +241,23 @@ export default function TaskList() {
           <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+              <Select
+                className="ml-5"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
               </Select>
             </div>
             <div>
-              <Input size="large" onChange={handleInputName} placeholder="タスク名" prefix={<SearchOutlined />} />
-
+              <Input
+                size="large"
+                onChange={handleInputName}
+                placeholder="タスク名"
+                prefix={<SearchOutlined />}
+              />
             </div>
           </div>
           <Table
@@ -211,10 +270,20 @@ export default function TaskList() {
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="該当結果が見つかりませんでした"
+                />
+              ),
+            }}
           />
         </div>
       </Layout.Main>
     </Layout>
   )
 }
+
+TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default TaskList

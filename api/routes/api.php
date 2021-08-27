@@ -120,7 +120,7 @@ Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
 Route::get('/{JFid}/member', 'FileController@getMember');
-Route::get('/file/getLatest', 'FileController@getLatest');
+Route::get('/file/{id}/getLatest', 'FileController@getLatest');
 Route::get('/file/getPath', 'FileController@getPath');
 Route::post('/file/{jfId}/delArray', 'FileController@destroyArrayOfDocument');
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
@@ -155,6 +155,7 @@ Route::get('/users', 'MemberController@getMember');
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });

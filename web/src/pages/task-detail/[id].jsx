@@ -343,6 +343,7 @@ function TaskDetail() {
                                 href={`/task-detail/${item.id}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                className="inline-block text-blue-600 whitespace-nowrap "
                               >
                                 {truncate(item.name)}
                               </a>
@@ -367,6 +368,7 @@ function TaskDetail() {
                                 href={`/task-detail/${item.id}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                className="inline-block text-blue-600 whitespace-nowrap "
                               >
                                 {truncate(item.name)}
                               </a>

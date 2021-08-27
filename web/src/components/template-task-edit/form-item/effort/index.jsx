@@ -95,6 +95,7 @@ const Effort = ({
         <Space>
           <Form.Item name="is_day">
             <Select
+              size="large"
               placeholder="時間"
               style={{ width: '150px' }}
               onChange={onValueIsDayChange}
@@ -111,6 +112,7 @@ const Effort = ({
 
           <Form.Item name="unit">
             <Select
+              size="large"
               placeholder="学生数"
               style={{ width: '150px' }}
               onChange={onValueUnitChange}
