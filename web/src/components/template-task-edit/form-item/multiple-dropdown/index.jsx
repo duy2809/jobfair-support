@@ -38,7 +38,7 @@ const ItemMultipleDropdown = ({
     form.setFieldsValue(temp)
   }
   return (
-    <div className="">
+    <div className="multiple-dropdown">
       <Form.Item
         label={label}
         name={name}
@@ -50,8 +50,8 @@ const ItemMultipleDropdown = ({
           showArrow
           mode="multiple"
           placeholder={label}
-          className="overflow-hidden w-full"
-          maxTagCount="responsive"
+          // className="overflow-hidden w-full"
+          // maxTagCount="responsive"
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}

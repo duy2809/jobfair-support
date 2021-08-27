@@ -4,8 +4,8 @@ import { Form, Input, Button, notification } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
 // import Avatar from '../UI/avatar/Avatar'
-import ButtonChangePassword from '../UI/button/ButtonChangePassword'
-import CancelEditProfile from '../UI/button/CancelEditProfile'
+import ButtonChangePassword from '../../../components/profile/ButtonChangePassword'
+import CancelEditProfile from '../../../components/profile/CancelEditProfile'
 import { updateInfo, getAllProfile, getProfile, getAvatar } from '../../../api/profile'
 import { webInit } from '../../../api/web-init'
 import axios from '../../../api/axios'
@@ -108,11 +108,9 @@ const EditProfilePage = () => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 3,
-
+      duration: 2,
     })
-    router.push('/profile')
-    // setTimeout(() => { router.push('/profile') }, 1000)
+    setTimeout(() => { router.push('/profile') }, 2000)
   }
 
   const handleOk = async () => {
@@ -185,7 +183,7 @@ const EditProfilePage = () => {
           <div className="container__profile-edit">
             <div className="container-profile">
               <div className="grid justify-items-center">
-                <div className="avatar">
+                <div className="avatar h-28">
                   <input
                     type="file"
                     style={{ display: 'none' }}
@@ -344,11 +342,11 @@ const EditProfilePage = () => {
                 </div>
               </div>
             </div>
-            <div className="container-btn justify-end">
+            <div className="container-btn justify-end gap-1">
               <CancelEditProfile />
               <Button
                 type="primary"
-                className="text-base px-9 mr-10"
+                className="text-base px-9 mr-20"
                 htmlType="submit"
                 onClick={handleOk}
               >

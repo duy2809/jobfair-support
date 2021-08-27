@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification } from 'antd'
+import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
 
+import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
 import {
   templateTask,
@@ -14,9 +15,8 @@ import {
   afterTask,
   deleteTptt,
 } from '../../api/template-task'
-import { webInit } from '../../api/web-init'
 
-export default function TaskList() {
+function templatetTaskDt() {
   const router = useRouter()
   const idTplt = router.query.id
   const [name, setName] = useState('')
@@ -28,8 +28,9 @@ export default function TaskList() {
   const [isDay, setIsDay] = useState([])
   const [unit, setUnit] = useState([])
   const [des, setDes] = useState([])
-  const [user, setUser] = useState('')
-
+  const [user, setUser] = useState(null)
+  const [role, setRole] = useState(null)
+  const { store } = useContext(ReactReduxContext)
   const fetchInfo = async () => {
     await templateTask(idTplt)
       .then((response) => {
@@ -51,17 +52,6 @@ export default function TaskList() {
     await beforeTask(idTplt)
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }
-
-  const getDataUser = async () => {
-    await webInit()
-      .then((response) => {
-        setUser(response.data.auth.user.role)
-        console.log(response.data.auth.user.name)
       })
       .catch((error) => {
         console.log(error)
@@ -111,11 +101,14 @@ export default function TaskList() {
     })
   }
   useEffect(() => {
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      setRole(user.get('role'))
+    }
     fetchInfo()
     fetchBeforeTask()
     fetchafterTask()
-    getDataUser()
-  }, [])
+  }, [user])
   const handleBack = () => {
     router.push('/template-tasks')
   }
@@ -126,7 +119,7 @@ export default function TaskList() {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <div className="wrapper">
+          <div className="template-task-dt">
             <div className="list__button">
               <div className="button__left">
                 <Button
@@ -138,21 +131,21 @@ export default function TaskList() {
                 </Button>
               </div>
               <div className="button__right">
-                {user === 'admin' ? (
+                { role === 'superadmin' ? (
                   <>
                     <Button
                       style={{ border: 'none' }}
                       type="primary"
                       onClick={handleEdit}
                     >
-                      編集
+                      <span> 編集 </span>
                     </Button>
                     <Button
                       style={{ border: 'none' }}
                       type="primary"
                       onClick={modelDelete}
                     >
-                      削除
+                      <span> 削除 </span>
                     </Button>
                   </>
                 ) : null}
@@ -200,10 +193,20 @@ export default function TaskList() {
                       <p>工数:</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <span className="ef">{ef}</span>
-                      <span className="ef">{isDay ? '日' : '時間'}</span>
-                      <span>/</span>
-                      <span className="ef">{unit}</span>
+                      {unit === 'none' ? (
+                        <>
+                          <span className="ef">{ef}</span>
+                          <span className="ef">{isDay ? '日' : '時間'}</span>
+
+                        </>
+                      ) : (
+                        <>
+                          <span className="ef">{ef}</span>
+                          <span className="ef">{isDay ? '日' : '時間'}</span>
+                          <span>/</span>
+                          <span className="ef">{unit}</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -211,36 +214,49 @@ export default function TaskList() {
 
               <div className="grid grid-cols-2 mx-16 mt-5">
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">前のタスク </p>
+                  <p className="col-span-1">前のタスク: </p>
                   <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
-                          <a
-                            href={`/task-detail/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
+                          <Tag
+                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
                           >
-                            {truncate(item.name)}
-                          </a>
+                            <Tooltip placement="top" title={item.name}>
+                              <a
+                                href={`/template-task-dt/${item.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {truncate(item.name)}
+                              </a>
+                            </Tooltip>
+                          </Tag>
                         </li>
                       ))
                       : null}
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">次のタスク</p>
+                  <p className="col-span-1">次のタスク:</p>
                   <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
-                          <a
-                            href={`/task-detail/${item.id}`}
-                            target="_blank"
-                            rel="noreferrer"
+                          <Tag
+                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
                           >
-                            {truncate(item.name)}
-                          </a>
+                            <Tooltip placement="top" title={item.name}>
+                              <a
+                                href={`/template-task-dt/${item.id}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {truncate(item.name)}
+                              </a>
+                            </Tooltip>
+                          </Tag>
+
                         </li>
                       ))
                       : null}
@@ -249,7 +265,7 @@ export default function TaskList() {
               </div>
 
               <div className="mx-16 mt-5">
-                <div className=" mx-8 des demo-infinite-container">{des}</div>
+                <div className=" mx-7 des demo-infinite-container">{des}</div>
               </div>
             </div>
           </div>
@@ -258,3 +274,5 @@ export default function TaskList() {
     </div>
   )
 }
+templatetTaskDt.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default templatetTaskDt

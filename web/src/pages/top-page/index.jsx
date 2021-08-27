@@ -5,7 +5,7 @@ import { getTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
 
-const { getListShedule } = ListScheduleApi
+const { getListSchedule } = ListScheduleApi
 
 const jfListDataColumn = [
   {
@@ -120,7 +120,7 @@ const Top = () => {
 
     const getSchedule = async function () {
       let dataItem = []
-      await getListShedule().then((res) => {
+      await getListSchedule().then((res) => {
         dataItem = res.data.map((data) => ({ name: data.name }))
       })
       setScheduleData(dataItem)

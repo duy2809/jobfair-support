@@ -4,18 +4,15 @@ import { Menu, Dropdown } from 'antd'
 import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import './styles.scss'
-import { useRouter } from 'next/router'
 import { logout } from '../../api/authenticate'
 import Notification from './notification'
-// import { route } from 'next/dist/next-server/server/router'
 
 export default function Navbar() {
-  const router = useRouter()
   const handleLogout = async () => {
     try {
       const response = await logout()
       if (response.request.status === 200) {
-        router.push('/login')
+        window.location = '/'
       }
     } catch (error) {
       if (error.request.status === 400) {
