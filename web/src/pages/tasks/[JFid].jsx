@@ -357,4 +357,3 @@ function TaskList() {
 }
 TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
 export default TaskList
-// TaskList.middleware = ['auth:superadmin']
