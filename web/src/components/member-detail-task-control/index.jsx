@@ -18,11 +18,11 @@ export default class TaskControl extends React.Component {
     this.setState({
       visible: true,
     })
-  }
+  };
 
   onhandleCancel = () => {
     this.setState({ visible: false })
-  }
+  };
 
   onhandleOk = () => {
     const id = this.props.id
@@ -48,72 +48,62 @@ export default class TaskControl extends React.Component {
           })
         })
       })
-  }
+  };
 
   render() {
     const { visible } = this.state
     return (
-      <div className="task_control">
-        <div className="control_btn pr-24">
-          <Button
-            id="btn-back"
-            type="primary"
-            size="middle"
-            className="btn"
-            style={{
-              border: 'none',
-              borderRadius: '3px',
-              position: 'relative',
-              right: '380px',
-              bottom: '110px',
-            }}
-          >
-            <Link href="/member/">戻る</Link>
+      <div className="flex justify-center mb-5 ml-40">
+        <Link href="/member/tasks">
+          <Button type="primary" size="middle" className="mr-2">
+            タスクー覧
           </Button>
-          <Button type="primary" size="middle" className="btn">
-            <Link href={`/member/${this.props.id}/tasks`}>タスクー覧</Link>
+        </Link>
+        <Link href="/member/gantt-chart">
+          <Button type="primary" size="middle" className="mr-2">
+            ガンチャート
           </Button>
-          <Button type="primary" size="middle" className="btn">
-            <Link href={`/member/${this.props.id}/gantt-chart`}>ガンチャート</Link>
-          </Button>
+        </Link>
+        <Link href={`/member/${this.props.id}/edit`}>
           <Button
             type="primary"
             size="middle"
-            className="btn"
+            className="mr-2"
             style={{
-              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              visibility:
+                this.props.role === 'superadmin' ? 'visible' : 'hidden',
             }}
           >
-            <Link href={`/member/${this.props.id}/edit`}>編集</Link>
+            編集
           </Button>
-          <Button
-            onClick={this.showModal}
-            type="primary"
-            size="middle"
-            className="btn"
-            style={{
-              visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
-            }}
-          >
-            削除
-          </Button>
-          <Modal
-            visible={visible}
-            title="削除"
-            onOk={this.onhandleOk}
-            onCancel={this.onhandleCancel}
-            footer={[
-              <Button key="back" onClick={this.onhandleCancel}>
-                いいえ
-              </Button>,
-              <Button type="primary" size="large" className="btn" onClick={this.onhandleOk}>
-                はい
-              </Button>,
-            ]}
-          >
-            <p>削除してもよろしいですか?</p>
-          </Modal>
-        </div>
+        </Link>
+        <Button
+          onClick={this.showModal}
+          type="primary"
+          size="middle"
+          className="mr-2"
+          style={{
+            visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
+          }}
+        >
+          削除
+        </Button>
+        <Modal
+          visible={visible}
+          title="削除"
+          onOk={this.onhandleOk}
+          onCancel={this.onhandleCancel}
+          footer={[
+            <Button key="back" onClick={this.onhandleCancel}>
+              いいえ
+            </Button>,
+            <Button type="primary" className="mr-2" onClick={this.onhandleOk}>
+              はい
+            </Button>,
+          ]}
+        >
+          <p>削除してもよろしいですか?</p>
+        </Modal>
       </div>
     )
   }
