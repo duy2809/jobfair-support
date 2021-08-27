@@ -354,4 +354,5 @@ const EditTemplateTaskPage = () => {
   )
 }
 
+EditTemplateTaskPage.middleware = ['auth:superadmin']
 export default EditTemplateTaskPage
