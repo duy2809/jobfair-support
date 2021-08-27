@@ -307,7 +307,7 @@ const index = () => {
             {/* page title */}
             <h1 className="text-3xl">JF追加 </h1>
             <div>
-              <div className="container">
+              <div className="container ">
                 <Form
                   form={form}
                   labelCol={{
@@ -316,6 +316,7 @@ const index = () => {
                   wrapperCol={{
                     span: 14,
                   }}
+                  className="mx-20"
                   layout="horizontal"
                   colon={false}
                   initialValues={{ defaultInputValue: 0 }}
@@ -323,201 +324,206 @@ const index = () => {
                   onFinishFailed={onFinishFailed}
 
                 >
-                  {/* jobfair name */}
-                  <Form.Item
-                    label="JF名"
-                    required
-                  >
-                    <Form.Item
-                      name="name"
-                      noStyle
-                      rules={[
-                        {
-                          validator: JFNameValidator,
-                        },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        id="validate_name"
-                        onBlur={checkIsJFNameExisted}
-                        onChange={() => {
-                          document.getElementById('error-msg').setAttribute('hidden', 'true')
-                          document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
-                        }}
-                        placeholder="JF名を入力する"
-                        maxLength={200}
-                      />
+                  <div className="flex justify-center">
+                    <div className="left-side w-1/2">
+                      {/* jobfair name */}
+                      <Form.Item
+                        label="JF名"
+                        required
+                      >
+                        <Form.Item
+                          name="name"
+                          noStyle
+                          rules={[
+                            {
+                              validator: JFNameValidator,
+                            },
+                          ]}
+                        >
+                          <Input
+                            type="text"
+                            id="validate_name"
+                            onBlur={checkIsJFNameExisted}
+                            onChange={() => {
+                              document.getElementById('error-msg').setAttribute('hidden', 'true')
+                              document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                            }}
+                            placeholder="JF名を入力する"
+                            maxLength={200}
+                          />
 
-                    </Form.Item>
+                        </Form.Item>
 
-                    <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
-                  </Form.Item>
-                  {/* start date */}
-                  <Form.Item
-                    required
-                    name="start_date"
-                    label="開始日"
-                    // hasFeedback
-                    rules={[
-                      {
-                        validator: startDayValidator,
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      help="Please select the correct date"
-                      className="py-2"
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      format={Extensions.dateFormat}
-                      placeholder={Extensions.dateFormat}
+                        <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
+                      </Form.Item>
+                      {/* number of companies */}
+                      <Form.Item
+                        required
+                        // hasFeedback
+                        label="参加企業社数"
+                        name="number_of_companies"
+                        rules={[
+                          {
+                            validator: companiesJoinValidator,
+                          },
+                        ]}
+                      >
+                        <Input
+                          type="text"
+                          size="large"
+                          min={1}
+                          onChange={autoConvertHalfwidth}
+                          style={{ width: '130px' }}
+                          placeholder="参加企業社数"
+                        />
+                      </Form.Item>
+                      {/* jobfair admin */}
+                      <Form.Item
+                        required
+                        // hasFeedback
+                        label="管理者"
+                        name="jobfair_admin_id"
+                        rules={[
+                          {
+                            validator: JFAdminValidator,
+                          },
+                        ]}
+                      >
+                        <Select
+                          size="large"
+                          className="addJF-selector"
+                          placeholder="管理者を選択"
+                        >
+                          {listAdminJF.map((element) => (
+                            <Select.Option key={element.id} value={element.id}>
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
 
-                    // disable date in the past
-                    // disabledDate={(current) => {
-                    //   return current < moment();
-                    // }}
-                    />
-                  </Form.Item>
+                      {/* list milestones */}
+                      <Form.Item label=" ">
+                        <span className="label">マイルストーン一覧</span>
+                        <List
+                          className="demo-infinite-container"
+                          bordered
+                          locale={
+                            { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
+                          }
+                          // style={{ backgroundColor: '#e3f6f5' }}
+                          size="small"
+                          dataSource={listMilestone}
+                          renderItem={(item) => (
+                            <List.Item className="list-items" key={item.id}>
+                              {item.name}
+                            </List.Item>
+                          )}
+                        />
+                      </Form.Item>
 
-                  {/* number of companies */}
-                  <Form.Item
-                    required
-                    // hasFeedback
-                    label="参加企業社数"
-                    name="number_of_companies"
-                    rules={[
-                      {
-                        validator: companiesJoinValidator,
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      min={1}
-                      onChange={autoConvertHalfwidth}
-                      style={{ width: '130px' }}
-                      placeholder="参加企業社数"
-                    />
-                  </Form.Item>
+                    </div>
+                    <div className="right-side w-1/2">
+                      {/* start date */}
+                      <Form.Item
+                        required
+                        name="start_date"
+                        label="開始日"
+                        // hasFeedback
+                        rules={[
+                          {
+                            validator: startDayValidator,
+                          },
+                        ]}
+                      >
+                        <DatePicker
+                          help="Please select the correct date"
+                          className="py-2"
+                          // style={{ backgroundColor: '#e3f6f5' }}
+                          format={Extensions.dateFormat}
+                          placeholder={Extensions.dateFormat}
 
-                  {/* number of students */}
-                  <Form.Item
-                    required
-                    // hasFeedback
-                    name="number_of_students"
-                    label="推定参加学生数"
-                    rules={[
-                      {
-                        validator: studentsJoinValidator,
-                      },
-                    ]}
-                  >
-                    <Input
-                      type="text"
-                      size="large"
-                      min={1}
-                      onChange={autoConvertHalfwidth}
-                      style={{ width: '130px' }}
-                      placeholder="推定参加学生数"
-                    />
-                  </Form.Item>
+                        // disable date in the past
+                        // disabledDate={(current) => {
+                        //   return current < moment();
+                        // }}
+                        />
+                      </Form.Item>
+                      {/* number of students */}
+                      <Form.Item
+                        required
+                        // hasFeedback
+                        name="number_of_students"
+                        label="推定参加学生数"
+                        rules={[
+                          {
+                            validator: studentsJoinValidator,
+                          },
+                        ]}
+                      >
+                        <Input
+                          type="text"
+                          size="large"
+                          min={1}
+                          onChange={autoConvertHalfwidth}
+                          style={{ width: '130px' }}
+                          placeholder="推定参加学生数"
+                        />
+                      </Form.Item>
+                      {/* jobfair schedule */}
+                      <Form.Item
+                        required
+                        // hasFeedback
+                        name="schedule_id"
+                        label="JFスケジュール"
+                        rules={[
+                          {
+                            validator: JFScheduleValidator,
+                          },
+                        ]}
+                      >
+                        <Select
+                          size="large"
+                          className="addJF-selector"
+                          placeholder="JF-スケジュールを選択"
+                          onSelect={onScheduleSelect}
+                        >
+                          {listSchedule.map((element) => (
+                            <Select.Option key={element.id} value={element.id}>
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
 
-                  {/* jobfair admin */}
-                  <Form.Item
-                    required
-                    // hasFeedback
-                    label="管理者"
-                    name="jobfair_admin_id"
-                    rules={[
-                      {
-                        validator: JFAdminValidator,
-                      },
-                    ]}
-                  >
-                    <Select
-                      size="large"
-                      className="addJF-selector"
-                      placeholder="管理者を選択"
-                    >
-                      {listAdminJF.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+                      {/* list task */}
+                      <Form.Item label=" ">
+                        <span className="label">タスク一覧</span>
+                        <List
+                          className="demo-infinite-container"
+                          bordered
+                          // style={{ backgroundColor: '#e3f6f5' }}
+                          size="small"
+                          locale={
+                            { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
+                          }
+                          dataSource={listTask}
+                          renderItem={(item) => (
+                            <List.Item className="list-items" key={item.id}>
+                              {item.name}
+                            </List.Item>
+                          )}
+                        />
+                      </Form.Item>
 
-                  {/* jobfair schedule */}
-                  <Form.Item
-                    required
-                    // hasFeedback
-                    name="schedule_id"
-                    label="JFスケジュール"
-                    rules={[
-                      {
-                        validator: JFScheduleValidator,
-                      },
-                    ]}
-                  >
-                    <Select
-                      size="large"
-                      className="addJF-selector"
-                      placeholder="JF-スケジュールを選択"
-                      onSelect={onScheduleSelect}
-                    >
-                      {listSchedule.map((element) => (
-                        <Select.Option key={element.id} value={element.id}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+                    </div>
 
-                  {/* list milestones */}
-                  <Form.Item label=" ">
-                    <span className="label">マイルストーン一覧</span>
-                    <List
-                      className="demo-infinite-container"
-                      bordered
-                      locale={
-                        { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                      }
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      size="small"
-                      dataSource={listMilestone}
-                      renderItem={(item) => (
-                        <List.Item className="list-items" key={item.id}>
-                          {item.name}
-                        </List.Item>
-                      )}
-                    />
-                  </Form.Item>
-
-                  {/* list task */}
-                  <Form.Item label=" ">
-                    <span className="label">タスク一覧</span>
-                    <List
-                      className="demo-infinite-container"
-                      bordered
-                      // style={{ backgroundColor: '#e3f6f5' }}
-                      size="small"
-                      locale={
-                        { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                      }
-                      dataSource={listTask}
-                      renderItem={(item) => (
-                        <List.Item className="list-items" key={item.id}>
-                          {item.name}
-                        </List.Item>
-                      )}
-                    />
-                  </Form.Item>
-
+                  </div>
                   {/* 2 button */}
                   <Form.Item
                     label=" "
                     className="my-10"
+                    style={{ marginRight: '30px' }}
 
                   >
                     <Space size={20} className="flex justify-end">
