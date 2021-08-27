@@ -90,13 +90,6 @@ export default function MemberList() {
         router.push('/login')
       }
     })
-    MemberApi.getListMember().then((res) => {
-      const { data } = res
-      setMembers(data)
-      setFilterData(data)
-    }).finally(() => {
-      setDataLoading(false)
-    })
   })
   const handleRow = (record) => ({ onClick: () => {
     router.push(`/member/${record.id}`)
@@ -108,6 +101,13 @@ export default function MemberList() {
 
   useEffect(() => {
     fetchData()
+    MemberApi.getListMember().then((res) => {
+      const { data } = res
+      setMembers(data)
+      setFilterData(data)
+    }).finally(() => {
+      setDataLoading(false)
+    })
   }, [itemCount])
   const { Option } = Select
   const role = user.role
