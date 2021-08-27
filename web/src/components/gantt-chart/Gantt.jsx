@@ -27,7 +27,7 @@ export default class Gantt extends Component {
     })
 
     /* date height */
-    gantt.config.min_column_width = 40
+    gantt.config.min_column_width = 44
     gantt.config.scale_height = 120
     gantt.config.drag_progress = true
     gantt.config.show_markers = true
@@ -130,8 +130,6 @@ export default class Gantt extends Component {
     //   return true
     // }, '')
     // gantt.setSizes()
-    const parsed = Date.parse(today)
-    console.log(new Date(today.getFullYear(), today.getMonth(), 1))
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
     const lastOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
     const formatFirstOfMonth = firstOfMonth.toString('yyyy-MM-dd')
@@ -139,19 +137,26 @@ export default class Gantt extends Component {
     gantt.start_date = formatFirstOfMonth
     gantt.end_date = formatLastOfMonth
 
-    setTimeout(() => {
-      const state = gantt.getState()
-
-      console.log(state.max_date)
-    }, 1000)
-    gantt.scrollTo(1000, 1000)
     setTimeout(scrollToToday, 500)
     gantt.i18n.setLocale('jp')
     gantt.config.show_progress = false
     gantt.attachEvent('onBeforeTaskDrag', () => false)
     gantt.init(this.ganttContainer)
     gantt.parse(tasks)
-    gantt.scrollTo(30, 80)
+    gantt.parse(tasks)
+  }
+
+  test=() => {
+    console.log('hel;p')
+    const task = {
+      id: 2,
+      text: 'test',
+      start_date: new Date(2021, 8, 3),
+      end_date: new Date(2021, 8, 6),
+      $source: 1,
+      $target: 2,
+    }
+    gantt.updateTask(2, task)
   }
 
   render() {
@@ -163,7 +168,7 @@ export default class Gantt extends Component {
           ref={(input) => { this.ganttContainer = input }}
           style={{ width: '100%', maxHeight: '650px' }}
         />
-        {/* <input type="button" value="Export" onClick={this.exportExcel} /> */}
+        <input type="button" value="Export" onClick={this.test} />
 
       </>
     )
