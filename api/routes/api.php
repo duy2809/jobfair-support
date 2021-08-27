@@ -6,10 +6,12 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -36,6 +38,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/tasks/search', 'JobfairController@searchTask');
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
 
@@ -47,6 +50,7 @@ Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTask
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
+    Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
 });
 
 Route::get('/admins', 'AdminController@index');
@@ -72,7 +76,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
-
 
 Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
 
@@ -124,7 +127,6 @@ Route::post('/notification/update_all_read', 'NotificationController@updateAllRe
 Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
-
 
 // top-page
 Route::prefix('/top-page')->group(function () {
