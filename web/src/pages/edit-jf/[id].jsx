@@ -454,7 +454,7 @@ const index = () => {
                     htmlType="submit"
                     disabled={disableBtn}
                     loading={disableBtn}
-                    className="mr-10"
+                    className="mr-20"
                   >
                     <span> 保存 </span>
                   </Button>
