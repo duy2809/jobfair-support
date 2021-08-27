@@ -118,12 +118,6 @@ const EditMember = ({ data }) => {
     Extensions.unSaveChangeConfirm(showExitPrompt)
   }, [showExitPrompt])
 
-  useEffect(() => {
-    if (user.role === 'member') {
-      router.push('/login')
-    }
-  }, [user])
-
   return (
     <Layout>
       <Layout.Main>
@@ -138,7 +132,7 @@ const EditMember = ({ data }) => {
           >
             <Form.Item
               name="name"
-              label={<p style={{ fontSize: '18px' }}>フルネーム</p>}
+              label={<span style={{ fontSize: '18px' }}>フルネーム</span>}
               rules={[
                 {
                   message: 'この項目は必須です',
@@ -155,7 +149,7 @@ const EditMember = ({ data }) => {
             </Form.Item>
             <Form.Item
               name="email"
-              label={<p style={{ fontSize: '18px' }}>メールアドレス</p>}
+              label={<span style={{ fontSize: '18px' }}>メールアドレス</span>}
               rules={[
                 {
                   type: 'email',
@@ -186,7 +180,7 @@ const EditMember = ({ data }) => {
 
             <Form.Item
               name="categories"
-              label={<p style={{ fontSize: '18px' }}>カテゴリ</p>}
+              label={<span style={{ fontSize: '18px' }}>カテゴリ</span>}
               rules={[
                 {
                   required: false,
@@ -218,7 +212,9 @@ const EditMember = ({ data }) => {
                   okText="はい"
                   centered
                 >
-                  <p className="mb-5">変更内容が保存されません。よろしいですか？</p>
+                  <p className="mb-5">
+                    変更内容が保存されません。よろしいですか？
+                  </p>
                 </Modal>
 
                 <Button size="middle" onClick={showCancelModal}>
@@ -252,4 +248,5 @@ EditMember.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
+EditMember.middleware = ['auth:superadmin']
 export default EditMember
