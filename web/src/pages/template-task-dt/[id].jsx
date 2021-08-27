@@ -227,6 +227,7 @@ function templatetTaskDt() {
                                 href={`/template-task-dt/${item.id}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                className="inline-block text-blue-600 whitespace-nowrap "
                               >
                                 {truncate(item.name)}
                               </a>
@@ -251,6 +252,7 @@ function templatetTaskDt() {
                                 href={`/template-task-dt/${item.id}`}
                                 target="_blank"
                                 rel="noreferrer"
+                                className="inline-block text-blue-600 whitespace-nowrap "
                               >
                                 {truncate(item.name)}
                               </a>

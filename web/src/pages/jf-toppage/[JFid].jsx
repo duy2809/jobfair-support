@@ -79,7 +79,7 @@ function jftoppage() {
           <div className="Jf__top">
 
             <div className="jf__main">
-              <div className="grid grid-cols-11">
+              <div className="grid grid-cols-12">
                 <div className="col-span-7">
                   <div className="notifi">
                     <div className="title">
@@ -90,7 +90,7 @@ function jftoppage() {
                     </div>
                   </div>
                 </div>
-                <div className="col-span-4">
+                <div className="col-span-5">
                   <div className="flex justify-end">
                     <div className="search__task">
                       <div className="button__right">

@@ -63,56 +63,59 @@ const JfLayout = ({ children, id }) => {
           collapsible
           collapsed={collapsed}
         >
-          <Menu
-            style={{
-              height: '100vh',
-            }}
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
-            mode="inline"
-            theme="dark"
-            inlineCollapsed={collapsed}
-          >
-            <div className="relative h-10 ">
-              <div className="absolute top-0 right-0 ">
-                <div
-                  className="button"
-                  type="primary"
-                  onClick={toggleCollapsed}
-                  style={{ marginBottom: 16 }}
-                >
-                  {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
+          <div className="sibar-task">
+            <Menu
+              style={{
+                height: '100vh',
+              }}
+              defaultSelectedKeys={['1']}
+              defaultOpenKeys={['sub1']}
+              mode="inline"
+              theme="dark"
+              inlineCollapsed={collapsed}
+            >
+              <div className="relative h-10 ">
+                <div className="absolute top-0 right-0 ">
+                  <div
+                    className="button"
+                    type="primary"
+                    onClick={toggleCollapsed}
+                    style={{ marginBottom: 16 }}
+                  >
+                    {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
+                  </div>
                 </div>
               </div>
-            </div>
-            <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href={`/tasks/${id}`}>タスク</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href={`/kanban/${id}`}>カンバン</Link>
-            </Menu.Item>
-            <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href={`/file/${id}`}>ファイル</Link>
-            </Menu.Item>
-          </Menu>
+              <Menu.Item key="1" icon={<HomeOutlined />}>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              </Menu.Item>
+              <Menu.Item key="2" icon={<FileProtectOutlined />}>
+                <Link href={`/tasks/${id}`}>タスク</Link>
+              </Menu.Item>
+              <Menu.Item key="3" icon={<BarChartOutlined />}>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              </Menu.Item>
+              <Menu.Item key="4" icon={<TableOutlined />}>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
+              </Menu.Item>
+              <Menu.Item key="5" icon={<FileOutlined />}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            </Menu>
+          </div>
+
         </Sider>
         <Layout className="site-layout">
           <div className="Jf__header">
             <h1>{name}</h1>
             <div className="admin__jf">
-              <h3>{startDate}</h3>
-              <h3>
+              <h4>{startDate}</h4>
+              <h4>
                 {`企業:${numberOfStudents}`}
-              </h3>
-              <h3>
+              </h4>
+              <h4>
                 {`学生:${numberOfCompanies}`}
-              </h3>
+              </h4>
               <img className="avt" src={avt} alt="avatar" />
             </div>
           </div>
