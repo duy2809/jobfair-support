@@ -298,6 +298,7 @@ const index = () => {
                   ]}
                 >
                   <DatePicker
+                    size="large"
                     onChange={() => { setIsEdit(true) }}
                     help="Please select the correct date"
                     format={Extensions.dateFormat}
@@ -357,7 +358,7 @@ const index = () => {
                     },
                   ]}
                 >
-                  <Select onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="管理者を選択">
+                  <Select size="large" onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="管理者を選択">
                     {listAdminJF.map((element) => (
                       <Select.Option key={element.id} value={element.id}>
                         {element.name}
@@ -380,6 +381,7 @@ const index = () => {
                     className="addJF-selector"
                     placeholder="JF-スケジュールを選択"
                     onSelect={onScheduleSelect}
+                    size="large"
                   >
                     {listSchedule.map((element) => (
                       <Select.Option key={element.id} value={element.id}>
