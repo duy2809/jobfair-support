@@ -110,7 +110,7 @@ const EditProfilePage = () => {
       message: '変更は正常に保存されました。',
       duration: 2,
     })
-    setTimeout(() => { router.push('/profile') }, 3000)
+    setTimeout(() => { router.push('/profile') }, 2500)
   }
 
   const handleOk = async () => {
