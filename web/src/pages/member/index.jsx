@@ -38,13 +38,18 @@ const columns = [
   },
 ]
 
-export default function MemberList() {
+function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [filterData, setFilterData] = useState([])
   const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], current: 1, pageSize: 10, showSizeChanger: false })
+  const [pagination, setPagination] = useState({
+    position: ['bottomCenter'],
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: false,
+  })
   const router = useRouter()
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -52,7 +57,10 @@ export default function MemberList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
 
   const handleChange = (e) => {
@@ -63,7 +71,9 @@ export default function MemberList() {
   }
 
   const handleInput = (e) => {
-    const result = members.filter((obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1)
+    const result = members.filter(
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
+    )
     setFilterData(result)
   }
 
@@ -86,21 +96,23 @@ export default function MemberList() {
     webInit().then((res) => {
       if (res.data.auth !== null) {
         setUser(res.data.auth.user)
-      } else {
-        router.push('/login')
       }
     })
-    MemberApi.getListMember().then((res) => {
-      const { data } = res
-      setMembers(data)
-      setFilterData(data)
-    }).finally(() => {
-      setDataLoading(false)
-    })
+    MemberApi.getListMember()
+      .then((res) => {
+        const { data } = res
+        setMembers(data)
+        setFilterData(data)
+      })
+      .finally(() => {
+        setDataLoading(false)
+      })
   })
-  const handleRow = (record) => ({ onClick: () => {
-    router.push(`/member/${record.id}`)
-  } })
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/member/${record.id}`)
+    },
+  })
   const handleClick = (e) => {
     e.preventDefault()
     router.push('/member/invite')
@@ -118,7 +130,7 @@ export default function MemberList() {
           <div className="w-full flex justify-between items-center title">
             <h1 className="m-0">メンバ一覧</h1>
             <div>
-              { role === 'superadmin' ? (
+              {role === 'superadmin' ? (
                 <Button
                   type="primary"
                   className="ml-5"
@@ -128,13 +140,19 @@ export default function MemberList() {
                 >
                   メンバー招待
                 </Button>
-              ) : ''}
+              ) : (
+                ''
+              )}
             </div>
           </div>
           <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+              <Select
+                className="ml-5"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
@@ -142,7 +160,13 @@ export default function MemberList() {
             </div>
             <div>
               <div className="text-2xl flex items-center">
-                <Input className="no-border" placeholder="メンバ名" onChange={handleInput} bordered prefix={<SearchOutlined />} />
+                <Input
+                  className="no-border"
+                  placeholder="メンバ名"
+                  onChange={handleInput}
+                  bordered
+                  prefix={<SearchOutlined />}
+                />
               </div>
             </div>
           </div>
@@ -156,10 +180,20 @@ export default function MemberList() {
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}
-            locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="該当結果が見つかりませんでした"
+                />
+              ),
+            }}
           />
         </div>
       </Layout.Main>
     </Layout>
   )
 }
+
+MemberList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default MemberList
