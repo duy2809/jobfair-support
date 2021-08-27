@@ -6,7 +6,6 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
-import { webInit } from '~/api/web-init'
 import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
@@ -19,7 +18,6 @@ const EditMember = ({ data }) => {
   const [categories, setCategories] = useState(data.categories)
   const [categoriesSystem, setCategoriesSystem] = useState([])
   const [reqCategories, setReqCategories] = useState([])
-  const [user, setUser] = useState({})
   const [showExitPrompt, setShowExitPrompt] = useState(false)
 
   const { id } = router.query
@@ -35,13 +33,6 @@ const EditMember = ({ data }) => {
   }
 
   const fetchData = useCallback(() => {
-    webInit().then((res) => {
-      if (res.data.auth !== null) {
-        setUser(res.data.auth.user)
-      } else {
-        router.push('/login')
-      }
-    })
     CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
     })

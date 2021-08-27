@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Select, Table, Input, Button, Empty } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
-import { defaultPrefixCls } from 'antd/lib/config-provider'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
 
