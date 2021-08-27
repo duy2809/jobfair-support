@@ -31,6 +31,7 @@ class TemplateTaskSeeder extends Seeder
                 $index++;
             }
         }
+
         for ($i = 50; $i < $index - 1; $i++) {
             TemplateTask::find($i)->afterTasks()->attach(TemplateTask::find($i + 1));
         }

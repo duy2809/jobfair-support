@@ -23,7 +23,7 @@ function ScheduleDetailGeneral() {
   useEffect(() => {
     // get ID
     setID(router.query.id)
-    getSchedule(id).then((res) => {
+    getSchedule(router.query.id).then((res) => {
       setScheduleName(res.data.name)
     })
     setUser(store.getState().get('auth').get('user'))
@@ -91,7 +91,7 @@ function ScheduleDetailGeneral() {
         </div>
         <Spin spinning={loading}>
           <div className="mt-12 relative">
-            {status ? <GanttChart id={id} /> : <ScheduleDetail id={id} />}
+            {status ? <GanttChart id={id} /> : <ScheduleDetail />}
             <span className="mb-12 ml-2">
               <RightCircleOutlined
                 className="text-4xl gantt-chart inline cursor-pointer absolute bottom-1/2"

@@ -22,6 +22,7 @@ function ScheduleDetail() {
   useEffect(() => {
     console.log(window.location.href.toString())
     setCurrentURL(window.location.href.toString())
+    console.log(router.query.id)
     setID(router.query.id)
     getMilestone(router.query.id).then((res) => {
       console.log(res.data)
