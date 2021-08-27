@@ -169,13 +169,13 @@ export default function Search() {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item label="名前" name="name">
-          <Input className="h-8" placeholder="名前を入力"/>
+          <Input className="h-8" placeholder="名前を入力" />
         </Form.Item>
         <Form.Item label="更新日" name="start_date">
-          <DatePicker size="large"/>
+          <DatePicker size="large" />
         </Form.Item>
         <Form.Item label=" " name="end_date" colon={false}>
-          <DatePicker size="large"/>
+          <DatePicker size="large" />
         </Form.Item>
         <Form.Item label="更新者" name="updater">
           <Select

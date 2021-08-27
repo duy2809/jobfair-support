@@ -222,7 +222,8 @@ class FileController extends Controller
                     $pathD = $path.'/';
                     $pathD .= $document->name;
                 }
-                $term = $pathD . '/';
+
+                $term = $pathD.'/';
                 $term .= '%';
                 Document::where('path', 'LIKE', $term)->orWhere('path', $pathD)->delete();
             }
