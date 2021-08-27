@@ -453,7 +453,7 @@ const index = () => {
                     required
                     // hasFeedback
                     name="schedule_id"
-                    label="JF-スケジュール"
+                    label="JFスケジュール"
                     rules={[
                       {
                         validator: JFScheduleValidator,
@@ -496,7 +496,7 @@ const index = () => {
 
                   {/* list task */}
                   <Form.Item label=" ">
-                    <span className="label">タスク一賜</span>
+                    <span className="label">タスク一覧</span>
                     <List
                       className="demo-infinite-container"
                       bordered
@@ -553,4 +553,5 @@ const index = () => {
   )
 }
 
+index.middleware = ['auth:superadmin', 'auth:admin']
 export default index
