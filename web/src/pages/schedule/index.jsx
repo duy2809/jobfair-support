@@ -43,10 +43,7 @@ function ScheduleList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem(
-      'pagination',
-      JSON.stringify({ ...pagination, pageSize: value }),
-    )
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
 
   const handleChange = (e) => {
@@ -136,11 +133,7 @@ function ScheduleList() {
           <div className="flex w-full justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select
-                className="ml-5"
-                value={itemCount}
-                onChange={handleSelect}
-              >
+              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>

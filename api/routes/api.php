@@ -6,6 +6,7 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
@@ -38,7 +39,8 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::post('/add-task', 'TaskController@store');
     Route::get('/get-template-task-not-add', 'TaskController@getTemplateTaskNotAdd');
 });
-Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
+Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
 
@@ -57,6 +59,7 @@ Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTask
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
+    Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
 });
 
 Route::get('/admins', 'AdminController@index');

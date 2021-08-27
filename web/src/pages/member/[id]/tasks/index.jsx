@@ -39,7 +39,7 @@ const columns = [
   },
 ]
 
-export default function TaskList() {
+function TaskList() {
   const { Option } = Select
   const router = useRouter()
   const [tasks, setTasks] = useState([])
@@ -63,7 +63,10 @@ export default function TaskList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
 
   const handleChange = (e) => {
@@ -97,7 +100,9 @@ export default function TaskList() {
     if (searchDateValue === 'Invalid date') {
       return true
     }
-    return obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+    return (
+      obj.end_time.toLowerCase().indexOf(searchDateValue.toLowerCase()) > -1
+    )
   }
 
   const handleInput = () => {
@@ -169,43 +174,57 @@ export default function TaskList() {
           </Button>
         </div>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <h1 className="m-0 flex justify-start w-full">メンバ詳細（タスク一覧）</h1>
+          <h1 className="m-0 flex justify-start w-full">
+            メンバ詳細（タスク一覧）
+          </h1>
           <div className="text-xl w-full flex justify-between items-center">
             <div className="flex items-center">
               <div className="my-5 mr-5">ステータス:</div>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === 'すべて' ? 'option-active' : ''
+                }`}
               >
                 すべて
               </Button>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === '未着手' ? 'option-active' : ''
+                }`}
               >
                 未着手
               </Button>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === '進行中' ? 'option-active' : ''
+                }`}
               >
                 進行中
               </Button>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === '完 了' ? 'option-active' : ''
+                }`}
               >
                 完了
               </Button>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === '中 断' ? 'option-active' : ''
+                }`}
               >
                 中断
               </Button>
               <Button
                 onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''}`}
+                className={`border-0 mx-4 ${
+                  optionStatus === '未完了' ? 'option-active' : ''
+                }`}
               >
                 未完了
               </Button>
@@ -222,7 +241,11 @@ export default function TaskList() {
           <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+              <Select
+                className="ml-5"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
@@ -261,3 +284,6 @@ export default function TaskList() {
     </Layout>
   )
 }
+
+TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default TaskList
