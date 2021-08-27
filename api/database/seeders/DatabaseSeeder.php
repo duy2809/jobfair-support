@@ -167,5 +167,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        $this->call([FileSeeder::class]);
     }
 }
