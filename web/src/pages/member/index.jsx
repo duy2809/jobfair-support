@@ -120,13 +120,6 @@ function MemberList() {
 
   useEffect(() => {
     fetchData()
-    MemberApi.getListMember().then((res) => {
-      const { data } = res
-      setMembers(data)
-      setFilterData(data)
-    }).finally(() => {
-      setDataLoading(false)
-    })
   }, [itemCount])
   const { Option } = Select
   const role = user.role
