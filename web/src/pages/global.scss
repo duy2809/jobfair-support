@@ -63,7 +63,6 @@ body {
     padding: 7px 10px;
     border-radius: 6px;
     font-size: 15px;
-    border: 1.2px solid rgb(172, 169, 169);
   }
 
   .ant-input:hover,
@@ -113,6 +112,7 @@ body {
   //select
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
     border-color: #ffd803;
+   
   }
 
   .ant-select:hover,
