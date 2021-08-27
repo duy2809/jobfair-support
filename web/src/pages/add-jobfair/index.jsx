@@ -553,5 +553,5 @@ const index = () => {
   )
 }
 
-index.middleware = ['auth:superadmin', 'auth:admin']
+index.middleware = ['auth:superadmin']
 export default index
