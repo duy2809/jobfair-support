@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component } from 'react'
 
 import { gantt } from 'dhtmlx-gantt'
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
@@ -6,6 +6,7 @@ import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 import './material.css'
 import './style.scss'
 import './export'
+import PropTypes from 'prop-types'
 
 export default class Gantt extends Component {
   componentDidMount() {
@@ -49,7 +50,7 @@ export default class Gantt extends Component {
     }
     gantt.config.lightbox.sections = []
     gantt.attachEvent('onBeforeLightbox', () => false)
-    const weekScaleTemplate = (date) => {
+    const weekScaleTemplate = () => {
       // const dateToStr = gantt.date.date_to_str('%d %M')
       const dateToStr = 'マイルストーン名'
       // const endDate = gantt.date.add(gantt.date.add(date, 1, 'week'), -1, 'day')
@@ -76,15 +77,14 @@ export default class Gantt extends Component {
           return ''
       }
     }
-    const daysStyle = (date) =>
+    const daysStyle = () => ''
     // you can use gantt.isWorkTime(date)
     // when gantt.config.work_time config is enabled
     // In this sample it's not so we just check week days
 
-      // if (date.getDay() === 0 || date.getDay() === 6) {
-      //   return 'weekend'
-      // }
-      ''
+    // if (date.getDay() === 0 || date.getDay() === 6) {
+    //   return 'weekend'
+    // }
 
     gantt.config.scales = [
       { unit: 'month', step: 1, format: '%F' },
@@ -147,16 +147,19 @@ export default class Gantt extends Component {
   }
 
   test=() => {
-    console.log('hel;p')
+    console.log(this.props)
+    updateNewTask(this.props.tasks.data)
     const task = {
       id: 2,
-      text: 'test',
+      text: 'test update task',
       start_date: new Date(2021, 8, 3),
       end_date: new Date(2021, 8, 6),
       $source: 1,
       $target: 2,
     }
+    gantt.refreshLink(1)
     gantt.updateTask(2, task)
+    gantt.refreshData()
   }
 
   render() {
@@ -168,11 +171,15 @@ export default class Gantt extends Component {
           ref={(input) => { this.ganttContainer = input }}
           style={{ width: '100%', maxHeight: '650px' }}
         />
-        <input type="button" value="Export" onClick={this.test} />
+        <input type="button" value="Test" onClick={this.test} />
 
       </>
     )
   }
+}
+
+Gantt.propTypes = {
+  tasks: PropTypes.object.isRequired,
 }
 export function scrollToToday() {
   const state = gantt.getState()
@@ -185,7 +192,13 @@ export function scrollToToday() {
     gantt.scrollTo(position, null)
   } else if (state.min_date.getTime() < today.getTime() && today.getTime() < state.max_date.getTime()) {
     position = gantt.posFromDate(today)
-    const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 3
+    const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2
+    console.log(position, offset)
     gantt.scrollTo(position - offset, null)
+  }
+}
+export function updateNewTask(tasks) {
+  for (let i = 0; i < tasks.length; i += 1) {
+    console.log(tasks[i])
   }
 }
