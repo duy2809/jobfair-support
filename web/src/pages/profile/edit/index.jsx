@@ -362,4 +362,3 @@ const EditProfilePage = () => {
 
 export default EditProfilePage
 
-File.middleware = ['auth:superadmin', 'auth:admin', 'auth']
