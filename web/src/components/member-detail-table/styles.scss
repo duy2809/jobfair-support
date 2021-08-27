@@ -13,7 +13,8 @@
   tr {
     @apply ml-auto mr-auto  py-2 text-left;
   }
-  .ava {
+  #avatar {
     @apply block;
+    border: 2px solid rgb(177, 177, 185);
   }
 }

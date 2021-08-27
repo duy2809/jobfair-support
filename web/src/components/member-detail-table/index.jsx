@@ -81,9 +81,8 @@ class MemberDetailTable extends React.Component {
           style={{
             width: '150px',
             height: '150px',
-            display: 'block',
             borderRadius: '50%',
-            margin: '30px 0 auto 200px',
+            margin: '30px 0 auto 120px',
           }}
           id="avatar"
         />

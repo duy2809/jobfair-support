@@ -152,6 +152,7 @@ Route::get('/users', 'MemberController@getMember');
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
