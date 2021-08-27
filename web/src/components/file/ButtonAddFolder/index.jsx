@@ -122,7 +122,7 @@ export default function ButtonAddFolder(props) {
         >
           <Form.Item
             label={
-              <p>名前</p>
+              <p style={{ margin: 0 }}>名前</p>
             }
             name="name_folder"
             rules={[

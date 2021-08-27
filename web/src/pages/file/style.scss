@@ -40,9 +40,14 @@
       align-items: center;
     }
     
-    .file-add .ant-btn {
-      display: flex;
-      justify-self: center;
+    .file-add {
+      .ant-btn {
+        display: flex;
+        justify-self: center;
+      }
+      p {
+        margin:auto;
+      }
     }
 }
 
