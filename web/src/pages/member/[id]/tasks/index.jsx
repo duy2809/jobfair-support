@@ -127,7 +127,7 @@ export default function TaskList() {
 
   const handleRow = (record) => ({
     onClick: () => {
-      router.push(`/tasks/${record.id}`)
+      router.push(`/task-detail/${record.id}`)
     },
   })
 

@@ -69,7 +69,7 @@ const List = ({
         )
       }
       if (filter.date) {
-        if (dataColumn[1].dataIndex === 'type') dateString = filter.date.replace('-', '/')
+        if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
         datas = datas.filter(
           (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1,
         )
