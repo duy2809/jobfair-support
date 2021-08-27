@@ -40,7 +40,7 @@ const NotificationsJf = ({ id }) => {
     <div className="noti">
       <div className="table">
         {
-          posts
+          posts.length
             ? (
               <div>
                 <div>
@@ -54,7 +54,7 @@ const NotificationsJf = ({ id }) => {
                   ))}
                 </div>
                 <div className="flex justify-center my-4 ...">
-                  {(visi >= 5 && visi < 26) ? <Button className="more" type="primary" onClick={showMoreItem}>もっと見る</Button> : null }
+                  {(posts.length > 5 && posts.length < 25) ? <Button className="more" type="primary" onClick={showMoreItem}>もっと見る</Button> : null }
                   {(visi > 5) ? <Button type="primary" onClick={matItem}>表示数を戻す</Button> : null}
                 </div>
               </div>
