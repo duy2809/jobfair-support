@@ -19,18 +19,18 @@ class InviteMemberController extends Controller
         $user = User::whereEmail($request->email)->first();
         if (!$user) {
             DB::table('users')->insert([
-                'email'       => $request->email,
-                'name'        => 'User'.random_int(10000, 99999),
-                'password'    => Hash::make('12345678'),
-                'role'        => 3,
+                'email' => $request->email,
+                'name' => 'User'.random_int(10000, 99999),
+                'password' => Hash::make('12345678'),
+                'role' => 3,
                 'chatwork_id' => null,
-                'avatar'      => 'image/avatars/default.jpg',
-                'created_at'  => now(),
-                'updated_at'  => now(),
+                'avatar' => 'images/avatars/default.jpg',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
             DB::table('password_resets')->insert([
-                'email'      => $request->email,
-                'token'      => Str::random(60),
+                'email' => $request->email,
+                'token' => Str::random(60),
                 'created_at' => now(),
             ]);
             $token = DB::table('password_resets')->where('email', $request->email)->first()->token;
