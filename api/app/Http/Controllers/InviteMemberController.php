@@ -20,7 +20,7 @@ class InviteMemberController extends Controller
         if (!$user) {
             DB::table('users')->insert([
                 'email' => $request->email,
-                'name' => 'User' . random_int(10000, 99999),
+                'name' => 'User'.random_int(10000, 99999),
                 'password' => Hash::make('12345678'),
                 'role' => 3,
                 'chatwork_id' => null,
