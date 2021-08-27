@@ -110,7 +110,7 @@ const EditProfilePage = () => {
       message: '変更は正常に保存されました。',
       duration: 2,
     })
-    setTimeout(() => { router.push('/profile') }, 2000)
+    setTimeout(() => { router.push('/profile') }, 2500)
   }
 
   const handleOk = async () => {
@@ -341,6 +341,7 @@ const EditProfilePage = () => {
                   </Form>
                 </div>
               </div>
+
             </div>
             <div className="container-btn justify-end gap-1">
               <CancelEditProfile />
@@ -359,5 +360,5 @@ const EditProfilePage = () => {
     </div>
   )
 }
-
+EditProfilePage.middleware = ['auth:superadmin', 'auth:admin', 'auth']
 export default EditProfilePage

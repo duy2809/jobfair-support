@@ -10,7 +10,7 @@ const toHalfWidth = (v) => {
   const newArr = []
   for (let i = 0; i < v.length; i += 1) {
     newArr.push(
-      v[i].replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)),
+      v[i].replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)),
     )
   }
   return newArr

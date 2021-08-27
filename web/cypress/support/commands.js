@@ -15,7 +15,7 @@
  *
  * @param  string role - accept: 'superadmin', 'admin', 'member'
  */
-Cypress.Commands.add('loginAs', (role) => {
+ Cypress.Commands.add('loginAs', (role) => {
   let auth = {}
   switch (role) {
     case 'superadmin':
