@@ -52,6 +52,7 @@ const JfLayout = ({ children }) => {
             mode="inline"
             theme="dark"
             inlineCollapsed={collapsed}
+            className="sibar-jf"
           >
             <div className="relative h-10 ">
               <div className="absolute top-0 right-0 ">
