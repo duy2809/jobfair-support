@@ -1,49 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-
+import { ReactReduxContext } from 'react-redux'
 import { Button, Modal, notification } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
 } from '@ant-design/icons'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jfdata, jftask, deleteJF } from '../../api/jf-toppage'
+import { jftask, deleteJF } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
-import { webInit } from '../../api/web-init'
 
-export default function jftoppage() {
+function jftoppage() {
   const [listTask, setlistTask] = useState([])
-  const [name, setName] = useState('')
+
   const router = useRouter()
   const idJf = router.query.JFid
-  const [users, setUsers] = useState('')
-  const [startDate, setStartDate] = useState()
-  const [avt, setAvt] = useState('')
-  const [numberOfStudents, setNumberOfStudents] = useState()
-  const [numberOfCompanies, setNumberOfCompanies] = useState()
-  const fetchJF = async () => {
-    await jfdata(idJf).then((response) => {
-      setName(response.data.name)
-      setStartDate(response.data.start_date.split('-').join('/'))
-      setAvt(response.data.user.avatar)
-      setNumberOfStudents(response.data.number_of_students)
-      setNumberOfCompanies(response.data.number_of_companies)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  const getDataUser = async () => {
-    await webInit().then((response) => {
-      setUsers(response.data.auth.user.role)
-      console.log(response.data.auth.user.role)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+  const [user, setUser] = useState(null)
+  const [role, setRole] = useState(null)
+  const { store } = useContext(ReactReduxContext)
   const fetchTasks = async () => {
     await jftask(idJf).then((response) => {
       setlistTask(response.data.schedule.tasks)
@@ -87,29 +65,19 @@ export default function jftoppage() {
   }
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
-    fetchJF()
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      setRole(user.get('role'))
+    }
     fetchTasks()
-    getDataUser()
-  }, [])
+  }, [user])
 
   return (
     <div className="JFTopPage">
       <JfLayout id={idJf}>
         <JfLayout.Main>
           <div className="Jf__top">
-            <div className="Jf__header">
-              <h1>{name}</h1>
-              <div className="admin__jf">
-                <h3>{startDate}</h3>
-                <h3>
-                  {`企業:${numberOfStudents}`}
-                </h3>
-                <h3>
-                  {`学生:${numberOfCompanies}`}
-                </h3>
-                <img className="avt" src={avt} alt="avatar" />
-              </div>
-            </div>
+
             <div className="jf__main">
               <div className="grid grid-cols-11">
                 <div className="col-span-7">
@@ -126,10 +94,14 @@ export default function jftoppage() {
                   <div className="flex justify-end">
                     <div className="search__task">
                       <div className="button__right">
-                        { users === 'admin' ? (
+                        {role === 'superadmin' ? (
                           <>
-                            <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>編集</Button>
-                            <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>削除</Button>
+                            <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>
+                              <span> 編集 </span>
+                            </Button>
+                            <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>
+                              <span> 削除 </span>
+                            </Button>
                           </>
                         )
                           : null}
@@ -173,3 +145,5 @@ export default function jftoppage() {
     </div>
   )
 }
+jftoppage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+export default jftoppage

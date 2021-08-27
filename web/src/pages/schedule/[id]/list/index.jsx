@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { getMilestone } from '../../../../api/schedule-detail'
 import ScheduleDetailHeader from '../../../../components/schedule-detail-list'
+import colors from '../../../../components/schedule-gantt/_colors'
 
 SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 const { Text, Paragraph } = Typography
@@ -36,11 +37,11 @@ function ScheduleDetail() {
         if (element.name.length > 10) {
           element.wrapped = true
         }
-        element.tasks.forEach((task) => {
-          task.colorBorder = getRandomColor()
+        element.tasks.forEach((task, index) => {
           task.categories.forEach((category) => {
-            category.colorBorder = task.colorBorder
+            category.colorBorder = colors[category.id]
           })
+          task.colorBorder = task.categories[0].colorBorder
         })
       })
 

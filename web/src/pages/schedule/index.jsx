@@ -83,6 +83,7 @@ export default function ScheduleList() {
         router.push('/login')
       }
     })
+<<<<<<< HEAD
     ListScheduleApi.getListShedule()
       .then((res) => {
         const { data } = res
@@ -92,6 +93,15 @@ export default function ScheduleList() {
       .finally(() => {
         setDataLoading(false)
       })
+=======
+    ListScheduleApi.getListSchedule().then((res) => {
+      const { data } = res
+      setSchedules(data)
+      setFilterSchedules(data)
+    }).finally(() => {
+      setDataLoading(false)
+    })
+>>>>>>> 94e40a6d3bbc0c5c47a0e12e53a6383e930bac8c
   })
 
   const handleClick = (e) => {

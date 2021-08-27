@@ -25,5 +25,7 @@ class DropUniqueNameToSchedules extends Migration
      */
     public function down()
     {
+        Schema::table('schedules', function (Blueprint $table) {
+        });
     }
 }

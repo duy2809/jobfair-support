@@ -38,7 +38,7 @@ const ItemMultipleDropdown = ({
     form.setFieldsValue(temp)
   }
   return (
-    <div className="">
+    <div className="multiple-dropdown">
       <Form.Item
         label={label}
         name={name}
@@ -50,8 +50,8 @@ const ItemMultipleDropdown = ({
           showArrow
           mode="multiple"
           placeholder={label}
-          className="overflow-hidden w-full"
-          maxTagCount="responsive"
+          // className="overflow-hidden w-full"
+          // maxTagCount="responsive"
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}
@@ -72,7 +72,7 @@ function tagRender(props) {
   const handleClick = (e) => {
     e.preventDefault()
     const id = tasksList.find((item) => item.name === e.target.innerHTML).id
-    window.location.href = `/template-tasks/${id}`
+    window.location.href = `/template-task-dt/${id}`
   }
   const onPreventMouseDown = (event) => {
     event.preventDefault()
@@ -89,7 +89,7 @@ function tagRender(props) {
       >
         <Tooltip title={label}>
           <span
-            className="inline-block text-blue-400  cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
             style={{ maxWidth: '18ch' }}
             onClick={handleClick}
           >
@@ -108,7 +108,7 @@ function tagRender(props) {
       style={{ marginRight: 3 }}
     >
       <span
-        className="inline-block text-blue-400 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+        className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
         onClick={handleClick}
       >
         {label}

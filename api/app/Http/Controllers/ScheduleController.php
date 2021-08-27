@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use App\Models\Milestone;
+use App\Models\TemplateTask;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +20,8 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        return Schedule::whereNull('jobfair_id')->get();
+        // return Schedule::whereNull('jobfair_id')->get();
+        return Schedule::all();
     }
 
     public function getAll()
@@ -44,6 +47,11 @@ class ScheduleController extends Controller
 
     public function store(Request $request)
     {
+        $schedule = new Schedule();
+        $schedule->name = $request->schedule['name'];
+        $schedule->save();
+        $schedule->milestones()->attach($request->addedMilestones);
+        $schedule->templateTasks()->attach($request->addedTemplateTasks);
     }
 
     /**
@@ -54,7 +62,32 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
-        return Schedule::find($id);
+        return Schedule::findOrFail($id);
+    }
+
+    public function getAllMilestones()
+    {
+        return Milestone::all();
+    }
+
+    public function getAllTemplateTasks()
+    {
+        return TemplateTask::all();
+    }
+
+    public function getAddedMilestones($id)
+    {
+        return Schedule::findOrFail($id)->milestones;
+    }
+
+    public function getAddedTemplateTasks($id)
+    {
+        return Schedule::findOrFail($id)->templateTasks;
+    }
+
+    public function checkScheduleNameExist(Request $request)
+    {
+        return count(Schedule::where('name', $request->name)->get()) !== 0 ? 'exist' : 'not exist';
     }
 
     /**
@@ -76,6 +109,20 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $schedule = Schedule::findOrFail($id);
+        $schedule->name = $request->schedule['name'];
+        $schedule->save();
+        $addedMilestones = $request->addedMilestones;
+        $addedTemplateTasks = $request->addedTemplateTasks;
+        $schedule->templateTasks()->detach();
+        $schedule->templateTasks()->attach($addedTemplateTasks);
+        $schedule->templateTasks->each(function ($templateTask) use ($schedule, $addedMilestones) {
+            if (!in_array($templateTask->milestone_id, $addedMilestones)) {
+                $schedule->templateTasks()->detach($templateTask->id);
+            }
+        });
+        $schedule->milestones()->detach();
+        $schedule->milestones()->attach($addedMilestones);
     }
 
     /**
