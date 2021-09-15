@@ -6,6 +6,7 @@ use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
@@ -38,7 +39,8 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::post('/add-task', 'TaskController@store');
     Route::get('/get-template-task-not-add', 'TaskController@getTemplateTaskNotAdd');
 });
-Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
+Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
+Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
 Route::resource('/jobfair', 'JobfairController');
 
@@ -57,6 +59,7 @@ Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTask
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
+    Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
 });
 
 Route::get('/admins', 'AdminController@index');
@@ -117,7 +120,7 @@ Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
 Route::get('/{JFid}/member', 'FileController@getMember');
-Route::get('/file/getLatest', 'FileController@getLatest');
+Route::get('/file/{id}/getLatest', 'FileController@getLatest');
 Route::get('/file/getPath', 'FileController@getPath');
 Route::post('/file/{jfId}/delArray', 'FileController@destroyArrayOfDocument');
 Route::get('/file/find', [App\Http\Controllers\FileController::class, 'search']);
@@ -128,7 +131,6 @@ Route::prefix('file')->group(function () {
     Route::put('/{id}/edit', [App\Http\Controllers\FileController::class, 'update']);
     Route::delete('/{id}/destroy', [App\Http\Controllers\FileController::class, 'destroy']);
     Route::get('/getPath', [App\Http\Controllers\FileController::class, 'getPath']);
-
 });
 // member detail
 Route::prefix('members')->group(function () {
@@ -153,6 +155,7 @@ Route::get('/users', 'MemberController@getMember');
 // top-page
 Route::prefix('/top-page')->group(function () {
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
+    Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
     Route::get('/members', [MemberController::class, 'index']);
 });

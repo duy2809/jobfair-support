@@ -10,7 +10,7 @@ const toHalfWidth = (v) => {
   const newArr = []
   for (let i = 0; i < v.length; i += 1) {
     newArr.push(
-      v[i].replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)),
+      v[i].replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0)),
     )
   }
   return newArr
@@ -38,7 +38,7 @@ const ItemMultipleDropdown = ({
     form.setFieldsValue(temp)
   }
   return (
-    <div className="">
+    <div className="multiple-dropdown">
       <Form.Item
         label={label}
         name={name}
@@ -50,11 +50,12 @@ const ItemMultipleDropdown = ({
           showArrow
           mode="multiple"
           placeholder={label}
-          className="overflow-hidden w-full"
-          maxTagCount="responsive"
+          // className="overflow-hidden w-full"
+          // maxTagCount="responsive"
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}
+          size="large"
         >
           {options.map((item) => (
             <Option key={item.id} value={item.name}>

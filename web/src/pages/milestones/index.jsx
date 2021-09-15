@@ -340,5 +340,5 @@ const MilestonePage = () => {
     </div>
   )
 }
-MilestonePage.middleware = ['auth:superadmin']
+
 export default MilestonePage

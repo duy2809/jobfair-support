@@ -10,7 +10,7 @@ import {
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
-export default function AddMilestonePage() {
+const AddMilestonePage = () => {
   const [form] = Form.useForm()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -23,7 +23,7 @@ export default function AddMilestonePage() {
   const { Option } = Select
 
   function toHalfWidth(fullWidthStr) {
-    return fullWidthStr.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+    return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   }
 
   const openNotificationSuccess = () => {
@@ -290,3 +290,5 @@ export default function AddMilestonePage() {
     </>
   )
 }
+AddMilestonePage.middleware = ['auth:superadmin']
+export default AddMilestonePage

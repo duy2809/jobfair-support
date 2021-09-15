@@ -213,9 +213,8 @@ function JFList() {
                         className="float-right"
                         href="/add-jobfair"
                         type="primary"
-                        style={{ letterSpacing: '-2px' }}
                       >
-                        追加
+                        <span> 追加 </span>
                       </Button>
                     </>
                   )

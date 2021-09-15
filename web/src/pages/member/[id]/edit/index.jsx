@@ -6,7 +6,6 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
-import { webInit } from '~/api/web-init'
 import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
@@ -19,7 +18,6 @@ const EditMember = ({ data }) => {
   const [categories, setCategories] = useState(data.categories)
   const [categoriesSystem, setCategoriesSystem] = useState([])
   const [reqCategories, setReqCategories] = useState([])
-  const [user, setUser] = useState({})
   const [showExitPrompt, setShowExitPrompt] = useState(false)
 
   const { id } = router.query
@@ -35,13 +33,6 @@ const EditMember = ({ data }) => {
   }
 
   const fetchData = useCallback(() => {
-    webInit().then((res) => {
-      if (res.data.auth !== null) {
-        setUser(res.data.auth.user)
-      } else {
-        router.push('/login')
-      }
-    })
     CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
     })
@@ -118,12 +109,6 @@ const EditMember = ({ data }) => {
     Extensions.unSaveChangeConfirm(showExitPrompt)
   }, [showExitPrompt])
 
-  useEffect(() => {
-    if (user.role === 'member') {
-      router.push('/login')
-    }
-  }, [user])
-
   return (
     <Layout>
       <Layout.Main>
@@ -138,7 +123,7 @@ const EditMember = ({ data }) => {
           >
             <Form.Item
               name="name"
-              label={<p style={{ fontSize: '18px' }}>フルネーム</p>}
+              label={<span style={{ fontSize: '18px' }}>フルネーム</span>}
               rules={[
                 {
                   message: 'この項目は必須です',
@@ -155,7 +140,7 @@ const EditMember = ({ data }) => {
             </Form.Item>
             <Form.Item
               name="email"
-              label={<p style={{ fontSize: '18px' }}>メールアドレス</p>}
+              label={<span style={{ fontSize: '18px' }}>メールアドレス</span>}
               rules={[
                 {
                   type: 'email',
@@ -186,7 +171,7 @@ const EditMember = ({ data }) => {
 
             <Form.Item
               name="categories"
-              label={<p style={{ fontSize: '18px' }}>カテゴリ</p>}
+              label={<span style={{ fontSize: '18px' }}>カテゴリ</span>}
               rules={[
                 {
                   required: false,
@@ -210,7 +195,7 @@ const EditMember = ({ data }) => {
             <Form.Item>
               <div className="flex justify-end">
                 <Modal
-                  title="変更は保存されていません。続行してもよろしいですか？"
+                  title="メンバ編集"
                   visible={isModalCancelVisible}
                   onOk={handleClick}
                   onCancel={handleCancelModal}
@@ -218,7 +203,9 @@ const EditMember = ({ data }) => {
                   okText="はい"
                   centered
                 >
-                  <p className="mb-5">このまま保存してもよろしいですか？ </p>
+                  <p className="mb-5">
+                    変更内容が保存されません。よろしいですか？
+                  </p>
                 </Modal>
 
                 <Button size="middle" onClick={showCancelModal}>
@@ -252,4 +239,5 @@ EditMember.propTypes = {
   data: PropTypes.object.isRequired,
 }
 
+EditMember.middleware = ['auth:superadmin']
 export default EditMember

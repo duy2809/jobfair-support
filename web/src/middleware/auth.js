@@ -10,7 +10,7 @@ const handle = ({ store, res, args = [], isLast }) => {
   const hasRole = userRole === role
 
   if (isGuest || (!hasRole && isLast)) {
-    redirect('/login', { res })
+    redirect('/', { res })
   }
 
   return { continue: true }

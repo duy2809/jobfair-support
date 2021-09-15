@@ -15,7 +15,7 @@ import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
 import { editTask } from '../../api/edit-task'
 
-export default function TaskList() {
+function TaskList() {
   const dateFormat = 'YYYY/MM/DD'
   const { TextArea } = Input
   const router = useRouter()
@@ -26,6 +26,7 @@ export default function TaskList() {
   const [listUser, setListUser] = useState([])
   const [allTask, setAllTask] = useState([])
   const [afterTasksNew, setafterTaskNew] = useState([])
+  const [isEdit, setIsEdit] = useState(false)
   const [users, setUsers] = useState({
     id: null,
     name: '',
@@ -162,6 +163,7 @@ export default function TaskList() {
     )
   }
   const filtedArr = () => {
+    setIsEdit(true)
     const before = form.getFieldsValue().beforeTasks
     const after = form.getFieldsValue().afterTasks
     let selectedItems = []
@@ -194,6 +196,7 @@ export default function TaskList() {
     return Promise.resolve()
   }
   const onValueNameChange = (e) => {
+    setIsEdit(true)
     form.setFieldsValue({
       name: e.target.value,
     })
@@ -276,20 +279,25 @@ export default function TaskList() {
   }
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
-    Modal.confirm({
-      title: '変更内容が保存されません。よろしいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      centered: true,
-      onOk: () => {
-        router.push('/tasks')
-      },
+    if (isEdit === false) {
+      router.push(`/tasks/${idJF}`)
+    } else {
+      Modal.confirm({
+        title: '変更内容が保存されません。よろしいですか？',
+        icon: <ExclamationCircleOutlined />,
+        content: '',
+        centered: true,
+        onOk: () => {
+          router.push(`/tasks/${idJF}`)
+        },
 
-      onCancel: () => {},
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
+        onCancel: () => {},
+        okText: 'はい',
+        cancelText: 'いいえ',
+      })
+    }
   }
+  console.log(isEdit)
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
@@ -422,7 +430,7 @@ export default function TaskList() {
                             {infoTask.is_day ? '日' : '時間'}
                           </span>
                           <span>/</span>
-                          <span className="ef">{infoTask.unit}</span>
+                          {infoTask.unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
                         </>
                       ) }
                     </div>
@@ -436,6 +444,7 @@ export default function TaskList() {
                     required
                   >
                     <Select
+                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRenderr}
@@ -461,7 +470,7 @@ export default function TaskList() {
                       },
                     ]}
                   >
-                    <Select className="addJF-selector" placeholder="ステータス">
+                    <Select size="large" onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="ステータス">
                       {listStatus.map((element) => (
                         <Select.Option value={element}>
                           {element}
@@ -483,6 +492,8 @@ export default function TaskList() {
                     ]}
                   >
                     <DatePicker
+                      size="large"
+                      onChange={() => { setIsEdit(true) }}
                       help="Please select the correct date"
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
@@ -503,6 +514,8 @@ export default function TaskList() {
                     ]}
                   >
                     <DatePicker
+                      size="large"
+                      onChange={() => { setIsEdit(true) }}
                       help="Please select the correct date"
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
@@ -518,6 +531,7 @@ export default function TaskList() {
                     className="tag_a"
                   >
                     <Select
+                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}
@@ -541,6 +555,7 @@ export default function TaskList() {
                     className="tag_a"
                   >
                     <Select
+                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}
@@ -560,7 +575,7 @@ export default function TaskList() {
                   <Form.Item
                     name="detail"
                   >
-                    <TextArea rows={10} placeholder="何かを入力してください" />
+                    <TextArea onChange={() => { setIsEdit(true) }} rows={10} placeholder="何かを入力してください" />
                   </Form.Item>
                 </div>
               </div>
@@ -597,3 +612,5 @@ export default function TaskList() {
     </div>
   )
 }
+TaskList.middleware = ['auth:superadmin', 'auth:admin']
+export default TaskList

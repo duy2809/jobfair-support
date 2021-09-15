@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { ReactReduxContext } from 'react-redux'
+import { Button } from 'antd'
+import Link from 'next/link'
 import MemberDetailTable from '../../../components/member-detail-table'
 import TaskControl from '../../../components/member-detail-task-control'
-import NavBar from '../../../components/navbar'
+import Layout from '../../../layouts/OtherLayout'
 
 function MemberDetailPage() {
   const [id, setID] = useState(0)
@@ -13,28 +15,29 @@ function MemberDetailPage() {
   useEffect(() => {
     setUser(store.getState().get('auth').get('user'))
     if (user) {
-      console.log()
       setRole(user.get('role'))
     }
-    // alert(role);
   }, [user])
   function setIdFromtable(idTable) {
     setID(idTable)
   }
   return (
-    <div>
-      <header>
-        <NavBar />
-      </header>
-      <div className="h-2/4 ml-auto mr-auto mt-16 pb-16 text-lg">
-        <span id="screen-name" className="text-5xl inline-block ml-16 mt-4">
-          メンバ詳細
-        </span>
-        <TaskControl id={id} role={role} />
-        <MemberDetailTable setID={setIdFromtable} />
-      </div>
-    </div>
+    <Layout>
+      <Layout.Main>
+        <Link href="/member/">
+          <Button type="primary" className="mb-5">
+            戻る
+          </Button>
+        </Link>
+        <h1>メンバ詳細</h1>
+        <div className="flex flex-col">
+          <TaskControl id={id} role={role} />
+          <MemberDetailTable setID={setIdFromtable} />
+        </div>
+      </Layout.Main>
+    </Layout>
   )
 }
+
 MemberDetailPage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
 export default MemberDetailPage

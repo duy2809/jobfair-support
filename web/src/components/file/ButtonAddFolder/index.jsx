@@ -95,7 +95,7 @@ export default function ButtonAddFolder(props) {
   }
 
   return (
-    <div className="file">
+    <div className="file-add">
       <Button
         type="primary"
         shape="round"
@@ -122,7 +122,7 @@ export default function ButtonAddFolder(props) {
         >
           <Form.Item
             label={
-              <p>名前</p>
+              <p style={{ margin: 0 }}>名前</p>
             }
             name="name_folder"
             rules={[
