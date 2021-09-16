@@ -76,3 +76,16 @@
     cursor: pointer;
   }
 }
+#testt:hover {
+  background: red;
+  box-icon {
+    background-color: red;
+  }
+
+  svg {
+    fill: red;
+  }
+}
+.bx-tada {
+  background-color: red;
+}

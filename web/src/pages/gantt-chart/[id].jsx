@@ -1,0 +1,322 @@
+/* eslint-disable import/extensions */
+import { LoadingOutlined } from '@ant-design/icons'
+import { Button, Radio, Spin, Tooltip } from 'antd'
+import dynamic from 'next/dynamic'
+import router from 'next/router'
+import React, { useEffect, useState } from 'react'
+import ganttChartAPI from '../../api/gantt-chart'
+
+import OtherLayout from '../../layouts/OtherLayout'
+import './style.scss'
+
+const DynamicComponentWithNoSSR = dynamic(
+  // eslint-disable-next-line import/no-unresolved
+  () => import('~/components/gantt-chart/Gantt'),
+  { ssr: false },
+)
+
+export default function index() {
+  // const [data, setData] = useState({})
+  const [status, setStatus] = useState('0')
+  const [loading, setLoading] = useState(false)
+  const [tasks, setTask] = useState({})
+  const [filter, setfilter] = useState('全て')
+  const [chartMethod, setchartMethod] = useState()
+  
+  const data = {
+    data: [
+      {
+        id: 1,
+        text: 'タスク',
+        start_date: '29-08-2021',
+        end_date: '06-09-2021',
+        open: true,
+        status: '未着手',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 2,
+        text: 'タスク',
+        start_date: '01-07-2021',
+        end_date: '01-09-2021',
+        open: false,
+        color: '#bebebe',
+        status: '進行中',
+        row_height: 40,
+        bar_height: 30,
+      },
+
+      {
+        id: 3,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 4,
+        text: 'タスク',
+        start_date: '21-09-2021',
+        end_date: '01-10-2021',
+        open: true,
+        status: '中断',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 5,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 6,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 7,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 8,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 9,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 10,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+      {
+        id: 11,
+        text: 'タスク',
+        start_date: '24-08-2021',
+        end_date: '01-09-2021',
+        open: true,
+        status: '未完了',
+        row_height: 40,
+        bar_height: 30,
+      },
+    ],
+    links: [
+      { id: 1, source: 1, target: 2, type: '0' },
+      { id: 2, source: 2, target: 3, type: '0' },
+      { id: 3, source: 3, target: 4, type: '0' },
+      { id: 4, source: 4, target: 5, type: '0' },
+    ],
+  }
+  useEffect(() => {
+    const fetchAPI = async () => {
+      try {
+        // eslint-disable-next-line import/no-unresolved
+        const method = await import('~/components/gantt-chart/Gantt')
+        setTask(data)
+
+        // TODO: optimize this one by using axios.{all,spread}
+        // const jobfairID = router.query.id
+        // const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
+        // const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
+        // const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
+        // console.log(jobfairTask.data, beforeTasks.data, afterTasks.data)
+
+        setchartMethod(method)
+        return null
+      } catch (error) {
+        return Error('内容が登録されません。よろしいですか？')
+      }
+    }
+    fetchAPI()
+  }, [])
+
+  const onStatusChange = (e) => {
+    const cases = e.target.value * 1
+    switch (cases) {
+      case 0:
+        setfilter('全て')
+        break
+      case 1:
+        setfilter('未着手')
+        break
+      case 2:
+        setfilter('進行中')
+        break
+      case 3:
+        setfilter('完了')
+        break
+      case 4:
+        setfilter('中断')
+        break
+      case 5:
+        setfilter('未完了')
+        break
+
+      default:
+        setfilter('Hello')
+        break
+    }
+
+    setStatus(e.target.value)
+  }
+  const scrollToToday = async () => {
+    chartMethod.scrollToToday()
+  }
+  const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
+  return (
+    <OtherLayout>
+      <OtherLayout.Main>
+        {/* マイルストーン ガントチャート リストチャート 今日 から まで カテゴリ 全て すべて TC業務  次面接練習 タスクについて  私だけ テンプレート タスクリスト */}
+        <div className="gantt-chart-page">
+          <div className="container mx-auto flex-1 justify-center px-4">
+            {/* page title */}
+            <div className="ant-row w-full">
+              <Button
+                type="primary"
+                href="/top-page"
+                className="mb-6"
+                style={{ letterSpacing: '-2px' }}
+              >
+                戻る
+              </Button>
+              <div className="w-full flex  justify-between mb-10">
+                <h1 className="text-3xl m-0 p-0">ガントチャート</h1>
+                <Button
+                  type="primary"
+                  className="tracking-tighter"
+                  href="/jobfairs"
+                  style={{ letterSpacing: '-2px' }}
+                >
+                  J F 一 覧
+                </Button>
+              </div>
+            </div>
+
+            <div className="col-span-12 mb-6">
+              <div className="flex justify-between px-10">
+                <div>
+                  <Button type="primary" onClick={scrollToToday} style={{ letterSpacing: '-3px' }}>
+                    今日
+                  </Button>
+                </div>
+                <div>
+                  <Radio.Group onChange={onStatusChange} defaultValue={status} buttonStyle="solid">
+                    <Tooltip placement="topLeft" title="全て">
+                      <Radio.Button
+                        className=" radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="0"
+                      >
+                        全て
+                      </Radio.Button>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="未着手">
+                      <Radio.Button
+                        className="radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="1"
+                      >
+                        未着手
+                      </Radio.Button>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="進行中">
+                      <Radio.Button
+                        className="radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="2"
+                      >
+                        進行中
+                      </Radio.Button>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="完了">
+                      <Radio.Button
+                        className="radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="3"
+                      >
+                        完了
+                      </Radio.Button>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="中断">
+                      <Radio.Button
+                        className="radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="4"
+                      >
+                        中断
+                      </Radio.Button>
+                    </Tooltip>
+                    <Tooltip placement="topLeft" title="未完了">
+                      <Radio.Button
+                        className="radio-button w-20 p-0 text-center mr-4"
+                        style={{ borderRadius: '5px' }}
+                        value="5"
+                      >
+                        未完了
+                      </Radio.Button>
+                    </Tooltip>
+                  </Radio.Group>
+                </div>
+              </div>
+            </div>
+
+            <div className="gantt-chart">
+              <div>
+                <div className="container xl ">
+                  <div>
+                    <Spin
+                      style={{ fontSize: '30px', color: '#ffd803' }}
+                      spinning={loading}
+                      indicator={loadingIcon}
+                      size="large"
+                    />
+
+                    <DynamicComponentWithNoSSR tasks={tasks} filter={filter} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </OtherLayout.Main>
+    </OtherLayout>
+  )
+}

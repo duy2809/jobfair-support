@@ -9,6 +9,11 @@ import './export'
 import PropTypes from 'prop-types'
 
 export default class Gantt extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { filter: this.props.filter }
+  }
+
   componentDidMount() {
     const { tasks } = this.props
 
@@ -55,10 +60,7 @@ export default class Gantt extends Component {
       const dateToStr = 'マイルストーン名'
       // const endDate = gantt.date.add(gantt.date.add(date, 1, 'week'), -1, 'day')
       return `<div style="display:flex" >
-                  
-           
-                  <div class="milestone-row" id="${tasks}" style="width:100%" >${dateToStr}</div>
-               
+                  <div class="milestone-row" id="${tasks}" style="width:100%;border:none" >${dateToStr}</div>
               </div>`
     }
     // custom link style
@@ -117,12 +119,18 @@ export default class Gantt extends Component {
           return `<p class="task-column">タスク ${item.id}</p>`
         },
       },
-
     ]
     const formatMonthScale = gantt.date.date_to_str('%l')
 
+    gantt.attachEvent('onBeforeTaskDisplay', (id, task) => {
+      if (this.state.filter === '全て') return true
+      if (task.status === this.state.filter) {
+        return true
+      }
+      return false
+    })
     gantt.templates.month_scale_date = (date) => formatMonthScale(date)
-    gantt.config.autofit = true
+    gantt.config.autofit = false
     gantt.config.bar_height = 30
     gantt.config.autosize = 'y'
     // const onTaskClick = gantt.attachEvent('onTaskClick', (id) => {
@@ -136,43 +144,38 @@ export default class Gantt extends Component {
     const formatLastOfMonth = lastOfMonth.toString('yyyy-MM-dd')
     gantt.start_date = formatFirstOfMonth
     gantt.end_date = formatLastOfMonth
-
+    console.log('build')
     setTimeout(scrollToToday, 500)
     gantt.i18n.setLocale('jp')
     gantt.config.show_progress = false
     gantt.attachEvent('onBeforeTaskDrag', () => false)
     gantt.init(this.ganttContainer)
     gantt.parse(tasks)
-    gantt.parse(tasks)
   }
 
-  test=() => {
-    console.log(this.props)
-    updateNewTask(this.props.tasks.data)
-    const task = {
-      id: 2,
-      text: 'test update task',
-      start_date: new Date(2021, 8, 3),
-      end_date: new Date(2021, 8, 6),
-      $source: 1,
-      $target: 2,
+  // eslint-disable-next-line camelcase
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    // You don't have to do this check first, but it can help prevent an unneeded render
+    if (nextProps.filter !== this.state.filter) {
+      this.setState({ filter: nextProps.filter })
     }
-    gantt.refreshLink(1)
-    gantt.updateTask(2, task)
+  }
+
+  componentDidUpdate() {
     gantt.refreshData()
   }
 
   render() {
     return (
-
       <>
         <div
           className="gantt-chart_G1-3"
-          ref={(input) => { this.ganttContainer = input }}
-          style={{ width: '100%', maxHeight: '650px' }}
+          ref={(input) => {
+            this.ganttContainer = input
+          }}
+          style={{ width: '100%', maxHeight: '700px' }}
         />
-        <input type="button" value="Test" onClick={this.test} />
-
+        {/* <input type="button" value="Test" onClick={this.test} /> */}
       </>
     )
   }
@@ -180,6 +183,7 @@ export default class Gantt extends Component {
 
 Gantt.propTypes = {
   tasks: PropTypes.object.isRequired,
+  filter: PropTypes.string.isRequired,
 }
 export function scrollToToday() {
   const state = gantt.getState()
@@ -190,15 +194,17 @@ export function scrollToToday() {
     const endDate = gantt.date.add(state.max_date, -1, 'day')
     position = gantt.posFromDate(endDate)
     gantt.scrollTo(position, null)
-  } else if (state.min_date.getTime() < today.getTime() && today.getTime() < state.max_date.getTime()) {
+  } else if (
+    state.min_date.getTime() < today.getTime() &&
+    today.getTime() < state.max_date.getTime()
+  ) {
     position = gantt.posFromDate(today)
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2
     console.log(position, offset)
     gantt.scrollTo(position - offset, null)
   }
 }
-export function updateNewTask(tasks) {
-  for (let i = 0; i < tasks.length; i += 1) {
-    console.log(tasks[i])
-  }
+
+export function taskFilter() {
+  // gantt.refreshData()
 }
