@@ -216,7 +216,6 @@ describe('Check button add folder', () => {
     it('Check true active', () => {
         cy.get('button').find('span').contains('新しいフォルダ').click({ force: true })
         cy.get('input[placeholder*="新しいフォルダ名"]').type('Hello')
-        // cy.get('.ant-btn').contains('保 存').click()
         cy.get('.ant-modal-footer').within(() => {
             cy.get('.ant-btn').first().click({ force: true }).wait(1000)
         })
