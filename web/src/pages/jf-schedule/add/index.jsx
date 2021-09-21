@@ -64,9 +64,7 @@ function addJobfairSchedule() {
 
   const onFinish = async () => {
     const dataSend = {
-      schedule: {
-        name: nameInput,
-      },
+      name: nameInput,
       addedMilestones: addedMilestonesList,
       addedTemplateTasks: addedTemplateTaskList,
     }
