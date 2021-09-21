@@ -145,12 +145,12 @@ const MilestonePage = () => {
 
       if (isModalType.add) {
         setIsModalType((preState) => ({ ...preState, add: false }))
-        router.push('/milestones/add')
+        window.location.href = '/milestones/add'
       }
 
       if (isModalType.edit) {
         setIsModalType((preState) => ({ ...preState, edit: false }))
-        router.push(`/milestones/${id}/edit`)
+        window.location.href = `/milestones/${id}/edit`
       }
     } catch (error) {
       console.error(error)
@@ -341,4 +341,5 @@ const MilestonePage = () => {
   )
 }
 
+MilestonePage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
 export default MilestonePage
