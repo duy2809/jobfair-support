@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import 'tailwindcss/tailwind.css'
-import { useRouter } from 'next/router'
 import {
   Table,
   Space,
@@ -34,7 +33,6 @@ const MilestonePage = () => {
     add: false,
   })
 
-  const router = useRouter()
   webInit().then((res) => {
     setRole(res.data.auth.user.role)
   })
