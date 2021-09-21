@@ -38,9 +38,18 @@ export function* sagas() {
 }
 
 // Reducers
-const handleLoadSuccess = (state, action) => state.set('loaded', true)
-  .set('user', fromJS(action.payload))
+const handleLoadSuccess = (state, action) => {
+  if (action.payload.role === 1) {
+    action.payload.role = 'superadmin'
+  } else if (action.payload.role === 2) {
+    action.payload.role = 'admin'
+  } else if (action.payload.role === 3) {
+    action.payload.role = 'member'
+  }
 
+  return state.set('loaded', true)
+    .set('user', fromJS(action.payload))
+}
 const auth = (state) => state.get('auth').get('user')
 const roles = (state) => _map(state.get('auth').getIn('user.roles'), 'name')
 
