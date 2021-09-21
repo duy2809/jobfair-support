@@ -59,7 +59,6 @@ function JFList() {
     }
   }
   function truncateMax20(str) {
-    //return str.length > 20 ? str.substring(0, 20) + '...' : str;
     return str.length > 20 ? `${str.substring(0, 20)}...` : str
   }
   // columns of tables
