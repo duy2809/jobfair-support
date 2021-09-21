@@ -54,7 +54,7 @@ export default class TaskControl extends React.Component {
     const { visible } = this.state
     return (
       <div className="flex justify-center mb-5 ml-40">
-        <Link href="/member/tasks">
+        <Link href={`/member/${this.props.id}/tasks`}>
           <Button type="primary" size="middle" className="mr-2">
             タスクー覧
           </Button>
