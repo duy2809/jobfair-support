@@ -47,7 +47,7 @@ function JFList() {
         data.push({
           id: i + 1,
           idJF: response.data[i].id,
-          JF名: response.data[i].name,
+          JF名: truncateMax20(response.data[i].name),
           開始日: response.data[i].start_date.replaceAll('-', '/'),
           推定参加学生数: response.data[i].number_of_students,
           参加企業社数: response.data[i].number_of_companies,
@@ -58,7 +58,9 @@ function JFList() {
       setOriginalData(data)
     }
   }
-
+  function truncateMax20(str) {
+    return str.length > 20 ? str.substring(0, 20) + "..." : str;
+  }
   // columns of tables
 
   const columns = [
