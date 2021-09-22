@@ -13,7 +13,7 @@ const EditCategory = (props) => {
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
-  const [reload, setReload] = useState(false)
+  // const [reload, setReload] = useState(false)
   const role = props.role
 
   function toHalfWidth(fullWidthStr) {
@@ -47,12 +47,9 @@ const EditCategory = (props) => {
   const onBlur = () => {
     const name = nameInput
     const id = props.record.id
-    console.log(name)
     if (name !== '') {
       checkUniqueEdit(id, name).then((res) => {
         if (res.data.length !== 0) {
-          console.log('duplicated')
-          console.log(form.getFieldValue('name'))
           form.setFields([
             {
               name: 'name',
