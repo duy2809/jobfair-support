@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
 import { Select, Input, Table, Empty, Button } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
@@ -10,7 +12,7 @@ import { ListScheduleApi } from '~/api/schedule'
 const columns = [
   {
     title: 'No.',
-    dataIndex: 'id',
+    dataIndex: 'key',
     key: 'No.',
     width: '10%',
     render: (id) => id,
@@ -92,6 +94,16 @@ function ScheduleList() {
       })
   })
 
+  // fix No. bug
+  const Schedules = []
+  for (let i = 0; i < filterSchedules.length; i += 1) {
+    Schedules.push({
+      key: i + 1,
+      id: filterSchedules[i].id,
+      name: filterSchedules[i].name,
+    })
+  }
+
   const handleClick = (e) => {
     e.preventDefault()
     router.push('/jf-schedule/add')
@@ -153,7 +165,7 @@ function ScheduleList() {
           <Table
             className="rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
-            dataSource={filterSchedules}
+            dataSource={Schedules}
             rowKey={(record) => record.id}
             scroll={{ y: 360 }}
             onRow={handleRow}
