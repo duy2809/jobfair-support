@@ -19,7 +19,7 @@ class JobfairController extends Controller
     {
         foreach ($templateSchedule->templateTasks as $templateTask) {
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -32,7 +32,7 @@ class JobfairController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
             $input['schedule_id'] = $newSchedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -135,7 +135,7 @@ class JobfairController extends Controller
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
 
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
-                    ->orderBy('tasks.end_time', 'ASC');
+                    ->orderBy('tasks.id', 'ASC');
             },
         ])->find($id, ['id']);
 
@@ -159,7 +159,7 @@ class JobfairController extends Controller
     {
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
-                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%' . $request->name . '%');
             },
         ])->find($id, ['id']);
 
