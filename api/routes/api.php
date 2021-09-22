@@ -86,8 +86,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
 
-Route::get('/jf-schedule/{id}', 'ScheduleController@getScheduleb');
-
 //template-task
 Route::resource('/template-tasks', 'TemplateTaskController');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');

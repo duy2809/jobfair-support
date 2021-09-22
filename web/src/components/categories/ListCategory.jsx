@@ -20,9 +20,7 @@ export default function ListCategories() {
   const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [user, setUser] = useState(store.getState().get('auth').get('user'))
-  const [role, setRole] = useState(user.get('role'))
-
+  const role = store.getState().get('auth').get('user').get('role')
   const ref = useRef()
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState()

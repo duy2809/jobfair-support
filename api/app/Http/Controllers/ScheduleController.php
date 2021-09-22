@@ -9,6 +9,8 @@ use App\Models\TemplateTask;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ScheduleController extends Controller
 {
@@ -47,8 +49,16 @@ class ScheduleController extends Controller
 
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required',
+            'name' => [
+                Rule::unique('schedules')->whereNull('jobfair_id'),
+            ],
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        $validator->validate();
         $schedule = new Schedule();
-        $schedule->name = $request->schedule['name'];
+        $schedule->name = $request->name;
         $schedule->save();
         $schedule->milestones()->attach($request->addedMilestones);
         $schedule->templateTasks()->attach($request->addedTemplateTasks);
