@@ -1,7 +1,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button } from 'antd'
+import { Select, Input, Table, Empty, Button, Tooltip } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -14,15 +14,15 @@ const columns = [
     title: 'No.',
     dataIndex: 'key',
     key: 'No.',
-    width: '10%',
+    width: '5%',
     render: (id) => id,
   },
   {
     title: 'スケジュール',
     dataIndex: 'name',
     key: 'スケジュール',
-    width: '90%',
-    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+    width: '95%',
+    render: (name) => <Tooltip title={name}>{name}</Tooltip>,
   },
 ]
 
@@ -45,7 +45,10 @@ function ScheduleList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
 
   const handleChange = (e) => {
@@ -125,7 +128,7 @@ function ScheduleList() {
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="flex w-full justify-between">
-            <div className="text-4xl title">JFスケジュール一覧</div>
+            <h1 className="ml-0">JFスケジュール一覧</h1>
             <div>
               {role === 'superadmin' ? (
                 <Button
@@ -145,7 +148,11 @@ function ScheduleList() {
           <div className="flex w-full justify-between">
             <div>
               <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+              <Select
+                className="ml-5"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
