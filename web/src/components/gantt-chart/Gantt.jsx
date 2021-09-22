@@ -16,7 +16,10 @@ export default class Gantt extends Component {
 
   componentDidMount() {
     const { tasks } = this.props
-
+    // const { tasks } = this.props
+    const milestones = this.props.milestones
+    const jobfairStartDate = this.props.jobfairStartDate
+    console.log(jobfairStartDate)
     /* Full List of Extensions */
     gantt.plugins({
       click_drag: true,
@@ -37,6 +40,8 @@ export default class Gantt extends Component {
     gantt.config.scale_height = 120
     gantt.config.drag_progress = true
     gantt.config.show_markers = true
+    gantt.config.work_time = true
+
     /* config layout */
     gantt.config.layout = {
       css: 'material',
@@ -53,14 +58,24 @@ export default class Gantt extends Component {
         { view: 'scrollbar', scroll: 'x', id: 'scrollHor' },
       ],
     }
+    gantt.templates.scale_cell_class = (date) => {
+      if (date.getDay() === 0 || date.getDay() === 6) {
+        return 'weekend'
+      }
+    }
     gantt.config.lightbox.sections = []
     gantt.attachEvent('onBeforeLightbox', () => false)
-    const weekScaleTemplate = () => {
-      // const dateToStr = gantt.date.date_to_str('%d %M')
+    console.log(jobfairStartDate.getDate())
+    milestones.forEach((element) => {
+      console.log(element.period)
+    })
+    console.log(gantt)
+    const weekScaleTemplate = (week) => {
+      const fisrtDayOfWeek = week.getDate()
+      console.log(fisrtDayOfWeek)
       const dateToStr = 'マイルストーン名'
-      // const endDate = gantt.date.add(gantt.date.add(date, 1, 'week'), -1, 'day')
-      return `<div style="display:flex" >
-                  <div class="milestone-row" id="${tasks}" style="width:100%;border:none" >${dateToStr}</div>
+      return `<div class="milestone-cell" style="display:flex;" >
+                  <div class="milestone-row" id="${tasks.name}" style="width:100%;border:none" >${dateToStr}</div>
               </div>`
     }
     // custom link style
@@ -88,9 +103,22 @@ export default class Gantt extends Component {
     //   return 'weekend'
     // }
 
+    gantt.templates.scale_row_class = function (scale) {
+      switch (scale.unit) {
+        case 'day':
+          return 'day_scale'
+
+        case 'month':
+          return 'month_scale'
+
+        default:
+          // "week"
+          return 'week_scale'
+      }
+    }
     gantt.config.scales = [
       { unit: 'month', step: 1, format: '%F' },
-      { unit: 'week', step: 1, format: weekScaleTemplate },
+      { unit: 'week', step: 1, format: weekScaleTemplate, css: '' },
       { unit: 'day', step: 1, format: '%d', css: daysStyle },
       // { unit: 'hour', step: 1, format: '%h', css: daysStyle },
     ]
@@ -116,7 +144,7 @@ export default class Gantt extends Component {
         width: 170,
         align: 'center',
         template(item) {
-          return `<p class="task-column">タスク ${item.id}</p>`
+          return `<p class="task-column" style="background-color:" > ${item.text}</p>`
         },
       },
     ]
@@ -184,6 +212,8 @@ export default class Gantt extends Component {
 Gantt.propTypes = {
   tasks: PropTypes.object.isRequired,
   filter: PropTypes.string.isRequired,
+  milestones: PropTypes.array.isRequired,
+  jobfairStartDate: PropTypes.object.isRequired,
 }
 export function scrollToToday() {
   const state = gantt.getState()
@@ -200,7 +230,6 @@ export function scrollToToday() {
   ) {
     position = gantt.posFromDate(today)
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2
-    console.log(position, offset)
     gantt.scrollTo(position - offset, null)
   }
 }

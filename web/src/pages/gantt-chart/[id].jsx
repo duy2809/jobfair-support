@@ -1,164 +1,111 @@
 /* eslint-disable import/extensions */
 import { LoadingOutlined } from '@ant-design/icons'
-import { Button, Radio, Spin, Tooltip } from 'antd'
+import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
 import dynamic from 'next/dynamic'
 import router from 'next/router'
 import React, { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
-
 import OtherLayout from '../../layouts/OtherLayout'
 import './style.scss'
 
-const DynamicComponentWithNoSSR = dynamic(
+const GanttChart = dynamic(
   // eslint-disable-next-line import/no-unresolved
   () => import('~/components/gantt-chart/Gantt'),
-  { ssr: false },
+  // eslint-disable-next-line comma-dangle
+  { ssr: false }
 )
 
 export default function index() {
   // const [data, setData] = useState({})
   const [status, setStatus] = useState('0')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [tasks, setTask] = useState({})
+  const [milestones, setMilestones] = useState([])
   const [filter, setfilter] = useState('全て')
   const [chartMethod, setchartMethod] = useState()
-  
-  const data = {
-    data: [
-      {
-        id: 1,
-        text: 'タスク',
-        start_date: '29-08-2021',
-        end_date: '06-09-2021',
-        open: true,
-        status: '未着手',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 2,
-        text: 'タスク',
-        start_date: '01-07-2021',
-        end_date: '01-09-2021',
-        open: false,
-        color: '#bebebe',
-        status: '進行中',
-        row_height: 40,
-        bar_height: 30,
-      },
+  const [jobfairStartDate, setJobfairStartDate] = useState(Date)
 
-      {
-        id: 3,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
+  const generateColor = (taskStatus) => {
+    switch (taskStatus) {
+      case '未着手':
+        return '#5eb5a6'
+
+      case '進行中':
+        return '#a1af2f'
+
+      case '完了':
+        return '#4488c5'
+
+      case '中断':
+        return '#b95656'
+
+      case '未完了':
+        return ' #795617'
+
+      default:
+        return 'blue'
+    }
+  }
+  const generateTask = (data) => {
+    const result = { data: [] }
+    data.forEach((element) => {
+      const dataObj = {
+        id: element.id,
+        text: element.name,
+        start_date: new Date(element.start_time.replace(/\//g, '-')),
+        end_date: new Date(element.end_time.replace(/\//g, '-')),
         open: true,
-        status: '完了',
+        color: generateColor(element.status),
+        status: element.status,
         row_height: 40,
         bar_height: 30,
-      },
-      {
-        id: 4,
-        text: 'タスク',
-        start_date: '21-09-2021',
-        end_date: '01-10-2021',
-        open: true,
-        status: '中断',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 5,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 6,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 7,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 8,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 9,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 10,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-      {
-        id: 11,
-        text: 'タスク',
-        start_date: '24-08-2021',
-        end_date: '01-09-2021',
-        open: true,
-        status: '未完了',
-        row_height: 40,
-        bar_height: 30,
-      },
-    ],
-    links: [
-      { id: 1, source: 1, target: 2, type: '0' },
-      { id: 2, source: 2, target: 3, type: '0' },
-      { id: 3, source: 3, target: 4, type: '0' },
-      { id: 4, source: 4, target: 5, type: '0' },
-    ],
+      }
+      result.data.push(dataObj)
+    })
+    return result
+  }
+
+  const generateLink = (beforeTasks, afterTasks) => {
+    const link = { links: [] }
+    beforeTasks.before_tasks.forEach((element) => {
+      const dummyObj = {
+        id: uuidv4(),
+        source: beforeTasks.id,
+        target: element.id,
+        type: '1',
+      }
+      link.links.push(dummyObj)
+    })
+    afterTasks.after_tasks.forEach((element) => {
+      const dummyObj = {
+        id: uuidv4(),
+        source: afterTasks.id,
+        target: element.id,
+        type: '0',
+      }
+      link.links.push(dummyObj)
+    })
+    return link
   }
   useEffect(() => {
     const fetchAPI = async () => {
       try {
         // eslint-disable-next-line import/no-unresolved
         const method = await import('~/components/gantt-chart/Gantt')
-        setTask(data)
-
         // TODO: optimize this one by using axios.{all,spread}
-        // const jobfairID = router.query.id
-        // const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        // const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-        // const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-        // console.log(jobfairTask.data, beforeTasks.data, afterTasks.data)
-
+        const jobfairID = router.query.id
+        const jobfair = await ganttChartAPI.getJobfair(jobfairID)
+        const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
+        const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
+        const data = generateTask(jobfairTask.data.schedule.tasks)
+        const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
+        const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
+        const link = generateLink(beforeTasks.data, afterTasks.data)
+        setJobfairStartDate(new Date(jobfair.data.start_date))
+        setLoading(false)
+        setMilestones(jobfairMilestone.data.schedule.milestones)
+        setTask({ ...data, ...link })
         setchartMethod(method)
         return null
       } catch (error) {
@@ -238,7 +185,12 @@ export default function index() {
                   </Button>
                 </div>
                 <div>
-                  <Radio.Group onChange={onStatusChange} defaultValue={status} buttonStyle="solid">
+                  <Radio.Group
+                    disabled={loading}
+                    onChange={onStatusChange}
+                    defaultValue={status}
+                    buttonStyle="solid"
+                  >
                     <Tooltip placement="topLeft" title="全て">
                       <Radio.Button
                         className=" radio-button w-20 p-0 text-center mr-4"
@@ -302,14 +254,43 @@ export default function index() {
               <div>
                 <div className="container xl ">
                   <div>
-                    <Spin
-                      style={{ fontSize: '30px', color: '#ffd803' }}
-                      spinning={loading}
-                      indicator={loadingIcon}
-                      size="large"
-                    />
+                    {/* <div
+                      className=" overlay z-50 absolute top-0 left-0 right-0 bottom-0 bg-gray-500 opacity-1"
+                      style={{ backgroundColor: 'rgb(130 129 129 / 50%)' }}
+                    >
+                      <Spin
+                        style={{ fontSize: '30px', color: '#ffd803' }}
+                        spinning={loading}
+                        indicator={loadingIcon}
+                        size="large"
+                        className="absolute top-1/2 left-1/2"
+                        id="tes"
+                      />
+                    </div> */}
 
-                    <DynamicComponentWithNoSSR tasks={tasks} filter={filter} />
+                    {loading ? (
+                      <>
+                        <Spin
+                          style={{ fontSize: '30px', color: '#ffd803' }}
+                          spinning={loading}
+                          indicator={loadingIcon}
+                          size="large"
+                          className="absolute top-1/2 left-1/2"
+                          id="tes"
+                        />
+                        <Empty
+                          className="border py-10 mx-10 border-solid rounded-sm"
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        />
+                      </>
+                    ) : (
+                      <GanttChart
+                        tasks={tasks}
+                        jobfairStartDate={jobfairStartDate}
+                        milestones={milestones}
+                        filter={filter}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
