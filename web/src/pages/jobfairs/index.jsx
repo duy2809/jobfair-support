@@ -58,7 +58,9 @@ function JFList() {
       setOriginalData(data)
     }
   }
-
+  function truncateMax20(str) {
+    return str.length > 20 ? `${str.substring(0, 20)}...` : str
+  }
   // columns of tables
 
   const columns = [
@@ -77,7 +79,7 @@ function JFList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{JF名}</a></Tooltip>,
+      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{truncateMax20(JF名)}</a></Tooltip>,
     },
 
     {

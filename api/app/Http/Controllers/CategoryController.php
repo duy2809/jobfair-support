@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
     public function getCatgories()
     {
-        return Category::all()->pluck('category_name');
+        return Category::all();
     }
 
     public function search($key)

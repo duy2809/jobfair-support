@@ -204,7 +204,6 @@ describe('Check button add folder', () => {
         // cy.get('.ant-modal-footer').within(() => {
         //     cy.get('.ant-btn').last().click({ force: true })
         // })
-        // cy.wait(1000);
         // cy.get('.ant-notification-notice-message').should('contain', 'このファイル名は既に使用されています。')
         // cy.get('.ant-btn').contains('保 存').should('be.disabled')        
         cy.get('.ant-modal-footer').within(() => {

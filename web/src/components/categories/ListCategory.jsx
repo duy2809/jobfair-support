@@ -8,6 +8,7 @@ import 'antd/dist/antd.css'
 
 import { Input, Space, Table, Row, Col, Select, Button } from 'antd'
 import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'
+import { element } from 'prop-types'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
@@ -19,19 +20,17 @@ export default function ListCategories() {
   const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [user, setUser] = useState(store.getState().get('auth').get('user'))
-  const [role, setRole] = useState(user.get('role'))
-
+  const role = store.getState().get('auth').get('user').get('role')
   const ref = useRef()
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState()
   // fetch data
-  useEffect(async () => {
-    setReload(false)
-    getCategories().then((res) => {
-      setCategory(res.data)
-    }).catch((error) => console.log(error.response.request.response))
-  }, [reload])
+  // useEffect(async () => {
+  //   setReload(false)
+  //   getCategories().then((res) => {
+  //     setCategory(res.data)
+  //   }).catch((error) => console.log(error.response.request.response))
+  // }, [reload])
 
   // search data with key
   async function fetch(key) {
@@ -41,12 +40,18 @@ export default function ListCategories() {
         setCategory(result)
       })
     } else {
-      setReload(true)
+      // setReload(true)
+      getCategories().then((res) => {
+        setCategory(res.data)
+      })
     }
     setSearchValue(key)
   }
 
   useEffect(() => {
+    getCategories().then((res) => {
+      setCategory(res.data)
+    })
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
         return
@@ -71,14 +76,17 @@ export default function ListCategories() {
 
   // set reload state
   const reloadPage = () => {
-    setReload(true)
+    // setReload(true)
+    getCategories().then((res) => {
+      setCategory(res.data)
+    })
   }
   // table columns
   const columns = [
     {
       title: 'No.',
-      dataIndex: 'key',
       width: '8%',
+      render: (checkbox, record, rowIndex) => rowIndex + 1,
     },
     {
       key: '2',
@@ -106,15 +114,14 @@ export default function ListCategories() {
     },
   ]
 
-  const data = []
-  for (let i = 0; i < category.length; i += 1) {
-    data.push({
-      key: i + 1,
-      id: category[i].id,
-      name: category[i].category_name,
-    })
-  }
-
+  const [data, setData] = useState([])
+  useEffect(() => {
+    setData(category.map((element) => ({
+      key: element.id,
+      id: element.id,
+      name: element.category_name,
+    })))
+  }, [category])
   return (
     <div>
       <Row

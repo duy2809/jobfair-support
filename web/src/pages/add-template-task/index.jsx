@@ -595,7 +595,7 @@ const index = () => {
                                   allowClear
                                   tagRender={tagRender}
                                   className="w-100"
-                                  placeholder="リレーション"
+                                  placeholder="リレーションを選択"
                                   onChange={filtedArr}
                                 >
                                   {afterTasks.map((element) => (
