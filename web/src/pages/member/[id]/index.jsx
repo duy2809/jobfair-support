@@ -25,7 +25,7 @@ function MemberDetailPage() {
     <Layout>
       <Layout.Main>
         <Link href="/member/">
-          <Button type="primary" className="mb-5">
+          <Button type="primary" className="mb-5" style={{ letterSpacing: '-0.1em' }}>
             戻る
           </Button>
         </Link>
