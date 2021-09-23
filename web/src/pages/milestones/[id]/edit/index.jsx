@@ -61,15 +61,14 @@ const EditMilestonePage = () => {
     })
     console.log(e.target.value)
     const specialCharRegex = new RegExp(/^([^0-9]*)$/)
-      if (specialCharRegex.test(e.target.value)) {
-
-        form.setFields([
-          {
-            name: 'time',
-            errors: ['０以上の半角の整数で入力してください。'],
-          },
-        ])
-      }
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
+    }
   }
 
   const showModal = () => {
