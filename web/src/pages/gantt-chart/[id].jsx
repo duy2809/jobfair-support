@@ -71,9 +71,9 @@ export default function index() {
     beforeTasks.before_tasks.forEach((element) => {
       const dummyObj = {
         id: uuidv4(),
-        source: beforeTasks.id,
-        target: element.id,
-        type: '1',
+        source: element.id,
+        target: beforeTasks.id,
+        type: '0',
       }
       link.links.push(dummyObj)
     })
@@ -102,10 +102,13 @@ export default function index() {
         const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
         const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
         const link = generateLink(beforeTasks.data, afterTasks.data)
+        console.log(beforeTasks.data, afterTasks.data)
         setJobfairStartDate(new Date(jobfair.data.start_date))
         setLoading(false)
         setMilestones(jobfairMilestone.data.schedule.milestones)
+        // console.log({ ...data, ...link })
         setTask({ ...data, ...link })
+        // console.log(tasks)
         setchartMethod(method)
         return null
       } catch (error) {
