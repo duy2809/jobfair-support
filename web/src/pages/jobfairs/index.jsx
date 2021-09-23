@@ -47,7 +47,7 @@ function JFList() {
         data.push({
           id: i + 1,
           idJF: response.data[i].id,
-          JF名: truncateMax20(response.data[i].name),
+          JF名: response.data[i].name,
           開始日: response.data[i].start_date.replaceAll('-', '/'),
           推定参加学生数: response.data[i].number_of_students,
           参加企業社数: response.data[i].number_of_companies,
@@ -79,7 +79,7 @@ function JFList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{JF名}</a></Tooltip>,
+      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{truncateMax20(JF名)}</a></Tooltip>,
     },
 
     {
