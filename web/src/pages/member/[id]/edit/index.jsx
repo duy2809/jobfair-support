@@ -9,15 +9,16 @@ import { CategoryApi } from '~/api/category'
 import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
+  console.log(data.categories)
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalCancelVisible, setIsModalCancelVisible] = useState(false)
   const [emailInput, setEmailInput] = useState(data.user.email)
   const [nameInput, setNameInput] = useState(data.user.name)
   const router = useRouter()
-  const [categories, setCategories] = useState(data.categories)
+  const [categories, setCategories] = useState(data.categories.map((item) => item.id))
   const [categoriesSystem, setCategoriesSystem] = useState([])
-  const [reqCategories, setReqCategories] = useState([])
+  const [reqCategories, setReqCategories] = useState(data.categories.map((item) => item.id))
   const [showExitPrompt, setShowExitPrompt] = useState(false)
 
   const { id } = router.query
@@ -57,10 +58,10 @@ const EditMember = ({ data }) => {
         openNotificationSuccess()
         router.push(`/member/${data.user.id}`)
       })
-      .catch((error) => {
+      .catch(() => {
+        const messageContent = 'メールはすでに存在します。'
         notification.error({
-          message:
-            error.response.data.errors.email || error.response.data.errors.name,
+          message: messageContent,
         })
       })
       .finally(() => {
@@ -96,8 +97,7 @@ const EditMember = ({ data }) => {
 
   const handleChangeSelect = (value) => {
     setCategories(value)
-    const result = value.map((item) => categoriesSystem.indexOf(item) + 1)
-    setReqCategories(result)
+    setReqCategories(value)
     setShowExitPrompt(true)
   }
 
@@ -187,7 +187,7 @@ const EditMember = ({ data }) => {
                 className="selectBar"
               >
                 {categoriesSystem.map((item) => (
-                  <Option key={item}>{item}</Option>
+                  <Option value={item.id}>{item.category_name}</Option>
                 ))}
               </Select>
             </Form.Item>

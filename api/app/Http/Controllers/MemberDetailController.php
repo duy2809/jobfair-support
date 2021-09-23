@@ -20,30 +20,28 @@ class MemberDetailController extends Controller
 
     public function memberDetail($id)
     {
-        $user = User::findOrFail($id);
-        $jobfairs = [];
-        $categories = [];
-        foreach ($user->schedules as $schedule) {
-            array_push($jobfairs, $schedule->jobfair);
-        }
+        // $jobfairs = [];
+        // $categories = [];
+        // foreach ($user->schedules as $schedule) {
+        //     array_push($jobfairs, $schedule->jobfair);
+        // }
 
-        $user->jobfairs = $jobfairs;
-        foreach ($user->tasks as $task) {
-            $taskCategories = $task->categories;
-            if (!$taskCategories) {
-                continue;
-            }
+        // $user->jobfairs = $jobfairs;
+        // foreach ($user->tasks as $task) {
+        //     $taskCategories = $task->categories;
+        //     if (!$taskCategories) {
+        //         continue;
+        //     }
 
-            foreach ($taskCategories as $taskCategory) {
-                if (!$this->checkCategoryExist($categories, $taskCategory)) {
-                    array_push($categories, $taskCategory);
-                }
-            }
-        }
+        //     foreach ($taskCategories as $taskCategory) {
+        //         if (!$this->checkCategoryExist($categories, $taskCategory)) {
+        //             array_push($categories, $taskCategory);
+        //         }
+        //     }
+        // }
 
-        $user->categories = $categories;
-
-        return response()->json($user);
+        // $user->categories = $categories;
+        return User::find($id)->load('categories')->load('schedules.jobfair');
     }
 
     public function deleteMember($id)

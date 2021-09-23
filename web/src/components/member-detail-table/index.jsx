@@ -49,16 +49,17 @@ class MemberDetailTable extends React.Component {
           },
         )
 
-        const listJobfair = res.data.jobfairs
+        const listJobfair = res.data.schedules
         this.setState({
           listJF: listJobfair.map((element) => (
             <tr className="assigned-jf border-none block mx-auto">
-              <td className="border-none inline-block mr-2">{element.name}</td>
-              <td className="border-none inline-block">{element.start_date}</td>
+              <td className="border-none inline-block mr-2">{element.jobfair.name}</td>
+              <td className="border-none inline-block">{element.jobfair.start_date}</td>
             </tr>
           )),
         })
         const categorires = res.data.categories
+        console.log(res.data)
         this.setState({
           listCate: categorires.map((element) => (
             <tr className="category-name border-none block mx-auto">
