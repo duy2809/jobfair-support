@@ -17,6 +17,7 @@ export default class Gantt extends Component {
   componentDidMount() {
     const { tasks } = this.props
     // const { tasks } = this.props
+    console.log(tasks)
     const milestones = this.props.milestones
     const jobfairStartDate = this.props.jobfairStartDate
     console.log(jobfairStartDate)
@@ -67,13 +68,13 @@ export default class Gantt extends Component {
     gantt.attachEvent('onBeforeLightbox', () => false)
     console.log(jobfairStartDate.getDate())
     milestones.forEach((element) => {
+      // console.log(element)
       console.log(element.period)
     })
-    console.log(gantt)
     const weekScaleTemplate = (week) => {
       const fisrtDayOfWeek = week.getDate()
-      console.log(fisrtDayOfWeek)
       const dateToStr = 'マイルストーン名'
+
       return `<div class="milestone-cell" style="display:flex;" >
                   <div class="milestone-row" id="${tasks.name}" style="width:100%;border:none" >${dateToStr}</div>
               </div>`
@@ -84,7 +85,8 @@ export default class Gantt extends Component {
       switch (link.type) {
         case types.finish_to_start:
           return 'finish_to_start'
-
+        case types.start_to_finish:
+          return 'start_to_finish'
         case types.start_to_start:
           return 'start_to_start'
 
