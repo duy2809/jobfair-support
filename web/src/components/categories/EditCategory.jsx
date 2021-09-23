@@ -66,7 +66,7 @@ const EditCategory = (props) => {
 
   const onValueNameChange = (e) => {
     setcheckSpace(false)
-    setNameInput(e.target.value)
+    setNameInput(toHalfWidth(e.target.value))
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })

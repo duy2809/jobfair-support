@@ -80,7 +80,7 @@ const AddCategory = (props) => {
   const onValueNameChange = (e) => {
     // setErrorUnique(false)
     setcheckSpace(false)
-    setCategory(e.target.value)
+    setCategory(toHalfWidth(e.target.value))
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
