@@ -250,6 +250,7 @@ const AddMilestonePage = () => {
                       className="w-32"
                       onClick={showModal}
                       htmlType="submit"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       登録
                     </Button>

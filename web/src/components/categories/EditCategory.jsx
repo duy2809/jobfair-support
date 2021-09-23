@@ -104,6 +104,7 @@ const EditCategory = (props) => {
         onCancel={handleCancel}
         okText="保存"
         cancelText="キャンセル"
+        okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
         centered
       >
 

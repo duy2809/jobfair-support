@@ -275,6 +275,7 @@ const MilestonePage = () => {
                       backgroundColor: '#ffd803',
                       borderColor: '#ffd803',
                       color: 'black',
+                      letterSpacing: '-0.1em',
                     }}
                     type="primary"
                     danger

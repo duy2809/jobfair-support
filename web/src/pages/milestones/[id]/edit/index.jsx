@@ -257,6 +257,7 @@ const EditMilestonePage = () => {
                       htmlType="submit"
                       onClick={showModal}
                       className="w-32"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       保存
                     </Button>

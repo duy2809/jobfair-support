@@ -88,7 +88,7 @@ const AddCategory = (props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} className="add-btn text-base">
+      <Button type="primary" onClick={showModal} className="add-btn text-base" style={{ letterSpacing: '-0.1em' }}>
         追加
       </Button>
       <Modal
@@ -98,6 +98,7 @@ const AddCategory = (props) => {
         onCancel={handleCancel}
         okText="登録"
         cancelText="キャンセル"
+        okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
         centered
       >
 

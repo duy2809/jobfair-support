@@ -134,6 +134,7 @@ function ScheduleList() {
                   htmlType="button"
                   enabled
                   onClick={handleClick}
+                  style={{ letterSpacing: '-0.1em' }}
                 >
                   追加
                 </Button>

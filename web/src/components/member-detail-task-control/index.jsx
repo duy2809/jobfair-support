@@ -72,6 +72,7 @@ export default class TaskControl extends React.Component {
             style={{
               visibility:
                 this.props.role === 'superadmin' ? 'visible' : 'hidden',
+              letterSpacing: '-0.1em',
             }}
           >
             編集
@@ -84,6 +85,7 @@ export default class TaskControl extends React.Component {
           className="mr-2"
           style={{
             visibility: this.props.role === 'superadmin' ? 'visible' : 'hidden',
+            letterSpacing: '-0.1em',
           }}
         >
           削除
