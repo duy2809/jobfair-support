@@ -135,4 +135,9 @@
       text-align: start;
     }
   }
+
+  label::before {
+    content: "*";
+    color:white;
+  }
 }
