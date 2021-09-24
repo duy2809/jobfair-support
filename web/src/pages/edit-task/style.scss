@@ -6,7 +6,10 @@
     display: flex;
     align-items: center;
   }
-
+  .ant-form-item {
+    margin-top: 24px;
+    margin-bottom: 0;
+  }
   .ant-form-item-label {
     text-align: left;
   }
@@ -91,6 +94,21 @@
     height: 175px;
     overflow: auto;
   }
+  .multiples {
+    .ant-select:hover,
+    .ant-select-focused {
+      border-color: #646462;
+    }
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
+      border-color: #bdbcb9;
+    }
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
+      border-color: #bdbcb9;
+    }
+  }
+
   .big-icon {
     .anticon,
     .edit-task .layout-task .anticon-home,

@@ -40,6 +40,7 @@ const DeleteCategory = (props) => {
       onCancel() {
         console.log('Cancel')
       },
+      okButtonProps: { style: { letterSpacing: '-0.1em' } },
     })
   }
 

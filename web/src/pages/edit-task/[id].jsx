@@ -22,6 +22,7 @@ function TaskList() {
   const idTask = router.query.id
   const [form] = Form.useForm()
   const [disableBtn, setdisableBtn] = useState(false)
+  const [assign, setAssign] = useState(true)
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
   const [listUser, setListUser] = useState([])
   const [allTask, setAllTask] = useState([])
@@ -60,7 +61,6 @@ function TaskList() {
           unit: response.data.template_task.unit,
           description_of_detail: response.data.description_of_detail,
         })
-
         setIdJF(
           response.data.schedule.jobfair.id,
 
@@ -89,6 +89,16 @@ function TaskList() {
   const startDayValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
+    }
+    return Promise.resolve()
+  }
+  const EndDayValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+    const startTime = form.getFieldValue('start_time')
+    if (value < startTime) {
+      return Promise.reject(new Error('終了日は開始日以降で入力してください'))
     }
     return Promise.resolve()
   }
@@ -139,6 +149,11 @@ function TaskList() {
   const tagRenderr = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
+    const nameUser = form.getFieldValue('assignee')
+    if (nameUser.length !== 0) {
+      document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+      setAssign(true)
+    }
     const onPreventMouseDown = (event) => {
       event.preventDefault()
       event.stopPropagation()
@@ -147,13 +162,23 @@ function TaskList() {
       <Tag
         onMouseDown={onPreventMouseDown}
         closable={closable}
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          const nameUsers = form.getFieldValue('assignee')
+          if (nameUsers.length === 0) {
+            setAssign(false)
+            document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
+          }
+          if (nameUsers.length !== 0) {
+            setAssign(true)
+            document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+          }
+        }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
       >
         <Tooltip title={label}>
           <span
             className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
-
           >
             {label}
           </span>
@@ -186,20 +211,24 @@ function TaskList() {
     if (value.match(Extensions.Reg.specialCharacter)) {
       return Promise.reject(new Error('使用できない文字が含まれています'))
     }
-    if (value.match(Extensions.Reg.vietnamese)) {
-      return Promise.reject(new Error('ベトナム語は入力できない'))
-    }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
 
     return Promise.resolve()
   }
+  // eslint-disable-next-line consistent-return
   const onValueNameChange = (e) => {
     setIsEdit(true)
     form.setFieldsValue({
       name: e.target.value,
     })
+    if (e.target.value) {
+      document.getElementById('validate_name').style.border = '1px solid #ffd803'
+      return document.getElementById('error-msg').setAttribute('hidden', 'text-red-600')
+    }
+
+    document.getElementById('validate_name').style.border = '0.5px solid red'
   }
   const getDataUser = async () => {
     await webInit().then((response) => {
@@ -223,60 +252,74 @@ function TaskList() {
     })
   }
   const onFinishSuccess = async (values) => {
-    try {
-      const beforeID = []
-      const afterIDs = []
-      const adminas = []
-      if (values.taskBefore && values.afterTask) {
-      // eslint-disable-next-line array-callback-return
-        allTask.map((e) => {
-          if (values.taskBefore.includes(e.name)) {
-            beforeID.push(e.id)
-          }
-          if (values.afterTask.includes(e.name)) {
-            afterIDs.push(e.id)
-          }
-        })
+    let checkName = false
+    // eslint-disable-next-line consistent-return
+    allTask.forEach((element) => {
+      if (values.name !== infoTask.name) {
+        if (values.name === element.name) {
+          checkName = true
+          document.getElementById('validate_name').style.border = '1px solid red'
+          return document.getElementById('error-msg').removeAttribute('hidden', 'text-red-600')
+        }
       }
-      if (values.assignee) {
-        listUser.map((e) => {
-          if (values.assignee.includes(e.name)) {
-            adminas.push(e.id)
-          }
-          return ''
-        })
-      }
+    })
+    if (!checkName) {
+      try {
+        const beforeID = []
+        const afterIDs = []
+        const adminas = []
+        if (values.taskBefore && values.afterTask) {
+        // eslint-disable-next-line array-callback-return
+          allTask.map((e) => {
+            if (values.taskBefore.includes(e.name)) {
+              beforeID.push(e.id)
+            }
+            if (values.afterTask.includes(e.name)) {
+              afterIDs.push(e.id)
+            }
+          })
+        }
+        if (values.assignee) {
+          listUser.map((e) => {
+            if (values.assignee.includes(e.name)) {
+              adminas.push(e.id)
+            }
+            return ''
+          })
+        }
 
-      const data = {
-        name: values.name,
-        description_of_detail: values.detail,
-        beforeTasks: beforeID,
-        afterTasks: afterIDs,
-        start_time: values.start_time.format(Extensions.dateFormat),
-        end_time: values.end_time.format(Extensions.dateFormat),
-        admin: adminas,
-        user_id: users.id,
-        status: values.status,
+        const data = {
+          name: values.name,
+          description_of_detail: values.detail,
+          beforeTasks: beforeID,
+          afterTasks: afterIDs,
+          start_time: values.start_time.format(Extensions.dateFormat),
+          end_time: values.end_time.format(Extensions.dateFormat),
+          admin: adminas,
+          user_id: users.id,
+          status: values.status,
 
-      }
-      setdisableBtn(true)
-      console.log(data)
-      await editTask(idTask, data).then((response) => {
-        saveNotification()
-        console.log(response.data)
-        router.push(`/task-detail/${idTask}`)
-      }).catch((error) => {
-        console.log(error)
+        }
+        setdisableBtn(true)
+
+        await editTask(idTask, data).then((response) => {
+          saveNotification()
+          console.log(response.data)
+          router.push(`/task-detail/${idTask}`)
+        }).catch((error) => {
+          console.log(error)
+          setdisableBtn(false)
+        })
+        setdisableBtn(true)
+      } catch (error) {
         setdisableBtn(false)
-      })
-      setdisableBtn(true)
-    } catch (error) {
-      setdisableBtn(false)
-      return error
+        return error
+      }
     }
 
     return ''
   }
+
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
     if (isEdit === false) {
@@ -297,7 +340,6 @@ function TaskList() {
       })
     }
   }
-  console.log(isEdit)
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
@@ -343,7 +385,6 @@ function TaskList() {
       console.log(error)
     })
   }
-
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
@@ -353,6 +394,7 @@ function TaskList() {
     fetchListMember()
   }, [idJF])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
+  // ant-select-selector
   return (
     <div>
       <JfLayout id={idJF}>
@@ -386,12 +428,20 @@ function TaskList() {
                     ]}
                   >
                     <Input
+                      id="validate_name"
+                      className="validate_name"
                       type="text"
                       placeholder="タスク名を入力する"
                       maxLength={20}
                       onChange={onValueNameChange}
                     />
+
                   </Form.Item>
+                  <div className="ant-row">
+                    <div className="ant-col ant-col-6" />
+                    <div className="ant-col ant-col-18"><span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span></div>
+                  </div>
+
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
@@ -442,22 +492,45 @@ function TaskList() {
                     label="担当者:"
                     name="assignee"
                     required
+                    className="multiples"
                   >
-                    <Select
-                      size="large"
-                      mode="multiple"
-                      showArrow
-                      tagRender={tagRenderr}
-                      style={{ width: '100%' }}
-                    >
-                      {listUser.map((element) => (
-                        <Select.Option key={element.id} value={element.name}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
+                    {
+                      assign
+                        ? (
+                          <Select
+                            mode="multiple"
+                            showArrow
+                            tagRender={tagRenderr}
+                          >
+                            {listUser.map((element) => (
+                              <Select.Option className="validate-user" key={element.id} value={element.name}>
+                                {element.name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        )
+                        : (
+                          <Select
+                            mode="multiple"
+                            showArrow
+                            tagRender={tagRenderr}
+                            style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                            className="multiples"
+                          >
+                            {listUser.map((element) => (
+                              <Select.Option className="validate-user" key={element.id} value={element.name}>
+                                {element.name}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        )
+                    }
 
                   </Form.Item>
+                  <div className="ant-row">
+                    <div className="ant-col ant-col-6" />
+                    <div className="ant-col ant-col-18"><span id="error-user" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この項目は必須です</span></div>
+                  </div>
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
@@ -509,7 +582,7 @@ function TaskList() {
                     required
                     rules={[
                       {
-                        validator: startDayValidator,
+                        validator: EndDayValidator,
                       },
                     ]}
                   >
@@ -531,7 +604,6 @@ function TaskList() {
                     className="tag_a"
                   >
                     <Select
-                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}
@@ -555,7 +627,6 @@ function TaskList() {
                     className="tag_a"
                   >
                     <Select
-                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}

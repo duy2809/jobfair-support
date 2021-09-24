@@ -110,8 +110,16 @@ const AddMilestonePage = () => {
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
+    const specialCharRegex = new RegExp(/^([^0-9]*)$/)
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
+    }
   }
-
   const handleCancel = () => {
     setIsModalVisible(false)
   }
@@ -220,10 +228,11 @@ const AddMilestonePage = () => {
                     pattern: /^(?:\d*)$/,
                     message: '０以上の半角の整数で入力してください。',
                   },
+
                 ]}
               >
                 <Input
-                  /* type="number" */
+                  // type="number"
                   type="text"
                   placeholder="期日"
                   addonAfter={selectAfter}
@@ -250,6 +259,7 @@ const AddMilestonePage = () => {
                       className="w-32"
                       onClick={showModal}
                       htmlType="submit"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       登録
                     </Button>

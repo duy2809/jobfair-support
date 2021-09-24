@@ -94,7 +94,7 @@
   //   max-width: 8%;
   // }
   .ant-form-item {
-    // margin: 10px 10px;
+    margin: 10px 10px;
   }
   .ant-col-13 {
     min-width: 300px;
@@ -134,5 +134,10 @@
     .ant-form-horizontal .ant-form-item-label {
       text-align: start;
     }
+  }
+
+  label::before {
+    content: "*";
+    color:white;
   }
 }

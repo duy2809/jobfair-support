@@ -59,6 +59,16 @@ const EditMilestonePage = () => {
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
+    console.log(e.target.value)
+    const specialCharRegex = new RegExp(/^([^0-9]*)$/)
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
+    }
   }
 
   const showModal = () => {
@@ -257,6 +267,7 @@ const EditMilestonePage = () => {
                       htmlType="submit"
                       onClick={showModal}
                       className="w-32"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       保存
                     </Button>

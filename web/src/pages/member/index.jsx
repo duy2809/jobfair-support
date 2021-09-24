@@ -128,7 +128,7 @@ function MemberList() {
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="w-full flex justify-between items-center title">
-            <h1 className="m-0">メンバ一覧</h1>
+            <h1 className="ml-0">メンバ一覧</h1>
             <div>
               {role === 'superadmin' ? (
                 <Button
@@ -175,7 +175,7 @@ function MemberList() {
             columns={columns}
             dataSource={filterData}
             rowKey={(record) => record.id}
-            scroll={{ y: 360 }}
+            scroll={{ y: 385 }}
             onRow={handleRow}
             onChange={handleChange}
             loading={dataLoading}
