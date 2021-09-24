@@ -1,344 +1,304 @@
-import React, { useState, useEffect } from 'react'
-import 'tailwindcss/tailwind.css'
+import React, { useState } from 'react'
 import {
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
+  Form,
   Input,
+  Button,
   Select,
-  notification,
   Modal,
+  notification,
 } from 'antd'
-import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
-import { getAllMileStone, deleteMileStone } from '~/api/milestone'
-import OtherLayout from '../../layouts/OtherLayout'
-import 'antd/dist/antd.css'
-import { webInit } from '../../api/web-init'
-import './styles.scss'
+import OtherLayout from '../../../layouts/OtherLayout'
+import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 
-const MilestonePage = () => {
-  const [isRenderFirstly, setIsRenderFirstly] = useState(true)
-  const [data, setData] = useState([])
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 })
-  const [id, setId] = useState()
-  const [loading, setLoading] = useState(false)
-  const [searchValue, setSearchValue] = useState('')
+const AddMilestonePage = () => {
+  const [form] = Form.useForm()
+
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [role, setRole] = useState()
-  const [isModalType, setIsModalType] = useState({
-    delete: false,
-    edit: false,
-    add: false,
-  })
+  const [isModalVisibleOfBtnCancel, setIsModalVisibleOfBtnCancel] = useState(false)
+  const [typePeriodInput, setTypePeriodInput] = useState(0)
+  const [nameInput, setNameInput] = useState('')
+  const [timeInput, setTimeInput] = useState('')
+  const [errorUnique, setErrorUnique] = useState(false)
 
-  webInit().then((res) => {
-    setRole(res.data.auth.user.role)
-  })
+  const { Option } = Select
+
+  function toHalfWidth(fullWidthStr) {
+    return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+  }
+
   const openNotificationSuccess = () => {
     notification.success({
-      message: 'マイルストーンが正常に削除されました',
-      duration: 3,
+      message: '正常に保存されました。',
     })
+    setTimeout(() => {
+      window.location.href = '/milestones'
+    }, 3000)
   }
 
-  const convertPeriod = (numOfDays, type) => {
-    if (type === 'week' && numOfDays > 7) {
-      return `${Math.ceil(numOfDays / 7)}週間後`
-    }
-    if (numOfDays <= 7) {
-      return `${numOfDays}日後`
-    }
-    return `${Math.ceil(numOfDays / 7)}週間後`
-  }
-
-  const fetchData = async (inputSearch = null) => {
-    setLoading(true)
-    try {
-      const res = await getAllMileStone()
-      const dataArr = res.data
-        .map((row) => ({
-          ...row,
-          period:
-            row.is_week === 1
-              ? { numOfDays: row.period * 7, type: 'week' }
-              : { numOfDays: row.period, type: 'day' },
-        }))
-        .sort((a, b) => a.period.numOfDays - b.period.numOfDays)
-        .map((row) => {
-          const { numOfDays, type } = row.period
-          return {
-            ...row,
-            period_sub: convertPeriod(numOfDays, type),
+  const showModal = () => {
+    if (
+      !(form.isFieldTouched('name') && form.isFieldTouched('time'))
+      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      || errorUnique === true
+    ) {
+      setIsModalVisible(false)
+      const name = nameInput
+      if (name !== '') {
+        getNameExitAdd(name).then((res) => {
+          if (res.data.length !== 0) {
+            // setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
           }
         })
-
-      if (inputSearch) {
-        setData(
-          dataArr
-            .filter(
-              (item) => item.name.toLowerCase().includes(inputSearch.toLowerCase())
-                || item.period_sub
-                  .toString()
-                  .toLowerCase()
-                  .includes(inputSearch.toString().toLowerCase()),
-            )
-            .map((item, idx) => {
-              const newItem = { ...item, no: (idx += 1) }
-              return newItem
-            }),
-        )
-        setLoading(false)
-        return
       }
-
-      const newData = dataArr.map((item, idx) => {
-        const newItem = { ...item, no: (idx += 1) }
-        return newItem
-      })
-
-      setData(newData)
-      setLoading(false)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const searchItemHandler = (e) => {
-    setSearchValue(e.target.value)
-  }
-
-  const setPageSize = (e) => {
-    setPagination((preState) => ({
-      ...preState,
-      current: 1,
-      pageSize: e.value,
-    }))
-  }
-
-  const tableChangeHandler = (e) => {
-    setPagination((preState) => ({ ...preState, current: e.current }))
-  }
-
-  /// /////////////////////////////////
-  /// ////// Modal function ///////////
-  /// /////////////////////////////////
-  const handleOk = async () => {
-    setIsModalVisible(false)
-    try {
-      if (isModalType.delete) {
-        await deleteMileStone(id)
-
-        setPagination((preState) => ({
-          ...preState,
-          current: 1,
-        }))
-
-        setId(null)
-        openNotificationSuccess()
-        fetchData()
-        setIsModalType((preState) => ({ ...preState, delete: false }))
-      }
-
-      if (isModalType.add) {
-        setIsModalType((preState) => ({ ...preState, add: false }))
-        window.location.href = '/milestones/add'
-      }
-
-      if (isModalType.edit) {
-        setIsModalType((preState) => ({ ...preState, edit: false }))
-        window.location.href = `/milestones/${id}/edit`
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-    setIsModalType({ delete: false, add: false, edit: false })
-  }
-  const showModal = (type) => {
-    setIsModalVisible(true)
-    let title
-    if (type.add) {
-      title = 'マイルストーンを追加しますか ?'
-    } else if (type.edit) {
-      title = 'マイルストーンを編集しますか ?'
     } else {
-      title = 'マイルストーンを削除しますか ?'
+      setIsModalVisible(true)
     }
-    Modal.confirm({
-      title,
-      visible: isModalVisible,
-      onOk() {
-        handleOk()
-      },
-      onCancel() {
-        handleCancel()
-      },
-      okText: 'はい',
-      cancelText: 'いいえ',
+  }
+
+  const handleOk = () => {
+    form.submit()
+    setIsModalVisible(false)
+    addMilestone({
+      name: nameInput,
+      period: timeInput,
+      is_week: typePeriodInput,
+    })
+      .then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (
+          JSON.parse(error.response.request.response).errors.name[0]
+          === 'The name has already been taken.'
+        ) {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+          })
+        }
+      })
+  }
+  const onBlur = () => {
+    const name = nameInput
+    if (name !== '') {
+      getNameExitAdd(name).then((res) => {
+        if (res.data.length !== 0) {
+          setErrorUnique(true)
+          form.setFields([
+            {
+              name: 'name',
+              errors: ['このマイルストーン名は存在しています。'],
+            },
+          ])
+        }
+      })
+    }
+  }
+
+  const onValueNameChange = (e) => {
+    setErrorUnique(false)
+    setNameInput(e.target.value)
+    form.setFieldsValue({
+      name: toHalfWidth(e.target.value),
     })
   }
-
-  const columns = [
-    {
-      title: 'No',
-      dataIndex: 'no',
-      width: '5%',
-    },
-    {
-      title: 'マイルストーン一名',
-      dataIndex: 'name',
-      render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
-      width: '55%',
-    },
-    {
-      title: '期日',
-      dataIndex: 'period',
-      width: `${role === 'superadmin' ? '20%' : '40%'}`,
-      render: (period) => {
-        const { numOfDays, type } = period
-        return convertPeriod(numOfDays, type)
-      },
-    },
-    {
-      key: 'action',
-      width: `${role === 'superadmin' ? '20%' : '0%'}`,
-      render: (_text, record) => (role === 'superadmin' && (
-        <Space size="middle">
-          <EditTwoTone
-            id={record.id}
-            onClick={() => {
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                edit: true,
-              }))
-            }}
-          />
-
-          <DeleteTwoTone
-            onClick={() => {
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                delete: true,
-              }))
-            }}
-          />
-        </Space>
-      )),
-    },
-  ]
-
-  useEffect(() => {
-    if (isRenderFirstly) {
-      return setIsRenderFirstly(false)
+  const onValueTimeChange = (e) => {
+    setTimeInput(Number(toHalfWidth(e.target.value)))
+    form.setFieldsValue({
+      time: toHalfWidth(e.target.value),
+    })
+    const specialCharRegex = new RegExp(/^([^0-9]*)$/)
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
     }
-    const timer = setTimeout(() => {
-      setPageSize((preState) => ({ ...preState, current: 1 }))
-      fetchData(searchValue)
-    }, 600)
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [searchValue])
+  }
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-  useEffect(() => {
-    if (!isModalType.add && !isModalType.delete && !isModalType.edit) {
-      return
-    }
-    showModal(isModalType)
-  }, [isModalType])
+  const showModalOfBtnCancel = () => {
+    setIsModalVisibleOfBtnCancel(true)
+  }
+
+  const handleCancelOfBtnCancel = () => {
+    setIsModalVisibleOfBtnCancel(false)
+  }
+
+  const selectAfter = (
+    <Form.Item name="typePeriod" noStyle>
+      <Select
+        className="select-after"
+        onChange={(value) => {
+          setTypePeriodInput(parseInt(value, 10))
+        }}
+        value={typePeriodInput.toString()}
+        style={{
+          width: 90,
+        }}
+      >
+        <Option value="0">日後</Option>
+        <Option value="1">週間後</Option>
+      </Select>
+    </Form.Item>
+  )
+
+  const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
-    <div>
+    <>
       <OtherLayout>
         <OtherLayout.Main>
-          <div className="container-list">
-            <Row
-              style={{ alignItems: 'center', justifyContent: 'space-between' }}
+          {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
+            マイルストーン追加
+          </p> */}
+
+          <h1 className="title">
+            マイルストーン追加
+          </h1>
+
+          <div className="pt-10">
+            <Form
+              form={form}
+              name="addMilestone"
+              // onFinish={onFinish}
+              initialValues={{
+                typePeriod: '0',
+              }}
+              size="large"
+              className="space-y-12"
+              labelCol={{ span: 10 }}
+              wrapperCol={{ span: 6 }}
             >
-              <Col>
-                <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
-              </Col>
-              {role === 'superadmin' && (
-                <Col>
-                  <Button
-                    style={{
-                      backgroundColor: '#ffd803',
-                      borderColor: '#ffd803',
-                      color: 'black',
-                      letterSpacing: '-0.1em',
-                    }}
-                    type="primary"
-                    danger
-                    onClick={() => {
-                      setIsModalType((preState) => ({
-                        ...preState,
-                        add: true,
-                      }))
-                    }}
-                  >
-                    追加
-                  </Button>
-                </Col>
-              )}
-            </Row>
+              <Form.Item
+                label={(
+                  <p style={{ margin: 0 }}>
+                    マイルストーン名
+                  </p>
+                )}
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'この項目は必須です。',
+                  },
 
-            <Row style={{ justifyContent: 'space-between' }}>
-              <Col>
-                <span
-                  style={{ paddingRight: '0.5rem' }}
-                  className="dropdown-label"
-                >
-                  表示件数
-                </span>
-                <Select
-                  labelInValue
-                  defaultValue={{ value: '10' }}
-                  style={{ width: 60, borderRadius: '1rem' }}
-                  onChange={(e) => setPageSize(e)}
-                >
-                  <Select.Option value="10">10</Select.Option>
-                  <Select.Option value="25">25</Select.Option>
-                  <Select.Option value="50">50</Select.Option>
-                </Select>
-              </Col>
-              <Col>
+                  {
+                    validator(_, value) {
+                      const specialCharRegex = new RegExp('[ 　]')
+                      if (specialCharRegex.test(value)) {
+                        return Promise.reject(
+                          new Error(
+                            'マイルストーン名はスペースが含まれていません。',
+                          ),
+                        )
+                      }
+
+                      return Promise.resolve()
+                    },
+                  },
+                ]}
+              >
                 <Input
-                  placeholder="マイルストーン一名, 期日"
-                  onChange={(e) => searchItemHandler(e)}
-                  style={{ width: 250 }}
-                  value={searchValue}
-                  prefix={<SearchOutlined />}
+                  className="w-full"
+                  onBlur={onBlur}
+                  onChange={onValueNameChange}
+                  placeholder="マイルストーン名"
                 />
-              </Col>
-            </Row>
+              </Form.Item>
+              <Form.Item
+                label={
+                  <p style={{ margin: 0 }}>期日</p>
+                }
+                name="time"
+                rules={[
+                  {
+                    required: true,
+                    message: 'この項目は必須です。',
+                  },
 
-            <div className="box-body">
-              <Table
-                scroll={{ y: 380 }}
-                columns={columns}
-                rowKey={(record) => record.id}
-                dataSource={data}
-                pagination={pagination}
-                loading={loading}
-                onChange={(e) => tableChangeHandler(e)}
-              />
-            </div>
+                  {
+                    pattern: /^(?:\d*)$/,
+                    message: '０以上の半角の整数で入力してください。',
+                  },
+
+                ]}
+              >
+                <Input
+                  // type="number"
+                  type="text"
+                  placeholder="期日"
+                  addonAfter={selectAfter}
+                  onKeyDown={blockInvalidChar}
+                  onChange={onValueTimeChange}
+                  min={0}
+                />
+              </Form.Item>
+              <div className="grid grid-cols-12 grid-rows-1 mt-5 gap-x-5">
+                <div className="col-span-7 justify-self-end">
+                  <Form.Item>
+                    <Button
+                      onClick={showModalOfBtnCancel}
+                      className="w-32"
+                    >
+                      キャンセル
+                    </Button>
+                  </Form.Item>
+                </div>
+                <div>
+                  <Form.Item>
+                    <Button
+                      type="primary"
+                      className="w-32"
+                      onClick={showModal}
+                      htmlType="submit"
+                      style={{ letterSpacing: '-0.1em' }}
+                    >
+                      登録
+                    </Button>
+                  </Form.Item>
+                </div>
+              </div>
+              <Modal
+                title="マイルストーン追加"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="はい"
+                cancelText="いいえ"
+              >
+                <p className="mb-5">このまま保存してもよろしいですか？</p>
+              </Modal>
+              <Modal
+                title="マイルストーン追加"
+                visible={isModalVisibleOfBtnCancel}
+                onCancel={handleCancelOfBtnCancel}
+                footer={[
+                  <Button key="back" onClick={handleCancelOfBtnCancel}>
+                    いいえ
+                  </Button>,
+                  <Button key="submit" type="primary" href="../milestones">
+                    はい
+                  </Button>,
+                ]}
+              >
+                <p className="mb-5">
+                  変更内容が保存されません。よろしいですか？
+                </p>
+              </Modal>
+            </Form>
           </div>
         </OtherLayout.Main>
       </OtherLayout>
-    </div>
+    </>
   )
 }
-
-MilestonePage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
-export default MilestonePage
+AddMilestonePage.middleware = ['auth:superadmin']
+export default AddMilestonePage
