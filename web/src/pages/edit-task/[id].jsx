@@ -492,6 +492,7 @@ function TaskList() {
                     label="担当者:"
                     name="assignee"
                     required
+                    className="multiples"
                   >
                     {
                       assign
@@ -500,8 +501,6 @@ function TaskList() {
                             mode="multiple"
                             showArrow
                             tagRender={tagRenderr}
-                            // style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
-                            className="multiples"
                           >
                             {listUser.map((element) => (
                               <Select.Option className="validate-user" key={element.id} value={element.name}>
