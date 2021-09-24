@@ -55,7 +55,7 @@ const EditMilestonePage = () => {
   }
   const onValueTimeChange = (e) => {
     setcheckSpace(false)
-    setTimeInput(e.target.value)
+    setTimeInput(Number(toHalfWidth(e.target.value)))
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
