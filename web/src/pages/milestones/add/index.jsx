@@ -71,15 +71,14 @@ const AddMilestonePage = () => {
     })
       .then(() => openNotificationSuccess())
       .catch((error) => {
-        console.log(error)
-        // if (
-        //   JSON.parse(error.response.request.response).errors.name[0]
-        //   === 'The name has already been taken.'
-        // ) {
-        //   notification.error({
-        //     message: 'このマイルストーン名は存在しています',
-        //   })
-        // }
+        if (
+          JSON.parse(error.response.request.response).errors.name[0]
+          === 'The name has already been taken.'
+        ) {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+          })
+        }
       })
   }
   const onBlur = () => {
