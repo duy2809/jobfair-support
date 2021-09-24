@@ -210,7 +210,6 @@ function editJobfairSchedule() {
     }
   }
   const showModal = () => {
-    console.log(addedTemplateTaskList)
     if (
       !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
       || !!form.getFieldsError().filter(({ errors }) => errors.length).length
