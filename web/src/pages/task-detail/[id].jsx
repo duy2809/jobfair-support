@@ -330,9 +330,9 @@ function TaskDetail() {
 
               <div className="grid grid-cols-2 mx-4 mt-5">
                 <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">前のタスク</p>
-                    </div>
+                  <div className="layber col-span-2 mx-4">
+                    <p className="font-bold text-right">前のタスク</p>
+                  </div>
                   <ul className="list__task col-span-6">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
@@ -357,9 +357,9 @@ function TaskDetail() {
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">次のタスク</p>
-                    </div>
+                  <div className="layber col-span-2 mx-4">
+                    <p className="font-bold text-right">次のタスク</p>
+                  </div>
                   <ul className="list__task col-span-6">
                     {afterTasks
                       ? afterTasks.map((item) => (

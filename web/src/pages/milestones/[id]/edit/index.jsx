@@ -173,7 +173,7 @@ const EditMilestonePage = () => {
             >
               <Form.Item
                 label={
-                  <p class="font-bold text-right">マイルストーン名</p>
+                  <p className="font-bold text-right">マイルストーン名</p>
                 }
                 name="name"
                 rules={[
@@ -205,7 +205,7 @@ const EditMilestonePage = () => {
 
               <Form.Item
                 label={
-                  <p class="font-bold text-right">期日</p>
+                  <p className="font-bold text-right">期日</p>
                 }
                 name="time"
                 rules={[

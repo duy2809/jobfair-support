@@ -330,7 +330,7 @@ const index = () => {
                       {/* jobfair name */}
                       <Form.Item
                         label={
-                          <p class="font-bold text-right">JF名</p>
+                          <p className="font-bold text-right">JF名</p>
                         }
                         required
                       >
@@ -386,7 +386,7 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
-                        label= {
+                        label={
                           <p className="font-bold">管理者</p>
                         }
                         name="jobfair_admin_id"
@@ -487,7 +487,7 @@ const index = () => {
                         // hasFeedback
                         // className="font-bold"
                         label={
-                          <p class="font-bold text-right">JFスケジュール</p>
+                          <p className="font-bold text-right">JFスケジュール</p>
                         }
                         name="schedule_id"
                         // label="JFスケジュール"
