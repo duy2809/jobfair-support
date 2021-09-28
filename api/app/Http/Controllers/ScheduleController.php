@@ -216,6 +216,7 @@ class ScheduleController extends Controller
 
         return $list;
     }
+
     /**
      * Find and order all prerequisites of one task
      *
@@ -305,6 +306,7 @@ class ScheduleController extends Controller
                     $output[$taskId] = $index;
                 }
             }
+
             return $output;
         }
 
@@ -451,6 +453,7 @@ class ScheduleController extends Controller
         if (!$schedule) {
             return response('Not found', 404);
         }
+
         $milestones = $schedule->milestones;
         $templateTasks = $schedule->templateTasks()->with('categories');
         $tasksWithOrderIndex = [];
