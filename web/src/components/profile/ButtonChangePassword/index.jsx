@@ -102,7 +102,9 @@ const ButtonChangePassword = () => {
           validateMessages={validateMessages}
         >
           <Form.Item
-            label="現在のパスワード"
+            label={
+              <p className="font-bold">現在のパスワード</p>
+            }
             name="current_password"
             rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
           >
@@ -110,7 +112,9 @@ const ButtonChangePassword = () => {
           </Form.Item>
 
           <Form.Item
-            label="新しいパスワード"
+            label={
+              <p className="font-bold">新しいパスワード</p>
+            }
             name="password"
             rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
           >
@@ -118,7 +122,9 @@ const ButtonChangePassword = () => {
           </Form.Item>
 
           <Form.Item
-            label="新しいパスワード(再確認)"
+            label={
+              <p className="font-bold">新しいパスワード(再確認)</p>
+            }
             name="confirm_password"
             dependencies={['password']}
             rules={[

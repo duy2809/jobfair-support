@@ -129,12 +129,19 @@ export default function ButtonAddFile(props) {
       >
         <Form
           form={form}
-          layout="vertical"
+          layout="horizontal"
+          labelCol={{
+            span: 6,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          colon={false}
           name="basic"
         >
           <Form.Item
             label={
-              <p style={{ margin: 0 }}>名前</p>
+              <p style={{ margin: 0 }} className="font-bold">名前</p>
             }
             name="name_file"
             rules={[
@@ -152,7 +159,7 @@ export default function ButtonAddFile(props) {
           </Form.Item>
           <Form.Item
             label={
-              <p style={{ margin: 0 }}>リンク</p>
+              <p style={{ margin: 0 }} className="font-bold">リンク</p>
             }
             name="link"
             rules={[

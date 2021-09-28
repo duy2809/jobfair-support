@@ -167,17 +167,18 @@ export default function Search() {
         layout="horizontal"
         onFinish={onFinishSuccess}
         onFinishFailed={onFinishFailed}
+        colon={false}
       >
-        <Form.Item label="名前" name="name">
+        <Form.Item label={<p className="font-bold">名前</p>} name="name">
           <Input className="h-8" placeholder="名前を入力" />
         </Form.Item>
-        <Form.Item label="更新日" name="start_date">
+        <Form.Item label={<p className="font-bold">更新日</p>} name="start_date">
           <DatePicker size="large" />
         </Form.Item>
         <Form.Item label=" " name="end_date" colon={false}>
           <DatePicker size="large" />
         </Form.Item>
-        <Form.Item label="更新者" name="updater">
+        <Form.Item label={<p className="font-bold">更新者</p>} name="updater">
           <Select
             size="large"
             placeholder="更新者を選択"

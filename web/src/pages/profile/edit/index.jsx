@@ -219,13 +219,14 @@ const EditProfilePage = () => {
                       span: 8,
                     }}
                     wrapperCol={{
-                      span: 12,
+                      span: 18,
                     }}
                     className="w-3/4"
+                    colon={false}
                   >
                     <Form.Item
                       label={
-                        <p>ユーザー名</p>
+                        <p className="font-bold">ユーザー名</p>
                       }
                       name="name"
                       rules={[
@@ -267,7 +268,7 @@ const EditProfilePage = () => {
 
                     <Form.Item
                       label={
-                        <p>チャットワークID</p>
+                        <p className="font-bold">チャットワークID</p>
                       }
                       name="chatwork"
                       rules={[
@@ -305,7 +306,7 @@ const EditProfilePage = () => {
 
                     <Form.Item
                       label={
-                        <p>メール</p>
+                        <p className="font-bold">メール</p>
                       }
                       name="email"
                       rules={[
