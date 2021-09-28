@@ -9,6 +9,7 @@ import {
   Divider,
   Row,
   Col,
+  Modal,
 } from 'antd'
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
@@ -35,6 +36,8 @@ function editJobfairSchedule() {
   const [addedMilestonesList, setAddedMilestonesList] = useState([])
   const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([])
   const [nameInput, setNameInput] = useState('')
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isError, setIsError] = useState(false)
 
   useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
@@ -117,7 +120,10 @@ function editJobfairSchedule() {
           } else {
             putData(id, dataSend)
               .then((res) => {
-                if (res.status === 200) openNotification('success', '変更は正常に保存されました。')
+                if (res.status === 200) {
+                  openNotification('success', '変更は正常に保存されました。')
+                  setIsModalVisible(false)
+                }
                 setTimeout(() => {
                   router.push('/schedule/')
                 }, 2500)
@@ -129,7 +135,10 @@ function editJobfairSchedule() {
     } else {
       putData(id, dataSend)
         .then((res) => {
-          if (res.status === 200) openNotification('success', '変更は正常に保存されました。')
+          if (res.status === 200) {
+            setIsModalVisible(false)
+            openNotification('success', '変更は正常に保存されました。')
+          }
           setTimeout(() => {
             router.push('/schedule/')
           }, 2500)
@@ -139,6 +148,7 @@ function editJobfairSchedule() {
   }
 
   const onFinishFailed = (errorInfo) => {
+    setIsError(true)
     const { errorFields } = errorInfo
     errorFields.forEach((itemError) => {
       itemError.errors.forEach((error) => openNotification('error', error))
@@ -199,7 +209,20 @@ function editJobfairSchedule() {
         .catch()
     }
   }
-
+  const showModal = () => {
+    if (
+      !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
+      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+      || isError === true
+    ) {
+      setIsModalVisible(false)
+    } else {
+      setIsModalVisible(true)
+    }
+  }
+  const handleCancel = () => {
+    setIsModalVisible(false)
+  }
   const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
 
   return (
@@ -212,7 +235,7 @@ function editJobfairSchedule() {
           size="large"
           form={form}
           name="edit-jfschedule"
-          onFinish={onFinish}
+          // onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           requiredMark="optional"
         >
@@ -297,11 +320,21 @@ function editJobfairSchedule() {
           <Form.Item>
             <div className="mt-5 flex justify-end">
               <CancelBtn />
-              <Button type="primary" htmlType="submit" className="ml-3">
+              <Button type="primary" htmlType="submit" className="ml-3" onClick={showModal}>
                 保存
               </Button>
             </div>
           </Form.Item>
+          <Modal
+            title="JFスケジュール編集"
+            visible={isModalVisible}
+            onOk={onFinish}
+            onCancel={handleCancel}
+            okText="はい"
+            cancelText="いいえ"
+          >
+            <p className="mb-5">保存してもよろしいですか</p>
+          </Modal>
         </Form>
       </Layout.Main>
     </Layout>
