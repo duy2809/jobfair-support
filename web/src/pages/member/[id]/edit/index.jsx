@@ -115,6 +115,7 @@ const EditMember = ({ data }) => {
         <h1>メンバ編集</h1>
         <div className="flex flex-col items-center inviteWrapper">
           <Form
+            colon={false}
             className="w-2/5"
             labelCol={{ span: 8 }}
             labelAlign="right"
@@ -123,7 +124,9 @@ const EditMember = ({ data }) => {
           >
             <Form.Item
               name="name"
-              label={<span style={{ fontSize: '18px' }}>フルネーム</span>}
+              label={
+                <span style={{ fontSize: '18px' }} className="font-bold">フルネーム</span>
+              }
               rules={[
                 {
                   message: 'この項目は必須です',
@@ -140,7 +143,9 @@ const EditMember = ({ data }) => {
             </Form.Item>
             <Form.Item
               name="email"
-              label={<span style={{ fontSize: '18px' }}>メールアドレス</span>}
+              label={
+                <span style={{ fontSize: '18px' }} className="font-bold">メールアドレス</span>
+              }
               rules={[
                 {
                   type: 'email',
@@ -171,7 +176,9 @@ const EditMember = ({ data }) => {
 
             <Form.Item
               name="categories"
-              label={<span style={{ fontSize: '18px' }}>カテゴリ</span>}
+              label={
+                <span style={{ fontSize: '18px' }} className="font-bold">カテゴリ</span>
+              }
               rules={[
                 {
                   required: false,
