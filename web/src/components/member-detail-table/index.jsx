@@ -1,7 +1,6 @@
 import React from 'react'
 import './styles.scss'
 import { withRouter } from 'next/router'
-import { url } from 'envalid'
 import PropTypes from 'prop-types'
 import { getMember } from '~/api/member-detail'
 
@@ -80,7 +79,7 @@ class MemberDetailTable extends React.Component {
       <div className="flex css_all items-center justify-center">
         <img
           alt="イメージがない"
-          src={url(`../${this.state.member.avatar}`)}
+          src={`/api/avatar/${this.state.member.id}`}
           style={{
             width: '150px',
             height: '150px',
