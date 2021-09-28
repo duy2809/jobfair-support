@@ -101,16 +101,6 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -135,16 +125,6 @@ class ScheduleController extends Controller
         $schedule->milestones()->attach($addedMilestones);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
     public function getMilestones($id)
     {
         return Schedule::with(['milestones:id,name'])->find($id, ['id']);
@@ -157,7 +137,7 @@ class ScheduleController extends Controller
 
     public function search(Request $request)
     {
-        return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
+        return Schedule::where('name', 'like', '%' . $request->input('name') . '%')->get();
     }
 
     public function getSchedule($id)
@@ -169,6 +149,14 @@ class ScheduleController extends Controller
         ]);
     }
 
+    /**
+     * Convert relation to array
+     *
+     * Eg: 1->3, 2->3, 3->4 => $prerequisites = [[3, 1], [3, 2], [4, 3]]
+     * => output: ['3' => [1, 2], '4' => [3]]
+     * @param  Array $prerequisites
+     * @return Array $tasks - converted array
+     */
     public static function taskWithPrerequisites($prerequisites)
     {
         $tasks = [];
@@ -179,6 +167,14 @@ class ScheduleController extends Controller
         return $tasks;
     }
 
+    /**
+     * Sort tasks by relation
+     *
+     * Eg: 1->3, 2->3, 3->4 => $prerequisites = [[3, 1], [3, 2], [4, 3]]
+     * => output: [1, 2, 3, 4]
+     * @param  Array $prerequisites
+     * @return Array $lists - tasks ordered by relation
+     */
     public static function findOrderList($prerequisites)
     {
         $tasks = static::taskWithPrerequisites($prerequisites);
@@ -220,12 +216,18 @@ class ScheduleController extends Controller
 
         return $list;
     }
-
-    public static function findAllReq($list, $reqArray)
+    /**
+     * Find and order all prerequisites of one task
+     *
+     * @param  Array $orderedList
+     * @param  Array $prerequisites
+     * @return Array
+     */
+    public static function findAllReq($orderedList, $prerequisites)
     {
         $result = [];
-        foreach ($list as $key => $value) {
-            if (array_search($value, $reqArray) === 0 || array_search($value, $reqArray)) {
+        foreach ($orderedList as $key => $value) {
+            if (array_search($value, $prerequisites) === 0 || array_search($value, $prerequisites)) {
                 $result[] = $value;
             }
         }
@@ -265,6 +267,13 @@ class ScheduleController extends Controller
         return $levels;
     }
 
+    /**
+     * Order tasks by relation then push end tasks to result
+     * @param  Array $tasks
+     * @param  Array $orderedList
+     * @param  Array $endTasks - 1 or more tasks with same start date
+     * @return Array
+     */
     public static function orderTasks($tasks, $endTasks, $orderedList)
     {
         if (count($endTasks)) {
@@ -280,7 +289,14 @@ class ScheduleController extends Controller
         return [];
     }
 
-    public static function convertArray($input)
+    /**
+     * Flat array
+     * Eg: [[5, 8, 10], [3], [2, 4]]
+     * output: ['5' => 0, '8' => 0, '10' => 0, '3' => 1, '2' => 2, '4' => 2]
+     * @param  Array $input
+     * @return Array
+     */
+    public static function flatArray($input)
     {
         if (count($input)) {
             $output = [];
@@ -289,13 +305,20 @@ class ScheduleController extends Controller
                     $output[$taskId] = $index;
                 }
             }
-
             return $output;
         }
 
         return [];
     }
 
+    /**
+     * Sort tasks by relation
+     *
+     * @param  Array $withoutRelation - tasks without relation
+     * @param  Array $withRelation - tasks and it relation
+     * @param  Array $endTasks - end tasks of this milestone
+     * @return Array - tasks ordered by relation
+     */
     public static function order($withoutRelation, $withRelation, $endTasks)
     {
         $result = [];
@@ -307,14 +330,19 @@ class ScheduleController extends Controller
         if (count($withRelation) > 0) {
             $list = static::findOrderList($withRelation);
             $temp = static::taskWithPrerequisites($withRelation);
-            // dd($endTasks);
-            // dd($temp);
             $relation = static::orderTasks($temp, $endTasks, $list);
         }
 
-        return $result + static::convertArray($relation);
+        return $result+static::flatArray($relation);
     }
 
+    /**
+     * Sort milestones, count template tasks
+     *
+     * @param  App\Models\Schedule  $schedule
+     * @param  Array  $tasksWithOrderIndex - Store tasks id and order index
+     * @return Array - milestones ordered
+     */
     public static function milestoneWithOrder($schedule, $milestones, $templateTasks, &$tasksWithOrderIndex)
     {
         $milestones = $milestones->map(function ($item) use ($templateTasks, $schedule, &$tasksWithOrderIndex) {
@@ -326,10 +354,11 @@ class ScheduleController extends Controller
                 ->select(['after_tasks', 'before_tasks'])->whereIn('before_tasks', $ownTasks->pluck('template_tasks.id'))
                 ->whereIn('after_tasks', $ownTasks->pluck('template_tasks.id'))
                 ->get()->map(function ($element) {
-                    return [$element->after_tasks, $element->before_tasks];
-                });
+                return [$element->after_tasks, $element->before_tasks];
+            });
             $withoutRelation = $ownTasks->whereHas('beforeTasks', null, '=', 0)
                 ->whereHas('afterTasks', null, '=', 0)->pluck('template_tasks.id');
+
             // end tasks of this milestone
             $endTasks = $schedule->templateTasks()->where('milestone_id', $item->id)
                 ->whereHas('beforeTasks', function ($query) use ($item) {
@@ -341,12 +370,14 @@ class ScheduleController extends Controller
                 ->pluck('template_tasks.id');
             $orderTasks = static::order($withoutRelation, $relation, $endTasks);
             $tasksWithOrderIndex += $orderTasks;
+            // $totalIndex - Number of time slots
+            // Eg: Total = 5 tasks; task 1, 2 have same start date => 4 time slots
             $totalIndex = count(array_unique($orderTasks));
 
             return [
                 'id'            => $item->id,
                 'name'          => $item->name,
-                'timestamp'     => $item->period === 0 ? '' : $item->period.$postfix,
+                'timestamp'     => $item->period === 0 ? '' : $item->period . $postfix,
                 'numberOfTasks' => $templateTasks->get()->where('milestone_id', $item->id)->count(),
                 'totalIndex'    => $totalIndex,
             ];
@@ -355,6 +386,13 @@ class ScheduleController extends Controller
         return $milestones;
     }
 
+    /**
+     * Get template tasks and sort result
+     *
+     * @param  App\Models\Schedule  $schedule
+     * @param  Array  $tasksWithOrderIndex - Store tasks id and order index
+     * @return Array - tasks ordered
+     */
     public static function getTemplateTasksOrdered($schedule, $tasksWithOrderIndex)
     {
         $result = [];
@@ -376,6 +414,12 @@ class ScheduleController extends Controller
         return $result;
     }
 
+    /**
+     * Get categories have tasks in schedule
+     *
+     * @param  int  $scheduleId
+     * @return Array categories
+     */
     public static function getCategories($scheduleId)
     {
         $templateTasks = Schedule::find($scheduleId)->templateTasks
@@ -393,17 +437,20 @@ class ScheduleController extends Controller
                 });
             },
         ])->get()->map(function ($item) {
-                    return [
-                        'id' => $item->id,
-                        'name' => $item->category_name,
-                        'numberOfTasks' => count($item->templateTasks),
-                    ];
+            return [
+                'id'            => $item->id,
+                'name'          => $item->category_name,
+                'numberOfTasks' => count($item->templateTasks),
+            ];
         });
     }
 
     public function getGanttChart($id)
     {
         $schedule = Schedule::find($id);
+        if (!$schedule) {
+            return response('Not found', 404);
+        }
         $milestones = $schedule->milestones;
         $templateTasks = $schedule->templateTasks()->with('categories');
         $tasksWithOrderIndex = [];
