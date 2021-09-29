@@ -2,6 +2,7 @@ import { Form, Modal, Button, Input, notification } from 'antd'
 import React, { useState } from 'react'
 import { updatePassword } from '../../../api/profile'
 import { webInit } from '../../../api/web-init'
+import './style.scss'
 
 const ButtonChangePassword = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -81,6 +82,7 @@ const ButtonChangePassword = () => {
         パスワード変更
       </Button>
       <Modal
+        className="modal-change-password"
         title="パスワード変更"
         visible={isModalVisible}
         onOk={handleOk}
