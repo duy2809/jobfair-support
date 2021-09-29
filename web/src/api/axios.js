@@ -12,11 +12,9 @@ const instance = axios.create({
 })
 
 if (!process.browser) {
-  instance.interceptors.request.use((config) =>
-    _assign({}, config, {
-      url: decodeURI(config.url) === config.url ? encodeURI(config.url) : config.url,
-    }),
-  )
+  instance.interceptors.request.use((config) => _assign({}, config, {
+    url: decodeURI(config.url) === config.url ? encodeURI(config.url) : config.url,
+  }))
 }
 
 export default instance
