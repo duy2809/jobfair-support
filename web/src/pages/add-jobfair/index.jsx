@@ -52,15 +52,6 @@ const index = () => {
     return true
   }
 
-  const handleCheckInputFalse = (e) => {
-    const value = e.target.name
-    if (!value) {
-      form.setFieldsValue({
-        value: '*',
-      })
-    }
-  }
-
   useEffect(() => {
     // Extensions.unSaveChangeConfirm(true)
 
