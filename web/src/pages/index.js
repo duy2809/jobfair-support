@@ -49,9 +49,9 @@ const LoginPage = () => {
       const response = await login(values)
       if (response.request.status === 200) {
         const { auth } = response.data
-        openNotification('success', '正常にログインしました')
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
         setTimeout(() => {
+          openNotification('success', '正常にログインしました')
           router.push('/top-page')
         }, 1000)
       }
