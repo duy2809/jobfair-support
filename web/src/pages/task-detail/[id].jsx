@@ -149,10 +149,10 @@ function TaskDetail() {
               <div className="button__right mb-12 pb-2">
                 {role === 'admin' || role === 'superadmin' ? (
                   <>
-                    <Button className="border-none mx-1 " type="primary" onClick={handleEdit}>
+                    <Button className="border-none mx-1" type="primary" onClick={handleEdit}>
                       <EditOutlined />
                     </Button>
-                    <Button className="border-none mx-1 " type="primary" onClick={modelDelete}>
+                    <Button className="border-none mx-1" type="primary" onClick={modelDelete}>
                       <DeleteOutlined />
                     </Button>
                   </>
