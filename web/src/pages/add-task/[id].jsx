@@ -138,29 +138,30 @@ function index() {
   }
 
   const cancelConfirmModle = () => {
-    if (!templateTaskSelect) {
-      routeTo('/')
+    if (!templateTaskSelect.length) {
+      routeTo(`/tasks/${jobfair.id}`)
+    } else {
+      Modal.confirm({
+        title: '入力内容が保存されません。よろしいですか？',
+        icon: <ExclamationCircleOutlined />,
+        content: '',
+        onOk: () => {
+          // onFormReset()
+          routeTo(`/tasks/${jobfair.id}`)
+        },
+        onCancel: () => { },
+        okText: 'はい',
+        centered: true,
+        cancelText: 'いいえ',
+      })
     }
-    Modal.confirm({
-      title: '入力内容が保存されません。よろしいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      onOk: () => {
-        // onFormReset()
-        // routeTo('')
-      },
-      onCancel: () => {},
-      okText: 'はい',
-      centered: true,
-      cancelText: 'いいえ',
-    })
   }
   const saveNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に登録されました。',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const addTask = async () => {
@@ -174,7 +175,7 @@ function index() {
           setRouteLoading(true)
           routeTo(`/tasks/${jobfair.id}`)
         } else {
-        // setdisableBtn(false)
+          // setdisableBtn(false)
         }
         return response
       } catch (error) {
@@ -186,8 +187,10 @@ function index() {
   const loadingIcon = (
     <LoadingOutlined
       centered
-      style={{ fontSize: 30,
-        color: '#ffd803' }}
+      style={{
+        fontSize: 30,
+        color: '#ffd803',
+      }}
       spin={loading}
     />
   )
@@ -215,7 +218,6 @@ function index() {
                   <div className="header flex justify-between mb-6 " style={{ flex: '0 0 100%' }}>
                     <div className="flex space-x-2" style={{ flex: '0 0 70%' }}>
                       <Select
-                        showSearch
                         size="large"
                         showArrow
                         allowClear
@@ -230,14 +232,13 @@ function index() {
                         ))}
                       </Select>
                       <Select
-                        showSearch
                         size="large"
                         showArrow
                         allowClear
                         onChange={handlSelectMilestone}
                         className="w-1/3"
                         placeholder="マイルストーン"
-                        //   onChange={filterSelectedTasks}
+                      //   onChange={filterSelectedTasks}
                       >
                         {listMilestones.map((element) => (
                           <Select.Option key={element.id} value={element.name}>
@@ -277,8 +278,8 @@ function index() {
                         htmlType="button"
                         className="ant-btn"
                         onClick={cancelConfirmModle}
-                        // disabled={disableBtn}
-                        // loading={disableBtn}
+                      // disabled={disableBtn}
+                      // loading={disableBtn}
                       >
                         キャンセル
                       </Button>

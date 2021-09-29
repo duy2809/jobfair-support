@@ -611,7 +611,7 @@ const index = () => {
                           </div>
                           {/* details    */}
                           <Form.Item
-                            label="詳細"
+                            label=""
                             className="block mx-7"
                             style={{ display: 'block' }}
                             name="detail"

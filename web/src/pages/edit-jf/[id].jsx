@@ -284,7 +284,6 @@ const index = () => {
                   <Input
                     type="text"
                     placeholder="JF名入力する"
-                    maxLength={20}
                     onChange={onValueNameChange}
                   />
                 </Form.Item>
