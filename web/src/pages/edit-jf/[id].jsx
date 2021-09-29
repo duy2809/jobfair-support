@@ -271,7 +271,9 @@ const index = () => {
             <div className="grid grid-cols-2 mx-10">
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="JF名:"
+                  label={
+                    <p className="font-bold">JF名</p>
+                  }
                   name="name"
                   rules={[
                     {
@@ -289,7 +291,9 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="start_date"
-                  label="開始日:"
+                  label={
+                    <p className="font-bold">開始日</p>
+                  }
                   rules={[
                     {
                       validator: startDayValidator,
@@ -308,7 +312,9 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="参加企業社数:"
+                  label={
+                    <p className="font-bold">参加企業社数</p>
+                  }
                   name="number_of_companies"
                   rules={[
                     {
@@ -329,7 +335,9 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="number_of_students"
-                  label="推定参加学生数:"
+                  label={
+                    <p className="font-bold">推定参加学生数</p>
+                  }
                   rules={[
                     {
                       validator: studentsJoinValidator,
@@ -348,7 +356,9 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="管理者:"
+                  label={
+                    <p className="font-bold">管理者</p>
+                  }
                   name="jobfair_admin_id"
                   onSelect={adminSelect}
                   rules={[
@@ -369,7 +379,9 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="schedule_id"
-                  label="JFスケジュール:"
+                  label={
+                    <p className="font-bold">JFスケジュール</p>
+                  }
                   rules={[
                     {
                       validator: JFScheduleValidator,
@@ -392,7 +404,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  マイルストーン一覧:
+                  <p className="font-bold">マイルストーン一覧</p>
                   <List
                     className="demo-infinite-container"
                     bordered
@@ -412,7 +424,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  タスク一覧:
+                  <p className="font-bold">タスク一覧</p>
                   <List
                     className="demo-infinite-container"
                     bordered

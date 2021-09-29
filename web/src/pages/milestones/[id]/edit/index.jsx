@@ -160,6 +160,7 @@ const EditMilestonePage = () => {
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
             <Form
               form={form}
+              colon={false}
               name="basic"
               labelCol={{
                 span: 8,
@@ -172,7 +173,7 @@ const EditMilestonePage = () => {
             >
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>マイルストーン名</p>
+                  <p className="font-bold text-right">マイルストーン名</p>
                 }
                 name="name"
                 rules={[
@@ -204,7 +205,7 @@ const EditMilestonePage = () => {
 
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>期日</p>
+                  <p className="font-bold text-right">期日</p>
                 }
                 name="time"
                 rules={[

@@ -167,6 +167,7 @@ const AddMilestonePage = () => {
           <div className="pt-10">
             <Form
               form={form}
+              colon={false}
               name="addMilestone"
               // onFinish={onFinish}
               initialValues={{
@@ -179,7 +180,7 @@ const AddMilestonePage = () => {
             >
               <Form.Item
                 label={(
-                  <p style={{ margin: 0 }}>
+                  <p className="font-bold text-right">
                     マイルストーン名
                   </p>
                 )}
@@ -215,7 +216,7 @@ const AddMilestonePage = () => {
               </Form.Item>
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>期日</p>
+                  <p className="font-bold text-right">期日</p>
                 }
                 name="time"
                 rules={[

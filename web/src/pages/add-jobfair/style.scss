@@ -22,8 +22,7 @@
   .label {
     min-width: 180px;
   }
-  .ant-form-item-control-input {
-  }
+  
   .demo-infinite-container {
     height: 280px;
     padding: 8px 24px;
@@ -67,7 +66,7 @@
     background-color: transparent;
   }
   .ant-form-horizontal .ant-form-item-label {
-    text-align: start;
+    text-align: end;
   }
   .ant-form-item-label > label,
   .label {
