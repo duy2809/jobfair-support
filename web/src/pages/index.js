@@ -121,6 +121,7 @@ const LoginPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
+              className="font-bold"
               label="メールアドレス"
               name="email"
               rules={[{ required: true }, { type: 'email' }]}
@@ -132,6 +133,7 @@ const LoginPage = () => {
             </Form.Item>
 
             <Form.Item
+              className="font-bold"
               label="パスワード"
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
@@ -169,6 +171,7 @@ const LoginPage = () => {
                 validateMessages={validateMessages}
               >
                 <Form.Item
+                  className="font-bold"
                   label="メールアドレス"
                   name="reset-email"
                   rules={[{ required: true }, { type: 'email' }]}
