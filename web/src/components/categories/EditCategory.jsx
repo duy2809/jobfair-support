@@ -107,11 +107,18 @@ const EditCategory = (props) => {
 
         <Form
           form={form}
-          layout="vertical"
+          layout="horizontal"
+          labelCol={{
+            span: 6,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          colon={false}
         >
           <Form.Item
             label={
-              <span>カテゴリ名</span>
+              <span className="font-bold">カテゴリ名</span>
             }
             name="name"
             rules={[

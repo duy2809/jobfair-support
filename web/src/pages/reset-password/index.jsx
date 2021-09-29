@@ -69,6 +69,7 @@ const ResetPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
+              className="font-bold"
               label="新しいパスワード"
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
@@ -78,6 +79,7 @@ const ResetPage = () => {
             </Form.Item>
 
             <Form.Item
+              className="font-bold"
               label="パスワード確認用"
               name="confirm_password"
               dependencies={['password']}

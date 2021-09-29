@@ -322,13 +322,16 @@ const index = () => {
                   initialValues={{ defaultInputValue: 0 }}
                   onFinish={onFinishSuccess}
                   onFinishFailed={onFinishFailed}
+                  labelAlign="right"
 
                 >
                   <div className="flex justify-center">
                     <div className="left-side w-1/2">
                       {/* jobfair name */}
                       <Form.Item
-                        label="JF名"
+                        label={
+                          <p className="font-bold text-right">JF名</p>
+                        }
                         required
                       >
                         <Form.Item
@@ -360,7 +363,9 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
-                        label="参加企業社数"
+                        label={
+                          <p className="font-bold">参加企業社数</p>
+                        }
                         name="number_of_companies"
                         rules={[
                           {
@@ -381,7 +386,9 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
-                        label="管理者"
+                        label={
+                          <p className="font-bold">管理者</p>
+                        }
                         name="jobfair_admin_id"
                         rules={[
                           {
@@ -404,7 +411,7 @@ const index = () => {
 
                       {/* list milestones */}
                       <Form.Item label=" ">
-                        <span className="label">マイルストーン一覧</span>
+                        <span className="label font-bold">マイルストーン一覧</span>
                         <List
                           className="demo-infinite-container"
                           bordered
@@ -427,8 +434,10 @@ const index = () => {
                       {/* start date */}
                       <Form.Item
                         required
+                        label={
+                          <p className="font-bold">開始日</p>
+                        }
                         name="start_date"
-                        label="開始日"
                         // hasFeedback
                         rules={[
                           {
@@ -453,8 +462,10 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
+                        label={
+                          <p className="font-bold">推定参加学生数</p>
+                        }
                         name="number_of_students"
-                        label="推定参加学生数"
                         rules={[
                           {
                             validator: studentsJoinValidator,
@@ -474,8 +485,12 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
+                        // className="font-bold"
+                        label={
+                          <p className="font-bold text-right">JFスケジュール</p>
+                        }
                         name="schedule_id"
-                        label="JFスケジュール"
+                        // label="JFスケジュール"
                         rules={[
                           {
                             validator: JFScheduleValidator,
@@ -498,7 +513,7 @@ const index = () => {
 
                       {/* list task */}
                       <Form.Item label=" ">
-                        <span className="label">タスク一覧</span>
+                        <span className="label font-bold">タスク一覧</span>
                         <List
                           className="demo-infinite-container"
                           bordered

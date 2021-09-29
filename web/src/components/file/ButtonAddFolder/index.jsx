@@ -117,12 +117,19 @@ export default function ButtonAddFolder(props) {
       >
         <Form
           form={form}
-          layout="vertical"
+          layout="horizontal"
+          labelCol={{
+            span: 6,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
           name="basic"
+          colon={false}
         >
           <Form.Item
             label={
-              <p style={{ margin: 0 }}>名前</p>
+              <p style={{ margin: 0 }} className="font-bold">名前</p>
             }
             name="name_folder"
             rules={[

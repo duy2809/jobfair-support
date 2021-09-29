@@ -418,7 +418,7 @@ function TaskList() {
               <div className="grid grid-cols-2 mx-8 ">
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="タスク名:"
+                    label="タスク名"
                     name="name"
                     required
                     rules={[
@@ -445,7 +445,7 @@ function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="カテゴリ:"
+                    label="カテゴリ"
                     name="category"
                   >
                     <span>{infoTask.categories}</span>
@@ -453,7 +453,7 @@ function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="マイルストーン:"
+                    label="マイルストーン"
                     name="milestone"
                   >
                     <span>{infoTask.milestone}</span>
@@ -461,10 +461,10 @@ function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <div className="ef-label">
-                    <div className="laybel">
-                      <span>工数:</span>
+                    <div className="laybel flex justify-end p-2">
+                      <span className="font-bold">工数</span>
                     </div>
-                    <div className="row-ef">
+                    <div className="row-ef pl-1">
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="eff">{infoTask.effort}</span>
@@ -489,7 +489,7 @@ function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="担当者:"
+                    label="担当者"
                     name="assignee"
                     required
                     className="multiples"
@@ -534,7 +534,7 @@ function TaskList() {
                 </div>
                 <div className="col-span-1 mx-4">
                   <Form.Item
-                    label="ステータス:"
+                    label="ステータス"
                     name="status"
                     required
                     rules={[
@@ -555,7 +555,7 @@ function TaskList() {
                 <div className="col-span-1 mx-4">
                   <Form.Item
                     name="start_time"
-                    label="開始日:"
+                    label="開始日"
                     required
                     className="big-icon"
                     rules={[
@@ -578,7 +578,7 @@ function TaskList() {
                   <Form.Item
                     name="end_time"
                     className="big-icon"
-                    label="終了日:"
+                    label="終了日"
                     required
                     rules={[
                       {
@@ -599,7 +599,7 @@ function TaskList() {
                 <div className="col-span-1 mx-4">
 
                   <Form.Item
-                    label="前のタスク:"
+                    label="前のタスク"
                     name="taskBefore"
                     className="tag_a"
                   >
@@ -622,7 +622,7 @@ function TaskList() {
                 <div className="col-span-1 mx-4">
 
                   <Form.Item
-                    label="次のタスク:"
+                    label="次のタスク"
                     name="afterTask"
                     className="tag_a"
                   >

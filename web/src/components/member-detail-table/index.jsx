@@ -1,7 +1,6 @@
 import React from 'react'
 import './styles.scss'
 import { withRouter } from 'next/router'
-import { url } from 'envalid'
 import PropTypes from 'prop-types'
 import { getMember } from '~/api/member-detail'
 
@@ -80,7 +79,7 @@ class MemberDetailTable extends React.Component {
       <div className="flex css_all items-center justify-center">
         <img
           alt="イメージがない"
-          src={url(`../${this.state.member.avatar}`)}
+          src={`/api/avatar/${this.state.member.id}`}
           style={{
             width: '150px',
             height: '150px',
@@ -91,7 +90,7 @@ class MemberDetailTable extends React.Component {
         />
         <table className="member_table m-5">
           <tr>
-            <th>フルネーム：</th>
+            <th>フルネーム&emsp;&emsp;</th>
             <td
               className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
               style={{ minHeight: '10px', marginRight: '200px' }}
@@ -100,7 +99,7 @@ class MemberDetailTable extends React.Component {
             </td>
           </tr>
           <tr>
-            <th>メールアドレス：</th>
+            <th>メールアドレス&emsp;&emsp;</th>
             <td
               className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
               style={{ minHeight: '10px', marginRight: '200px' }}
@@ -109,7 +108,7 @@ class MemberDetailTable extends React.Component {
             </td>
           </tr>
           <tr>
-            <th>カテゴリー：</th>
+            <th>カテゴリー&emsp;&emsp;</th>
             <td
               className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
               style={{ minHeight: '10px', marginRight: '200px' }}
@@ -118,7 +117,7 @@ class MemberDetailTable extends React.Component {
             </td>
           </tr>
           <tr className="ml-auto mr-auto  py-3  text-left">
-            <th>アサインされたJF：</th>
+            <th>アサインされたJF&emsp;&emsp;</th>
             <td>{this.state.listJF}</td>
           </tr>
         </table>
