@@ -19,9 +19,9 @@ class TemplateTaskSeeder extends Seeder
     {
         $milestones = Milestone::factory(5)->create();
         $schedule = Schedule::factory()->hasAttached($milestones)->create([
-            'id' => 50,
+            'id' => 100,
         ]);
-        $index = 50;
+        $index = 100;
         foreach ($milestones as $milestone) {
             for ($i = 0; $i < 3; $i++) {
                 $templateTask = TemplateTask::factory()->for($milestone)->hasAttached(Category::all()->random(2))->create([
@@ -32,7 +32,7 @@ class TemplateTaskSeeder extends Seeder
             }
         }
 
-        for ($i = 50; $i < $index - 1; $i++) {
+        for ($i = 100; $i < $index - 1; $i++) {
             TemplateTask::find($i)->afterTasks()->attach(TemplateTask::find($i + 1));
         }
     }
