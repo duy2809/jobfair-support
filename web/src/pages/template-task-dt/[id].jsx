@@ -158,8 +158,8 @@ function templatetTaskDt() {
               <div className="grid grid-cols-2 mx-16 info__center">
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className=" layber col-span-1 mx-4">
-                      <p>テンプレートタスク名:</p>
+                    <div className=" layber col-span-1 mx-4 text-right font-bold">
+                      <p>テンプレートタスク名</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{name}</div>
@@ -168,8 +168,8 @@ function templatetTaskDt() {
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber  col-span-1 mx-4">
-                      <p>カテゴリ:</p>
+                    <div className="layber  col-span-1 mx-4 text-right font-bold">
+                      <p>カテゴリ</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{categoryName}</div>
@@ -179,8 +179,8 @@ function templatetTaskDt() {
 
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
-                      <p>マイルストーン:</p>
+                    <div className="layber col-span-1 mx-4 text-right font-bold">
+                      <p>マイルストーン</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{milestoneName}</div>
@@ -189,8 +189,8 @@ function templatetTaskDt() {
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
-                      <p>工数:</p>
+                    <div className="layber col-span-1 mx-4 text-right font-bold">
+                      <p>工数</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       {unit === 'none' ? (
@@ -214,7 +214,7 @@ function templatetTaskDt() {
 
               <div className="grid grid-cols-2 mx-16 mt-5">
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">前のタスク: </p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">前のタスク </p>
                   <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
@@ -239,7 +239,7 @@ function templatetTaskDt() {
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">次のタスク:</p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">次のタスク</p>
                   <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
