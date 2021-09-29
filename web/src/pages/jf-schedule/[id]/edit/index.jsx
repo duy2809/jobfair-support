@@ -213,7 +213,7 @@ function editJobfairSchedule() {
             size="large"
             form={form}
             name="edit-jfschedule"
-            onFinish={onFinish}
+            // onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             requiredMark="optional"
           >
@@ -222,7 +222,7 @@ function editJobfairSchedule() {
                 label={(
                   <div className="flex items-center justify-between">
                     <ScheduleOutlined style={{ fontSize: '32px' }} />
-                    <span className="ml-2 font-bold">JFスケジュール名</span>
+                    <span className="ml-2">JFスケジュール名</span>
                   </div>
                 )}
                 name="jfschedule_name"
@@ -243,7 +243,7 @@ function editJobfairSchedule() {
                 label={(
                   <div className="flex items-center w-full">
                     <FlagOutlined style={{ fontSize: '32px' }} />
-                    <span className="ml-2 font-bold">マイルストーン</span>
+                    <span className="ml-2">マイルストーン</span>
                   </div>
                 )}
                 name="milestone_select"
@@ -298,11 +298,21 @@ function editJobfairSchedule() {
             <Form.Item>
               <div className="mt-5 flex justify-end">
                 <CancelBtn />
-                <Button type="primary" htmlType="submit" className="ml-3">
+                <Button type="primary" htmlType="submit" className="ml-3" onClick={showModal}>
                   保存
                 </Button>
               </div>
             </Form.Item>
+            <Modal
+              title="JFスケジュール編集"
+              visible={isModalVisible}
+              onOk={onFinish}
+              onCancel={handleCancel}
+              okText="はい"
+              cancelText="いいえ"
+            >
+              <p className="mb-5">保存してもよろしいですか</p>
+            </Modal>
           </Form>
         </div>
       </Layout.Main>
