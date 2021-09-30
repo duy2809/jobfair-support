@@ -80,12 +80,14 @@ function MemberDetailPage() {
               <>
                 <EditOutlined
                   onClick={handleEdit}
-                  className="text-4xl px-2"
+                  className="border-none mx-1 text-2xl"
+                  style={{ color: 'rgb(16, 85, 189)' }}
                 />
 
                 <DeleteOutlined
                   onClick={modelDelete}
-                  className="text-4xl px-2"
+                  className="border-none mx-1 text-2xl"
+                  style={{ color: 'rgb(16, 85, 189)' }}
                 />
               </>
             ) : null}
