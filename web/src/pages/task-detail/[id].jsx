@@ -5,15 +5,12 @@ import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
-import {
-  taskData,
-  beforeTask,
-  afterTask,
-  deleteTask,
-} from '../../api/task-detail'
+import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
 
 function TaskDetail() {
   const router = useRouter()
@@ -142,38 +139,33 @@ function TaskDetail() {
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
-                <Button
-                  style={{ border: 'none' }}
-                  type="primary"
-                  onClick={handleBack}
-                >
+                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
                   戻る
                 </Button>
               </div>
-              <div className="button__right">
+            </div>
+            <div className="title flex justify-between items-center">
+              <h1>タスク詳細</h1>
+              <div className="button__right mb-12 pb-2">
                 {role === 'admin' || role === 'superadmin' ? (
                   <>
-                    <Button
-                      style={{ border: 'none' }}
+                    <EditTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={handleEdit}
                     >
-                      <span> 編集 </span>
-                    </Button>
-                    <Button
-                      style={{ border: 'none' }}
+                      {/* <EditOutlined /> */}
+                    </EditTwoTone>
+                    <DeleteTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={modelDelete}
                     >
-                      <span> 削除 </span>
-
-                    </Button>
+                      {/* <DeleteOutlined /> */}
+                    </DeleteTwoTone>
                   </>
                 ) : null}
               </div>
-            </div>
-            <div className="title">
-              <h1>タスク詳細</h1>
             </div>
 
             <div className="info__tplt">
@@ -218,18 +210,18 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
-                          {infoTask.unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
+                          {infoTask.unit === 'students' ? (
+                            <span className="ef">学生数</span>
+                          ) : (
+                            <span className="ef">企業数</span>
+                          )}
                         </>
                       )}
                     </div>

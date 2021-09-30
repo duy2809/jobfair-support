@@ -35,13 +35,14 @@ const ResetPage = () => {
       token,
       password: values.confirm_password,
     }
-    // console.log(data);
     try {
       const response = await updatePassword(data)
-      if (response.request.status === 200) openNotification('success', 'パスワードを正常に変更しました')
-      setTimeout(() => {
-        router.push('/login')
-      }, 2500)
+      if (response.request.status === 200) {
+        setTimeout(() => {
+          router.push('/')
+          openNotification('success', 'パスワードを正常に変更しました')
+        }, 2500)
+      }
     } catch (error) {
       if (error.request.status === 400) {
         openNotification('error', 'パスワードを正常に変更しません')

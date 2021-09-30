@@ -39,15 +39,15 @@
   .add-template-form {
     width: 100%;
   }
-//   .task {
-//     .ant-col-13 {
-//       width: 100%;
-//       margin-left: 0;
-//     }
-//     .ant-col-6 {
-//       margin-right: 0;
-//     }
-//   }
+  //   .task {
+  //     .ant-col-13 {
+  //       width: 100%;
+  //       margin-left: 0;
+  //     }
+  //     .ant-col-6 {
+  //       margin-right: 0;
+  //     }
+  //   }
   .ant-form-item-control-input,
   .ant-form-item-explain.ant-form-item-explain-error {
     width: 100%;
@@ -80,7 +80,6 @@
   }
   .ant-form-item-label > label,
   .label {
-    font-size: 18px;
     color: #272343;
   }
   #loading {
@@ -124,7 +123,6 @@
   }
   .ant-form-item-label > label,
   .label {
-    font-size: 19px;
     color: #272343;
     text-align: start;
   }
@@ -136,20 +134,5 @@
     .ant-form-horizontal .ant-form-item-label {
       // text-align: start;
     }
-  }
-
-  .ant-form-item-label > label::after {
-    content: '';
-  }
-
-  // .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
-  //   font-size: 20px;
-  //   font-family: inherit;
-  //   font-weight: 700;
-  // }
-
-  .ant-form-item-label > label::before {
-    content: "*";
-    color:white;
   }
 }

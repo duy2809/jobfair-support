@@ -5,16 +5,13 @@ import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
 } from '@ant-design/icons'
 
 import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
-import {
-  templateTask,
-  beforeTask,
-  afterTask,
-  deleteTptt,
-} from '../../api/template-task'
+import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
 
 function templatetTaskDt() {
   const router = useRouter()
@@ -122,37 +119,35 @@ function templatetTaskDt() {
           <div className="template-task-dt">
             <div className="list__button">
               <div className="button__left">
-                <Button
-                  style={{ border: 'none' }}
-                  type="primary"
-                  onClick={handleBack}
-                >
+                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
                   戻る
                 </Button>
               </div>
-              <div className="button__right">
-                { role === 'superadmin' ? (
+            </div>
+
+            <div className="flex items-center justify-between">
+              <h1>テンプレートタスク詳細</h1>
+              <div className="button__right mb-12 pb-2">
+                {role === 'admin' || role === 'superadmin' ? (
                   <>
-                    <Button
-                      style={{ border: 'none' }}
+                    <EditTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={handleEdit}
                     >
-                      <span> 編集 </span>
-                    </Button>
-                    <Button
-                      style={{ border: 'none' }}
+                      {/* <EditOutlined /> */}
+                    </EditTwoTone>
+                    <DeleteTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={modelDelete}
                     >
-                      <span> 削除 </span>
-                    </Button>
+                      {/* <DeleteOutlined /> */}
+                    </DeleteTwoTone>
                   </>
                 ) : null}
               </div>
             </div>
-
-            <h1>テンプレートタスク詳細</h1>
 
             <div className="info__tplt">
               <div className="grid grid-cols-2 mx-16 info__center">
@@ -197,14 +192,17 @@ function templatetTaskDt() {
                         <>
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
-
                         </>
                       ) : (
                         <>
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
                           <span>/</span>
-                          {unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
+                          {unit === 'students' ? (
+                            <span className="ef">学生数</span>
+                          ) : (
+                            <span className="ef">企業数</span>
+                          )}
                         </>
                       )}
                     </div>
@@ -258,7 +256,6 @@ function templatetTaskDt() {
                               </a>
                             </Tooltip>
                           </Tag>
-
                         </li>
                       ))
                       : null}
