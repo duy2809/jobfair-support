@@ -135,7 +135,7 @@ class JobfairController extends Controller
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
 
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
-                    ->orderBy('tasks.end_time', 'ASC');
+                    ->orderBy('tasks.id', 'ASC');
             },
         ])->find($id, ['id']);
 
