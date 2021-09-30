@@ -1,16 +1,12 @@
 describe('Check invite member', () => {
-  const randomString = () => {
-    return 'randomstring' + Math.random().toString(10).substring(2, 7)
-  }
+  const randomString = () => `randomstring${Math.random().toString(10).substring(2, 7)}`
 
-  const randomEmail = () => {
-    return randomString() + '@gmail.com'
-  }
+  const randomEmail = () => `${randomString()}@gmail.com`
 
   beforeEach(() => {
     cy.visit('/invite-member')
   })
-
+  
   it('Check screen name', () => {
     cy.get('.screen-name').should('be.visible').should('contain', 'メンバ招待')
   })
@@ -62,7 +58,7 @@ describe('Check invite member', () => {
 
   it('Check error message when enter email already exist in system', () => {
     cy.get('#btn-submit').should('be.disabled')
-    cy.get('#email').type('existemail@gmail.com')  // TODO: change email already exist in DB
+    cy.get('#email').type('existemail@gmail.com') // TODO: change email already exist in DB
     cy.get('#categories')
       .click()
       .then(() => {

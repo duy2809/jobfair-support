@@ -2,6 +2,7 @@ import { Form, Modal, Button, Input, notification } from 'antd'
 import React, { useState } from 'react'
 import { updatePassword } from '../../../api/profile'
 import { webInit } from '../../../api/web-init'
+import './style.scss'
 
 const ButtonChangePassword = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -81,6 +82,7 @@ const ButtonChangePassword = () => {
         パスワード変更
       </Button>
       <Modal
+        className="modal-change-password"
         title="パスワード変更"
         visible={isModalVisible}
         onOk={handleOk}
@@ -102,7 +104,9 @@ const ButtonChangePassword = () => {
           validateMessages={validateMessages}
         >
           <Form.Item
-            label="現在のパスワード"
+            label={
+              <p className="font-bold">現在のパスワード</p>
+            }
             name="current_password"
             rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
           >
@@ -110,7 +114,9 @@ const ButtonChangePassword = () => {
           </Form.Item>
 
           <Form.Item
-            label="新しいパスワード"
+            label={
+              <p className="font-bold">新しいパスワード</p>
+            }
             name="password"
             rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
           >
@@ -118,7 +124,9 @@ const ButtonChangePassword = () => {
           </Form.Item>
 
           <Form.Item
-            label="新しいパスワード(再確認)"
+            label={
+              <p className="font-bold">新しいパスワード(再確認)</p>
+            }
             name="confirm_password"
             dependencies={['password']}
             rules={[

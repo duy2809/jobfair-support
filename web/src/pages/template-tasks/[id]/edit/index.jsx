@@ -233,7 +233,7 @@ const EditTemplateTaskPage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <>
+          <div className="edit-template-task">
             <h1>テンプレートタスク編集</h1>
             {/* <div className="h-screen flex flex-col items-center pt-10 bg-white my-8"> */}
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
@@ -347,7 +347,7 @@ const EditTemplateTaskPage = () => {
                 </Form.Item>
               </Form>
             </div>
-          </>
+          </div>
         </OtherLayout.Main>
       </OtherLayout>
     </div>

@@ -12,9 +12,10 @@
     color: #2d334a;
   }
   .ant-form-horizontal .ant-form-item-label {
-    text-align: start;
+    // text-align: right;
     margin-right: 3px;
     min-width: 210px;
+    font-weight: 700;
   }
 
   .ant-tag,
@@ -94,7 +95,7 @@
   //   max-width: 8%;
   // }
   .ant-form-item {
-    // margin: 10px 10px;
+    margin: 10px 10px;
   }
   .ant-col-13 {
     min-width: 300px;
@@ -125,6 +126,7 @@
   .label {
     font-size: 19px;
     color: #272343;
+    text-align: start;
   }
   .ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-dot {
     font-size: 30px;
@@ -132,7 +134,22 @@
   }
   @media screen and (max-width: 768px) {
     .ant-form-horizontal .ant-form-item-label {
-      text-align: start;
+      // text-align: start;
     }
+  }
+
+  .ant-form-item-label > label::after {
+    content: '';
+  }
+
+  // .ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  //   font-size: 20px;
+  //   font-family: inherit;
+  //   font-weight: 700;
+  // }
+
+  .ant-form-item-label > label::before {
+    content: "*";
+    color:white;
   }
 }

@@ -1,31 +1,36 @@
 const validPassword = '12345678'; // TODO: change your password in db
-const existValidEmail = 'AnAdmin@sun-asterisk.com'; // TODO: change your email in db
+const existValidEmail = 'jobfair@sun-asterisk.com'; // TODO: change your email in db
+
 
 describe('Check file', () => {
-    
     const id = 1
-    before(()=>{
-
-        cy.visit('http://jobfair.local:8000/login');
-        cy.get('#login_email').type(existValidEmail);
-        cy.get('#login_password').type(validPassword);
-        cy.get('.ant-btn')
-          .should('contain', 'ログイン')
-          .should('not.be.disabled')
-          .click();
-    
-        cy.wait(3000);
-        cy.visit(`http://jobfair.local:8000/file/${id}`);
-        cy.wait(3000);
-    })
-
-    it('Check Display', () => {
+    context('Check file', () => {
+        it('Visit file', () => {
+            cy.request('GET', '/api/web-init').then((response) => {
+                const str = response.headers['set-cookie'][0]
+                const token = `${str.replace('XSRF-TOKEN=', '').replace(/%3[Dd].*/g, '')}==`
+                cy.request({
+                    method: 'POST',
+                    url: '/api/login',
+                    headers: {
+                        'X-XSRF-TOKEN': token,
+                    },
+                    body: {
+                        email: 'jobfair@sun-asterisk.com',
+                        password: '12345678',
+                    },
+                })
+            })
+            cy.visit(`/file/${id}`)
+            
+        })
+        it('Check Display', () => {
         cy.get('h1').contains('ファイル')
         cy.get('.navbar').should('be.visible')
     
-    })
+        })
 
-    it('Check file', () => {
+        it('Check file', () => {
         cy.get('table').find('div').contains('名前')
         cy.get('table').find('th').contains('更新者')
         cy.get('table').find('th').contains('更新時間')
@@ -61,19 +66,38 @@ describe('Check file', () => {
                 cy.get('button').find('span').contains('編 集').then(($btn) => {
                     if ($btn.is(":disabled")) {
                     } else {
-                        cy.get('button').find('span').contains('編 集').click()
-                        cy.get('.ant-modal-content').find('.ant-modal-header > div').contains('新しいファイル')
-                        cy.get('.ant-modal-content').find('.ant-modal-body > form').find('p').contains('名前')
-                        cy.get('input[id=basic_name_file]').clear().then(() => {
-                            cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
-                          })
-                        cy.get('.ant-modal-content').find('.ant-modal-body > form').find('p').contains('リンク')
-                        cy.get('input[id=basic_link]').clear().then(() => {
-                            cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
-                          })
-                        cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル')
-                        cy.get('.ant-modal-content').find('.ant-modal-footer > button').should('be.disabled').find('span').contains('保 存')
-                        cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル').click()
+                        cy.get('tbody').find('tr:nth-child(2)').find('td:nth-child(2) > div > span:nth-child(1)').then(($span)=>{
+                            const cls = $span.attr('aria-label')
+                            if(cls == 'folder'){
+
+                                cy.get('button').find('span').contains('編 集').click()
+                                cy.get('.ant-modal-content').find('.ant-modal-header > div').contains('新しいフォルダ')
+                                cy.get('.ant-modal-content').find('.ant-modal-body > form').find('p').contains('名前')
+                                cy.get('input[id=basic_name_folder]').clear().then(() => {
+                                    cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
+                                  })
+        
+                                  cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル')
+                                  cy.get('.ant-modal-content').find('.ant-modal-footer > button').should('be.disabled').find('span').contains('保 存')
+                                  cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル').click()
+                                  cy.get('button').find('span').contains('編 集').click()
+                                }else{
+                                    cy.get('button').find('span').contains('編 集').click()
+                                    cy.get('.ant-modal-content').find('.ant-modal-header > div').contains('新しいファイル')
+                                    cy.get('.ant-modal-content').find('.ant-modal-body > form').find('p').contains('名前')
+                                    cy.get('input[id=basic_name_file]').clear().then(() => {
+                                        cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
+                                      })
+                                      cy.get('.ant-modal-content').find('.ant-modal-body > form').find('p').contains('リンク')
+                                      cy.get('input[id=basic_link]').clear().then(() => {
+                                          cy.get('.ant-form-item-explain-error').find('div').should('have.attr','role','alert').contains('この項目は必須です。')
+                                        })
+                                      cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル')
+                                      cy.get('.ant-modal-content').find('.ant-modal-footer > button').should('be.disabled').find('span').contains('保 存')
+                                      cy.get('.ant-modal-content').find('.ant-modal-footer > button > span').contains('キャンセル').click()
+                                }
+                            })
+                        
 
                     }
                   })
@@ -81,6 +105,9 @@ describe('Check file', () => {
             })
            
         }
-
     })
-})  
+
+
+        
+    })
+})

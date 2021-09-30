@@ -113,10 +113,15 @@ function InviteMember() {
                 size="large"
                 colon={false}
                 className="invite-member-form"
+                labelAlign="right"
                 onFinish={handleInvite}
                 validateMessages={validateMessages}
               >
-                <Form.Item label="メールアドレス" colon required>
+                <Form.Item
+                  label="メールアドレス"
+                  className="font-bold"
+                  required
+                >
                   <Form.Item
                     name="email"
                     label="メールアドレス"

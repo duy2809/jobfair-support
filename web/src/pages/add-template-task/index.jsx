@@ -595,7 +595,7 @@ const index = () => {
                                   allowClear
                                   tagRender={tagRender}
                                   className="w-100"
-                                  placeholder="リレーション"
+                                  placeholder="リレーションを選択"
                                   onChange={filtedArr}
                                 >
                                   {afterTasks.map((element) => (
@@ -611,7 +611,7 @@ const index = () => {
                           </div>
                           {/* details    */}
                           <Form.Item
-                            label="詳細"
+                            label=""
                             className="block mx-7"
                             style={{ display: 'block' }}
                             name="detail"

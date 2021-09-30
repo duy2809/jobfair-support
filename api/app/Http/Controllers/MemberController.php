@@ -30,7 +30,7 @@ class MemberController extends Controller
     public function showMember($id)
     {
         $user = User::findOrFail($id);
-        $categories = $user->categories->pluck(['category_name']);
+        $categories = $user->categories;
 
         return [
             'user' => $user,
@@ -49,13 +49,12 @@ class MemberController extends Controller
         $validator->validate();
 
         $user = User::findOrFail($id);
-
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->categories()->sync($request->categories);
+        $user->save();
 
-        $user->categories()->sync($request->get('categories'));
-
-        return $user->save();
+        return $user->categories;
     }
 
     public function getTaskByID(Request $request, $id)

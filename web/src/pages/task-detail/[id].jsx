@@ -5,15 +5,12 @@ import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
-import {
-  taskData,
-  beforeTask,
-  afterTask,
-  deleteTask,
-} from '../../api/task-detail'
+import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
 
 function TaskDetail() {
   const router = useRouter()
@@ -142,38 +139,33 @@ function TaskDetail() {
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
-                <Button
-                  style={{ border: 'none' }}
-                  type="primary"
-                  onClick={handleBack}
-                >
+                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
                   戻る
                 </Button>
               </div>
-              <div className="button__right">
+            </div>
+            <div className="title flex justify-between items-center">
+              <h1>タスク詳細</h1>
+              <div className="button__right mb-12 pb-2">
                 {role === 'admin' || role === 'superadmin' ? (
                   <>
-                    <Button
-                      style={{ border: 'none' }}
+                    <EditTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={handleEdit}
                     >
-                      <span> 編集 </span>
-                    </Button>
-                    <Button
-                      style={{ border: 'none' }}
+                      {/* <EditOutlined /> */}
+                    </EditTwoTone>
+                    <DeleteTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={modelDelete}
                     >
-                      <span> 削除 </span>
-
-                    </Button>
+                      {/* <DeleteOutlined /> */}
+                    </DeleteTwoTone>
                   </>
                 ) : null}
               </div>
-            </div>
-            <div className="title">
-              <h1>タスク詳細</h1>
             </div>
 
             <div className="info__tplt">
@@ -181,7 +173,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 ">
                   <div className="grid grid-cols-8 ">
                     <div className=" layber col-span-2 mx-4">
-                      <p>タスク名:</p>
+                      <p className="font-bold text-right">タスク名</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.name}</div>
@@ -191,7 +183,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 ">
                   <div className="grid grid-cols-8 ">
                     <div className="layber  col-span-2 mx-4">
-                      <p>カテゴリ:</p>
+                      <p className="font-bold text-right">カテゴリ</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.categories}</div>
@@ -202,7 +194,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p>マイルストーン:</p>
+                      <p className="font-bold text-right">マイルストーン</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">{infoTask.milestone}</div>
@@ -212,24 +204,24 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p>工数:</p>
+                      <p className="font-bold text-right">工数</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
-                          {infoTask.unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
+                          {infoTask.unit === 'students' ? (
+                            <span className="ef">学生数</span>
+                          ) : (
+                            <span className="ef">企業数</span>
+                          )}
                         </>
                       )}
                     </div>
@@ -238,7 +230,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8">
                     <div className="layber col-span-2 mx-4">
-                      <p>担当者:</p>
+                      <p className="font-bold text-right">担当者</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
@@ -254,7 +246,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p>ステータス:</p>
+                      <p className="font-bold text-right">ステータス</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       {infoTask.status === '未着手' ? (
@@ -309,7 +301,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p>開始日:</p>
+                      <p className="font-bold text-right">開始日</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <span className="item__right">{infoTask.start_time}</span>
@@ -319,7 +311,7 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p>終了日:</p>
+                      <p className="font-bold text-right">終了日</p>
                     </div>
                     <div className="col-span-6 mx-4">
                       <span className="item__right">{infoTask.end_time}</span>
@@ -328,9 +320,11 @@ function TaskDetail() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 mx-5 mt-5">
-                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
-                  <p className="mb-2 col-span-2">前のタスク: </p>
+              <div className="grid grid-cols-2 mx-4 mt-5">
+                <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
+                  <div className="layber col-span-2 mx-4">
+                    <p className="font-bold text-right">前のタスク</p>
+                  </div>
                   <ul className="list__task col-span-6">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
@@ -355,7 +349,9 @@ function TaskDetail() {
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
-                  <p className="mb-2 col-span-2">次のタスク:</p>
+                  <div className="layber col-span-2 mx-4">
+                    <p className="font-bold text-right">次のタスク</p>
+                  </div>
                   <ul className="list__task col-span-6">
                     {afterTasks
                       ? afterTasks.map((item) => (
