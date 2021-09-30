@@ -5,13 +5,20 @@
 }
 
 .cursor-pointer{
-    .bell-icon {
-        color: #ffd803;
+    .bell-icon{
+       fill: #ffd803;
+    }
+    span > svg {
+        margin-top: -0.5rem;
     }
 }
 
+.background {
+    background-color: #197278;
+}
 .number-notifications {
-    color: #F14E2B;
+    color: white;
+    background-color: red;
 }
 .user-icon-container {
     border-radius: 50%;
