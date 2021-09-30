@@ -60,24 +60,27 @@ function TaskDetail() {
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
-        setInfoTask({
-          id: response.data.id,
-          name: response.data.name,
-          categories: response.data.categories[0].category_name,
-          milestone: response.data.milestone.name,
-          status: response.data.status,
-          start_time: response.data.start_time,
-          end_time: response.data.end_time,
-          effort: response.data.template_task.effort,
-          is_day: response.data.template_task.is_day,
-          unit: response.data.template_task.unit,
-          description_of_detail: response.data.description_of_detail,
-        })
-        setListMemberAssignee(response.data.users)
-        setInfoJF({
-          id: response.data.schedule.jobfair.id,
-          name: response.data.schedule.jobfair.name,
-        })
+        if (response.status === 200) {
+          const data = response.data
+          setInfoTask({
+            id: data.id,
+            name: data.name,
+            categories: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            status: data.status,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            effort: data.template_task.effort,
+            is_day: data.template_task.is_day,
+            unit: data.template_task.unit,
+            description_of_detail: data.description_of_detail,
+          })
+          setListMemberAssignee(data.users)
+          setInfoJF({
+            id: data.schedule.jobfair.id,
+            name: data.schedule.jobfair.name,
+          })
+        }
       })
       .catch((error) => {
         console.log(error)

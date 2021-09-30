@@ -8,21 +8,18 @@
     align-items: center;
   }
 
-  .ant-form-item {
-    margin-top: 24px;
-    margin-bottom: 0;
-  }
-
-  .ant-form-item-label {
+  .ant-form-item-label,
+  .font-bold {
     text-align: right;
+    min-width: 150px;
   }
 
-  .button_cacel {
+  .button_cancel {
     background-color: white !important;
     border: 1px solid rgb(224, 222, 222) !important;
   }
 
-  .button_cacel:hover {
+  .button_cancel:hover {
     color: #ffd803 !important;
     border: 1px solid #ffd803 !important;
   }
@@ -52,7 +49,7 @@
     display: flex;
     align-items: center;
 
-    .laybel {
+    .label {
       width: 25%;
     }
   }
@@ -89,7 +86,7 @@
     margin: 0 auto;
   }
 
-  .ant-spin-nested-loading>div>.ant-spin {
+  .ant-spin-nested-loading > div > .ant-spin {
     position: fixed;
     top: 50%;
     left: 0;
@@ -101,7 +98,7 @@
     max-height: 400px;
   }
 
-  .ant-spin-nested-loading>div>.ant-spin-lg .ant-spin-dot {
+  .ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-dot {
     font-size: 30px;
     color: #ffd803;
   }
@@ -113,23 +110,23 @@
   }
 
   .multiples {
-
     .ant-select:hover,
     .ant-select-focused {
       border-color: #646462;
     }
 
-    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
       border-color: #bdbcb9;
     }
 
-    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+      .ant-select-selector {
       border-color: #bdbcb9;
     }
   }
 
   .big-icon {
-
     .anticon,
     .edit-task .layout-task .anticon-home,
     .edit-task .layout-task .ant-menu-item-icon {
@@ -139,5 +136,21 @@
 
   label {
     font-weight: 700;
+  }
+
+  .ant-select-selector,
+  .ant-picker,
+  .ant-btn {
+    height: 38px;
+  }
+
+  .ant-form-item-control-input-content,
+  .ant-picker.ant-picker-large {
+    width: 100%;
+  }
+
+  .ant-form-item-no-colon,
+  .font-bold {
+    margin-right: 2rem;
   }
 }
