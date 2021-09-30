@@ -125,7 +125,7 @@ const EditMember = ({ data }) => {
             <Form.Item
               name="name"
               label={
-                <span style={{ fontSize: '18px' }} className="font-bold">フルネーム</span>
+                <span className="font-bold">フルネーム</span>
               }
               rules={[
                 {
@@ -144,7 +144,7 @@ const EditMember = ({ data }) => {
             <Form.Item
               name="email"
               label={
-                <span style={{ fontSize: '18px' }} className="font-bold">メールアドレス</span>
+                <span style={{ fontSize: '14px' }} className="font-bold">メールアドレス</span>
               }
               rules={[
                 {
@@ -177,7 +177,7 @@ const EditMember = ({ data }) => {
             <Form.Item
               name="categories"
               label={
-                <span style={{ fontSize: '18px' }} className="font-bold">カテゴリ</span>
+                <span style={{ fontSize: '14px' }} className="font-bold">カテゴリ</span>
               }
               rules={[
                 {
