@@ -40,7 +40,7 @@ export default class Gantt extends Component {
     gantt.config.min_column_width = 44
     gantt.config.scale_height = 120
     gantt.config.drag_progress = true
-    gantt.config.show_markers = true
+    // gantt.config.show_markers = true
     gantt.config.work_time = true
 
     /* config layout */
@@ -75,9 +75,9 @@ export default class Gantt extends Component {
       const fisrtDayOfWeek = week.getDate()
       const dateToStr = 'マイルストーン名'
 
-      return `<div class="milestone-cell" style="display:flex;" >
-                  <div class="milestone-row" id="${tasks.name}" style="width:100%;border:none" >${dateToStr}</div>
-              </div>`
+      // return `<div class="milestone-cell" style="display:flex;" >
+      //             <div class="milestone-row" id="${tasks.name}" style="width:100%;border:none" >${dateToStr}</div>
+      //         </div>`
     }
     // custom link style
     gantt.templates.link_class = (link) => {
@@ -96,7 +96,11 @@ export default class Gantt extends Component {
           return ''
       }
     }
-    const daysStyle = () => ''
+    const daysStyle = (date) => {
+      if (date == new Date()) {
+        return 'today-mark'
+      }
+    }
     // you can use gantt.isWorkTime(date)
     // when gantt.config.work_time config is enabled
     // In this sample it's not so we just check week days
@@ -120,7 +124,7 @@ export default class Gantt extends Component {
     }
     gantt.config.scales = [
       { unit: 'month', step: 1, format: '%F' },
-      { unit: 'week', step: 1, format: weekScaleTemplate, css: '' },
+      { unit: 'week', step: 1, format: '%W', css: '' },
       { unit: 'day', step: 1, format: '%d', css: daysStyle },
       // { unit: 'hour', step: 1, format: '%h', css: daysStyle },
     ]
@@ -133,9 +137,9 @@ export default class Gantt extends Component {
 
     const today = new Date()
     gantt.addMarker({
-      start_date: today,
+      start_date: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
       css: 'today',
-      text: '今日',
+      // text: '今日',
       title: `Today: ${dateToStr(today)}`,
     })
     gantt.config.columns = [

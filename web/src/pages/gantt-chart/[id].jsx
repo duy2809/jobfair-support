@@ -54,6 +54,7 @@ export default function index() {
         id: element.id,
         text: element.name,
         start_date: new Date(element.start_time.replace(/\//g, '-')),
+        // start_date: new Date(),
         end_date: new Date(element.end_time.replace(/\//g, '-')),
         open: true,
         color: generateColor(element.status),

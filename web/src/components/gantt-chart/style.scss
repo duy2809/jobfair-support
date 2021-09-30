@@ -30,8 +30,15 @@
     display: none;
   }
   .gantt_marker.today {
-    background: #950de4;
-    width: 2px;
+    z-index: 0;
+    background: rgb(133, 127, 127);
+    background: linear-gradient(
+      141deg,
+      rgba(133, 127, 127, 0.9704879589295119) 0%,
+      rgba(255, 0, 221, 0.3890272847722086) 0%
+    );
+    width: 44px;
+    opacity: 0.5;
   }
   .gantt_scale_cell {
     background-color: #ffffff;
@@ -42,10 +49,13 @@
   .hideTask {
     display: none;
   }
+  .gantt_task_line.gantt_task_inline_color {
+    z-index: 999;
+  }
   .day_scale {
   }
   .week_scale {
-    border: none;
+    // border: none;
   }
   .milestone-cell {
     width: 88px;
@@ -56,9 +66,12 @@
     border: 1px solid rgb(185, 36, 36);
   }
   .week_scale .gantt_scale_cell {
-    overflow: visible;
-    border: none !important;
+    // overflow: visible;
+    // border: none !important;
   }
   .month_scale {
+  }
+  .today-mark {
+    background-color: blueviolet;
   }
 }
