@@ -45,8 +45,8 @@ body {
 
   .ant-btn:hover,
   .ant-btn:focus {
-      color: #ffd803;
-      border-color: #ffd803;
+    color: #ffd803;
+    border-color: #ffd803;
   }
 
   // disabled
@@ -123,6 +123,7 @@ body {
   //select
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
     border-color: #ffd803;
+
   }
 
   .ant-select:hover,
@@ -157,7 +158,17 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
   }
-  thead[class*='ant-table-thead'] th {
+
+  thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
+  }
+
+  .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    font-family: inherit;
+    font-size: 1.5rem;
+  }
+
+  .ant-btn {
+    height: 38px;
   }
 }

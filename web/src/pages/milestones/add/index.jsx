@@ -9,6 +9,7 @@ import {
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
+import './style.scss'
 
 const AddMilestonePage = () => {
   const [form] = Form.useForm()
@@ -153,7 +154,7 @@ const AddMilestonePage = () => {
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
-    <>
+    <div className="add-milestone">
       <OtherLayout>
         <OtherLayout.Main>
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
@@ -298,7 +299,7 @@ const AddMilestonePage = () => {
           </div>
         </OtherLayout.Main>
       </OtherLayout>
-    </>
+    </div>
   )
 }
 AddMilestonePage.middleware = ['auth:superadmin']
