@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table,Modal, Input, Button, Empty,Space, notification } from 'antd'
+import { Select, Table, Modal, Input, Button, Empty, Space, notification } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -21,7 +21,7 @@ function MemberList() {
     pageSize: 10,
     showSizeChanger: false,
   })
-  webInit().then((res) => {
+  webInit().then(() => {
     setRole(user.role)
   })
   const router = useRouter()
@@ -108,7 +108,6 @@ function MemberList() {
     try {
       if (isModalType.delete) {
         await deleteMember(id)
-        console.log(id)
         setPagination((preState) => ({
           ...preState,
           current: 1,
@@ -140,7 +139,7 @@ function MemberList() {
     } else {
       title = 'メンバを削除してもよろしいですか?'
     }
-    Modal.confirm({ 
+    Modal.confirm({
       title,
       visible: isModalVisible,
       onOk() {
