@@ -388,7 +388,7 @@ export default function File() {
   }
   return (
     <div className="File">
-      <JfLayout>
+      <JfLayout bgr={5}>
         <JfLayout.Main>
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-7 gap-x-12">

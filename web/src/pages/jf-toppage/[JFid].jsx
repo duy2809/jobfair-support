@@ -74,7 +74,7 @@ function jftoppage() {
 
   return (
     <div className="JFTopPage">
-      <JfLayout id={idJf}>
+      <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
           <div className="Jf__top">
 
