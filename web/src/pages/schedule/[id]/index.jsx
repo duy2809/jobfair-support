@@ -64,6 +64,7 @@ function ScheduleDetailGeneral() {
       setLoading(false)
     }, 3000)
   }
+
   return (
     <div className="app">
       <header>
@@ -75,15 +76,20 @@ function ScheduleDetailGeneral() {
         </span>
         <div
           className="flex justify-end"
-          style={{ visibility: role === 'admin' ? 'visible' : 'hidden' }}
+          style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
         >
-          <Button type="primary" size="default" className="mr-4" onClick={showModal}>
+          <Button
+            type="primary"
+            size="default"
+            className="mr-4"
+            onClick={showModal}
+          >
             削除
           </Button>
           <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
             <p>削除してもよろしいですか？</p>
           </Modal>
-          <Link href={`/schedule/${id}.edit`}>
+          <Link href={`/jf-schedule/${id}/edit`}>
             <Button type="primary" size="default">
               編集
             </Button>
@@ -105,5 +111,9 @@ function ScheduleDetailGeneral() {
     </div>
   )
 }
-ScheduleDetailGeneral.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+ScheduleDetailGeneral.middleware = [
+  'auth:superadmin',
+  'auth:admin',
+  'auth:member',
+]
 export default ScheduleDetailGeneral

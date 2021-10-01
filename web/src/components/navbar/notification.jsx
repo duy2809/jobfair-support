@@ -240,7 +240,7 @@ export default function Notification() {
       visible={visible}
       placement="bottomCenter"
     >
-      <div className="mt-3.5 px-4 cursor-pointer">
+      <div className="mt-5 px-4 cursor-pointer">
         <BellOutlined className="text-3xl bell-icon relative bottom-0.25" />
         <span className="relative w-5 h-5 rounded-full -top-9 -right-4 flex number-notifications justify-center items-center text-center">
           {unreadLength}

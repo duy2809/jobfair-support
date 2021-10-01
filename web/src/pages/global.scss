@@ -45,8 +45,8 @@ body {
 
   .ant-btn:hover,
   .ant-btn:focus {
-      color: #ffd803;
-      border-color: #ffd803;
+    color: #ffd803;
+    border-color: #ffd803;
   }
 
   // disabled
@@ -62,11 +62,17 @@ body {
   }
 
   //input
-  .ant-input {
+  .ant-input,
+  .ant-input-affix-wrapper {
     color: #272343;
     padding: 7px 10px;
     border-radius: 6px;
     font-size: 14px;
+  }
+
+  .ant-input-affix-wrapper .ant-input:hover,
+  .ant-input-affix-wrapper .ant-input:focus {
+    border: 0;
   }
 
   .ant-input:hover,
@@ -87,7 +93,6 @@ body {
   }
 
   .no-border {
-
     .ant-input:hover,
     .ant-input:focus {
       border: none;
@@ -108,12 +113,13 @@ body {
 
   //Pagination
   .ant-pagination-item:hover,
-  .ant-pagination-item>a:hover,
-  .ant-pagination-item-active>a,
+  .ant-pagination-item > a:hover,
+  .ant-pagination-item-active > a,
   .ant-pagination-item-active,
   .ant-pagination-item-link:hover {
     border-color: #ffd803;
-    color: #ffd803;
+    background-color: #ffd803;
+    color: black;
 
     .ant-pagination-item-link-icon {
       color: #ffd803;
@@ -130,7 +136,8 @@ body {
     border-color: #ffd803;
   }
 
-  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+    .ant-select-selector {
     border-color: #ffd803;
   }
 
@@ -157,7 +164,18 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
   }
+
   thead[class*='ant-table-thead'] th {
     background-color: #bae8e8 !important;
+  }
+
+  .ant-form-item-label
+    > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    font-family: inherit;
+    font-size: 1.5rem;
+  }
+
+  .ant-btn {
+    height: 38px;
   }
 }
