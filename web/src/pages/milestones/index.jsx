@@ -184,11 +184,6 @@ const MilestonePage = () => {
   }
 
   const columns = [
-    /* {
-      title: 'No',
-      dataIndex: 'no',
-      width: '5%',
-    }, */
     {
       title: 'マイルストーン一名',
       dataIndex: 'name',
@@ -324,7 +319,6 @@ const MilestonePage = () => {
 
             <div className="box-body">
               <Table
-                /* scroll={{ y: 380 }} */
                 columns={columns}
                 rowKey={(record) => record.id}
                 dataSource={data}
