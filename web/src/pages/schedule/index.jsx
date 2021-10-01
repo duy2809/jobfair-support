@@ -45,10 +45,7 @@ function ScheduleList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem(
-      'pagination',
-      JSON.stringify({ ...pagination, pageSize: value }),
-    )
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
 
   const handleChange = (e) => {
@@ -60,7 +57,7 @@ function ScheduleList() {
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
     )
     setFilterSchedules(result)
   }
@@ -133,7 +130,7 @@ function ScheduleList() {
               {role === 'superadmin' ? (
                 <Button
                   type="primary"
-                  className="px-12"
+                  className="px-12 "
                   htmlType="button"
                   enabled
                   onClick={handleClick}
@@ -148,12 +145,8 @@ function ScheduleList() {
           </div>
           <div className="flex w-full justify-between">
             <div>
-              <span className="text-xl">表示件数: </span>
-              <Select
-                className="ml-5"
-                value={itemCount}
-                onChange={handleSelect}
-              >
+              <span className="text-xl">表示件数 </span>
+              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
