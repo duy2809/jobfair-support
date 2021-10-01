@@ -233,8 +233,6 @@ export default function Search() {
         >
           閉じる
         </Button>
-        {/* <div className="flex justify-center">
-        </div> */}
       </Modal>
     </>
   )
