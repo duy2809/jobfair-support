@@ -16,12 +16,29 @@
         margin-left: 0px;
         margin-bottom: 0px;
         color: #272343;
-      }
-      .icon {
+    }
+    .icon {
         font-size: 18px !important;
         font-weight: 600;
         :hover {
             color: #ffd803;
         }
+    }
+    .ant-pagination-item > a:hover,
+    .ant-pagination-item-active > a,
+    .ant-pagination-item-active {
+        background-color: #ffd803 !important;
+        color: #272343 !important;
+    }
+    .ant-pagination-item-link:hover {
+        border-color: #ffd803;
+        color: #ffd803;
+    }
+    #filter {
+        font-size: 25px;
+        position: relative;
+    }
+    .ant-popover {
+        width: 400px !important;
     }
 }
