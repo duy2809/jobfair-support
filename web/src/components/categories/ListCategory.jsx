@@ -84,12 +84,13 @@ export default function ListCategories() {
       key: '2',
       title: 'アクション',
       width: '25%',
-      render: (record) => role === 'superadmin' && (
-        <Space size="middle">
-          <EditCategory record={record} reloadPage={reloadPage} role={role} />
-          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
-        </Space>
-      ),
+      render: (record) =>
+        role === 'superadmin' && (
+          <Space size="middle">
+            <EditCategory record={record} reloadPage={reloadPage} role={role} />
+            <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
+          </Space>
+        ),
     },
   ]
 
@@ -100,7 +101,7 @@ export default function ListCategories() {
         key: element.id,
         id: element.id,
         name: element.category_name,
-      })),
+      }))
     )
   }, [category])
   return (
@@ -124,6 +125,7 @@ export default function ListCategories() {
             &nbsp;
             <div className="flex items-center content-center text-center">
               <Select
+                className="flow-root"
                 size="large"
                 labelInValue
                 defaultValue={{ value: '10' }}

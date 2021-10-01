@@ -57,7 +57,7 @@ function ScheduleList() {
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
     )
     setFilterSchedules(result)
   }
@@ -134,7 +134,12 @@ function ScheduleList() {
               style={{ height: '38px' }}
             >
               <span>表示件数 </span>
-              <Select size="large" className="ml-2 " value={itemCount} onChange={handleSelect}>
+              <Select
+                size="large"
+                className="ml-2 flow-root"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
