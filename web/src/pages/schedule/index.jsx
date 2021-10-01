@@ -57,7 +57,7 @@ function ScheduleList() {
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
     )
     setFilterSchedules(result)
   }
@@ -130,7 +130,7 @@ function ScheduleList() {
           <div className="flex w-full justify-between">
             <div
               className="flex items-center content-center"
-              //t qua bat luc voi code  r day nen t moi phai inline style nhu nay :)
+              // t qua bat luc voi code  r day nen t moi phai inline style nhu nay :)
               style={{ height: '38px' }}
             >
               <span>表示件数 </span>

@@ -84,13 +84,12 @@ export default function ListCategories() {
       key: '2',
       title: 'アクション',
       width: '25%',
-      render: (record) =>
-        role === 'superadmin' && (
-          <Space size="middle">
-            <EditCategory record={record} reloadPage={reloadPage} role={role} />
-            <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
-          </Space>
-        ),
+      render: (record) => role === 'superadmin' && (
+        <Space size="middle">
+          <EditCategory record={record} reloadPage={reloadPage} role={role} />
+          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
+        </Space>
+      ),
     },
   ]
 
@@ -101,7 +100,7 @@ export default function ListCategories() {
         key: element.id,
         id: element.id,
         name: element.category_name,
-      }))
+      })),
     )
   }, [category])
   return (
@@ -115,7 +114,7 @@ export default function ListCategories() {
       <div className="list">
         <div
           className="flex"
-          //t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
+          // t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
           style={{ height: '38px' }}
         >
           <div className="flex">
