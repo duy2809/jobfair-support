@@ -256,7 +256,7 @@ function TaskList() {
     setActive(arr)
   }
   return (
-    <JfLayout id={router.query.JFid}>
+    <JfLayout id={router.query.JFid} bgr={2}>
       <JfLayout.Main>
         <div className="TaskList">
           <div className="space-y-2 justify-center">
