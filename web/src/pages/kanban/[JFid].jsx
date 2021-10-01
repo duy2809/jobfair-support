@@ -296,7 +296,7 @@ export default function KanBan() {
 
   return (
     <div className="container__kanban">
-      <JfLayout style={{ padding: '0px' }} id={idJf}>
+      <JfLayout style={{ padding: '0px' }} id={idJf} bgr={4}>
         <JfLayout.Main>
           <div
             style={{
