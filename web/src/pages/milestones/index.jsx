@@ -269,7 +269,7 @@ const MilestonePage = () => {
               <Col>
                 <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
               </Col>
-              
+
             </Row>
 
             <Row style={{ justifyContent: 'space-between' }}>
@@ -318,13 +318,13 @@ const MilestonePage = () => {
                   >
                     追加
                   </Button>
-              )}
+                )}
               </Col>
             </Row>
 
             <div className="box-body">
               <Table
-                //scroll={{ y: 380 }}
+                /* scroll={{ y: 380 }} */
                 columns={columns}
                 rowKey={(record) => record.id}
                 dataSource={data}
