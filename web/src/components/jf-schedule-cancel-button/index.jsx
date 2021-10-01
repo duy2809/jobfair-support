@@ -5,40 +5,41 @@ import './styles.scss'
 class JfScheduleCancelButton extends React.Component {
   state = {
     visible: false,
-  };
+  }
 
   showModal = () => {
     this.setState({
       visible: true,
     })
-  };
+  }
 
   handleOk = () => {
     window.location.href = '/schedule'
     this.setState({ visible: false })
-  };
+  }
 
   handleCancel = () => {
     this.setState({ visible: false })
-  };
+  }
 
   render() {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="w-32">
+        <Button size="middle" onClick={this.showModal} className="w-32">
           キャンセル
         </Button>
         <Modal
+          centered
           visible={visible}
           title="JFスケジュール編集"
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button key="back" onClick={this.handleCancel}>
+            <Button size="middle" key="back" onClick={this.handleCancel}>
               いいえ
             </Button>,
-            <Button key="submit" type="primary" onClick={this.handleOk}>
+            <Button size="middle" key="submit" type="primary" onClick={this.handleOk}>
               はい
             </Button>,
           ]}
