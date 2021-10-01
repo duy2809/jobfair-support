@@ -1,11 +1,7 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { List, Select, Form } from 'antd'
-import {
-  FileDoneOutlined,
-  DeleteOutlined,
-  CloseOutlined,
-} from '@ant-design/icons'
+import { FileDoneOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons'
 import './styles.scss'
 
 function jfScheduleEditList({
@@ -45,7 +41,7 @@ function jfScheduleEditList({
     },
     placeholder: 'テンプレートタスクを入力してください。',
     maxTagCount: 'responsive',
-    size: 'middle',
+    size: 'large',
     showArrow: true,
   }
 

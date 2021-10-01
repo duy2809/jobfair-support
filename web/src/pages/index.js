@@ -64,8 +64,8 @@ const LoginPage = () => {
 
   const onChangeDisableOk = () => {
     setDisableOk(
-      !form2.isFieldTouched('reset-email') ||
-        !!form2.getFieldsError().filter(({ errors }) => errors.length).length
+      !form2.isFieldTouched('reset-email')
+        || !!form2.getFieldsError().filter(({ errors }) => errors.length).length,
     )
   }
 
@@ -177,8 +177,8 @@ const LoginPage = () => {
                     htmlType="submit"
                     className="text-base px-14"
                     disabled={
-                      !(form.isFieldTouched('email') && form.isFieldTouched('password')) ||
-                      !!form.getFieldsError().filter(({ errors }) => errors.length).length
+                      !(form.isFieldTouched('email') && form.isFieldTouched('password'))
+                      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
                     }
                   >
                     ログイン

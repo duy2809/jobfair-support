@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import {
-  Button,
-  Form,
-  Input,
-  notification,
-  Select,
-  Divider,
-  Row,
-  Col,
-  Modal,
-} from 'antd'
+import { Button, Form, Input, notification, Select, Divider, Row, Col, Modal } from 'antd'
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import List from '../../../../components/jf-schedule-edit-list'
@@ -277,7 +267,7 @@ function editJobfairSchedule() {
                   },
                 ]}
               >
-                <Select {...selectMilestoneProps} />
+                <Select size="large" {...selectMilestoneProps} />
               </Form.Item>
             </div>
             <Divider />
@@ -321,7 +311,14 @@ function editJobfairSchedule() {
             <Form.Item>
               <div className="mt-5 flex justify-end">
                 <CancelBtn />
-                <Button type="primary" htmlType="submit" className="ml-3" onClick={showModal}>
+                <Button
+                  size="middle"
+                  type="primary"
+                  style={{ letterSpacing: '-2px' }}
+                  htmlType="submit"
+                  className="ml-3"
+                  onClick={showModal}
+                >
                   保存
                 </Button>
               </div>
