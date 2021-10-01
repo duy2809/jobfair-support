@@ -57,18 +57,15 @@ const LoginPage = () => {
       }
     } catch (error) {
       if (error.request.status === 400) {
-        openNotification(
-          'error',
-          'メールアドレスもしくはパスワードが間違っています',
-        )
+        openNotification('error', 'メールアドレスもしくはパスワードが間違っています')
       }
     }
   }
 
   const onChangeDisableOk = () => {
     setDisableOk(
-      !form2.isFieldTouched('reset-email')
-        || !!form2.getFieldsError().filter(({ errors }) => errors.length).length,
+      !form2.isFieldTouched('reset-email') ||
+        !!form2.getFieldsError().filter(({ errors }) => errors.length).length
     )
   }
 
@@ -83,15 +80,9 @@ const LoginPage = () => {
   const handleOk = async () => {
     setIsModalVisible(false)
     try {
-      const response = await sendLinkResetPassword(
-        form2.getFieldValue('reset-email'),
-      )
+      const response = await sendLinkResetPassword(form2.getFieldValue('reset-email'))
       if (response.request.status === 200) {
-        openNotification(
-          'success',
-          'メールは正常に送信されました',
-          'メールを確認してください。',
-        )
+        openNotification('success', 'メールは正常に送信されました', 'メールを確認してください。')
       }
     } catch (error) {
       if (error.request.status === 400) openNotification('error', 'メールが存在しません')
@@ -126,10 +117,7 @@ const LoginPage = () => {
               name="email"
               rules={[{ required: true }, { type: 'email' }]}
             >
-              <Input
-                type="email"
-                placeholder="メールアドレスを入力してください。"
-              />
+              <Input size="large" type="email" placeholder="メールアドレスを入力してください。" />
             </Form.Item>
 
             <Form.Item
@@ -138,7 +126,7 @@ const LoginPage = () => {
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
             >
-              <Input.Password placeholder="パスワードを入力してください。" />
+              <Input.Password size="large" placeholder="パスワードを入力してください。" />
             </Form.Item>
 
             <Form.Item name="remember" valuePropName="checked">
@@ -176,10 +164,7 @@ const LoginPage = () => {
                   name="reset-email"
                   rules={[{ required: true }, { type: 'email' }]}
                 >
-                  <Input
-                    type="email"
-                    placeholder="メールアドレスを入力してください。"
-                  />
+                  <Input type="email" placeholder="メールアドレスを入力してください。" />
                 </Form.Item>
               </Form>
             </Modal>
@@ -192,13 +177,8 @@ const LoginPage = () => {
                     htmlType="submit"
                     className="text-base px-14"
                     disabled={
-                      !(
-                        form.isFieldTouched('email')
-                        && form.isFieldTouched('password')
-                      )
-                      || !!form
-                        .getFieldsError()
-                        .filter(({ errors }) => errors.length).length
+                      !(form.isFieldTouched('email') && form.isFieldTouched('password')) ||
+                      !!form.getFieldsError().filter(({ errors }) => errors.length).length
                     }
                   >
                     ログイン
