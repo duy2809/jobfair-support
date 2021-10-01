@@ -7,6 +7,9 @@
 
 # testing
 /coverage
+/cypress/integration/1-getting-started
+/cypress/integration/2-advanced-examples
+cypress.json
 
 # next.js
 /src/.next/
@@ -26,6 +29,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -33,3 +37,5 @@ yarn-error.log*
 
 # vercel
 .vercel
+.cypress.json.example
+.cypress.json

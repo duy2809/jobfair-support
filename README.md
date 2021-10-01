@@ -2,6 +2,12 @@
 
 ## Viblo Docker for PHP Development
 - Clone repo from: [docker-php-development](https://github.com/sun-asterisk-research/docker-php-development)
+- Reset commit `f5da6bf feat: update default minio region`
+```
+cd docker-php-development
+git reset --hard f5da6bf
+```
+
 - Using in Jobfair support
 ```
 Folder project
@@ -13,15 +19,17 @@ In your terminal window, open the hosts file using your favorite text editor:
 
 ```sudo nano /etc/hosts```
 
-```127.0.0.1 jobfair.local api.jobfair.local traefik.jobfair.local```
-
+```127.0.0.1 jobfair.local traefik.jobfair.local phpmyadmin.jobfair.local```
 
 ## Services
+In folder docker-php-development
+Create file `services`
 ```plain
 mysql
 redis
 php
 web
+phpmyadmin
 ```
 
 ## Env
@@ -48,7 +56,7 @@ PATH_LOGS=./logs
 # DOMAIN_SECONDARY is the domain used for other services e.g traefik, mailhog, phpmyadmin .etc
 #-------------------------------------------------------------------------------
 
-DOMAIN=api.jobfair.local
+DOMAIN=jobfair.local
 DOMAIN_WEB=jobfair.local
 PORT=8000
 
@@ -107,6 +115,7 @@ cd docker-php-development
 /php # composer install
 /php # php artisan key:generate
 /php # php artisan migrate
+/php # chmod -R 777 storage/
 ```
 
 - Web:
@@ -124,7 +133,7 @@ APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:Od/M6XLZCbBcsAn5wjPWRr8YKUdpijE7OD5zgykn96A=
 APP_DEBUG=true
-APP_URL=http://api.jobfair.local:8000
+APP_URL=http://jobfair.local:8000
 
 LOG_CHANNEL=stack
 LOG_LEVEL=debug
@@ -191,8 +200,8 @@ APP_KEY=base64:Od/M6XLZCbBcsAn5wjPWRr8YKUdpijE7OD5zgykn96A=
 APP_URL=http://jobfair.local:8000
 IMAGE_URL=http://images-jobfair.local:8000
 
-SERVER_API_URL=http://jobfair-api/api
-BROWSER_API_URL=http://api.jobfair.local:8000/api
+SERVER_API_URL=http://nginx/api
+BROWSER_API_URL=/api
 
 REDIS_HOST=redis
 
@@ -203,3 +212,55 @@ REDIS_HOST=redis
 SENTRY_DSN=
 MIX_GA_ID=
 ```
+
+## Github workflow
+
+- Khi bắt đầu dự án cần fork repo **framgia/jobfair-support** về
+- Tiếp đó tiên hành clone code từ repo đã fork nói trên **[username]/jobfair-support**
+- Sau khi clone sẽ di chuyển vào folder vừa clone để add thêm repo chính của dự án **framgia/jobfair-support** với lệnh sau nếu sử dụng SSH key:
+```
+git remote add sun git@github.com:framgia/jobfair-support.git
+```
+hoặc nếu sử dụng https
+```
+git remote add sun https://github.com/framgia/jobfair-support.git
+```
+- Branch chính của dự án là **develop**
+- Mỗi tính năng mới hoặc bug fix mới sẽ làm theo flow như sau
+1. Đảm bảo code mới nhất ở nhánh develop dưới local tương đương với nhánh mới nhất trên server bằng cách chạy 2 lệnh:
+```
+git checkout develop
+git pull sun develop
+```
+
+2. Checkout một nhánh mới cho tính nắng cần làm
+
+```
+git checkout -b feat/login
+```
+
+3. Sau khi code xong tiến thành commit code
+```
+git add .
+git commit -m"feat: login"
+```
+
+4. Giả sử sau khi code xong tính năng login trong nhánh *feat/login* nói trên và gửi chuẩn bị gửi pull request mà thấy branch develop trên server có code mới của các bạn khác thì cần chạy lệnh như sau trước khi tạo pull request:
+```
+git checkout develop
+git pull sun develop
+git checkout feat/login
+git rebase develop
+```
+*Sau khi rebase phát hiện có conflict thì chủ động xử lý
+
+*Trường hợp nếu nhánh develop trên repo chính không có code mới thì có thể bỏ qua bước 4
+
+5. Push nhánh **feat/login** vừa làm lên repo fork về:
+```
+git push origin feat/login
+```
+
+6. Tạo pull request từ branch nói trên trong repo fork về đến branch develop trong repo chính
+
+=> Quá trình nói trên được lặp lại trong toàn bộ chu trình phát triển của dự 

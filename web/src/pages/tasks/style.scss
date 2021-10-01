@@ -1,0 +1,45 @@
+.TaskList {
+      thead[class*="ant-table-thead"] th {
+            background-color: #bae8e8 !important;
+      }
+      .ant-input:hover,
+      .ant-input:focus {
+            border: none;
+      }
+      .active {
+            border-radius: 15px !important;
+            border-color: #ffd803 !important;
+            background-color: #ffd803 !important;
+      }
+
+      .ant-btn-text:hover,
+      .ant-btn-text:focus {
+            border-radius: 15px !important;
+            border-color: #ffd803 !important;
+            background-color: #ffd803 !important;
+      }
+      .label-sl{
+            display: flex;
+            flex-direction: column;
+      }
+      h1 {
+            font-size: 40px;
+            margin-left: 0px;
+            margin-bottom: 0px;
+            color: #272343;
+      }
+      .anticon {
+            font-size:16px !important;
+      }
+      .icon {
+        font-size: 18px !important;
+        font-weight: 600;
+        :hover {
+            color: #ffd803;
+        }
+    }
+    .searchAdd{
+          display: flex;
+          align-items: center;
+    }
+}

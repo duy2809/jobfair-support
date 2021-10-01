@@ -8,21 +8,23 @@ import { findSlot } from '~/utils/pages'
 
 import '~/assets/styles/less/app.less'
 
-const DefaultLayout = ({
-  children,
-}) => {
+const DefaultLayout = ({ children }) => {
   const head = findSlot(DefaultLayout.Head, children)
   const main = findSlot(DefaultLayout.Main, children)
 
   return (
-    <Layout className="v-layout flex">
+    <Layout className="v-layout flex bg-white-background">
       {process.env.NODE_ENV !== 'production' && (
-        <link rel="stylesheet" type="text/css" href={`/_next/static/css/styles.chunk.css?v=${Date.now()}`} />
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href={`/_next/static/css/styles.chunk.css?v=${Date.now()}`}
+        />
       )}
-      { _get(head, 'props.children') }
+      {_get(head, 'props.children')}
 
       <Layout.Content className="v-layout-content flex-shrink-0">
-        { _get(main, 'props.children') }
+        {_get(main, 'props.children')}
       </Layout.Content>
     </Layout>
   )
@@ -37,10 +39,7 @@ DefaultLayout.defaultProps = {
 }
 
 DefaultLayout.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.arrayOf(PropTypes.node),
-  ]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 }
 
 export default DefaultLayout

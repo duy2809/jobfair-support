@@ -1,0 +1,13 @@
+.inviteWrapper .selectBar .ant-select-selector {
+  border-color: #aca9a9;
+}
+
+.inviteWrapper {
+  label {
+    margin-right: 2rem;
+  }
+
+  .ant-form-item-label>label::after {
+    margin: 0px;
+  }
+}

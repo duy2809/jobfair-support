@@ -2,7 +2,7 @@ import { fromJS } from 'immutable'
 import { call, put, takeLatest } from 'redux-saga/effects'
 import { createAction, handleActions } from 'redux-actions'
 import _map from 'lodash/map'
-import { webInit } from '~/api/web-init'
+import { webInit } from '../../api/web-init'
 
 const initialState = fromJS({
   user: null,
@@ -19,15 +19,17 @@ export const load = createAction(LOAD)
 export const loadSuccess = createAction(LOAD_SUCCESS)
 
 // Sagas
-function* init({ next }) {
-  const { data: { auth } } = yield call(webInit)
-
+function* init(action) {
+  const response = yield call(webInit)
+  const { res } = action.payload
+  res.setHeader('set-cookie', response.headers['set-cookie'])
   try {
-    yield put(loadSuccess(auth.user))
-    next(auth.user)
+    const { user } = response.data.auth
+    yield put(loadSuccess(user))
+    action.next(user)
   } catch (error) {
     yield put(loadSuccess({}))
-    next(null)
+    action.next(null)
   }
 }
 
@@ -36,9 +38,18 @@ export function* sagas() {
 }
 
 // Reducers
-const handleLoadSuccess = (state, action) => state.set('loaded', true)
-  .set('user', fromJS(action.payload))
+const handleLoadSuccess = (state, action) => {
+  if (action.payload.role === 1) {
+    action.payload.role = 'superadmin'
+  } else if (action.payload.role === 2) {
+    action.payload.role = 'admin'
+  } else if (action.payload.role === 3) {
+    action.payload.role = 'member'
+  }
 
+  return state.set('loaded', true)
+    .set('user', fromJS(action.payload))
+}
 const auth = (state) => state.get('auth').get('user')
 const roles = (state) => _map(state.get('auth').getIn('user.roles'), 'name')
 

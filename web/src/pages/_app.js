@@ -10,6 +10,7 @@ import NProgress from 'nprogress'
 import { ConfigProvider } from 'antd'
 import * as Sentry from '@sentry/browser'
 
+import jaJP from 'antd/lib/locale/ja_JP'
 import axios from '~/api/axios'
 import createStore from '~/store'
 import { usePromise } from '~/utils/store'
@@ -39,10 +40,15 @@ class Jobfair extends App {
   static async getInitialProps({ Component, ctx }) {
     if (ctx.isServer) {
       axios.defaults.headers.common.cookie = ctx.req.headers.cookie || ''
-      await usePromise(ctx.store.dispatch, { type: INIT_AUTH_USER })
+      await usePromise(ctx.store.dispatch, {
+        type: INIT_AUTH_USER,
+        payload: { res: ctx.res },
+      })
     }
 
-    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}
+    const pageProps = Component.getInitialProps
+      ? await Component.getInitialProps(ctx)
+      : {}
 
     const middleware = new Middleware(ctx)
     await middleware.validate(Component)
@@ -67,7 +73,7 @@ class Jobfair extends App {
 
     return (
       <Provider store={store}>
-        <ConfigProvider prefixCls="ant">
+        <ConfigProvider prefixCls="ant" locale={jaJP}>
           <Component {...pageProps} />
         </ConfigProvider>
       </Provider>
@@ -75,7 +81,9 @@ class Jobfair extends App {
   }
 }
 
-export default withRouter(withRedux(createStore, {
-  serializeState: (state) => state,
-  deserializeState: (state) => fromJS(state),
-})(withReduxSaga(Jobfair)))
+export default withRouter(
+  withRedux(createStore, {
+    serializeState: (state) => state,
+    deserializeState: (state) => fromJS(state),
+  })(withReduxSaga(Jobfair)),
+)
