@@ -84,12 +84,13 @@ export default function ListCategories() {
       key: '2',
       title: 'アクション',
       width: '25%',
-      render: (record) => role === 'superadmin' && (
-        <Space size="middle">
-          <EditCategory record={record} reloadPage={reloadPage} role={role} />
-          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
-        </Space>
-      ),
+      render: (record) =>
+        role === 'superadmin' && (
+          <Space size="middle">
+            <EditCategory record={record} reloadPage={reloadPage} role={role} />
+            <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
+          </Space>
+        ),
     },
   ]
 
@@ -100,7 +101,7 @@ export default function ListCategories() {
         key: element.id,
         id: element.id,
         name: element.category_name,
-      })),
+      }))
     )
   }, [category])
   return (
@@ -112,23 +113,28 @@ export default function ListCategories() {
       </Row>
 
       <div className="list">
-        <div className="flex text-xl list-ht">
-          <div className="flex items-center content-center text-center ">
-            <p>表示件数 </p>
-          </div>
-          &nbsp;
-          <div>
-            <Select
-              labelInValue
-              defaultValue={{ value: '10' }}
-              style={{ width: 60, borderRadius: '1rem' }}
-              onChange={(e) => setPageS(e.value)}
-              className="selectBox"
-            >
-              <Select.Option value="10">10</Select.Option>
-              <Select.Option value="25">25</Select.Option>
-              <Select.Option value="50">50</Select.Option>
-            </Select>
+        <div
+          className="flex"
+          //t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
+          style={{ height: '38px' }}
+        >
+          <div className="flex">
+            <div className="flex items-center content-center text-center pr-2">
+              <p>表示件数 </p>
+            </div>
+            &nbsp;
+            <div className="flex items-center content-center text-center">
+              <Select
+                size="large"
+                labelInValue
+                defaultValue={{ value: '10' }}
+                onChange={(e) => setPageS(e.value)}
+              >
+                <Select.Option value="10">10</Select.Option>
+                <Select.Option value="25">25</Select.Option>
+                <Select.Option value="50">50</Select.Option>
+              </Select>
+            </div>
           </div>
           <div>
             <div className="absolute right-12 no-border">
@@ -149,7 +155,7 @@ export default function ListCategories() {
                       marginBottom: '10px',
                     }}
                   >
-                    <div className="flex items-center mr-4">
+                    <div className="flex items-center mr-5">
                       <span className="queue-demo">
                         <span>
                           <Input
