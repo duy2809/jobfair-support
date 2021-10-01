@@ -7,6 +7,7 @@ import { formatDate } from '~/utils/utils'
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
+import './styles.scss'
 
 function MemberList() {
   const [members, setMembers] = useState([])
@@ -227,9 +228,10 @@ function MemberList() {
           </div>
           <div className="flex w-full items-center justify-between">
             <div>
-              <span className="text-xl">表示件数: </span>
+              <span id="display-number" className="text-xl">表示件数 </span>
               <Select
-                className="ml-5"
+                className="ml-5 no-border"
+                size="large"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -242,6 +244,7 @@ function MemberList() {
               <div>
                 <div className="text-2xl flex items-center">
                   <Input
+                    size="large"
                     className="no-border"
                     placeholder="メンバ名"
                     onChange={handleInput}
@@ -253,8 +256,9 @@ function MemberList() {
               <div>
                 {role === 'superadmin' ? (
                   <Button
+                    size="large"
                     type="primary"
-                    className="ml-5"
+                    className="ml-5 no-border"
                     htmlType="button"
                     enabled
                     onClick={handleClick}
