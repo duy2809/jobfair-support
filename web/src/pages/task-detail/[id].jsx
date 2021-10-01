@@ -10,7 +10,12 @@ import {
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
-import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
+import {
+  taskData,
+  beforeTask,
+  afterTask,
+  deleteTask,
+} from '../../api/task-detail'
 
 function TaskDetail() {
   const router = useRouter()
@@ -48,9 +53,10 @@ function TaskDetail() {
   const [listMemberAssignee, setListMemberAssignee] = useState([])
   const deletetpl = async () => {
     await deleteTask(idTask)
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data)
-        router.push(`/tasks/${infoJF.id}`)
+        await router.push(`/tasks/${infoJF.id}`)
+        await saveNotification()
       })
       .catch((error) => {
         console.log(error)
@@ -111,7 +117,6 @@ function TaskDetail() {
       content: '',
       onOk: () => {
         deletetpl()
-        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -142,7 +147,11 @@ function TaskDetail() {
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
+                <Button
+                  style={{ border: 'none' }}
+                  type="primary"
+                  onClick={handleBack}
+                >
                   戻る
                 </Button>
               </div>
@@ -213,12 +222,16 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -333,7 +346,11 @@ function TaskDetail() {
                       ? beforeTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
@@ -360,7 +377,11 @@ function TaskDetail() {
                       ? afterTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a

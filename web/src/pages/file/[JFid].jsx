@@ -1,6 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useRouter } from 'next/router'
-import { Table, Checkbox, Button, notification, Breadcrumb, Empty, Modal, Tooltip, Form, Input } from 'antd'
+import {
+  Table,
+  Checkbox,
+  Button,
+  notification,
+  Breadcrumb,
+  Empty,
+  Modal,
+  Tooltip,
+  Form,
+  Input,
+} from 'antd'
 import { FolderFilled, FileFilled } from '@ant-design/icons'
 import './style.scss'
 import TimeAgo from 'react-timeago'
@@ -63,11 +74,11 @@ export default function File() {
       width: '5%',
       render: (checkbox, record, rowIndex) => (
         <>
-          {(!checkbox) || (
+          {!checkbox || (
             <Checkbox
               checked={isChecked[rowIndex]}
               onChange={(e) => {
-                setIsChecked((prev) => prev.map((el, i) => ((i === rowIndex) ? e.target.checked : el)))
+                setIsChecked((prev) => prev.map((el, i) => (i === rowIndex ? e.target.checked : el)))
               }}
             />
           )}
@@ -102,7 +113,7 @@ export default function File() {
 
               const result = res.data.map((element) => ({
                 key: element.id,
-                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
                 is_file: element.is_file,
                 name: element.name,
                 updater: element.updaterName,
@@ -132,7 +143,7 @@ export default function File() {
 
               const result = res.data.map((element) => ({
                 key: element.id,
-                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
                 is_file: element.is_file,
                 name: element.name,
                 updater: element.updaterName,
@@ -146,25 +157,24 @@ export default function File() {
           }}
           className="cursor-pointer flex flex-row items-center"
         >
-          {(record.is_file) ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
-          {name.length > 20
-            ? (
-              <Tooltip placement="top" title={name}>
-                <span
-                  className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                  style={{ maxWidth: '20ch' }}
-                >
-                  {name}
-                </span>
-              </Tooltip>
-            ) : (
+          {record.is_file ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
+          {name.length > 20 ? (
+            <Tooltip placement="top" title={name}>
               <span
                 className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
                 style={{ maxWidth: '20ch' }}
               >
                 {name}
               </span>
-            )}
+            </Tooltip>
+          ) : (
+            <span
+              className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+              style={{ maxWidth: '20ch' }}
+            >
+              {name}
+            </span>
+          )}
         </div>
       ),
     },
@@ -188,7 +198,7 @@ export default function File() {
     let res = await getRootPathFile(JFid)
     let result = res.data.map((element) => ({
       key: element.id,
-      checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+      checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
       is_file: element.is_file,
       name: element.name,
       updater: element.updaterName,
@@ -236,15 +246,18 @@ export default function File() {
   }, [isChecked])
   useEffect(() => {
     if (directory.length !== 1) {
-      setData([{
-        key: -1,
-        name: '..',
-        checkbox: false,
-        is_file: false,
-        updater: '',
-        updated_at: '',
-        link: '',
-      }, ...data])
+      setData([
+        {
+          key: -1,
+          name: '..',
+          checkbox: false,
+          is_file: false,
+          updater: '',
+          updated_at: '',
+          link: '',
+        },
+        ...data,
+      ])
     }
   }, [directory])
   const onBtnDeleteClick = () => {
@@ -289,7 +302,7 @@ export default function File() {
       })
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+        checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -297,15 +310,18 @@ export default function File() {
         link: element.link,
       }))
       if (directory.length > 1) {
-        setData([{
-          key: -1,
-          name: '..',
-          checkbox: false,
-          is_file: false,
-          updater: '',
-          updated_at: '',
-          link: '',
-        }, ...result])
+        setData([
+          {
+            key: -1,
+            name: '..',
+            checkbox: false,
+            is_file: false,
+            updater: '',
+            updated_at: '',
+            link: '',
+          },
+          ...result,
+        ])
       } else setData(result)
       setIsModalEditFileVisible(false)
       setIsCheckAll(false)
@@ -334,7 +350,7 @@ export default function File() {
       })
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+        checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -342,15 +358,18 @@ export default function File() {
         link: element.link,
       }))
       if (directory.length > 1) {
-        setData([{
-          key: -1,
-          name: '..',
-          checkbox: false,
-          is_file: false,
-          updater: '',
-          updated_at: '',
-          link: '',
-        }, ...result])
+        setData([
+          {
+            key: -1,
+            name: '..',
+            checkbox: false,
+            is_file: false,
+            updater: '',
+            updated_at: '',
+            link: '',
+          },
+          ...result,
+        ])
       } else setData(result)
       setIsModalEditFolderVisible(false)
       setIsCheckAll(false)
@@ -365,7 +384,7 @@ export default function File() {
 
     const result = res.data.map((element) => ({
       key: element.id,
-      checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+      checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
       is_file: element.is_file,
       name: element.name,
       updater: element.updaterName,
@@ -373,22 +392,25 @@ export default function File() {
       link: element.link,
     }))
     if (directory.length > 1) {
-      setData([{
-        key: -1,
-        name: '..',
-        checkbox: false,
-        is_file: false,
-        updater: '',
-        updated_at: '',
-        link: '',
-      }, ...result])
+      setData([
+        {
+          key: -1,
+          name: '..',
+          checkbox: false,
+          is_file: false,
+          updater: '',
+          updated_at: '',
+          link: '',
+        },
+        ...result,
+      ])
     } else setData(result)
     setIsModalDeleteVisible(false)
     setIsCheckAll(false)
   }
   return (
     <div className="File">
-      <JfLayout>
+      <JfLayout bgr={5}>
         <JfLayout.Main>
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-7 gap-x-12">
@@ -431,7 +453,8 @@ export default function File() {
                               for (let i = 0; i <= index; i += 1) {
                                 if (i !== index && i !== 0) {
                                   queryPath += `${directory[i]}/`
-                                } if (i === 0) {
+                                }
+                                if (i === 0) {
                                   queryPath += '/'
                                 } else {
                                   queryPath += directory[i]
@@ -446,7 +469,9 @@ export default function File() {
 
                               const result = res.data.map((element) => ({
                                 key: element.id,
-                                checkbox: ((user.get('id') === element.authorId) || (user.get('role') !== 'member')),
+                                checkbox:
+                                  user.get('id') === element.authorId
+                                  || user.get('role') !== 'member',
                                 is_file: element.is_file,
                                 name: element.name,
                                 updater: element.updaterName,
@@ -480,7 +505,9 @@ export default function File() {
                         centered
                         visible={isModalEditFileVisible}
                         onOk={handleEditFileOk}
-                        onCancel={() => { setIsModalEditFileVisible(false) }}
+                        onCancel={() => {
+                          setIsModalEditFileVisible(false)
+                        }}
                         okButtonProps={{ disabled: isDisableEditFile }}
                       >
                         <Form
@@ -490,38 +517,28 @@ export default function File() {
                           name="basic"
                         >
                           <Form.Item
-                            label={
-                              <p>名前</p>
-                            }
+                            label={<p>名前</p>}
                             name="name_file"
                             rules={[
                               {
                                 required: true,
                                 message: 'この項目は必須です。',
-                              }]}
+                              },
+                            ]}
                           >
-                            <Input
-                              type="text"
-                              size="large"
-                              placeholder="新しいファイル名"
-                            />
+                            <Input type="text" size="large" placeholder="新しいファイル名" />
                           </Form.Item>
                           <Form.Item
-                            label={
-                              <p>リンク</p>
-                            }
+                            label={<p>リンク</p>}
                             name="link"
                             rules={[
                               {
                                 required: true,
                                 message: 'この項目は必須です。',
-                              }]}
+                              },
+                            ]}
                           >
-                            <Input
-                              type="text"
-                              size="large"
-                              placeholder="グーグルドライブリンク"
-                            />
+                            <Input type="text" size="large" placeholder="グーグルドライブリンク" />
                           </Form.Item>
                         </Form>
                       </Modal>
@@ -532,7 +549,9 @@ export default function File() {
                         centered
                         visible={isModalEditFolderVisible}
                         onOk={handleEditFolderOk}
-                        onCancel={() => { setIsModalEditFolderVisible(false) }}
+                        onCancel={() => {
+                          setIsModalEditFolderVisible(false)
+                        }}
                         okButtonProps={{ disabled: isDisableEditFolder }}
                       >
                         <Form
@@ -542,21 +561,16 @@ export default function File() {
                           name="basic"
                         >
                           <Form.Item
-                            label={
-                              <p>名前</p>
-                            }
+                            label={<p>名前</p>}
                             name="name_folder"
                             rules={[
                               {
                                 required: true,
                                 message: 'この項目は必須です。',
-                              }]}
+                              },
+                            ]}
                           >
-                            <Input
-                              type="text"
-                              size="large"
-                              placeholder="新しいフォルダ名"
-                            />
+                            <Input type="text" size="large" placeholder="新しいフォルダ名" />
                           </Form.Item>
                         </Form>
                       </Modal>
@@ -572,7 +586,9 @@ export default function File() {
                         title="ファイルとフォルダを削除"
                         visible={isModalDeleteVisible}
                         onOk={handleOkDelete}
-                        onCancel={() => { setIsModalDeleteVisible(false) }}
+                        onCancel={() => {
+                          setIsModalDeleteVisible(false)
+                        }}
                         cancelText="いいえ"
                         okText="はい"
                       >
@@ -586,9 +602,15 @@ export default function File() {
                     dataSource={data}
                     pagination={false}
                     // onRow={onRowClick}
-                    locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="このフォルダは空です。" /> }}
+                    locale={{
+                      emptyText: (
+                        <Empty
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                          description="このフォルダは空です。"
+                        />
+                      ),
+                    }}
                   />
-
                 </div>
               </div>
               <div className="md:col-span-2 flex flex-col">
@@ -597,59 +619,60 @@ export default function File() {
                   <div className="h-60 recently mt-1 border border-black rounded-md flex flex-col justify-start">
                     {recentUpdated.map((el, index) => (
                       <>
-                        <div className={`my-2 px-6 ${(index !== recentUpdated.length - 1) ? 'border-b border-black' : ''}`}>
+                        <div
+                          className={`my-2 px-6 ${
+                            index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
+                          }`}
+                        >
                           <div className="flex flex-row items-center">
                             <FileFilled className="mr-2 " />
-                            {el.name.length > 20
-                              ? (
-                                <Tooltip placement="top" title={el.name}>
-                                  <span
-                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                    style={{ maxWidth: '20ch' }}
-                                  >
-                                    {el.name}
-                                  </span>
-                                </Tooltip>
-                              ) : (
+                            {el.name.length > 20 ? (
+                              <Tooltip placement="top" title={el.name}>
                                 <span
                                   className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {el.name}
                                 </span>
-                              )}
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {el.name}
+                              </span>
+                            )}
                           </div>
                           <div className="py-2 flex flex-row items-center gap-2">
                             <TimeAgo date={el.updated_at} formatter={formatter} />
                             <span>/</span>
-                            {el.updater.length > 20
-                              ? (
-                                <Tooltip placement="top" title={el.updater}>
-                                  <span
-                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                    style={{ maxWidth: '20ch' }}
-                                  >
-                                    {el.updater}
-                                  </span>
-                                </Tooltip>
-                              ) : (
+                            {el.updater.length > 20 ? (
+                              <Tooltip placement="top" title={el.updater}>
                                 <span
                                   className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {el.updater}
                                 </span>
-                              )}
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {el.updater}
+                              </span>
+                            )}
                           </div>
                         </div>
-
                       </>
                     ))}
                   </div>
                 </div>
                 <div className="mt-5">
                   <h2 className="font-bold">ファイルを検索</h2>
-                  <div className="mt-1 search pt-6 pr-6 pl-6 border border-black rounded-md">
+                  <div className="search p-3 border border-black rounded-md">
                     <Search />
                   </div>
                 </div>

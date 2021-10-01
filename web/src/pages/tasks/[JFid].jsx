@@ -458,7 +458,7 @@ function TaskList() {
     setActive(arr)
   }
   return (
-    <JfLayout id={router.query.JFid}>
+    <JfLayout id={router.query.JFid} bgr={2}>
       <JfLayout.Main>
         <div className="TaskList">
           <div className="space-y-2 justify-center">
@@ -469,7 +469,7 @@ function TaskList() {
                 </div>
                 <div className="flex justify-between">
                   <div className="flex items-center justify-center space-x-1">
-                    <div>スターテス:</div>
+                    <div>スターテス</div>
                     <Button
                       type="text"
                       className={active[0] ? 'active' : ''}
@@ -535,7 +535,7 @@ function TaskList() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数: </span>
+                  <span>表示件数 </span>
                   <Select value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -546,7 +546,7 @@ function TaskList() {
                   <Popover
                     content={(
                       <>
-                        <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ:</h6>
+                        <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
 
                         <Select
                           placeholder="カテゴリ"
@@ -558,7 +558,7 @@ function TaskList() {
                           {optionCategory}
                         </Select>
 
-                        <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン: </h6>
+                        <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
 
                         <Select
                           placeholder="マイルストーン"

@@ -57,7 +57,7 @@ function ScheduleList() {
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
     )
     setFilterSchedules(result)
   }

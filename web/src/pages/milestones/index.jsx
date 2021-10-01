@@ -185,20 +185,15 @@ const MilestonePage = () => {
 
   const columns = [
     {
-      title: 'No',
-      dataIndex: 'no',
-      width: '5%',
-    },
-    {
       title: 'マイルストーン一名',
       dataIndex: 'name',
       render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
-      width: '55%',
+      width: '60%',
     },
     {
       title: '期日',
       dataIndex: 'period',
-      width: `${role === 'superadmin' ? '20%' : '40%'}`,
+      width: `${role === 'superadmin' ? '30%' : '50%'}`,
       render: (period) => {
         const { numOfDays, type } = period
         return convertPeriod(numOfDays, type)
@@ -206,7 +201,8 @@ const MilestonePage = () => {
     },
     {
       key: 'action',
-      width: `${role === 'superadmin' ? '20%' : '0%'}`,
+      title: `${role === 'superadmin' ? 'アクション' : ''}`,
+      width: `${role === 'superadmin' ? '10%' : '0%'}`,
       render: (_text, record) => (role === 'superadmin' && (
         <Space size="middle">
           <EditTwoTone
@@ -268,28 +264,7 @@ const MilestonePage = () => {
               <Col>
                 <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
               </Col>
-              {role === 'superadmin' && (
-                <Col>
-                  <Button
-                    style={{
-                      backgroundColor: '#ffd803',
-                      borderColor: '#ffd803',
-                      color: 'black',
-                      letterSpacing: '-0.1em',
-                    }}
-                    type="primary"
-                    danger
-                    onClick={() => {
-                      setIsModalType((preState) => ({
-                        ...preState,
-                        add: true,
-                      }))
-                    }}
-                  >
-                    追加
-                  </Button>
-                </Col>
-              )}
+
             </Row>
 
             <Row style={{ justifyContent: 'space-between' }}>
@@ -315,16 +290,35 @@ const MilestonePage = () => {
                 <Input
                   placeholder="マイルストーン一名, 期日"
                   onChange={(e) => searchItemHandler(e)}
-                  style={{ width: 250 }}
+                  style={{ width: 250, marginRight: 25 }}
                   value={searchValue}
                   prefix={<SearchOutlined />}
                 />
+                {role === 'superadmin' && (
+                  <Button
+                    style={{
+                      backgroundColor: '#ffd803',
+                      borderColor: '#ffd803',
+                      color: 'black',
+                      letterSpacing: '-0.1em',
+                    }}
+                    type="primary"
+                    danger
+                    onClick={() => {
+                      setIsModalType((preState) => ({
+                        ...preState,
+                        add: true,
+                      }))
+                    }}
+                  >
+                    追加
+                  </Button>
+                )}
               </Col>
             </Row>
 
             <div className="box-body">
               <Table
-                scroll={{ y: 380 }}
                 columns={columns}
                 rowKey={(record) => record.id}
                 dataSource={data}

@@ -5,23 +5,19 @@
 
     }
     .ant-layout-sider .ant-layout-sider-dark .ant-layout-sider-collapsed{
-        background: #bae8e8 !important;
+        background: #e3f6f5 !important;
     }
     .ant-layout-sider .ant-layout-sider-dark{
-        background-color: #bae8e8 !important;
+        background-color: #e3f6f5 !important;
     }
     .ant-menu-dark.ant-menu-inline,
     .ant-menu-dark.ant-menu-vertical,
     .ant-menu-dark.ant-menu-vertical-left,
     .ant-menu-dark.ant-menu-vertical-right {
-        background: #bae8e8;
+        background: #e3f6f5;
         flex-basis: 20%;
-        height: 100vh;
-        //position: absolute;
-
-        // padding-top: 64px;
-        //overflow-y: scroll;
-
+        height: 200vh;
+       
     }
 
     .sibar__chil {
@@ -33,12 +29,36 @@
     .ant-menu-dark .ant-menu-item-group-title,
     .ant-menu-dark .ant-menu-item>a,
     .ant-menu-dark .ant-menu-item>span>a {
-        color: #272343;
+        color: #272343 !important;
         font-size: 20px;
         font-weight: 900;
-        margin: 20px 0px;
+        margin: 0px;
+        border-left: 8px solid transparent;
+        margin-bottom: 0px !important;
+
+      
+    }
+    .ant-menu-item{
+        height: 50px !important;
+        padding-left: 20px !important;
+        padding-right: 0px !important;
+        
+    }
+
+    .ant-menu > .ant-menu-item:hover,
+    .ant-menu > .ant-menu-submenu:hover,
+    .ant-menu > .ant-menu-item-active,
+    .ant-menu> .ant-menu-submenu-active,
+    .ant-menu > .ant-menu-item-open,
+    .ant-menu> .ant-menu-submenu-open{
+        box-sizing: content-box;
+        background-color: white !important;
+        border-left: 8px solid #ffd803;
+        margin-bottom: 0px;
+        
 
     }
+  
 
     .ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon+span,
     .ant-menu-dark .ant-menu-item-selected .anticon+span {
@@ -50,17 +70,17 @@
         color: #272343;
     }
 
+    .ant-menu-item>.ant-menu-title-content{
+        margin-left: 0px;
+    }
     .button {
         text-align: center;
         font-size: .6rem;
-        margin: 10px;
+        // margin: 10px;
         color: #272343;
-        background: #ffd803;
-        border-color: #ffd803;
-        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
-        box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+        background: #e3f6f5;
+        border-color: #e3f6f5;
         padding: 15px;
-        border-radius: 3px;
     }
 
     .button:hover {
@@ -87,7 +107,7 @@
     .anticon,
     .anticon-home,
     .ant-menu-item-icon {
-        font-size: 25px;
+        font-size: 25px !important;
     }
 
     .ant-layout-sider,

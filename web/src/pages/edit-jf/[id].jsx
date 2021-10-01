@@ -278,6 +278,7 @@ const index = () => {
                   rules={[
                     {
                       validator: JFNameValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -297,6 +298,7 @@ const index = () => {
                   rules={[
                     {
                       validator: startDayValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -319,6 +321,7 @@ const index = () => {
                   rules={[
                     {
                       validator: companiesJoinValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -341,6 +344,7 @@ const index = () => {
                   rules={[
                     {
                       validator: studentsJoinValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -364,6 +368,7 @@ const index = () => {
                   rules={[
                     {
                       validator: JFAdminValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -385,6 +390,7 @@ const index = () => {
                   rules={[
                     {
                       validator: JFScheduleValidator,
+                      required: true,
                     },
                   ]}
                 >

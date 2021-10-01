@@ -11,7 +11,12 @@ import {
 
 import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
-import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
+import {
+  templateTask,
+  beforeTask,
+  afterTask,
+  deleteTptt,
+} from '../../api/template-task'
 
 function templatetTaskDt() {
   const router = useRouter()
@@ -74,9 +79,10 @@ function templatetTaskDt() {
   }
   const deletetpl = async () => {
     await deleteTptt(idTplt)
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data)
-        router.push('/template-tasks')
+        await router.push('/template-tasks')
+        await saveNotification()
       })
       .catch((error) => {
         console.log(error)
@@ -87,9 +93,8 @@ function templatetTaskDt() {
       title: '削除してもよろしいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
-      onOk: () => {
+      onOk: async () => {
         deletetpl()
-        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -119,7 +124,11 @@ function templatetTaskDt() {
           <div className="template-task-dt">
             <div className="list__button">
               <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
+                <Button
+                  style={{ border: 'none' }}
+                  type="primary"
+                  onClick={handleBack}
+                >
                   戻る
                 </Button>
               </div>
@@ -212,13 +221,20 @@ function templatetTaskDt() {
 
               <div className="grid grid-cols-2 mx-16 mt-5">
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">前のタスク </p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    前のタスク
+                    {' '}
+                  </p>
                   <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
@@ -237,13 +253,19 @@ function templatetTaskDt() {
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">次のタスク</p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    次のタスク
+                  </p>
                   <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
