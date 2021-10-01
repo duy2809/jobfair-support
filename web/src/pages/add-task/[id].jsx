@@ -170,11 +170,7 @@ function index() {
         // console.log(response)
         if (response.status < 299) {
           await saveNotification()
-<<<<<<< HEAD
           routeTo(`/tasks/${jobfair.id}`)
-=======
-          setRouteLoading(true)
->>>>>>> fix toast message G1-2-2 and G1-2-3
         } else {
           // setdisableBtn(false)
         }
