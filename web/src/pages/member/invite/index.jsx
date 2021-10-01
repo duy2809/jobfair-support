@@ -25,7 +25,7 @@ function InviteMember() {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label}を入力してください。',
+    required: 'この項目は必須です。',
     types: {
       email: '',
     },
@@ -118,13 +118,12 @@ function InviteMember() {
                 validateMessages={validateMessages}
               >
                 <Form.Item
-                  label="メールアドレス"
-                  className="font-bold"
+                  label={<p className="font-bold">メールアドレス</p>}
                   required
                 >
                   <Form.Item
                     name="email"
-                    label="メールアドレス"
+                    label={<p className="font-bold">メールアドレス</p>}
                     noStyle
                     rules={[
                       {

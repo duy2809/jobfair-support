@@ -1,0 +1,14 @@
+.edit-milestone {
+    label {
+        margin-right: 2rem;
+    }
+
+    .ant-form-item-label>label::after {
+        margin: 0px;
+    }
+
+    p {
+        margin-bottom: 0px !important;
+    }
+
+}

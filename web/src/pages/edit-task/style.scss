@@ -86,7 +86,7 @@
     margin: 0 auto;
   }
 
-  .ant-spin-nested-loading > div > .ant-spin {
+  .ant-spin-nested-loading>div>.ant-spin {
     position: fixed;
     top: 50%;
     left: 0;
@@ -98,7 +98,7 @@
     max-height: 400px;
   }
 
-  .ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-dot {
+  .ant-spin-nested-loading>div>.ant-spin-lg .ant-spin-dot {
     font-size: 30px;
     color: #ffd803;
   }
@@ -110,23 +110,23 @@
   }
 
   .multiples {
+
     .ant-select:hover,
     .ant-select-focused {
       border-color: #646462;
     }
 
-    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
-      .ant-select-selector {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
       border-color: #bdbcb9;
     }
 
-    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
-      .ant-select-selector {
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
       border-color: #bdbcb9;
     }
   }
 
   .big-icon {
+
     .anticon,
     .edit-task .layout-task .anticon-home,
     .edit-task .layout-task .ant-menu-item-icon {
