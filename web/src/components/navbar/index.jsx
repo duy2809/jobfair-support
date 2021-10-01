@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <div className="flex justify-between items-center border-2 navbar select-none shadow-md">
       <div className="flex">
-        <div className="w-48 pl-4">
+        <div style={{ width: '13.5rem' }}>
           <Link href="/top-page">
             <a>
               <img src="/images/5.svg" alt="logo" />
@@ -86,7 +86,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <div className="px-8">
             <Link href="/jobfairs">
-              <a className="font-bold text-xl text-white background rounded-md py-1 px-6">JF</a>
+              <a className="font-bold text-xl text-white background rounded-md py-2 px-5">JF</a>
             </Link>
           </div>
           <div className="px-8">
