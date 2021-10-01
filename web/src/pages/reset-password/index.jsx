@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Layout from '~/layouts/Default'
 import { updatePassword } from '~/api/authenticate'
 import './style.scss'
+import '../global.scss'
 
 const ResetPage = () => {
   const [form] = Form.useForm()
