@@ -93,6 +93,7 @@ body {
   }
 
   .no-border {
+
     .ant-input:hover,
     .ant-input:focus {
       border: none;
@@ -113,13 +114,12 @@ body {
 
   //Pagination
   .ant-pagination-item:hover,
-  .ant-pagination-item > a:hover,
-  .ant-pagination-item-active > a,
+  .ant-pagination-item>a:hover,
+  .ant-pagination-item-active>a,
   .ant-pagination-item-active,
   .ant-pagination-item-link:hover {
     border-color: #ffd803;
-    background-color: #ffd803;
-    color: black;
+    color: #ffd803;
 
     .ant-pagination-item-link-icon {
       color: #ffd803;
@@ -136,8 +136,7 @@ body {
     border-color: #ffd803;
   }
 
-  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
-    .ant-select-selector {
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
     border-color: #ffd803;
   }
 
@@ -174,8 +173,3 @@ body {
     font-family: inherit;
     font-size: 1.5rem;
   }
-
-  .ant-btn {
-    height: 38px;
-  }
-}
