@@ -5,6 +5,7 @@ import { ReactReduxContext } from 'react-redux'
 import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
+import './global.scss'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
