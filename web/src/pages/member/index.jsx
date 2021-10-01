@@ -7,6 +7,7 @@ import { formatDate } from '~/utils/utils'
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
+
 function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
@@ -139,7 +140,7 @@ function MemberList() {
       title = 'メンバを削除してもよろしいですか?'
     }
     Modal.confirm({
-      centered:true,
+      centered: true,
       title,
       visible: isModalVisible,
       onOk() {
