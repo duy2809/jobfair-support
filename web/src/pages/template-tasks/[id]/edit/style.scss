@@ -5,12 +5,13 @@
     transform: translateX(95%);
     left: 100px;
   }
-  
+
   .ant-form-item-label {
     text-align: right;
     font-weight: 700;
   }
-  .ant-form-item-label > label::after {
+
+  .ant-form-item-label>label::after {
     content: '';
   }
 
@@ -19,4 +20,12 @@
   //   font-family: inherit;
   //   font-weight: 700;
   // }
+  .ant-form-item-label {
+    margin-right: 1rem;
+    min-width: 155px;
+  }
+
+  .ant-form-item-label>label::after {
+    margin: 0px;
+  }
 }

@@ -58,7 +58,7 @@ const Effort = ({
       className="justify-evenly"
       rules={[
         {
-          // required: true,
+          required: true,
           // message: 'この項目は必須です。',
           validator: numberInputValidator,
         },

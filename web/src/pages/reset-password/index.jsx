@@ -20,7 +20,7 @@ const ResetPage = () => {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label}を入力してください。',
+    required: 'この項目は必須です。',
     types: {
       string: '',
     },
@@ -70,8 +70,7 @@ const ResetPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
-              className="font-bold"
-              label="新しいパスワード"
+              label={<p className="font-bold">新しいパスワード</p>}
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
               hasFeedback
@@ -80,8 +79,7 @@ const ResetPage = () => {
             </Form.Item>
 
             <Form.Item
-              className="font-bold"
-              label="パスワード確認用"
+              label={<p className="font-bold">パスワード確認用</p>}
               name="confirm_password"
               dependencies={['password']}
               hasFeedback

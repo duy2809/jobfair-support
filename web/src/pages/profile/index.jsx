@@ -72,21 +72,21 @@ const Profile = () => {
 
               <div className="grid grid-cols-12 gap-x-4 gap-y-10 text-lg pt-10">
                 <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">ユーザー名: </p>
+                  <p style={{ margin: 0 }} className="font-bold">ユーザー名 </p>
                 </div>
                 <div className="col-span-6 col-start-5">
                   <p style={{ margin: 0 }}>{nameUser}</p>
                 </div>
 
                 <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">チャットワークID: </p>
+                  <p style={{ margin: 0 }} className="font-bold">チャットワークID </p>
                 </div>
                 <div className="col-span-6 col-start-5">
                   <p style={{ margin: 0 }}>{chatWorkIdUser}</p>
                 </div>
 
                 <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">メール: </p>
+                  <p style={{ margin: 0 }} className="font-bold">メール </p>
                 </div>
                 <div className="col-span-6 col-start-5">
                   <p style={{ margin: 0 }}>{emailUser}</p>

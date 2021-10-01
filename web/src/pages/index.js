@@ -25,7 +25,7 @@ const LoginPage = () => {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label}を入力してください。',
+    required: 'この項目は必須です。',
     types: {
       email: 'メールアドレスを正しく入力してください。',
       string: '',
@@ -121,8 +121,9 @@ const LoginPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
-              className="font-bold"
-              label="メールアドレス"
+              label={
+                <p className="font-bold">メールアドレス</p>
+              }
               name="email"
               rules={[{ required: true }, { type: 'email' }]}
             >
@@ -133,8 +134,9 @@ const LoginPage = () => {
             </Form.Item>
 
             <Form.Item
-              className="font-bold"
-              label="パスワード"
+              label={
+                <p className="font-bold">パスワード</p>
+              }
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
             >
@@ -171,8 +173,9 @@ const LoginPage = () => {
                 validateMessages={validateMessages}
               >
                 <Form.Item
-                  className="font-bold"
-                  label="メールアドレス"
+                  label={
+                    <p className="font-bold">メールアドレス</p>
+                  }
                   name="reset-email"
                   rules={[{ required: true }, { type: 'email' }]}
                 >
