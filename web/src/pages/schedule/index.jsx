@@ -1,13 +1,30 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button, Tooltip, Space, notification, Modal } from 'antd'
-import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
+import { Select, Input, Table, Empty, Button, Tooltip } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { webInit } from '~/api/web-init'
+
 import { ListScheduleApi } from '~/api/schedule'
-import { deleteSchedule } from '~/api/schedule-detail'
+
+const columns = [
+  {
+    title: 'No.',
+    dataIndex: 'key',
+    key: 'No.',
+    width: '5%',
+    render: (id) => id,
+  },
+  {
+    title: 'スケジュール',
+    dataIndex: 'name',
+    key: 'スケジュール',
+    width: '95%',
+    render: (name) => <Tooltip title={name}>{name}</Tooltip>,
+  },
+]
 
 function ScheduleList() {
   const [schedules, setSchedules] = useState([])
@@ -20,59 +37,8 @@ function ScheduleList() {
     pageSize: 10,
     showSizeChanger: false,
   })
-  const [id, setId] = useState()
-  const [role, setRole] = useState()
+  const [user, setUser] = useState({})
   const router = useRouter()
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isModalType, setIsModalType] = useState({
-    delete: false,
-    edit: false,
-  })
-
-  const columns = [
-    {
-      title: 'スケジュール',
-      dataIndex: 'name',
-      key: 'スケジュール',
-      width: `${role === 'superadmin' ? '80%' : '100%'}`,
-      render: (name, record) => (
-        <Tooltip title={name}>
-          <a href={`/schedule/${record.id}`}>{name}</a>
-        </Tooltip>
-      ),
-    },
-    {
-      title: 'アクション',
-      key: 'action',
-      width: `${role === 'superadmin' ? '20%' : '0%'}`,
-      render: (_text, record) =>
-        role === 'superadmin' && (
-          <Space size="middle">
-            <EditTwoTone
-              id={record.id}
-              onClick={() => {
-                setId(record.id)
-                setIsModalType((preState) => ({
-                  ...preState,
-                  edit: true,
-                }))
-              }}
-            />
-
-            <DeleteTwoTone
-              onClick={() => {
-                setId(record.id)
-                setIsModalType((preState) => ({
-                  ...preState,
-                  delete: true,
-                }))
-              }}
-            />
-          </Space>
-        ),
-    },
-  ]
-
   const handleSelect = (value) => {
     setPagination((preState) => ({
       ...preState,
@@ -91,7 +57,7 @@ function ScheduleList() {
 
   const handleInput = (e) => {
     const result = schedules.filter(
-      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
+      (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
     )
     setFilterSchedules(result)
   }
@@ -114,7 +80,7 @@ function ScheduleList() {
     initPagination()
     webInit().then((res) => {
       if (res.data.auth != null) {
-        setRole(res.data.auth.user.role)
+        setUser(res.data.auth.user)
       }
     })
     ListScheduleApi.getListSchedule()
@@ -127,67 +93,6 @@ function ScheduleList() {
         setDataLoading(false)
       })
   })
-
-  const handleOk = async () => {
-    setIsModalVisible(false)
-    try {
-      if (isModalType.delete) {
-        await deleteSchedule(id)
-          .then(() => {
-            notification.success({
-              message: '成功',
-              description: '正常に削除されました',
-            })
-            setId(null)
-            fetchData()
-            setPagination((preState) => ({
-              ...preState,
-              current: 1,
-            }))
-          })
-          .catch(() => {
-            notification.error({
-              message: '失敗',
-              description: '削除に失敗しました',
-            })
-          })
-        setIsModalType((preState) => ({ ...preState, delete: false }))
-      }
-
-      if (isModalType.edit) {
-        setIsModalType((preState) => ({ ...preState, edit: false }))
-        window.location.href = `/jf-schedule/${id}/edit`
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const handleCancel = () => {
-    setIsModalVisible(false)
-    setIsModalType({ delete: false, add: false, edit: false })
-  }
-  const showModal = (type) => {
-    setIsModalVisible(true)
-    let title
-    if (type.edit) {
-      title = 'JFスケジュール一を編集しますか?'
-    } else {
-      title = 'JFスケジュール一を削除しますか?'
-    }
-    Modal.confirm({
-      title,
-      visible: isModalVisible,
-      onOk() {
-        handleOk()
-      },
-      onCancel() {
-        handleCancel()
-      },
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
-  }
 
   // fix No. bug
   const Schedules = []
@@ -204,71 +109,65 @@ function ScheduleList() {
     router.push('/jf-schedule/add')
   }
 
-  const handleRow = () => ({
-    onClick: () => {},
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/schedule/${record.id}`)
+    },
   })
 
   useEffect(() => {
     fetchData()
   }, [itemCount])
-
-  useEffect(() => {
-    if (!isModalType.delete && !isModalType.edit) {
-      return
-    }
-    showModal(isModalType)
-  }, [isModalType])
-
   const { Option } = Select
-
+  const role = user.role
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full bg-white-background">
+        <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="flex w-full justify-between">
             <h1 className="ml-0">JFスケジュール一覧</h1>
           </div>
           <div className="flex w-full justify-between">
-            <div>
-              <span className="text-xl">表示件数 </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+            <div className="flex  items-center content-center">
+              <span>表示件数 </span>
+              <Select className="ml-2 " value={itemCount} onChange={handleSelect}>
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div className="flex">
-              <div className="text-2xl mr-5 flex items-center">
+            <div>
+              <div className="text-2xl ml-auto flex items-center">
                 <Input
                   placeholder="スケジュール"
                   onChange={handleInput}
                   bordered
                   prefix={<SearchOutlined />}
                 />
-              </div>
-              <div>
-                {role === 'superadmin' ? (
-                  <Button
-                    type="primary"
-                    className="px-12"
-                    htmlType="button"
-                    enabled
-                    onClick={handleClick}
-                    style={{ letterSpacing: '-0.1em' }}
-                  >
-                    追加
-                  </Button>
-                ) : (
-                  ''
-                )}
+                <div className="pl-5">
+                  {role === 'superadmin' ? (
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      enabled
+                      onClick={handleClick}
+                      style={{ letterSpacing: '-0.1em' }}
+                    >
+                      追加
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
             </div>
           </div>
           <Table
-            className="rounded-3xl my-5"
+            className="rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
             dataSource={Schedules}
             rowKey={(record) => record.id}
+            scroll={{ y: 360 }}
             onRow={handleRow}
             onChange={handleChange}
             loading={dataLoading}

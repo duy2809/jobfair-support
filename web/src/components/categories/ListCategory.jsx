@@ -69,7 +69,6 @@ export default function ListCategories() {
       width: '60%',
       render: (name) => (
         <div>
-
           <Tooltip placement="top" title={name}>
             <span
               className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
@@ -78,7 +77,6 @@ export default function ListCategories() {
               {name}
             </span>
           </Tooltip>
-
         </div>
       ),
     },
@@ -86,36 +84,28 @@ export default function ListCategories() {
       key: '2',
       title: 'アクション',
       width: '25%',
-      render: (record) => (role === 'superadmin' && (
+      render: (record) => role === 'superadmin' && (
         <Space size="middle">
-          <EditCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
-          <DeleteCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
+          <EditCategory record={record} reloadPage={reloadPage} role={role} />
+          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
         </Space>
-      )),
+      ),
     },
   ]
 
   const [data, setData] = useState([])
   useEffect(() => {
-    setData(category.map((element) => ({
-      key: element.id,
-      id: element.id,
-      name: element.category_name,
-    })))
+    setData(
+      category.map((element) => ({
+        key: element.id,
+        id: element.id,
+        name: element.category_name,
+      })),
+    )
   }, [category])
   return (
     <div className="list-category">
-      <Row
-        style={{ alignItems: 'center', justifyContent: 'flex-start' }}
-      >
+      <Row style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
         <Col>
           <h1>カテゴリー覧</h1>
         </Col>
@@ -123,7 +113,9 @@ export default function ListCategories() {
 
       <div className="list">
         <div className="flex text-xl list-ht">
-          <div><p>表示件数: </p></div>
+          <div className="flex items-center content-center text-center ">
+            <p>表示件数 </p>
+          </div>
           &nbsp;
           <div>
             <Select
@@ -171,8 +163,7 @@ export default function ListCategories() {
                       </span>
                     </div>
                     <div className="add">
-                      {role === 'superadmin' && (
-                        <AddCategory reloadPage={reloadPage} role={role} />)}
+                      {role === 'superadmin' && <AddCategory reloadPage={reloadPage} role={role} />}
                     </div>
                   </div>
                 </div>
