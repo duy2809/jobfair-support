@@ -163,6 +163,7 @@ function index() {
       message: '正常に登録されました。',
       onClick: () => { },
     })
+    setTimeout(() => { router.push(`/tasks/${jobfair.id}`) }, 3000)
   }
   const addTask = async () => {
     if (templateTaskSelect) {
@@ -173,7 +174,6 @@ function index() {
         if (response.status < 299) {
           await saveNotification()
           setRouteLoading(true)
-          routeTo(`/tasks/${jobfair.id}`)
         } else {
           // setdisableBtn(false)
         }
