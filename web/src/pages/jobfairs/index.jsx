@@ -259,6 +259,7 @@ function JFList() {
   const text = <span className="font-bold">フィルター</span>
   const content = (
     <div className="JFList items-center space-y-3">
+      <p className="font-bold">開始日</p>
       <DatePicker
         inputReadOnly="true"
         placeholder="開始日"
@@ -277,7 +278,7 @@ function JFList() {
           )
         }}
       />
-      <p>
+      <p className="font-bold">
         推定参加学生数
       </p>
       <Slider
@@ -285,7 +286,7 @@ function JFList() {
         defaultValue={[0, 100]}
         onAfterChange={FilterStudentsNumber}
       />
-      <p>
+      <p className="font-bold">
         参加企業社数
       </p>
       <Slider
@@ -314,7 +315,7 @@ function JFList() {
                   </Select>
                 </div>
                 <div className="flex space-x-5">
-                  <Popover placement="bottomRight" title={text} content={content} trigger="click">
+                  <Popover placement="bottomLeft" title={text} content={content} trigger="click">
                     <Button shape="circle" icon={<FilterOutlined id="filter" style={{ color: statusFilter ? '#ffd803' : '#272343' }} />} />
                   </Popover>
                   <Input
