@@ -22,6 +22,10 @@ const JfLayout = ({ children, id, bgr }) => {
     background: 'white',
     borderLeft: '8px solid #ffd803',
     marginBottom: '0px',
+<<<<<<< HEAD
+=======
+
+>>>>>>> fix UI submenu
   }
   const main = findSlot(JfLayout.Main, children)
   const [startDate, setStartDate] = useState()
@@ -76,16 +80,26 @@ const JfLayout = ({ children, id, bgr }) => {
           >
             <div className="relative h-10 " style={{ marginBottom: '32px' }}>
               <div className="absolute top-0 right-0 ">
+<<<<<<< HEAD
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />
                   ) : (
                     <MenuOutlined className="sidebar-icons" />
                   )}
+=======
+                <div
+                  className="button"
+                  type="primary"
+                  onClick={toggleCollapsed}
+                >
+                  {collapsed ? <MenuOutlined /> : <MenuOutlined />}
+>>>>>>> fix UI submenu
                 </div>
               </div>
             </div>
             {bgr === 1 ? (
+<<<<<<< HEAD
               <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
@@ -95,11 +109,19 @@ const JfLayout = ({ children, id, bgr }) => {
                 icon={<HomeOutlined className="sidebar-icons" />}
                 style={{ background: '#e3f6f5' }}
               >
+=======
+              <Menu.Item key="1" icon={<HomeOutlined />} style={styles}>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="1" icon={<HomeOutlined />} style={{ background: '#e3f6f5' }}>
+>>>>>>> fix UI submenu
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             )}
 
             {bgr === 2 ? (
+<<<<<<< HEAD
               <Menu.Item
                 key="2"
                 icon={<FileProtectOutlined className="sidebar-icons" />}
@@ -109,11 +131,19 @@ const JfLayout = ({ children, id, bgr }) => {
               </Menu.Item>
             ) : (
               <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
+=======
+              <Menu.Item key="2" icon={<FileProtectOutlined />} style={styles}>
+                <Link href={`/tasks/${id}`}>タスク</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="2" icon={<FileProtectOutlined />}>
+>>>>>>> fix UI submenu
                 <Link href={`/tasks/${id}`}>タスク</Link>
               </Menu.Item>
             )}
 
             {bgr === 3 ? (
+<<<<<<< HEAD
               <Menu.Item
                 key="3"
                 icon={<BarChartOutlined className="sidebar-icons" />}
@@ -123,21 +153,37 @@ const JfLayout = ({ children, id, bgr }) => {
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
+=======
+              <Menu.Item key="3" icon={<BarChartOutlined />} style={styles}>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="3" icon={<BarChartOutlined />}>
+>>>>>>> fix UI submenu
                 <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 
             {bgr === 4 ? (
+<<<<<<< HEAD
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
+=======
+              <Menu.Item key="4" icon={<TableOutlined />} style={styles}>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="4" icon={<TableOutlined />}>
+>>>>>>> fix UI submenu
                 <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             )}
 
             {bgr === 5 ? (
+<<<<<<< HEAD
               <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
@@ -146,6 +192,17 @@ const JfLayout = ({ children, id, bgr }) => {
                 <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             )}
+=======
+              <Menu.Item key="5" icon={<FileOutlined />} style={styles}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="5" icon={<FileOutlined />}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            )}
+
+>>>>>>> fix UI submenu
           </Menu>
         </Sider>
         <Layout className="site-layout">
