@@ -5,7 +5,6 @@ import 'dhtmlx-gantt/codebase/dhtmlxgantt.css'
 // import './Gantt.css'
 import './material.css'
 import './style.scss'
-import './export'
 import PropTypes from 'prop-types'
 
 export default class Gantt extends Component {
@@ -63,6 +62,7 @@ export default class Gantt extends Component {
       if (date.getDay() === 0 || date.getDay() === 6) {
         return 'weekend'
       }
+      return ''
     }
     gantt.config.lightbox.sections = []
     gantt.attachEvent('onBeforeLightbox', () => false)
@@ -71,14 +71,9 @@ export default class Gantt extends Component {
       // console.log(element)
       console.log(element.period)
     })
-    const weekScaleTemplate = (week) => {
-      const fisrtDayOfWeek = week.getDate()
-      const dateToStr = 'マイルストーン名'
+    // const weekScaleTemplate = () => {
 
-      // return `<div class="milestone-cell" style="display:flex;" >
-      //             <div class="milestone-row" id="${tasks.name}" style="width:100%;border:none" >${dateToStr}</div>
-      //         </div>`
-    }
+    // }
     // custom link style
     gantt.templates.link_class = (link) => {
       const types = gantt.config.links
@@ -97,9 +92,10 @@ export default class Gantt extends Component {
       }
     }
     const daysStyle = (date) => {
-      if (date == new Date()) {
+      if (date === new Date()) {
         return 'today-mark'
       }
+      return ''
     }
     // you can use gantt.isWorkTime(date)
     // when gantt.config.work_time config is enabled
@@ -231,8 +227,8 @@ export function scrollToToday() {
     position = gantt.posFromDate(endDate)
     gantt.scrollTo(position, null)
   } else if (
-    state.min_date.getTime() < today.getTime() &&
-    today.getTime() < state.max_date.getTime()
+    state.min_date.getTime() < today.getTime()
+    && today.getTime() < state.max_date.getTime()
   ) {
     position = gantt.posFromDate(today)
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2
