@@ -1,10 +1,15 @@
 .list-category {
-    .ant-table-row:hover {
-        cursor: default;
-    }
+  .ant-table-row:hover {
+    cursor: default;
+  }
 
-    h1 {
-        margin-left: 0px;
-    }
-
+  h1 {
+    margin-left: 0px;
+  }
+  .ant-select-arrow {
+    display: flex;
+    justify-items: center;
+    align-self: center;
+    align-items: center;
+  }
 }

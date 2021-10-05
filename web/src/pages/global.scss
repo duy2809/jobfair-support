@@ -175,4 +175,14 @@ body {
     font-size: 1.125rem;
     font-weight: 700;
   }
+
+  .ant-btn {
+    height: 38px;
+  }
+  .ant-select-arrow {
+    display: flex;
+    justify-items: center;
+    align-self: center;
+    align-items: center;
+  }
 }
