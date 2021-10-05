@@ -145,7 +145,7 @@ export default class Gantt extends Component {
     gantt.config.columns = [
       {
         name: 'task',
-        label: '',
+        label: 'タスクリスト',
         resize: true,
         width: 170,
         align: 'center',

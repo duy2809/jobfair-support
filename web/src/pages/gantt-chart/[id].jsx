@@ -2,11 +2,11 @@
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
 import dynamic from 'next/dynamic'
-import router from 'next/router'
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
-import OtherLayout from '../../layouts/OtherLayout'
+import JfLayout from '../../layouts/JFLayout'
 import './style.scss'
 
 const GanttChart = dynamic(
@@ -21,6 +21,7 @@ export default function index() {
   const [status, setStatus] = useState('0')
   const [loading, setLoading] = useState(true)
   const [tasks, setTask] = useState({})
+  const router = useRouter()
   const [milestones, setMilestones] = useState([])
   const [filter, setfilter] = useState('全て')
   const [chartMethod, setchartMethod] = useState()
@@ -89,13 +90,13 @@ export default function index() {
     })
     return link
   }
+  const jobfairID = router.query.id
   useEffect(() => {
     const fetchAPI = async () => {
       try {
         // eslint-disable-next-line import/no-unresolved
         const method = await import('~/components/gantt-chart/Gantt')
         // TODO: optimize this one by using axios.{all,spread}
-        const jobfairID = router.query.id
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
         const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
@@ -107,9 +108,7 @@ export default function index() {
         setJobfairStartDate(new Date(jobfair.data.start_date))
         setLoading(false)
         setMilestones(jobfairMilestone.data.schedule.milestones)
-        // console.log({ ...data, ...link })
         setTask({ ...data, ...link })
-        // console.log(tasks)
         setchartMethod(method)
         return null
       } catch (error) {
@@ -153,16 +152,18 @@ export default function index() {
   }
   const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
   return (
-    <OtherLayout>
-      <OtherLayout.Main>
+    <JfLayout id={jobfairID}>
+      <JfLayout.Main>
         {/* マイルストーン ガントチャート リストチャート 今日 から まで カテゴリ 全て すべて TC業務  次面接練習 タスクについて  私だけ テンプレート タスクリスト */}
-        <div className="gantt-chart-page">
+        <div className="gantt-chart-page min-h-screen">
           <div className="container mx-auto flex-1 justify-center px-4">
             {/* page title */}
             <div className="ant-row w-full">
               <Button
                 type="primary"
-                href="/top-page"
+                onClick={() => {
+                  router.push('/top-page')
+                }}
                 className="mb-6"
                 style={{ letterSpacing: '-2px' }}
               >
@@ -173,10 +174,11 @@ export default function index() {
                 <Button
                   type="primary"
                   className="tracking-tighter"
-                  href="/jobfairs"
-                  style={{ letterSpacing: '-2px' }}
+                  onClick={() => {
+                    router.push('/jobfairs')
+                  }}
                 >
-                  J F 一 覧
+                  JF一覧
                 </Button>
               </div>
             </div>
@@ -257,36 +259,22 @@ export default function index() {
             <div className="gantt-chart">
               <div>
                 <div className="container xl ">
-                  <div>
-                    {/* <div
-                      className=" overlay z-50 absolute top-0 left-0 right-0 bottom-0 bg-gray-500 opacity-1"
-                      style={{ backgroundColor: 'rgb(130 129 129 / 50%)' }}
-                    >
-                      <Spin
-                        style={{ fontSize: '30px', color: '#ffd803' }}
-                        spinning={loading}
-                        indicator={loadingIcon}
-                        size="large"
-                        className="absolute top-1/2 left-1/2"
-                        id="tes"
-                      />
-                    </div> */}
-
+                  <div className="h-full">
                     {loading ? (
-                      <>
-                        <Spin
-                          style={{ fontSize: '30px', color: '#ffd803' }}
-                          spinning={loading}
-                          indicator={loadingIcon}
-                          size="large"
-                          className="absolute top-1/2 left-1/2"
-                          id="tes"
-                        />
+                      <div className="flex items-center justify-center">
                         <Empty
-                          className="border py-10 mx-10 border-solid rounded-sm"
+                          className="relative border w-full h-3/4 py-10 mx-10 border-solid rounded-sm "
                           image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        />
-                      </>
+                        >
+                          <Spin
+                            style={{ color: '#ffd803' }}
+                            spinning={loadingIcon}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+                            indicator={loadingIcon}
+                            size="large"
+                          />
+                        </Empty>
+                      </div>
                     ) : (
                       <GanttChart
                         tasks={tasks}
@@ -301,7 +289,7 @@ export default function index() {
             </div>
           </div>
         </div>
-      </OtherLayout.Main>
-    </OtherLayout>
+      </JfLayout.Main>
+    </JfLayout>
   )
 }

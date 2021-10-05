@@ -1,7 +1,10 @@
 .gantt-chart-page {
   .radio-button {
     border-radius: 5px;
+    height: 38px;
+    line-height: 38px;
   }
+
   .radio-button:hover {
     opacity: 0.8;
   }
@@ -27,6 +30,9 @@
       color: white;
     }
     background-color: rgb(121, 86, 23);
+  }
+  .ant-radio-button-wrapper:not(:last-child) {
+    margin-right: 10px !important;
   }
   .ant-radio-button-wrapper:last-child {
     border: none;
