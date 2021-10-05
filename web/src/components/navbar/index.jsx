@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <div className="flex justify-between items-center border-2 navbar select-none shadow-md">
       <div className="flex">
-        <div style={{ width: '13.5rem' }}>
+        <div style={{ width: '13.5rem', paddingLeft: '3px' }} sty>
           <Link href="/top-page">
             <a>
               <img src="/images/5.svg" alt="logo" />

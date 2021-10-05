@@ -20,9 +20,8 @@ import Navbar from '../../components/navbar'
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
     background: 'white',
-    borderLeft: '8px solid #ffd803',
+    borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
-
   }
   const main = findSlot(JfLayout.Main, children)
   const [startDate, setStartDate] = useState()
@@ -31,33 +30,40 @@ const JfLayout = ({ children, id, bgr }) => {
   const [numberOfCompanies, setNumberOfCompanies] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
-
-  const [collapsed, Setcollapsed] = useState(false)
+  const [collapsed, Setcollapsed] = useState(() => false)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
   const fetchJF = async () => {
     if (id) {
-      await jfdata(id).then((response) => {
-        setName(response.data.name)
-        setStartDate(response.data.start_date.split('-').join('/'))
-        setAvt(response.data.user.avatar)
-        setNumberOfStudents(response.data.number_of_students)
-        setNumberOfCompanies(response.data.number_of_companies)
-      }).catch((error) => {
-        console.log(error)
-      })
+      await jfdata(id)
+        .then((response) => {
+          setName(response.data.name)
+          setStartDate(response.data.start_date.split('-').join('/'))
+          setAvt(response.data.user.avatar)
+          setNumberOfStudents(response.data.number_of_students)
+          setNumberOfCompanies(response.data.number_of_companies)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
-
+  useEffect(() => {
+    Setcollapsed(JSON.parse(localStorage.getItem('collapsed')))
+  }, [])
   useEffect(() => {
     fetchJF()
   }, [children])
+
+  useEffect(() => {
+    localStorage.setItem('collapsed', JSON.stringify(collapsed))
+  }, [collapsed])
+
   return (
     <div className="layout-task">
       <Navbar />
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
-
         <Sider
           style={{
             left: 0,
@@ -74,7 +80,7 @@ const JfLayout = ({ children, id, bgr }) => {
             theme="dark"
             inlineCollapsed={collapsed}
           >
-            <div className="relative h-10 " style={{ marginBottom: '32px' }}>
+            <div className="relative h-10" style={{ marginBottom: '32px', transform: collapsed ? 'translate(-20%)' : 'translate(0%)' }}>
               <div className="absolute top-0 right-0 ">
                 <div
                   className="button"
@@ -90,7 +96,11 @@ const JfLayout = ({ children, id, bgr }) => {
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="1" icon={<HomeOutlined />} style={{ background: '#e3f6f5' }}>
+              <Menu.Item
+                key="1"
+                icon={<HomeOutlined />}
+                style={{ background: '#e3f6f5' }}
+              >
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             )}
@@ -134,7 +144,6 @@ const JfLayout = ({ children, id, bgr }) => {
                 <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             )}
-
           </Menu>
         </Sider>
         <Layout className="site-layout">
@@ -142,19 +151,12 @@ const JfLayout = ({ children, id, bgr }) => {
             <h1>{name}</h1>
             <div className="admin__jf">
               <h3>{startDate}</h3>
-              <h3>
-                {`企業:${numberOfStudents}`}
-              </h3>
-              <h3>
-                {`学生:${numberOfCompanies}`}
-              </h3>
+              <h3>{`企業:${numberOfStudents}`}</h3>
+              <h3>{`学生:${numberOfCompanies}`}</h3>
               <img className="avt" src={avt} alt="avatar" />
             </div>
           </div>
-          <Content
-            className="site-layout-background"
-          >
-
+          <Content className="site-layout-background">
             {_get(main, 'props.children')}
           </Content>
         </Layout>
