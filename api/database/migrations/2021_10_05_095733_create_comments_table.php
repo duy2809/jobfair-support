@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIdToScheduleTemplateTaskTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddIdToScheduleTemplateTaskTable extends Migration
      */
     public function up()
     {
-        Schema::table('schedule_template_task', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('task_id');
+            $table->text('body');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddIdToScheduleTemplateTaskTable extends Migration
      */
     public function down()
     {
-        Schema::table('schedule_template_task', function (Blueprint $table) {
-            $table->dropColumn('id');
-        });
+        Schema::dropIfExists('comments');
     }
 }
