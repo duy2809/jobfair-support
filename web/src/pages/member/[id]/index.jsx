@@ -2,7 +2,13 @@ import React, { useState, useContext, useEffect } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import { Modal, notification } from 'antd'
 import Router, { useRouter } from 'next/router'
-import { ArrowLeftOutlined, ExclamationCircleOutlined, CheckCircleTwoTone, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  ArrowLeftOutlined,
+  ExclamationCircleOutlined,
+  CheckCircleTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
+} from '@ant-design/icons'
 import Link from 'next/link'
 
 import MemberDetailTable from '../../../components/member-detail-table'
@@ -78,15 +84,9 @@ function MemberDetailPage() {
           <div className="flex mt-2">
             {role === 'admin' || role === 'superadmin' ? (
               <>
-                <EditOutlined
-                  onClick={handleEdit}
-                  className="text-4xl px-2"
-                />
+                <EditTwoTone onClick={handleEdit} className="border-none mx-1 text-2xl" />
 
-                <DeleteOutlined
-                  onClick={modelDelete}
-                  className="text-4xl px-2"
-                />
+                <DeleteTwoTone onClick={modelDelete} className="border-none mx-1 text-2xl" />
               </>
             ) : null}
           </div>

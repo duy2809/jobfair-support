@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react'
 // import Swiper core and required modules
-import { Modal, Button, notification, Spin } from 'antd'
+import { Modal, notification, Spin } from 'antd'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { ReactReduxContext } from 'react-redux'
-import { RightCircleOutlined } from '@ant-design/icons'
+import { RightCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import { getSchedule, deleteSchedule } from '../../../api/schedule-detail'
 import ScheduleDetail from './list'
 import Navbar from '../../../components/navbar/index'
@@ -64,6 +64,7 @@ function ScheduleDetailGeneral() {
       setLoading(false)
     }, 3000)
   }
+
   return (
     <div className="app">
       <header>
@@ -75,19 +76,15 @@ function ScheduleDetailGeneral() {
         </span>
         <div
           className="flex justify-end"
-          style={{ visibility: role === 'admin' ? 'visible' : 'hidden' }}
+          style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
         >
-          <Button type="primary" size="default" className="mr-4" onClick={showModal}>
-            削除
-          </Button>
+          <Link href={`/jf-schedule/${id}/edit`}>
+            <EditTwoTone className="border-none mx-1 text-2xl" />
+          </Link>
+          <DeleteTwoTone onClick={showModal} className="border-none mx-1 text-2xl" />
           <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
             <p>削除してもよろしいですか？</p>
           </Modal>
-          <Link href={`/schedule/${id}.edit`}>
-            <Button type="primary" size="default">
-              編集
-            </Button>
-          </Link>
         </div>
         <Spin spinning={loading}>
           <div className="mt-12 relative">

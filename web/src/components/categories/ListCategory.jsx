@@ -68,26 +68,18 @@ export default function ListCategories() {
       dataIndex: 'name',
       width: '60%',
       render: (name) => (
-        <>
-          {name.length > 50
-            ? (
-              <Tooltip placement="top" title={name}>
-                <span
-                  className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                  style={{ maxWidth: '50ch' }}
-                >
-                  {name}
-                </span>
-              </Tooltip>
-            ) : (
-              <span
-                className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                style={{ maxWidth: '50ch' }}
-              >
-                {name}
-              </span>
-            )}
-        </>
+        <div>
+
+          <Tooltip placement="top" title={name}>
+            <span
+              className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+              style={{ maxWidth: '50ch' }}
+            >
+              {name}
+            </span>
+          </Tooltip>
+
+        </div>
       ),
     },
     {
@@ -122,24 +114,18 @@ export default function ListCategories() {
   return (
     <div className="list-category">
       <Row
-        style={{ alignItems: 'center', justifyContent: 'space-between' }}
+        style={{ alignItems: 'center', justifyContent: 'flex-start' }}
       >
         <Col>
           <h1>カテゴリー覧</h1>
-        </Col>
-        <Col>
-          <div className="add">
-            {role === 'superadmin' && (
-              <AddCategory reloadPage={reloadPage} role={role} />)}
-          </div>
         </Col>
       </Row>
 
       <div className="list">
         <div className="flex text-xl list-ht">
-          <p>表示件数: </p>
+          <div><p>表示件数: </p></div>
           &nbsp;
-          <p>
+          <div>
             <Select
               labelInValue
               defaultValue={{ value: '10' }}
@@ -151,8 +137,8 @@ export default function ListCategories() {
               <Select.Option value="25">25</Select.Option>
               <Select.Option value="50">50</Select.Option>
             </Select>
-          </p>
-          <p>
+          </div>
+          <div>
             <div className="absolute right-12 no-border">
               <Space direction="vertical">
                 {/* <Input
@@ -171,7 +157,7 @@ export default function ListCategories() {
                       marginBottom: '10px',
                     }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center mr-4">
                       <span className="queue-demo">
                         <span>
                           <Input
@@ -184,11 +170,15 @@ export default function ListCategories() {
                         </span>
                       </span>
                     </div>
+                    <div className="add">
+                      {role === 'superadmin' && (
+                        <AddCategory reloadPage={reloadPage} role={role} />)}
+                    </div>
                   </div>
                 </div>
               </Space>
             </div>
-          </p>
+          </div>
         </div>
         <Table
           columns={columns}

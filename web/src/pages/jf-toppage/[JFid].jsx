@@ -2,16 +2,16 @@ import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { ReactReduxContext } from 'react-redux'
-import { Button, Modal, notification } from 'antd'
-import {
-  ExclamationCircleOutlined,
-  CheckCircleTwoTone,
-} from '@ant-design/icons'
+// import { notification } from 'antd'
+// import {
+//   ExclamationCircleOutlined,
+//   CheckCircleTwoTone,
+// } from '@ant-design/icons'
 import JfLayout from '../../layouts/layout-task'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jftask, deleteJF } from '../../api/jf-toppage'
+import { jftask } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
 
 function jftoppage() {
@@ -20,7 +20,7 @@ function jftoppage() {
   const router = useRouter()
   const idJf = router.query.JFid
   const [user, setUser] = useState(null)
-  const [role, setRole] = useState(null)
+  // const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const fetchTasks = async () => {
     await jftask(idJf).then((response) => {
@@ -29,52 +29,52 @@ function jftoppage() {
       console.log(error)
     })
   }
-  const handleEdit = () => {
-    router.push(`/edit-jf/${idJf}`)
-  }
-  const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-      duration: 3,
-      message: '正常に削除されました',
-      onClick: () => {},
-    })
-  }
-  const deletetpl = async () => {
-    await deleteJF(idJf).then((response) => {
-      console.log(response.data)
-      saveNotification()
-      router.push('/jobfairs')
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  const modelDelete = () => {
-    Modal.confirm({
-      title: '削除してもよろしいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      onOk: () => {
-        deletetpl()
-      },
-      onCancel: () => {},
-      centered: true,
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
-  }
+  // const handleEdit = () => {
+  //   router.push(`/edit-jf/${idJf}`)
+  // }
+  // const saveNotification = () => {
+  //   notification.open({
+  //     icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+  //     duration: 3,
+  //     message: '正常に削除されました',
+  //     onClick: () => {},
+  //   })
+  // }
+  // const deletetpl = async () => {
+  //   await deleteJF(idJf).then((response) => {  //remove edit and delete
+  //     console.log(response.data)
+  //     saveNotification()
+  //     router.push('/jobfairs')
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
+  // const modelDelete = () => {
+  //   Modal.confirm({
+  //     title: '削除してもよろしいですか？',
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: '',
+  //     onOk: () => {
+  //       deletetpl()
+  //     },
+  //     onCancel: () => {},
+  //     centered: true,
+  //     okText: 'はい',
+  //     cancelText: 'いいえ',
+  //   })
+  // }
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
     setUser(store.getState().get('auth').get('user'))
     if (user) {
-      setRole(user.get('role'))
+      // setRole(user.get('role'))
     }
     fetchTasks()
   }, [user])
 
   return (
     <div className="JFTopPage">
-      <JfLayout id={idJf}>
+      <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
           <div className="Jf__top">
 
@@ -94,7 +94,7 @@ function jftoppage() {
                   <div className="flex justify-end">
                     <div className="search__task">
                       <div className="button__right">
-                        {role === 'superadmin' ? (
+                        {/* {role === 'superadmin' ? (
                           <>
                             <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>
                               <span> 編集 </span>
@@ -104,7 +104,7 @@ function jftoppage() {
                             </Button>
                           </>
                         )
-                          : null}
+                          : null} */}
                       </div>
                     </div>
                   </div>

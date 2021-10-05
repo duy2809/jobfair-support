@@ -150,7 +150,7 @@ const EditMilestonePage = () => {
   const specialCharRegex = new RegExp('[ 　]')
 
   return (
-    <div>
+    <div className="edit-milestone">
       <OtherLayout>
         <OtherLayout.Main>
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p> */}

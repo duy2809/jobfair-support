@@ -370,7 +370,7 @@ const index = () => {
                             span: 13,
                           }}
                           layout="horizontal"
-                          colon
+                          colon={false}
                           initialValues={{ defaultInputValue: 0 }}
                           onFinish={onFinishSuccess}
                           onFinishFailed={onFinishFailed}

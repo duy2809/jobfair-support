@@ -36,25 +36,24 @@ export default function Search() {
           }}
           className="cursor-pointer flex flex-row items-center"
         >
-          {(record.is_file) ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
-          {name.length > 20
-            ? (
-              <Tooltip placement="top" title={name}>
-                <span
-                  className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-                  style={{ maxWidth: '20ch' }}
-                >
-                  {name}
-                </span>
-              </Tooltip>
-            ) : (
+          {record.is_file ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
+          {name.length > 20 ? (
+            <Tooltip placement="top" title={name}>
               <span
                 className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
                 style={{ maxWidth: '20ch' }}
               >
                 {name}
               </span>
-            )}
+            </Tooltip>
+          ) : (
+            <span
+              className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+              style={{ maxWidth: '20ch' }}
+            >
+              {name}
+            </span>
+          )}
         </div>
       ),
     },
@@ -102,22 +101,26 @@ export default function Search() {
     const updaterIdInput = form.getFieldValue('updater')
     if (nameInput) {
       argument = {
-        ...argument, name: nameInput,
+        ...argument,
+        name: nameInput,
       }
     }
     if (startDateInput) {
       argument = {
-        ...argument, start_date: startDateInput.format('YYYY-MM-DD'),
+        ...argument,
+        start_date: startDateInput.format('YYYY-MM-DD'),
       }
     }
     if (endDateInput) {
       argument = {
-        ...argument, end_date: endDateInput.format('YYYY-MM-DD'),
+        ...argument,
+        end_date: endDateInput.format('YYYY-MM-DD'),
       }
     }
     if (updaterIdInput) {
       argument = {
-        ...argument, updaterId: updaterIdInput,
+        ...argument,
+        updaterId: updaterIdInput,
       }
     }
     const res = await searchFile({
@@ -162,7 +165,7 @@ export default function Search() {
           span: 6,
         }}
         wrapperCol={{
-          span: 14,
+          span: 16,
         }}
         layout="horizontal"
         onFinish={onFinishSuccess}
@@ -170,7 +173,7 @@ export default function Search() {
         colon={false}
       >
         <Form.Item label={<p className="font-bold">名前</p>} name="name">
-          <Input className="h-8" placeholder="名前を入力" />
+          <Input placeholder="名前を入力" size="large" />
         </Form.Item>
         <Form.Item label={<p className="font-bold">更新日</p>} name="start_date">
           <DatePicker size="large" />
@@ -191,15 +194,9 @@ export default function Search() {
               <Option value={element.id}>{element.name}</Option>
             ))}
           </Select>
-
         </Form.Item>
         <Form.Item label=" " colon={false}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            // className="w-28"
-            className="FileButton"
-          >
+          <Button type="primary" htmlType="submit" className="FileButton">
             検索
           </Button>
         </Form.Item>
@@ -218,7 +215,14 @@ export default function Search() {
           dataSource={data}
           pagination={false}
           // onRow={onRowClick}
-          locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="満足しているファイルはありません。" /> }}
+          locale={{
+            emptyText: (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="満足しているファイルはありません。"
+              />
+            ),
+          }}
         />
         <Button
           type="primary"
@@ -231,6 +235,5 @@ export default function Search() {
         </Button>
       </Modal>
     </>
-
   )
 }

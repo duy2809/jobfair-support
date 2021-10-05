@@ -5,6 +5,7 @@ import { ReactReduxContext } from 'react-redux'
 import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
+import './global.scss'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -25,7 +26,7 @@ const LoginPage = () => {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label}を入力してください。',
+    required: 'この項目は必須です。',
     types: {
       email: 'メールアドレスを正しく入力してください。',
       string: '',
@@ -51,16 +52,13 @@ const LoginPage = () => {
         const { auth } = response.data
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
         setTimeout(() => {
-          openNotification('success', '正常にログインしました')
           router.push('/top-page')
-        }, 1000)
+          openNotification('success', '正常にログインしました')
+        }, 2000)
       }
     } catch (error) {
       if (error.request.status === 400) {
-        openNotification(
-          'error',
-          'メールアドレスもしくはパスワードが間違っています',
-        )
+        openNotification('error', 'メールアドレスもしくはパスワードが間違っています')
       }
     }
   }
@@ -83,15 +81,9 @@ const LoginPage = () => {
   const handleOk = async () => {
     setIsModalVisible(false)
     try {
-      const response = await sendLinkResetPassword(
-        form2.getFieldValue('reset-email'),
-      )
+      const response = await sendLinkResetPassword(form2.getFieldValue('reset-email'))
       if (response.request.status === 200) {
-        openNotification(
-          'success',
-          'メールは正常に送信されました',
-          'メールを確認してください。',
-        )
+        openNotification('success', 'メールは正常に送信されました', 'メールを確認してください。')
       }
     } catch (error) {
       if (error.request.status === 400) openNotification('error', 'メールが存在しません')
@@ -121,24 +113,23 @@ const LoginPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
-              className="font-bold"
-              label="メールアドレス"
+              label={
+                <p className="font-bold">メールアドレス</p>
+              }
               name="email"
               rules={[{ required: true }, { type: 'email' }]}
             >
-              <Input
-                type="email"
-                placeholder="メールアドレスを入力してください。"
-              />
+              <Input size="large" type="email" placeholder="メールアドレスを入力してください。" />
             </Form.Item>
 
             <Form.Item
-              className="font-bold"
-              label="パスワード"
+              label={
+                <p className="font-bold">パスワード</p>
+              }
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
             >
-              <Input.Password placeholder="パスワードを入力してください。" />
+              <Input.Password size="large" placeholder="パスワードを入力してください。" />
             </Form.Item>
 
             <Form.Item name="remember" valuePropName="checked">
@@ -171,15 +162,13 @@ const LoginPage = () => {
                 validateMessages={validateMessages}
               >
                 <Form.Item
-                  className="font-bold"
-                  label="メールアドレス"
+                  label={
+                    <p className="font-bold">メールアドレス</p>
+                  }
                   name="reset-email"
                   rules={[{ required: true }, { type: 'email' }]}
                 >
-                  <Input
-                    type="email"
-                    placeholder="メールアドレスを入力してください。"
-                  />
+                  <Input type="email" placeholder="メールアドレスを入力してください。" />
                 </Form.Item>
               </Form>
             </Modal>
@@ -192,13 +181,8 @@ const LoginPage = () => {
                     htmlType="submit"
                     className="text-base px-14"
                     disabled={
-                      !(
-                        form.isFieldTouched('email')
-                        && form.isFieldTouched('password')
-                      )
-                      || !!form
-                        .getFieldsError()
-                        .filter(({ errors }) => errors.length).length
+                      !(form.isFieldTouched('email') && form.isFieldTouched('password'))
+                      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
                     }
                   >
                     ログイン

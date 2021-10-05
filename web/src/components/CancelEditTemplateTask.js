@@ -5,28 +5,28 @@ import PropTypes from 'prop-types'
 class CancelEditTemplateTask extends React.Component {
   state = {
     visible: false,
-  };
+  }
 
   showModal = () => {
     this.setState({
       visible: true,
     })
-  };
+  }
 
   handleOk = () => {
     window.location.href = `/template-task-dt/${this.props.id}`
     this.setState({ visible: false })
-  };
+  }
 
   handleCancel = () => {
     this.setState({ visible: false })
-  };
+  }
 
   render() {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="text-base px-8 mr-5">
+        <Button onClick={this.showModal} className="text-base  mr-5">
           キャンセル
         </Button>
         <Modal

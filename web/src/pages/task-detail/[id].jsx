@@ -10,7 +10,12 @@ import {
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
-import { taskData, beforeTask, afterTask, deleteTask } from '../../api/task-detail'
+import {
+  taskData,
+  beforeTask,
+  afterTask,
+  deleteTask,
+} from '../../api/task-detail'
 
 function TaskDetail() {
   const router = useRouter()
@@ -48,9 +53,10 @@ function TaskDetail() {
   const [listMemberAssignee, setListMemberAssignee] = useState([])
   const deletetpl = async () => {
     await deleteTask(idTask)
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data)
-        router.push(`/tasks/${infoJF.id}`)
+        await router.push(`/tasks/${infoJF.id}`)
+        await saveNotification()
       })
       .catch((error) => {
         console.log(error)
@@ -60,24 +66,27 @@ function TaskDetail() {
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
-        setInfoTask({
-          id: response.data.id,
-          name: response.data.name,
-          categories: response.data.categories[0].category_name,
-          milestone: response.data.milestone.name,
-          status: response.data.status,
-          start_time: response.data.start_time,
-          end_time: response.data.end_time,
-          effort: response.data.template_task.effort,
-          is_day: response.data.template_task.is_day,
-          unit: response.data.template_task.unit,
-          description_of_detail: response.data.description_of_detail,
-        })
-        setListMemberAssignee(response.data.users)
-        setInfoJF({
-          id: response.data.schedule.jobfair.id,
-          name: response.data.schedule.jobfair.name,
-        })
+        if (response.status === 200) {
+          const data = response.data
+          setInfoTask({
+            id: data.id,
+            name: data.name,
+            categories: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            status: data.status,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            effort: data.template_task.effort,
+            is_day: data.template_task.is_day,
+            unit: data.template_task.unit,
+            description_of_detail: data.description_of_detail,
+          })
+          setListMemberAssignee(data.users)
+          setInfoJF({
+            id: data.schedule.jobfair.id,
+            name: data.schedule.jobfair.name,
+          })
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -108,7 +117,6 @@ function TaskDetail() {
       content: '',
       onOk: () => {
         deletetpl()
-        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -139,7 +147,11 @@ function TaskDetail() {
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
+                <Button
+                  style={{ border: 'none' }}
+                  type="primary"
+                  onClick={handleBack}
+                >
                   戻る
                 </Button>
               </div>
@@ -210,12 +222,16 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -330,7 +346,11 @@ function TaskDetail() {
                       ? beforeTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
@@ -357,7 +377,11 @@ function TaskDetail() {
                       ? afterTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
