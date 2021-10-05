@@ -178,4 +178,13 @@ body {
   .sidebar-icons {
     font-size: 25px !important;
   }
+  .ant-btn {
+    height: 38px;
+  }
+  .ant-select-arrow {
+    display: flex;
+    justify-items: center;
+    align-self: center;
+    align-items: center;
+  }
 }
