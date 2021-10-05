@@ -174,10 +174,10 @@ function TaskList() {
           </Button>
         </div>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <h1 className="m-0 flex justify-start w-full">
+          <h1 className="m-0 flex justify-start w-full mb-5">
             メンバ詳細（タスク一覧）
           </h1>
-          <div className="text-xl w-full flex justify-between items-center">
+          <div className="text-xl w-full items-center">
             <div className="flex items-center">
               <div className="my-5 mr-5">ステータス:</div>
               <Button
@@ -231,18 +231,16 @@ function TaskList() {
             </div>
             <DatePicker
               className=""
-              size="large"
               help="Please select the correct date"
               format={Extensions.dateFormat}
-              placeholder={Extensions.dateFormat}
+              placeholder="終了時間"
               onChange={handleInputDate}
             />
           </div>
-          <div className="flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between mt-10">
             <div>
-              <span className="text-xl">表示件数: </span>
+              <span>表示件数: </span>
               <Select
-                className="ml-5"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -253,7 +251,6 @@ function TaskList() {
             </div>
             <div>
               <Input
-                size="large"
                 onChange={handleInputName}
                 placeholder="タスク名"
                 prefix={<SearchOutlined />}

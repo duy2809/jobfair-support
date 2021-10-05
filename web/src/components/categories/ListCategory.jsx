@@ -69,7 +69,6 @@ export default function ListCategories() {
       width: '60%',
       render: (name) => (
         <div>
-
           <Tooltip placement="top" title={name}>
             <span
               className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
@@ -78,7 +77,6 @@ export default function ListCategories() {
               {name}
             </span>
           </Tooltip>
-
         </div>
       ),
     },
@@ -86,57 +84,57 @@ export default function ListCategories() {
       key: '2',
       title: 'アクション',
       width: '25%',
-      render: (record) => (role === 'superadmin' && (
+      render: (record) => role === 'superadmin' && (
         <Space size="middle">
-          <EditCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
-          <DeleteCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
+          <EditCategory record={record} reloadPage={reloadPage} role={role} />
+          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
         </Space>
-      )),
+      ),
     },
   ]
 
   const [data, setData] = useState([])
   useEffect(() => {
-    setData(category.map((element) => ({
-      key: element.id,
-      id: element.id,
-      name: element.category_name,
-    })))
+    setData(
+      category.map((element) => ({
+        key: element.id,
+        id: element.id,
+        name: element.category_name,
+      })),
+    )
   }, [category])
   return (
     <div className="list-category">
-      <Row
-        style={{ alignItems: 'center', justifyContent: 'flex-start' }}
-      >
+      <Row style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
         <Col>
           <h1>カテゴリー覧</h1>
         </Col>
       </Row>
 
       <div className="list">
-        <div className="flex text-xl list-ht">
-          <div><p>表示件数: </p></div>
-          &nbsp;
-          <div>
-            <Select
-              labelInValue
-              defaultValue={{ value: '10' }}
-              style={{ width: 60, borderRadius: '1rem' }}
-              onChange={(e) => setPageS(e.value)}
-              className="selectBox"
-            >
-              <Select.Option value="10">10</Select.Option>
-              <Select.Option value="25">25</Select.Option>
-              <Select.Option value="50">50</Select.Option>
-            </Select>
+        <div
+          className="flex"
+          // t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
+          style={{ height: '38px' }}
+        >
+          <div className="flex">
+            <div className="flex items-center content-center text-center pr-2">
+              <p>表示件数 </p>
+            </div>
+            &nbsp;
+            <div className="flex items-center content-center text-center">
+              <Select
+                className="flow-root"
+                size="large"
+                labelInValue
+                defaultValue={{ value: '10' }}
+                onChange={(e) => setPageS(e.value)}
+              >
+                <Select.Option value="10">10</Select.Option>
+                <Select.Option value="25">25</Select.Option>
+                <Select.Option value="50">50</Select.Option>
+              </Select>
+            </div>
           </div>
           <div>
             <div className="absolute right-12 no-border">
@@ -157,7 +155,7 @@ export default function ListCategories() {
                       marginBottom: '10px',
                     }}
                   >
-                    <div className="flex items-center mr-4">
+                    <div className="flex items-center mr-5">
                       <span className="queue-demo">
                         <span>
                           <Input
@@ -171,8 +169,7 @@ export default function ListCategories() {
                       </span>
                     </div>
                     <div className="add">
-                      {role === 'superadmin' && (
-                        <AddCategory reloadPage={reloadPage} role={role} />)}
+                      {role === 'superadmin' && <AddCategory reloadPage={reloadPage} role={role} />}
                     </div>
                   </div>
                 </div>
