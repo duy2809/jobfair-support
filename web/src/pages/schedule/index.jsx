@@ -8,6 +8,7 @@ import Layout from '../../layouts/OtherLayout'
 import { webInit } from '~/api/web-init'
 
 import { ListScheduleApi } from '~/api/schedule'
+import './style.scss'
 
 const columns = [
   {
@@ -123,20 +124,16 @@ function ScheduleList() {
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full items-center justify-center bg-white-background">
+        <div className="flex flex-col h-full bg-white-background schedule-list">
           <div className="flex w-full justify-between">
             <h1 className="ml-0">JFスケジュール一覧</h1>
           </div>
           <div className="flex w-full justify-between">
-            <div
-              className="flex items-center content-center"
-              // t qua bat luc voi code  r day nen t moi phai inline style nhu nay :)
-              style={{ height: '38px' }}
-            >
-              <span>表示件数 </span>
+            <div className="flex items-center content-center">
+              <span style={{ fontSize: '14px' }}>表示件数</span>
               <Select
-                size="large"
-                className="ml-2 flow-root"
+                style={{ height: '38px' }}
+                className="ml-5"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -153,21 +150,22 @@ function ScheduleList() {
                   bordered
                   prefix={<SearchOutlined />}
                 />
-                <div className="pl-5">
-                  {role === 'superadmin' ? (
-                    <Button
-                      type="primary"
-                      htmlType="button"
-                      enabled
-                      onClick={handleClick}
-                      style={{ letterSpacing: '-0.1em' }}
-                    >
-                      追加
-                    </Button>
-                  ) : (
-                    ''
-                  )}
-                </div>
+              </div>
+              <div>
+                {role === 'superadmin' ? (
+                  <Button
+                    type="primary"
+                    className="px-12"
+                    htmlType="button"
+                    enabled
+                    onClick={handleClick}
+                    style={{ letterSpacing: '-0.1em', height: '38px' }}
+                  >
+                    追加
+                  </Button>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           </div>

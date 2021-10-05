@@ -4,10 +4,11 @@ import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
+import './style.scss'
+
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
-import './styles.scss'
 
 function MemberList() {
   const [members, setMembers] = useState([])
@@ -222,16 +223,30 @@ function MemberList() {
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full items-center justify-center bg-white-background">
+        <div className="flex flex-col h-full items-center justify-center bg-white-background member-list">
           <div className="w-full flex justify-between items-center title">
             <h1 className="ml-0">メンバ一覧</h1>
+            <div>
+              {role === 'superadmin' ? (
+                <Button
+                  style={{ height: '38px' }}
+                  type="primary"
+                  className="ml-5"
+                  onClick={handleClick}
+                >
+                  メンバー招待
+                </Button>
+              ) : (
+                ''
+              )}
+            </div>
           </div>
           <div className="flex w-full items-center justify-between">
             <div>
-              <span id="display-number" className="text-xl">表示件数 </span>
+              <span style={{ fontSize: '14px' }}>表示件数</span>
               <Select
-                className="ml-5 no-border"
-                size="large"
+                style={{ height: '38px' }}
+                className="ml-5"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -240,34 +255,16 @@ function MemberList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div className="flex justify-end">
-              <div>
-                <div className="text-2xl flex items-center">
-                  <Input
-                    size="large"
-                    className="no-border"
-                    placeholder="メンバ名"
-                    onChange={handleInput}
-                    bordered
-                    prefix={<SearchOutlined />}
-                  />
-                </div>
-              </div>
-              <div>
-                {role === 'superadmin' ? (
-                  <Button
-                    size="large"
-                    type="primary"
-                    className="ml-5 no-border"
-                    htmlType="button"
-                    enabled
-                    onClick={handleClick}
-                  >
-                    メンバー招待
-                  </Button>
-                ) : (
-                  ''
-                )}
+            <div>
+              <div className="text-2xl flex items-center">
+                <Input
+                  size="large"
+                  className="no-border"
+                  placeholder="メンバ名"
+                  onChange={handleInput}
+                  bordered
+                  prefix={<SearchOutlined />}
+                />
               </div>
             </div>
           </div>

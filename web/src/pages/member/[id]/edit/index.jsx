@@ -215,11 +215,11 @@ const EditMember = ({ data }) => {
                   </p>
                 </Modal>
 
-                <Button size="middle" onClick={showCancelModal}>
+                <Button size="large" onClick={showCancelModal}>
                   キャンセル
                 </Button>
                 <Button
-                  size="middle"
+                  size="large"
                   className="ml-4"
                   type="primary"
                   onClick={showModal}

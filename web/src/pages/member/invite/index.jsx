@@ -152,12 +152,12 @@ function InviteMember() {
                     <Button
                       className="ant-btn"
                       id="btn-cancel"
-                      size="middle"
+                      size="large"
                       onClick={handleModal}
                     >
                       キャンセル
                     </Button>
-                    <Button id="btn-submit" type="primary" size="middle" htmlType="submit">
+                    <Button id="btn-submit" type="primary" size="large" htmlType="submit">
                       招待
                     </Button>
                   </Space>

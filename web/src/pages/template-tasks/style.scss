@@ -2,19 +2,37 @@
   thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
   }
+
+  h1 {
+    margin-left: 0px;
+  }
+
   .ant-input:hover,
   .ant-input:focus {
-        border: none;
+    border: none;
   }
-  .searchAdd{
+
+  .searchAdd {
     display: flex;
     align-items: center;
-}
+
+  }
+
   .icon {
     font-size: 18px !important;
     font-weight: 600;
+
     :hover {
-        color: #ffd803;
+      color: #ffd803;
     }
+  }
+
+  .ant-select-selector {
+    height: 38px !important;
+  }
+
+  .ant-select-selection-item {
+    display: inline-flex;
+    align-items: center;
   }
 }

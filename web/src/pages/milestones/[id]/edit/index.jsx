@@ -255,19 +255,17 @@ const EditMilestonePage = () => {
               >
                 <p className="mb-5">このまま保存してもよろしいですか？ </p>
               </Modal>
-              <div className="grid grid-cols-12 grid-rows-1 gap-x-5">
-                <div className="col-span-8 justify-self-end">
+              <div className="grid grid-cols-6 grid-rows-1 ">
+                <div className="col-start-5 flex justify-end gap-x-4">
                   <Form.Item>
                     <CancelEditMilestone />
                   </Form.Item>
-                </div>
-                <div>
+
                   <Form.Item>
                     <Button
                       type="primary"
                       htmlType="submit"
                       onClick={showModal}
-                      className="w-32"
                       style={{ letterSpacing: '-0.1em' }}
                     >
                       保存
