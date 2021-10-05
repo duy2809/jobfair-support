@@ -36,7 +36,6 @@ const JfLayout = ({ children, bgr }) => {
     <div className="menuu">
       <Navbar />
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
-
         <Sider
           style={{
             left: 0,
@@ -56,74 +55,81 @@ const JfLayout = ({ children, bgr }) => {
           >
             <div className="relative h-10 " style={{ marginBottom: '32px' }}>
               <div className="absolute top-0 right-0 ">
-                <div
-                  className="button"
-                  type="primary"
-                  onClick={toggleCollapsed}
-                >
-                  {collapsed ? <MenuOutlined /> : <MenuOutlined />}
+                <div className="button" type="primary" onClick={toggleCollapsed}>
+                  {collapsed ? (
+                    <MenuOutlined className="sidebar-icons" />
+                  ) : (
+                    <MenuOutlined className="sidebar-icons" />
+                  )}
                 </div>
               </div>
             </div>
 
             {bgr === 1 ? (
-              <Menu.Item key="1" icon={<HomeOutlined />} style={styles}>
+              <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="1" icon={<HomeOutlined />} style={{ background: '#e3f6f5' }}>
+              <Menu.Item
+                key="1"
+                icon={<HomeOutlined className="sidebar-icons" />}
+                style={{ background: '#e3f6f5' }}
+              >
                 <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
               </Menu.Item>
             )}
 
             {bgr === 2 ? (
-              <Menu.Item key="2" icon={<FileProtectOutlined />} style={styles}>
+              <Menu.Item
+                key="2"
+                icon={<FileProtectOutlined className="sidebar-icons" />}
+                style={styles}
+              >
                 <Link href={`/tasks/${idJF}`}>タスク</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="2" icon={<FileProtectOutlined />}>
+              <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
                 <Link href={`/tasks/${idJF}`}>タスク</Link>
               </Menu.Item>
             )}
 
             {bgr === 3 ? (
-              <Menu.Item key="3" icon={<BarChartOutlined />} style={styles}>
+              <Menu.Item
+                key="3"
+                icon={<BarChartOutlined className="sidebar-icons" />}
+                style={styles}
+              >
                 <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="3" icon={<BarChartOutlined />}>
+              <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
                 <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 
             {bgr === 4 ? (
-              <Menu.Item key="4" icon={<TableOutlined />} style={styles}>
+              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/kanban/${idJF}`}>カンバン</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="4" icon={<TableOutlined />}>
+              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
                 <Link href={`/kanban/${idJF}`}>カンバン</Link>
               </Menu.Item>
             )}
 
             {bgr === 5 ? (
-              <Menu.Item key="5" icon={<FileOutlined />} style={styles}>
+              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
                 <Link href={`/file/${idJF}`}>ファイル</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="5" icon={<FileOutlined />}>
+              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />}>
                 <Link href={`/file/${idJF}`}>ファイル</Link>
               </Menu.Item>
             )}
           </Menu>
         </Sider>
         <Layout className="site-layout">
-
-          <Content
-            className="site-layout-background"
-          >
-            {_get(main, 'props.children')}
-          </Content>
+          <Content className="site-layout-background">{_get(main, 'props.children')}</Content>
         </Layout>
       </Layout>
     </div>
@@ -135,12 +141,8 @@ JfLayout.propTypes = {
 }
 JfLayout.defaultProps = {
   children: [],
-
 }
 JfLayout.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.arrayOf(PropTypes.node),
-  ]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 }
 export default JfLayout
