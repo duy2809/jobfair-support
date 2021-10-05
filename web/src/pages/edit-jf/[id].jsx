@@ -330,7 +330,7 @@ const index = () => {
                     size="large"
                     min={1}
                     onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
+                    // style={{ width: '130px' }}
                     placeholder="参加企業社数"
                   />
                 </Form.Item>
@@ -353,7 +353,7 @@ const index = () => {
                     size="large"
                     min={1}
                     onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
+                    // style={{ width: '130px' }}
                     placeholder="推定参加学生数"
                   />
                 </Form.Item>
