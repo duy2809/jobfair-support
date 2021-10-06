@@ -35,7 +35,7 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        $status = ['未着手', '進行中', '進行中'];
+        $status = ['未着手', '進行中'];
         $assignee = Task::find($request->task_id)->users()->pluck('users.id')->toArray();
         if (!in_array($request->status, $status) && in_array(auth()->user()->id, $assignee)) {
             return response()->json(['message' => 'Error'], 404);
@@ -56,9 +56,8 @@ class CommentController extends Controller
         }
 
         $input['user_id'] = auth()->user()->id;
-        Comment::create($input);
 
-        return response()->json(['message' => 'Success']);
+        return Comment::create($input);
     }
 
     /**
@@ -108,8 +107,32 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, $id)
     {
+        $status = ['未着手', '進行中'];
+        $assignee = Task::find($request->task_id)->users()->pluck('users.id')->toArray();
+        if (!in_array($request->status, $status) && in_array(auth()->user()->id, $assignee)) {
+            return response()->json(['message' => 'Error'], 404);
+        }
+
+        $input = $request->all();
+        if ($request->has('status')) {
+            $task = Task::find($request->task_id);
+            $input['old_status'] = $task->status;
+            $input['new_status'] = $request->status;
+            $task->update(['status' => $request->status]);
+        }
+
+        if ($request->has('assignee')) {
+            Task::find($request->task_id)->users()->syncWithPivotValues($request->assignee, [
+                'join_date' => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        $input['user_id'] = auth()->user()->id;
+        Comment::find($id)->update($input);
+
+        return response()->json(['message' => 'Success']);
     }
 
     /**
