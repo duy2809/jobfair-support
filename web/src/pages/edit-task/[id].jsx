@@ -10,6 +10,7 @@ import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
 import { editTask } from '../../api/edit-task'
+import Loading from '../../components/loading'
 
 function TaskList() {
   const dateFormat = 'YYYY/MM/DD'
@@ -41,6 +42,7 @@ function TaskList() {
     unit: '',
     description_of_detail: '',
   })
+  const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const fetchTaskData = async () => {
     await taskData(idTask)
@@ -388,11 +390,13 @@ function TaskList() {
     getDataUser()
     fetchListTask()
     fetchListMember()
+    setLoading(false)
   }, [idJF])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
   // ant-select-selector
   return (
     <div>
+      <Loading loading={loading} overlay={loading} />
       <JfLayout id={idJF}>
         <JfLayout.Main>
           <h1>タスク編集 </h1>
