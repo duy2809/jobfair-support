@@ -228,7 +228,11 @@ function TaskList() {
     )
     setTemperaryData(filteredData)
   }
-
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/task-detail/${record.idtask}`)
+    },
+  })
   // columns of tables
   const columns = users === 'superadmin' || users === 'admin' ? [
     {
@@ -239,56 +243,62 @@ function TaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (taskName, record) => (
+      render: (taskName) => (
         <Tooltip title={taskName}>
-          <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+          <a>{taskName}</a>
         </Tooltip>
       ),
+      onCell: handleRow,
     },
     {
       title: '開始日',
       width: '10%',
       dataIndex: 'start_date',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: '終了日',
       width: '10%',
       dataIndex: 'end_date',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'スターテス',
       width: '7%',
       dataIndex: 'status',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'カテゴリ',
       width: '10%',
       dataIndex: 'category_name',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'マイルストーン',
       fixed: '30%',
       dataIndex: 'milestone_name',
       width: 80,
-      render: (taskName, record) => (
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: '担当者',
@@ -296,6 +306,7 @@ function TaskList() {
       dataIndex: 'managers',
       fixed: 'left',
       render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
+      onCell: handleRow,
     },
     {
       title: 'アクション',
@@ -327,56 +338,62 @@ function TaskList() {
     ellipsis: {
       showTitle: false,
     },
-    render: (taskName, record) => (
+    render: (taskName) => (
       <Tooltip title={taskName}>
-        <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+        <a>{taskName}</a>
       </Tooltip>
     ),
+    onCell: handleRow,
   },
   {
     title: '開始日',
     width: '10%',
     dataIndex: 'start_date',
     fixed: 'left',
-    render: (taskName, record) => (
-      <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+    render: (taskName) => (
+      <a>{taskName}</a>
     ),
+    onCell: handleRow,
   },
   {
     title: '終了日',
     width: '10%',
     dataIndex: 'end_date',
     fixed: 'left',
-    render: (taskName, record) => (
-      <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+    render: (taskName) => (
+      <a>{taskName}</a>
     ),
+    onCell: handleRow,
   },
   {
     title: 'スターテス',
     width: '7%',
     dataIndex: 'status',
     fixed: 'left',
-    render: (taskName, record) => (
-      <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+    render: (taskName) => (
+      <a>{taskName}</a>
     ),
+    onCell: handleRow,
   },
   {
     title: 'カテゴリ',
     width: '10%',
     dataIndex: 'category_name',
     fixed: 'left',
-    render: (taskName, record) => (
-      <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+    render: (taskName) => (
+      <a>{taskName}</a>
     ),
+    onCell: handleRow,
   },
   {
     title: 'マイルストーン',
     fixed: '30%',
     dataIndex: 'milestone_name',
     width: 80,
-    render: (taskName, record) => (
-      <a href={`/task-detail/${record.idtask}`}>{taskName}</a>
+    render: (taskName) => (
+      <a>{taskName}</a>
     ),
+    onCell: handleRow,
   },
   {
     title: '担当者',
@@ -384,6 +401,7 @@ function TaskList() {
     dataIndex: 'managers',
     fixed: 'left',
     render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
+    onCell: handleRow,
   },
   ]
   // data of table get from database
@@ -535,8 +553,8 @@ function TaskList() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数 </span>
-                  <Select value={itemCount} onChange={handleSelect}>
+                  <span className="pr-2">表示件数 </span>
+                  <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -572,7 +590,7 @@ function TaskList() {
                       </>
 
                     )}
-                    className="mr-2"
+                    className="mr-5"
                     placement="bottomLeft"
                     trigger="click"
                     visible={visible}
@@ -592,7 +610,8 @@ function TaskList() {
                     )}
                   </Popover>
                   <Input
-                    className="float-right mr-3"
+                    size="large"
+                    className="float-right mr-5"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="タスク名, 担当者"
@@ -602,6 +621,7 @@ function TaskList() {
                   {users === 'superadmin' ? (
                     <>
                       <Button
+                        size="large"
                         className="float-right"
                         href={`/add-task/${router.query.JFid}`}
                         type="primary"

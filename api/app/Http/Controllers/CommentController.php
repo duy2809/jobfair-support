@@ -35,10 +35,17 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
+        $status = ['未着手', '進行中', '進行中'];
+        $assignee = Task::find($request->task_id)->users()->pluck('users.id')->toArray();
+        if (!in_array($request->status, $status) && in_array(auth()->user()->id, $assignee)) {
+            return response()->json(['message' => 'Error'], 404);
+        }
+
         $input = $request->all();
         if ($request->has('status')) {
             $task = Task::find($request->task_id);
             $input['old_status'] = $task->status;
+            $input['new_status'] = $request->status;
             $task->update(['status' => $request->status]);
         }
 
@@ -50,6 +57,8 @@ class CommentController extends Controller
 
         $input['user_id'] = auth()->user()->id;
         Comment::create($input);
+
+        return response()->json(['message' => 'Success']);
     }
 
     /**
@@ -65,7 +74,7 @@ class CommentController extends Controller
                 $query->latest('updated_at')->take(5)->get();
             },
             'comments.user:id,name',
-        ])->find($id, ['id', 'name', 'status']);
+        ])->find($id, ['id', 'name']);
 
         return response()->json($data);
     }
@@ -77,7 +86,7 @@ class CommentController extends Controller
                 $query->latest('updated_at')->offset($request->count)->take(10)->get();
             },
             'comments.user:id,name',
-        ])->find($id, ['id', 'name', 'status']);
+        ])->find($id, ['id', 'name']);
 
         return response()->json($data);
     }
