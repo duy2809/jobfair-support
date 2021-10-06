@@ -307,7 +307,7 @@ function JFList() {
               </div>
               <div className="flex items-center justify-between">
                 <div className="items-center">
-                  <span className="hidden md:inline">表示件数: </span>
+                  <span className="hidden md:inline pr-2">表示件数</span>
                   <Select value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -319,7 +319,7 @@ function JFList() {
                     <Button shape="circle" icon={<FilterOutlined id="filter" style={{ color: statusFilter ? '#ffd803' : '#272343' }} />} />
                   </Popover>
                   <Input
-                    className="float-right w-40 md:w-64"
+                    className="float-right w-40 md:w-64 mr-5"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="JF名, 管理者"
@@ -329,7 +329,7 @@ function JFList() {
                   {users === 'superadmin' ? (
                     <>
                       <Button
-                        className="float-right"
+                        className="float-right mr-5"
                         href="/add-jobfair"
                         type="primary"
                       >

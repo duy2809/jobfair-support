@@ -535,7 +535,7 @@ function TaskList() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数 </span>
+                  <span className="pr-2">表示件数 </span>
                   <Select value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -572,7 +572,7 @@ function TaskList() {
                       </>
 
                     )}
-                    className="mr-2"
+                    className="mr-5"
                     placement="bottomLeft"
                     trigger="click"
                     visible={visible}
@@ -592,7 +592,7 @@ function TaskList() {
                     )}
                   </Popover>
                   <Input
-                    className="float-right mr-3"
+                    className="float-right mr-5"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="タスク名, 担当者"
