@@ -1,0 +1,97 @@
+.gantt-chart-page {
+  .radio-button {
+    border-radius: 5px;
+    height: 38px;
+    line-height: 38px;
+  }
+
+  .radio-button:hover {
+    opacity: 0.8;
+  }
+  .radio-button:nth-child(1) {
+    background-color: yellow;
+  }
+  .radio-button:nth-child(2) {
+    background-color: #5eb5a6;
+  }
+  .radio-button:nth-child(3) {
+    background-color: #a1af2f;
+  }
+  .radio-button:nth-child(4) {
+    background-color: #4488c5;
+  }
+  .radio-button:nth-child(5) {
+    background-color: rgb(185, 86, 86);
+  }
+  .radio-button:nth-child(6) {
+    span {
+      border-radius: 5px;
+
+      color: white;
+    }
+    background-color: rgb(121, 86, 23);
+  }
+  .ant-radio-button-wrapper:not(:last-child) {
+    margin-right: 10px !important;
+  }
+  .ant-radio-button-wrapper:last-child {
+    border: none;
+  }
+  .ant-radio-button-wrapper:first-child {
+    border: none;
+  }
+
+  .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+    background-color: white;
+    color: #272343;
+    border: 1px solid yellow;
+    span {
+      color: #272343;
+    }
+  }
+  .ant-radio-button-wrapper:not(:first-child)::before {
+    display: none;
+  }
+  .ant-radio-button {
+    border-radius: 5px;
+    border-color: yellow;
+  }
+
+  .gantt-chart {
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      // background-color: #dddddd;
+    }
+  }
+  .gantt_layout_content {
+    // cursor: grab;
+  }
+  .gantt_tree_content {
+    cursor: pointer;
+  }
+}
+#testt:hover {
+  background: red;
+  box-icon {
+    background-color: red;
+  }
+
+  svg {
+    fill: red;
+  }
+}
+.bx-tada {
+  background-color: red;
+}
