@@ -110,8 +110,12 @@ class JobfairController extends Controller
     public function destroy($id)
     {
         Jobfair::destroy($id);
+        $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
+            ->select('jobfairs.*', 'users.name as admin')
+            ->orderBy('jobfairs.updated_at', 'DESC')
+            ->get();
 
-        return response()->json(['message' => 'Deleted Successfully'], 200);
+        return response()->json($jobfairs);
     }
 
     public function getMilestones($id)
@@ -135,7 +139,7 @@ class JobfairController extends Controller
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
 
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
-                    ->orderBy('tasks.end_time', 'ASC');
+                    ->orderBy('tasks.id', 'ASC');
             },
         ])->find($id, ['id']);
 

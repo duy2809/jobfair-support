@@ -55,10 +55,20 @@ const EditMilestonePage = () => {
   }
   const onValueTimeChange = (e) => {
     setcheckSpace(false)
-    setTimeInput(e.target.value)
+    setTimeInput(Number(toHalfWidth(e.target.value)))
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
+    console.log(e.target.value)
+    const specialCharRegex = new RegExp(/^([^0-9]*)$/)
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
+    }
   }
 
   const showModal = () => {
@@ -140,7 +150,7 @@ const EditMilestonePage = () => {
   const specialCharRegex = new RegExp('[ 　]')
 
   return (
-    <div>
+    <div className="edit-milestone">
       <OtherLayout>
         <OtherLayout.Main>
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p> */}
@@ -150,6 +160,7 @@ const EditMilestonePage = () => {
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
             <Form
               form={form}
+              colon={false}
               name="basic"
               labelCol={{
                 span: 8,
@@ -162,7 +173,7 @@ const EditMilestonePage = () => {
             >
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>マイルストーン名</p>
+                  <p className="font-bold text-right">マイルストーン名</p>
                 }
                 name="name"
                 rules={[
@@ -194,7 +205,7 @@ const EditMilestonePage = () => {
 
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>期日</p>
+                  <p className="font-bold text-right">期日</p>
                 }
                 name="time"
                 rules={[
@@ -257,6 +268,7 @@ const EditMilestonePage = () => {
                       htmlType="submit"
                       onClick={showModal}
                       className="w-32"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       保存
                     </Button>

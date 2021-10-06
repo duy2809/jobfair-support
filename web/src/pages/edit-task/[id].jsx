@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import {
-  CheckCircleTwoTone, ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import moment from 'moment'
 import JfLayout from '../../layouts/layout-task'
-import {
-  taskData, beforeTask, afterTask, getUser,
-} from '../../api/task-detail'
+import { taskData, beforeTask, afterTask, getUser } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
@@ -22,6 +18,7 @@ function TaskList() {
   const idTask = router.query.id
   const [form] = Form.useForm()
   const [disableBtn, setdisableBtn] = useState(false)
+  const [assign, setAssign] = useState(true)
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
   const [listUser, setListUser] = useState([])
   const [allTask, setAllTask] = useState([])
@@ -48,39 +45,38 @@ function TaskList() {
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
-        setInfoTask({
-          name: response.data.name,
-          categories: response.data.categories[0].category_name,
-          milestone: response.data.milestone.name,
-          status: response.data.status,
-          start_time: response.data.start_time,
-          end_time: response.data.end_time,
-          effort: response.data.template_task.effort,
-          is_day: response.data.template_task.is_day,
-          unit: response.data.template_task.unit,
-          description_of_detail: response.data.description_of_detail,
-        })
-
-        setIdJF(
-          response.data.schedule.jobfair.id,
-
-        )
-        // eslint-disable-next-line no-use-before-define
-        fetchListTask()
-        const listmember = []
-        response.data.users.forEach((element) => {
-          listmember.push(element.name)
-        })
-        form.setFieldsValue({
-          name: response.data.name,
-          category: response.data.categories[0].category_name,
-          milestone: response.data.milestone.name,
-          assignee: listmember,
-          status: response.data.status,
-          start_time: moment(response.data.start_time.split('-').join('/'), dateFormat),
-          end_time: moment(response.data.end_time.split('-').join('/'), dateFormat),
-          detail: response.data.description_of_detail,
-        })
+        if (response.status === 200) {
+          const data = response.data
+          setInfoTask({
+            name: data.name,
+            categories: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            status: data.status,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            effort: data.template_task.effort,
+            is_day: data.template_task.is_day,
+            unit: data.template_task.unit,
+            description_of_detail: data.description_of_detail,
+          })
+          setIdJF(data.schedule.jobfair.id)
+          // eslint-disable-next-line no-use-before-define
+          fetchListTask()
+          const listmember = []
+          data.users.forEach((element) => {
+            listmember.push(element.name)
+          })
+          form.setFieldsValue({
+            name: data.name,
+            category: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            assignee: listmember,
+            status: data.status,
+            start_time: moment(data.start_time.split('-').join('/'), dateFormat),
+            end_time: moment(data.end_time.split('-').join('/'), dateFormat),
+            detail: data.description_of_detail,
+          })
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -89,6 +85,16 @@ function TaskList() {
   const startDayValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
+    }
+    return Promise.resolve()
+  }
+  const EndDayValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+    const startTime = form.getFieldValue('start_time')
+    if (value < startTime) {
+      return Promise.reject(new Error('終了日は開始日以降で入力してください'))
     }
     return Promise.resolve()
   }
@@ -109,28 +115,24 @@ function TaskList() {
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
       >
         <Tooltip title={label}>
-          {
-            id ? (
-              <a
-                target="_blank"
-                href={`/task-detail/${id.id}`}
-                className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
-                rel="noreferrer"
-              >
-                {truncate(label)}
-              </a>
-            )
-              : (
-                <a
-                  target="_blank"
-                  className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
-                  rel="noreferrer"
-                >
-                  {truncate(label)}
-                </a>
-              )
-
-          }
+          {id ? (
+            <a
+              target="_blank"
+              href={`/task-detail/${id.id}`}
+              className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+              rel="noreferrer"
+            >
+              {truncate(label)}
+            </a>
+          ) : (
+            <a
+              target="_blank"
+              className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+              rel="noreferrer"
+            >
+              {truncate(label)}
+            </a>
+          )}
         </Tooltip>
       </Tag>
     )
@@ -139,6 +141,11 @@ function TaskList() {
   const tagRenderr = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
+    const nameUser = form.getFieldValue('assignee')
+    if (nameUser.length !== 0) {
+      document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+      setAssign(true)
+    }
     const onPreventMouseDown = (event) => {
       event.preventDefault()
       event.stopPropagation()
@@ -147,17 +154,24 @@ function TaskList() {
       <Tag
         onMouseDown={onPreventMouseDown}
         closable={closable}
-        onClose={onClose}
+        onClose={() => {
+          onClose()
+          const nameUsers = form.getFieldValue('assignee')
+          if (nameUsers.length === 0) {
+            setAssign(false)
+            document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
+          }
+          if (nameUsers.length !== 0) {
+            setAssign(true)
+            document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+          }
+        }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
       >
         <Tooltip title={label}>
-          <span
-            className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
-
-          >
+          <span className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden">
             {label}
           </span>
-
         </Tooltip>
       </Tag>
     )
@@ -186,34 +200,38 @@ function TaskList() {
     if (value.match(Extensions.Reg.specialCharacter)) {
       return Promise.reject(new Error('使用できない文字が含まれています'))
     }
-    if (value.match(Extensions.Reg.vietnamese)) {
-      return Promise.reject(new Error('ベトナム語は入力できない'))
-    }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
 
     return Promise.resolve()
   }
+  // eslint-disable-next-line consistent-return
   const onValueNameChange = (e) => {
     setIsEdit(true)
     form.setFieldsValue({
       name: e.target.value,
     })
+    if (e.target.value) {
+      document.getElementById('validate_name').style.border = '1px solid #ffd803'
+      return document.getElementById('error-msg').setAttribute('hidden', 'text-red-600')
+    }
+
+    document.getElementById('validate_name').style.border = '0.5px solid red'
   }
   const getDataUser = async () => {
-    await webInit().then((response) => {
-      setUsers({
-
-        id: response.data.auth.user.id,
-        name: response.data.auth.user.name,
-        role: response.data.auth.user.role,
-
+    await webInit()
+      .then((response) => {
+        setUsers({
+          id: response.data.auth.user.id,
+          name: response.data.auth.user.name,
+          role: response.data.auth.user.role,
+        })
+        console.log(response.data.auth.user.role)
       })
-      console.log(response.data.auth.user.role)
-    }).catch((error) => {
-      console.log(error)
-    })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const saveNotification = () => {
     notification.open({
@@ -223,60 +241,75 @@ function TaskList() {
     })
   }
   const onFinishSuccess = async (values) => {
-    try {
-      const beforeID = []
-      const afterIDs = []
-      const adminas = []
-      if (values.taskBefore && values.afterTask) {
-      // eslint-disable-next-line array-callback-return
-        allTask.map((e) => {
-          if (values.taskBefore.includes(e.name)) {
-            beforeID.push(e.id)
-          }
-          if (values.afterTask.includes(e.name)) {
-            afterIDs.push(e.id)
-          }
-        })
+    let checkName = false
+    // eslint-disable-next-line consistent-return
+    allTask.forEach((element) => {
+      if (values.name !== infoTask.name) {
+        if (values.name === element.name) {
+          checkName = true
+          document.getElementById('validate_name').style.border = '1px solid red'
+          return document.getElementById('error-msg').removeAttribute('hidden', 'text-red-600')
+        }
       }
-      if (values.assignee) {
-        listUser.map((e) => {
-          if (values.assignee.includes(e.name)) {
-            adminas.push(e.id)
-          }
-          return ''
-        })
-      }
+    })
+    if (!checkName) {
+      try {
+        const beforeID = []
+        const afterIDs = []
+        const adminas = []
+        if (values.taskBefore && values.afterTask) {
+          // eslint-disable-next-line array-callback-return
+          allTask.map((e) => {
+            if (values.taskBefore.includes(e.name)) {
+              beforeID.push(e.id)
+            }
+            if (values.afterTask.includes(e.name)) {
+              afterIDs.push(e.id)
+            }
+          })
+        }
+        if (values.assignee) {
+          listUser.map((e) => {
+            if (values.assignee.includes(e.name)) {
+              adminas.push(e.id)
+            }
+            return ''
+          })
+        }
 
-      const data = {
-        name: values.name,
-        description_of_detail: values.detail,
-        beforeTasks: beforeID,
-        afterTasks: afterIDs,
-        start_time: values.start_time.format(Extensions.dateFormat),
-        end_time: values.end_time.format(Extensions.dateFormat),
-        admin: adminas,
-        user_id: users.id,
-        status: values.status,
+        const data = {
+          name: values.name,
+          description_of_detail: values.detail,
+          beforeTasks: beforeID,
+          afterTasks: afterIDs,
+          start_time: values.start_time.format(Extensions.dateFormat),
+          end_time: values.end_time.format(Extensions.dateFormat),
+          admin: adminas,
+          user_id: users.id,
+          status: values.status,
+        }
+        setdisableBtn(true)
 
-      }
-      setdisableBtn(true)
-      console.log(data)
-      await editTask(idTask, data).then((response) => {
-        saveNotification()
-        console.log(response.data)
-        router.push(`/task-detail/${idTask}`)
-      }).catch((error) => {
-        console.log(error)
+        await editTask(idTask, data)
+          .then((response) => {
+            saveNotification()
+            console.log(response.data)
+            router.push(`/task-detail/${idTask}`)
+          })
+          .catch((error) => {
+            console.log(error)
+            setdisableBtn(false)
+          })
+        setdisableBtn(true)
+      } catch (error) {
         setdisableBtn(false)
-      })
-      setdisableBtn(true)
-    } catch (error) {
-      setdisableBtn(false)
-      return error
+        return error
+      }
     }
 
     return ''
   }
+
   const onFinishFailed = (errorInfo) => errorInfo
   const cancelConfirmModle = () => {
     if (isEdit === false) {
@@ -297,7 +330,6 @@ function TaskList() {
       })
     }
   }
-  console.log(isEdit)
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
@@ -314,36 +346,41 @@ function TaskList() {
       })
   }
   const fetchafterTask = async () => {
-    await afterTask(idTask).then((response) => {
-      const listatTask = []
-      response.data.after_tasks.forEach((element) => {
-        listatTask.push(element.name)
+    await afterTask(idTask)
+      .then((response) => {
+        const listatTask = []
+        response.data.after_tasks.forEach((element) => {
+          listatTask.push(element.name)
+        })
+        console.log(listatTask)
+        form.setFieldsValue({
+          afterTask: listatTask,
+        })
       })
-      console.log(listatTask)
-      form.setFieldsValue({
-        afterTask: listatTask,
+      .catch((error) => {
+        console.log(error)
       })
-    }).catch((error) => {
-      console.log(error)
-    })
   }
   const fetchListTask = async () => {
-    await jftask(idJF).then((response) => {
-      setAllTask(response.data.schedule.tasks)
-      setBeforeTaskNew(response.data.schedule.tasks)
-      setafterTaskNew(response.data.schedule.tasks)
-    }).catch((error) => {
-      console.log(error)
-    })
+    await jftask(idJF)
+      .then((response) => {
+        setAllTask(response.data.schedule.tasks)
+        setBeforeTaskNew(response.data.schedule.tasks)
+        setafterTaskNew(response.data.schedule.tasks)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
   const fetchListMember = async () => {
-    await getUser().then((response) => {
-      setListUser(response.data)
-    }).catch((error) => {
-      console.log(error)
-    })
+    await getUser()
+      .then((response) => {
+        setListUser(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
-
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
@@ -353,6 +390,7 @@ function TaskList() {
     fetchListMember()
   }, [idJF])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
+  // ant-select-selector
   return (
     <div>
       <JfLayout id={idJF}>
@@ -373,10 +411,10 @@ function TaskList() {
               onFinish={onFinishSuccess}
               onFinishFailed={onFinishFailed}
             >
-              <div className="grid grid-cols-2 mx-8 ">
-                <div className="col-span-1 mx-4">
+              <div className="grid grid-cols-2">
+                <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
-                    label="タスク名:"
+                    label="タスク名"
                     name="name"
                     required
                     rules={[
@@ -386,82 +424,112 @@ function TaskList() {
                     ]}
                   >
                     <Input
+                      id="validate_name"
+                      className="validate_name"
                       type="text"
                       placeholder="タスク名を入力する"
                       maxLength={20}
                       onChange={onValueNameChange}
                     />
                   </Form.Item>
+                  <div className="ant-row">
+                    <div className="ant-col ant-col-6" />
+                    <div className="ant-col ant-col-18">
+                      <span
+                        id="error-msg"
+                        style={{ color: '#ff3860', fontSize: '14px' }}
+                        className="text-red-600"
+                        hidden
+                      >
+                        この名前はすでに存在します
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-span-1 mx-4">
-                  <Form.Item
-                    label="カテゴリ:"
-                    name="category"
-                  >
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="カテゴリ" name="category">
                     <span>{infoTask.categories}</span>
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-4">
-                  <Form.Item
-                    label="マイルストーン:"
-                    name="milestone"
-                  >
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="マイルストーン" name="milestone">
                     <span>{infoTask.milestone}</span>
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-4">
-                  <div className="ef-label">
-                    <div className="laybel">
-                      <span>工数:</span>
-                    </div>
-                    <div className="row-ef">
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="工数" name="effort">
+                    <div className="row-ef pl-1">
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
-
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
-                          {infoTask.unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
+                          {infoTask.unit === 'students' ? (
+                            <span className="ef">学生数</span>
+                          ) : (
+                            <span className="ef">企業数</span>
+                          )}
                         </>
-                      ) }
+                      )}
                     </div>
-                  </div>
-
-                </div>
-                <div className="col-span-1 mx-4">
-                  <Form.Item
-                    label="担当者:"
-                    name="assignee"
-                    required
-                  >
-                    <Select
-                      size="large"
-                      mode="multiple"
-                      showArrow
-                      tagRender={tagRenderr}
-                      style={{ width: '100%' }}
-                    >
-                      {listUser.map((element) => (
-                        <Select.Option key={element.id} value={element.name}>
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-4">
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="担当者" name="assignee" required className="multiples">
+                    {assign ? (
+                      <Select mode="multiple" showArrow tagRender={tagRenderr}>
+                        {listUser.map((element) => (
+                          <Select.Option
+                            className="validate-user"
+                            key={element.id}
+                            value={element.name}
+                          >
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    ) : (
+                      <Select
+                        mode="multiple"
+                        showArrow
+                        tagRender={tagRenderr}
+                        style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                        className="multiples"
+                      >
+                        {listUser.map((element) => (
+                          <Select.Option
+                            className="validate-user"
+                            key={element.id}
+                            value={element.name}
+                          >
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+                  <div className="ant-row">
+                    <div className="ant-col ant-col-6" />
+                    <div className="ant-col ant-col-18">
+                      <span
+                        id="error-user"
+                        style={{ color: '#ff3860', fontSize: '14px' }}
+                        className="text-red-600"
+                        hidden
+                      >
+                        この項目は必須です
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
-                    label="ステータス:"
+                    label="ステータス"
                     name="status"
                     required
                     rules={[
@@ -470,19 +538,24 @@ function TaskList() {
                       },
                     ]}
                   >
-                    <Select size="large" onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="ステータス">
+                    <Select
+                      size="large"
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      className="addJF-selector"
+                      placeholder="ステータス"
+                    >
                       {listStatus.map((element) => (
-                        <Select.Option value={element}>
-                          {element}
-                        </Select.Option>
+                        <Select.Option value={element}>{element}</Select.Option>
                       ))}
                     </Select>
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-4">
+                <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
                     name="start_time"
-                    label="開始日:"
+                    label="開始日"
                     required
                     className="big-icon"
                     rules={[
@@ -493,45 +566,41 @@ function TaskList() {
                   >
                     <DatePicker
                       size="large"
-                      onChange={() => { setIsEdit(true) }}
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
                       help="Please select the correct date"
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
                     />
                   </Form.Item>
-
                 </div>
-                <div className="col-span-1 mx-4">
+                <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
                     name="end_time"
                     className="big-icon"
-                    label="終了日:"
+                    label="終了日"
                     required
                     rules={[
                       {
-                        validator: startDayValidator,
+                        validator: EndDayValidator,
                       },
                     ]}
                   >
                     <DatePicker
                       size="large"
-                      onChange={() => { setIsEdit(true) }}
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
                       help="Please select the correct date"
                       format={Extensions.dateFormat}
                       placeholder={Extensions.dateFormat}
                     />
                   </Form.Item>
-
                 </div>
-                <div className="col-span-1 mx-4">
-
-                  <Form.Item
-                    label="前のタスク:"
-                    name="taskBefore"
-                    className="tag_a"
-                  >
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
                     <Select
-                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}
@@ -544,18 +613,11 @@ function TaskList() {
                         </Select.Option>
                       ))}
                     </Select>
-
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-4">
-
-                  <Form.Item
-                    label="次のタスク:"
-                    name="afterTask"
-                    className="tag_a"
-                  >
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item label="次のタスク" name="afterTask" className="tag_a">
                     <Select
-                      size="large"
                       mode="multiple"
                       showArrow
                       tagRender={tagRender}
@@ -568,29 +630,29 @@ function TaskList() {
                         </Select.Option>
                       ))}
                     </Select>
-
                   </Form.Item>
                 </div>
-                <div className="col-span-2 mx-4">
-                  <Form.Item
-                    name="detail"
-                  >
-                    <TextArea onChange={() => { setIsEdit(true) }} rows={10} placeholder="何かを入力してください" />
+                <div className="col-span-2 mx-2 mb-2">
+                  <Form.Item name="detail">
+                    <TextArea
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      rows={10}
+                      placeholder="何かを入力してください"
+                    />
                   </Form.Item>
                 </div>
               </div>
               <div className="flex justify-end mr-11">
-                <Form.Item
-                  label=" "
-                  className=" "
-                >
+                <Form.Item label=" " className=" ">
                   <div className="flex ">
                     <Button
                       htmlType="button"
                       type="primary"
                       onClick={cancelConfirmModle}
                       disabled={disableBtn}
-                      className="button_cacel mx-3"
+                      className="button_cancel mx-3"
                     >
                       キャンセル
                     </Button>

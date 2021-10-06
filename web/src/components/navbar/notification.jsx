@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
 import { Dropdown, List, Avatar, Checkbox } from 'antd'
-import { BellFilled, DeleteTwoTone } from '@ant-design/icons'
+import { BellOutlined, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
 import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
@@ -240,12 +240,13 @@ export default function Notification() {
       visible={visible}
       placement="bottomCenter"
     >
-      <div className="cursor-pointer">
-        <BellFilled className="text-3xl bell-icon relative bottom-0.5" />
-        <span className="relative text-lg number-notifications -top-2 right-2">
+      <div className="mt-5 px-4 cursor-pointer">
+        <BellOutlined className="text-3xl bell-icon relative bottom-0.25" />
+        <span className="relative w-5 h-5 rounded-full -top-9 -right-4 flex number-notifications justify-center items-center text-center">
           {unreadLength}
         </span>
       </div>
+
     </Dropdown>
   )
 }

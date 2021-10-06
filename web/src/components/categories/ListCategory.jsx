@@ -6,12 +6,14 @@ import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
 // import List from '../list'
 
-import { Input, Space, Table, Row, Col, Select, Button } from 'antd'
+import { Input, Space, Table, Row, Col, Select, Button, Tooltip } from 'antd'
 import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'
+import { element } from 'prop-types'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
 import { getCategories, searchCategory } from '../../api/category'
+import './style.scss'
 
 export default function ListCategories() {
   const [pageS, setPageS] = useState(10)
@@ -19,19 +21,15 @@ export default function ListCategories() {
   const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
   const [searchValue, setSearchValue] = useState('')
-  const [user, setUser] = useState(store.getState().get('auth').get('user'))
-  const [role, setRole] = useState(user.get('role'))
-
+  const role = store.getState().get('auth').get('user').get('role')
   const ref = useRef()
-  const [show, setShow] = useState(false)
-  const [showSearchIcon, setShowSearchIcon] = useState()
   // fetch data
-  useEffect(async () => {
-    setReload(false)
-    getCategories().then((res) => {
-      setCategory(res.data)
-    }).catch((error) => console.log(error.response.request.response))
-  }, [reload])
+  // useEffect(async () => {
+  //   setReload(false)
+  //   getCategories().then((res) => {
+  //     setCategory(res.data)
+  //   }).catch((error) => console.log(error.response.request.response))
+  // }, [reload])
 
   // search data with key
   async function fetch(key) {
@@ -41,114 +39,104 @@ export default function ListCategories() {
         setCategory(result)
       })
     } else {
-      setReload(true)
+      // setReload(true)
+      getCategories().then((res) => {
+        setCategory(res.data)
+      })
     }
     setSearchValue(key)
   }
 
   useEffect(() => {
-    const onBodyClick = (event) => {
-      if (ref.current.contains(event.target)) {
-        return
-      }
-      setShow(false)
-      setShowSearchIcon(true)
-    }
-
-    document.body.addEventListener('click', onBodyClick, { capture: true })
-
-    return () => {
-      document.body.removeEventListener('click', onBodyClick, {
-        capture: true,
-      })
-    }
+    getCategories().then((res) => {
+      setCategory(res.data)
+    })
   }, [])
-
-  const onClick = () => {
-    setShow(!show)
-    setShowSearchIcon(!showSearchIcon)
-  }
 
   // set reload state
   const reloadPage = () => {
-    setReload(true)
+    // setReload(true)
+    getCategories().then((res) => {
+      setCategory(res.data)
+    })
   }
   // table columns
   const columns = [
     {
-      title: 'No.',
-      dataIndex: 'key',
-      width: '8%',
-    },
-    {
-      key: '2',
+      key: '1',
       title: 'カテゴリー名',
       dataIndex: 'name',
       width: '60%',
+      render: (name) => (
+        <div>
+          <Tooltip placement="top" title={name}>
+            <span
+              className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
+              style={{ maxWidth: '50ch' }}
+            >
+              {name}
+            </span>
+          </Tooltip>
+        </div>
+      ),
     },
     {
-      key: '3',
+      key: '2',
+      title: 'アクション',
       width: '25%',
-      render: (record) => (role === 'superadmin' && (
+      render: (record) => role === 'superadmin' && (
         <Space size="middle">
-          <EditCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
-          <DeleteCategory
-            record={record}
-            reloadPage={reloadPage}
-            role={role}
-          />
+          <EditCategory record={record} reloadPage={reloadPage} role={role} />
+          <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
         </Space>
-      )),
+      ),
     },
   ]
 
-  const data = []
-  for (let i = 0; i < category.length; i += 1) {
-    data.push({
-      key: i + 1,
-      id: category[i].id,
-      name: category[i].category_name,
-    })
-  }
-
+  const [data, setData] = useState([])
+  useEffect(() => {
+    setData(
+      category.map((element) => ({
+        key: element.id,
+        id: element.id,
+        name: element.category_name,
+      })),
+    )
+  }, [category])
   return (
-    <div>
-      <Row
-        style={{ alignItems: 'center', justifyContent: 'space-between' }}
-      >
+    <div className="list-category">
+      <Row style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
         <Col>
           <h1>カテゴリー覧</h1>
-        </Col>
-        <Col>
-          <div className="add">
-            {role === 'superadmin' && (
-              <AddCategory reloadPage={reloadPage} role={role} />)}
-          </div>
         </Col>
       </Row>
 
       <div className="list">
-        <div className="flex text-xl list-ht">
-          <p>表示件数: </p>
-          &nbsp;
-          <p>
-            <Select
-              labelInValue
-              defaultValue={{ value: '10' }}
-              style={{ width: 60, borderRadius: '1rem' }}
-              onChange={(e) => setPageS(e.value)}
-              className="selectBox"
-            >
-              <Select.Option value="10">10</Select.Option>
-              <Select.Option value="25">25</Select.Option>
-              <Select.Option value="50">50</Select.Option>
-            </Select>
-          </p>
-          <p>
+        <div
+          className="flex"
+          // t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
+          style={{ height: '38px' }}
+        >
+          <div className="flex">
+            <div className="flex items-center content-center text-center pr-2">
+              <p>表示件数 </p>
+            </div>
+            &nbsp;
+            <div className="flex items-center content-center text-center">
+              <Select
+                className="flow-root"
+                size="large"
+                labelInValue
+                defaultValue={{ value: '10' }}
+                onChange={(e) => setPageS(e.value)}
+              >
+                <Select.Option value="10">10</Select.Option>
+                <Select.Option value="25">25</Select.Option>
+                <Select.Option value="50">50</Select.Option>
+              </Select>
+            </div>
+          </div>
+          <div>
             <div className="absolute right-12 no-border">
               <Space direction="vertical">
                 {/* <Input
@@ -167,45 +155,33 @@ export default function ListCategories() {
                       marginBottom: '10px',
                     }}
                   >
-                    <div className="flex items-center">
+                    <div className="flex items-center mr-5">
                       <span className="queue-demo">
-                        {showSearchIcon && (
-                          <Button
-                            style={{ border: 'none' }}
-                            shape="circle"
-                            icon={(
-                              <SearchOutlined
-                                style={{ marginLeft: '4px', fontSize: '30px' }}
-                              />
-                            )}
-                            onClick={onClick}
-                          />
-                        )}
-
                         <span>
-                          {show ? (
-                            <Input
-                              placeholder="カテゴリを検索"
-                              onChange={(e) => fetch(e.target.value)}
-                              value={searchValue}
-                              bordered
-                              prefix={<SearchOutlined />}
-                            />
-                          ) : null}
+                          <Input
+                            placeholder="カテゴリを検索"
+                            onChange={(e) => fetch(e.target.value)}
+                            value={searchValue}
+                            bordered
+                            prefix={<SearchOutlined />}
+                          />
                         </span>
                       </span>
+                    </div>
+                    <div className="add">
+                      {role === 'superadmin' && <AddCategory reloadPage={reloadPage} role={role} />}
                     </div>
                   </div>
                 </div>
               </Space>
             </div>
-          </p>
+          </div>
         </div>
         <Table
           columns={columns}
           dataSource={data}
           pagination={{ pageSize: pageS }}
-          scroll={{ y: 510 }}
+          className="mt-4"
         />
       </div>
     </div>

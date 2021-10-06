@@ -370,7 +370,7 @@ const index = () => {
                             span: 13,
                           }}
                           layout="horizontal"
-                          colon
+                          colon={false}
                           initialValues={{ defaultInputValue: 0 }}
                           onFinish={onFinishSuccess}
                           onFinishFailed={onFinishFailed}
@@ -514,7 +514,7 @@ const index = () => {
                                     >
                                       <Input
                                         className="h-1/2 py-1"
-                                        style={{ padding: '9px', minWidth: '53px' }}
+                                        style={{ padding: '10px', minWidth: '53px' }}
                                         type="text"
                                         size="large"
                                         min={1}
@@ -595,7 +595,7 @@ const index = () => {
                                   allowClear
                                   tagRender={tagRender}
                                   className="w-100"
-                                  placeholder="リレーション"
+                                  placeholder="リレーションを選択"
                                   onChange={filtedArr}
                                 >
                                   {afterTasks.map((element) => (
@@ -611,7 +611,7 @@ const index = () => {
                           </div>
                           {/* details    */}
                           <Form.Item
-                            label="詳細"
+                            label=""
                             className="block mx-7"
                             style={{ display: 'block' }}
                             name="detail"

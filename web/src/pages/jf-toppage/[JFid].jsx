@@ -2,16 +2,16 @@ import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { ReactReduxContext } from 'react-redux'
-import { Button, Modal, notification } from 'antd'
-import {
-  ExclamationCircleOutlined,
-  CheckCircleTwoTone,
-} from '@ant-design/icons'
+// import { notification } from 'antd'
+// import {
+//   ExclamationCircleOutlined,
+//   CheckCircleTwoTone,
+// } from '@ant-design/icons'
 import JfLayout from '../../layouts/layout-task'
 import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
-import { jftask, deleteJF } from '../../api/jf-toppage'
+import { jftask } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
 
 function jftoppage() {
@@ -20,7 +20,7 @@ function jftoppage() {
   const router = useRouter()
   const idJf = router.query.JFid
   const [user, setUser] = useState(null)
-  const [role, setRole] = useState(null)
+  // const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const fetchTasks = async () => {
     await jftask(idJf).then((response) => {
@@ -29,55 +29,86 @@ function jftoppage() {
       console.log(error)
     })
   }
-  const handleEdit = () => {
-    router.push(`/edit-jf/${idJf}`)
-  }
-  const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-      duration: 3,
-      message: '正常に削除されました',
-      onClick: () => {},
-    })
-  }
-  const deletetpl = async () => {
-    await deleteJF(idJf).then((response) => {
-      console.log(response.data)
-      saveNotification()
-      router.push('/jobfairs')
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-  const modelDelete = () => {
-    Modal.confirm({
-      title: '削除してもよろしいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      onOk: () => {
-        deletetpl()
-      },
-      onCancel: () => {},
-      centered: true,
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
-  }
+  // const handleEdit = () => {
+  //   router.push(`/edit-jf/${idJf}`)
+  // }
+  // const saveNotification = () => {
+  //   notification.open({
+  //     icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+  //     duration: 3,
+  //     message: '正常に削除されました',
+  //     onClick: () => {},
+  //   })
+  // }
+  // const deletetpl = async () => {
+  //   await deleteJF(idJf).then((response) => {  //remove edit and delete
+  //     console.log(response.data)
+  //     saveNotification()
+  //     router.push('/jobfairs')
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
+  // const modelDelete = () => {
+  //   Modal.confirm({
+  //     title: '削除してもよろしいですか？',
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: '',
+  //     onOk: () => {
+  //       deletetpl()
+  //     },
+  //     onCancel: () => {},
+  //     centered: true,
+  //     okText: 'はい',
+  //     cancelText: 'いいえ',
+  //   })
+  // }
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
     setUser(store.getState().get('auth').get('user'))
     if (user) {
-      setRole(user.get('role'))
+      // setRole(user.get('role'))
     }
     fetchTasks()
   }, [user])
 
   return (
     <div className="JFTopPage">
-      <JfLayout id={idJf}>
+      <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
-          <div className="Jf__top">
+          <div className="container">
+            <div className="flex justify-between">
+              <div className="title w-3/5">
+                <h3 className="title-h3">
+                  最近の更新
+                </h3>
+                <NotificationsJf id={idJf} />
+              </div>
+              <div className="flex flex-col w-1/2 space-x-50 justify-center">
+                <div className="cha ...  w-11/12 ml-12">
+                  <SearchSugges className="h-7" listTask={listTask} id={idJf} />
+                </div>
+                <div className="justify-center ... w-11/12 ml-12 mt-12">
+                  <div className="status__global">
+                    <h3>ステータス</h3>
+                    <div className="status">
+                      <ChartStatus task={listTask} id={idJf} />
+                    </div>
+                  </div>
+                </div>
+                <div className="justify-center ... w-11/12 ml-12 mt-8">
+                  <div className="status__global">
+                    <h3>マイルストーン</h3>
+                    <div className="status">
+                      <ChartMilestone id={idJf} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+          </div>
+          {/* <div className="Jf__top">
             <div className="jf__main">
               <div className="grid grid-cols-12">
                 <div className="col-span-7">
@@ -139,7 +170,7 @@ function jftoppage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </JfLayout.Main>
       </JfLayout>
     </div>

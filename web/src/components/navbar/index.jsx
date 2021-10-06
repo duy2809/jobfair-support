@@ -24,22 +24,22 @@ export default function Navbar() {
     <Menu className="border-2 rounded-2xl py-2 top-5 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
         <Link href="/template-tasks">
-          <a>テンプレートタスク</a>
+          <a className="text-base">テンプレートタスク</a>
         </Link>
       </Menu.Item>
       <Menu.Item key="1">
         <Link href="/schedule">
-          <a>スケジュール</a>
+          <a className="text-base">スケジュール</a>
         </Link>
       </Menu.Item>
       <Menu.Item key="2">
         <Link href="/milestones">
-          <a>マスター設定</a>
+          <a className="text-base">マスター設定</a>
         </Link>
       </Menu.Item>
       <Menu.Item key="3">
         <Link href="/Category">
-          <a>カテゴリー覧</a>
+          <a className="text-base">カテゴリー覧</a>
         </Link>
       </Menu.Item>
     </Menu>
@@ -74,31 +74,31 @@ export default function Navbar() {
   )
 
   return (
-    <div className="flex justify-between items-center border-2 navbar select-none">
+    <div className="flex justify-between items-center border-2 navbar select-none shadow-md">
       <div className="flex">
-        <div className="w-20 ml-16">
+        <div style={{ width: '13.5rem' }}>
           <Link href="/top-page">
             <a>
-              <img src="/images/logo.png" alt="logo" />
+              <img src="/images/5.svg" alt="logo" />
             </a>
           </Link>
         </div>
         <div className="flex items-center">
           <div className="px-8">
             <Link href="/jobfairs">
-              <a>JF</a>
+              <a className="font-bold text-xl text-white background rounded-md py-2 px-5">JF</a>
             </Link>
           </div>
           <div className="px-8">
             <Link href="/member">
-              <a href="">メンバ</a>
+              <a href="" className="font-bold text-xl">メンバ</a>
             </Link>
           </div>
           <div className="px-8">
             <Dropdown overlay={moreNavbarOptions} trigger={['click']}>
               <div className="cursor-pointer">
-                その他
-                <span className="px-1">
+                <span className="font-bold text-xl">その他</span>
+                <span className="px-2">
                   <CaretDownOutlined className="text-lg" />
                 </span>
               </div>
@@ -106,11 +106,11 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex px-16 items-center">
+      <div className="flex px-12 items-center">
         <Notification />
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            <div className="px-2 border-4 border-white user-icon-container py-1 cursor-pointer">
+            <div className="px-2 border-2 border-black user-icon-container py-1 mb-1 cursor-pointer">
               <UserOutlined className="text-xl user-icon" />
             </div>
           </Dropdown>

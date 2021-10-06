@@ -1,20 +1,12 @@
-import React from 'react'
-import { Form, Input, Select, Space } from 'antd'
+import { Form, Input, Select } from 'antd'
 import PropTypes from 'prop-types'
+import React from 'react'
 
 const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
-const Effort = ({
-  form,
-  unitData,
-  isDayData,
-  setCheckSpace,
-  setInput,
-  setUnit,
-  setIsDay,
-}) => {
+const Effort = ({ form, unitData, isDayData, setCheckSpace, setInput, setUnit, setIsDay }) => {
   const numberInputValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -58,7 +50,7 @@ const Effort = ({
       className="justify-evenly"
       rules={[
         {
-          // required: true,
+          required: true,
           // message: 'この項目は必須です。',
           validator: numberInputValidator,
         },
@@ -83,21 +75,16 @@ const Effort = ({
         // }),
       ]}
     >
-      <div className="flex flex-row justify-between ">
-        <Form.Item name="effort" className="w-1/2 max-w-xs flex-1">
-          <Input
-            type="text"
-            placeholder=""
-            style={{ width: '80px' }}
-            onChange={onValueNameChange}
-          />
+      <div className="flex flex-row justify-between items-center ">
+        <Form.Item name="effort" className=" w-1/4 h-full max-w-xs flex-1 pr-5">
+          <Input size="large" type="text" placeholder="" onChange={onValueNameChange} />
         </Form.Item>
-        <Space>
-          <Form.Item name="is_day">
+        <div className="w-3/4 flex justify-center">
+          <Form.Item className="w-full" name="is_day">
             <Select
               size="large"
               placeholder="時間"
-              style={{ width: '150px' }}
+              style={{ width: '100%' }}
               onChange={onValueIsDayChange}
             >
               {isDayData.map((element) => (
@@ -107,14 +94,12 @@ const Effort = ({
               ))}
             </Select>
           </Form.Item>
-
-          <p className="slash-devider text-2xl font-extrabold mb-7"> / </p>
-
-          <Form.Item name="unit">
+          <p className=" text-3xl font-extrabold leading-10"> / </p>
+          <Form.Item className="w-full" name="unit">
             <Select
               size="large"
               placeholder="学生数"
-              style={{ width: '150px' }}
+              style={{ width: '100%' }}
               onChange={onValueUnitChange}
             >
               {unitData.map((element) => (
@@ -124,7 +109,7 @@ const Effort = ({
               ))}
             </Select>
           </Form.Item>
-        </Space>
+        </div>
       </div>
     </Form.Item>
   )

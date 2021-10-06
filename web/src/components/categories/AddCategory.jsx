@@ -80,7 +80,7 @@ const AddCategory = (props) => {
   const onValueNameChange = (e) => {
     // setErrorUnique(false)
     setcheckSpace(false)
-    setCategory(e.target.value)
+    setCategory(toHalfWidth(e.target.value))
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
     })
@@ -88,7 +88,7 @@ const AddCategory = (props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} className="add-btn text-base">
+      <Button type="primary" onClick={showModal} className="add-btn text-base" style={{ letterSpacing: '-0.1em' }}>
         追加
       </Button>
       <Modal
@@ -98,16 +98,24 @@ const AddCategory = (props) => {
         onCancel={handleCancel}
         okText="登録"
         cancelText="キャンセル"
+        okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
         centered
       >
 
         <Form
           form={form}
-          layout="vertical"
+          layout="horizontal"
+          labelCol={{
+            span: 6,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          colon={false}
         >
           <Form.Item
             label={
-              <span>カテゴリ名</span>
+              <span className="font-bold">カテゴリ名</span>
             }
             name="name"
             rules={[

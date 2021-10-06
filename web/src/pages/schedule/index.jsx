@@ -1,5 +1,7 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button } from 'antd'
+import { Select, Input, Table, Empty, Button, Tooltip } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -10,17 +12,17 @@ import { ListScheduleApi } from '~/api/schedule'
 const columns = [
   {
     title: 'No.',
-    dataIndex: 'id',
+    dataIndex: 'key',
     key: 'No.',
-    width: '10%',
+    width: '5%',
     render: (id) => id,
   },
   {
     title: 'スケジュール',
     dataIndex: 'name',
     key: 'スケジュール',
-    width: '90%',
-    render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+    width: '95%',
+    render: (name) => <Tooltip title={name}>{name}</Tooltip>,
   },
 ]
 
@@ -92,6 +94,16 @@ function ScheduleList() {
       })
   })
 
+  // fix No. bug
+  const Schedules = []
+  for (let i = 0; i < filterSchedules.length; i += 1) {
+    Schedules.push({
+      key: i + 1,
+      id: filterSchedules[i].id,
+      name: filterSchedules[i].name,
+    })
+  }
+
   const handleClick = (e) => {
     e.preventDefault()
     router.push('/jf-schedule/add')
@@ -113,27 +125,21 @@ function ScheduleList() {
       <Layout.Main>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="flex w-full justify-between">
-            <div className="text-4xl title">JFスケジュール一覧</div>
-            <div>
-              {role === 'superadmin' ? (
-                <Button
-                  type="primary"
-                  className="px-12"
-                  htmlType="button"
-                  enabled
-                  onClick={handleClick}
-                >
-                  追加
-                </Button>
-              ) : (
-                ''
-              )}
-            </div>
+            <h1 className="ml-0">JFスケジュール一覧</h1>
           </div>
           <div className="flex w-full justify-between">
-            <div>
-              <span className="text-xl">表示件数: </span>
-              <Select className="ml-5" value={itemCount} onChange={handleSelect}>
+            <div
+              className="flex items-center content-center"
+              // t qua bat luc voi code  r day nen t moi phai inline style nhu nay :)
+              style={{ height: '38px' }}
+            >
+              <span>表示件数 </span>
+              <Select
+                size="large"
+                className="ml-2 flow-root"
+                value={itemCount}
+                onChange={handleSelect}
+              >
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
@@ -147,13 +153,28 @@ function ScheduleList() {
                   bordered
                   prefix={<SearchOutlined />}
                 />
+                <div className="pl-5">
+                  {role === 'superadmin' ? (
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      enabled
+                      onClick={handleClick}
+                      style={{ letterSpacing: '-0.1em' }}
+                    >
+                      追加
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
             </div>
           </div>
           <Table
             className="rounded-3xl table-styled my-5 table-striped-rows"
             columns={columns}
-            dataSource={filterSchedules}
+            dataSource={Schedules}
             rowKey={(record) => record.id}
             scroll={{ y: 360 }}
             onRow={handleRow}

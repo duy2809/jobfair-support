@@ -123,14 +123,10 @@ const EditTemplateTaskPage = () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     await setTasks1(
-      tasksList.filter(
-        (o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id),
-      ),
+      tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)),
     )
     await setTasks2(
-      tasksList.filter(
-        (o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id),
-      ),
+      tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)),
     )
   }
 
@@ -165,14 +161,10 @@ const EditTemplateTaskPage = () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     setTasks1(
-      tasksList.filter(
-        (o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id),
-      ),
+      tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)),
     )
     setTasks2(
-      tasksList.filter(
-        (o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id),
-      ),
+      tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)),
     )
   }, [prevTasks, nextTasks])
 
@@ -209,9 +201,7 @@ const EditTemplateTaskPage = () => {
     })
       .then(() => openNotificationSuccess())
       .catch((error) => {
-        if (
-          JSON.parse(error.response.request.response).message === 'Edit Failed'
-        ) {
+        if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
           notification.error({
             message: 'このマイルストーン名は存在しています',
             duration: 3,
@@ -233,7 +223,7 @@ const EditTemplateTaskPage = () => {
     <div>
       <OtherLayout>
         <OtherLayout.Main>
-          <>
+          <div className="edit-template-task">
             <h1>テンプレートタスク編集</h1>
             {/* <div className="h-screen flex flex-col items-center pt-10 bg-white my-8"> */}
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
@@ -290,10 +280,7 @@ const EditTemplateTaskPage = () => {
                       okText="はい"
                       centered
                     >
-                      <p className="mb-5">
-                        このまま保存してもよろしいですか？
-                        {' '}
-                      </p>
+                      <p className="mb-5">このまま保存してもよろしいですか？ </p>
                     </Modal>
 
                     <Effort
@@ -327,18 +314,14 @@ const EditTemplateTaskPage = () => {
                     />
                   </div>
                 </div>
-                <Detail
-                  form={form}
-                  input={description}
-                  setInput={setDescription}
-                />
+                <Detail form={form} input={description} setInput={setDescription} />
                 <Form.Item className="justify-end">
                   <div className="submit-btn flex justify-end ">
                     <CancelEditTemplateTask id={pathId} />
                     <Button
                       type="primary"
                       htmlType="submit"
-                      className="text-base px-10 "
+                      className="text-base "
                       onClick={handleOk}
                     >
                       <span> 保存 </span>
@@ -347,7 +330,7 @@ const EditTemplateTaskPage = () => {
                 </Form.Item>
               </Form>
             </div>
-          </>
+          </div>
         </OtherLayout.Main>
       </OtherLayout>
     </div>

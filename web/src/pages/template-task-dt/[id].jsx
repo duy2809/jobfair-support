@@ -5,6 +5,8 @@ import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
+  EditTwoTone,
+  DeleteTwoTone,
 } from '@ant-design/icons'
 
 import { ReactReduxContext } from 'react-redux'
@@ -77,9 +79,10 @@ function templatetTaskDt() {
   }
   const deletetpl = async () => {
     await deleteTptt(idTplt)
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data)
-        router.push('/template-tasks')
+        await router.push('/template-tasks')
+        await saveNotification()
       })
       .catch((error) => {
         console.log(error)
@@ -90,9 +93,8 @@ function templatetTaskDt() {
       title: '削除してもよろしいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
-      onOk: () => {
+      onOk: async () => {
         deletetpl()
-        saveNotification()
       },
       onCancel: () => {},
       centered: true,
@@ -130,36 +132,38 @@ function templatetTaskDt() {
                   戻る
                 </Button>
               </div>
-              <div className="button__right">
-                { role === 'superadmin' ? (
+            </div>
+
+            <div className="flex items-center justify-between">
+              <h1>テンプレートタスク詳細</h1>
+              <div className="button__right mb-12 pb-2">
+                {role === 'admin' || role === 'superadmin' ? (
                   <>
-                    <Button
-                      style={{ border: 'none' }}
+                    <EditTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={handleEdit}
                     >
-                      <span> 編集 </span>
-                    </Button>
-                    <Button
-                      style={{ border: 'none' }}
+                      {/* <EditOutlined /> */}
+                    </EditTwoTone>
+                    <DeleteTwoTone
+                      className="border-none mx-1 text-2xl"
                       type="primary"
                       onClick={modelDelete}
                     >
-                      <span> 削除 </span>
-                    </Button>
+                      {/* <DeleteOutlined /> */}
+                    </DeleteTwoTone>
                   </>
                 ) : null}
               </div>
             </div>
 
-            <h1>テンプレートタスク詳細</h1>
-
             <div className="info__tplt">
               <div className="grid grid-cols-2 mx-16 info__center">
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className=" layber col-span-1 mx-4">
-                      <p>テンプレートタスク名:</p>
+                    <div className=" layber col-span-1 mx-4 text-right font-bold">
+                      <p>テンプレートタスク名</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{name}</div>
@@ -168,8 +172,8 @@ function templatetTaskDt() {
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber  col-span-1 mx-4">
-                      <p>カテゴリ:</p>
+                    <div className="layber  col-span-1 mx-4 text-right font-bold">
+                      <p>カテゴリ</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{categoryName}</div>
@@ -179,8 +183,8 @@ function templatetTaskDt() {
 
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
-                      <p>マイルストーン:</p>
+                    <div className="layber col-span-1 mx-4 text-right font-bold">
+                      <p>マイルストーン</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       <div className="item__right">{milestoneName}</div>
@@ -189,22 +193,25 @@ function templatetTaskDt() {
                 </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-3 ">
-                    <div className="layber col-span-1 mx-4">
-                      <p>工数:</p>
+                    <div className="layber col-span-1 mx-4 text-right font-bold">
+                      <p>工数</p>
                     </div>
                     <div className="col-span-2 mx-4">
                       {unit === 'none' ? (
                         <>
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
-
                         </>
                       ) : (
                         <>
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
                           <span>/</span>
-                          {unit === 'students' ? <span className="ef">学生数</span> : <span className="ef">企業数</span> }
+                          {unit === 'students' ? (
+                            <span className="ef">学生数</span>
+                          ) : (
+                            <span className="ef">企業数</span>
+                          )}
                         </>
                       )}
                     </div>
@@ -214,13 +221,20 @@ function templatetTaskDt() {
 
               <div className="grid grid-cols-2 mx-16 mt-5">
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">前のタスク: </p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    前のタスク
+                    {' '}
+                  </p>
                   <ul className="list__task col-span-2">
                     {beforeTasks
                       ? beforeTasks.map((item) => (
                         <li className="task__chil">
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
@@ -239,13 +253,19 @@ function templatetTaskDt() {
                   </ul>
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="col-span-1">次のタスク:</p>
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    次のタスク
+                  </p>
                   <ul className="list__task col-span-2">
                     {afterTasks
                       ? afterTasks.map((item) => (
                         <li>
                           <Tag
-                            style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+                            style={{
+                              marginRight: 3,
+                              paddingTop: '5px',
+                              paddingBottom: '3px',
+                            }}
                           >
                             <Tooltip placement="top" title={item.name}>
                               <a
@@ -258,7 +278,6 @@ function templatetTaskDt() {
                               </a>
                             </Tooltip>
                           </Tag>
-
                         </li>
                       ))
                       : null}

@@ -40,7 +40,7 @@ export default function SearchSugges({ listTask, id }) {
       closable: false,
       duration: 1,
       description:
-            '該当結果が見つかりませんでした',
+        '該当結果が見つかりませんでした',
     })
   }
   function search() {
@@ -61,8 +61,9 @@ export default function SearchSugges({ listTask, id }) {
     onChange,
   }
   return (
-    <div className="search-sugges">
+    <div className="search-sugges flex items-center">
       <Autosuggest
+        style={{ border: 'none' }}
         suggestions={suggestions}
         onSuggestionsFetchRequested={onSuggestionsFetchRequested}
         onSuggestionsClearRequested={onSuggestionsClearRequested}
@@ -70,7 +71,7 @@ export default function SearchSugges({ listTask, id }) {
         renderSuggestion={renderSuggestion}
         inputProps={inputProps}
       />
-      <Button style={{ border: 'none' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
+      <Button style={{ height: '21' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
     </div>
   )
 }

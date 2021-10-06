@@ -11,14 +11,18 @@ import {
   BarChartOutlined,
   TableOutlined,
   FileOutlined,
-  ArrowRightOutlined,
-  ArrowLeftOutlined,
+  MenuOutlined,
 } from '@ant-design/icons'
 import { jfdata } from '../../api/jf-toppage'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
 
-const JfLayout = ({ children, id }) => {
+const JfLayout = ({ children, id, bgr }) => {
+  const styles = {
+    background: 'white',
+    borderLeft: '8px solid #ffd803',
+    marginBottom: '0px',
+  }
   const main = findSlot(JfLayout.Main, children)
   const [startDate, setStartDate] = useState()
   const [avt, setAvt] = useState('')
@@ -33,15 +37,17 @@ const JfLayout = ({ children, id }) => {
   }
   const fetchJF = async () => {
     if (id) {
-      await jfdata(id).then((response) => {
-        setName(response.data.name)
-        setStartDate(response.data.start_date.split('-').join('/'))
-        setAvt(response.data.user.avatar)
-        setNumberOfStudents(response.data.number_of_students)
-        setNumberOfCompanies(response.data.number_of_companies)
-      }).catch((error) => {
-        console.log(error)
-      })
+      await jfdata(id)
+        .then((response) => {
+          setName(response.data.name)
+          setStartDate(response.data.start_date.split('-').join('/'))
+          setAvt(response.data.user.avatar)
+          setNumberOfStudents(response.data.number_of_students)
+          setNumberOfCompanies(response.data.number_of_companies)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 
@@ -52,10 +58,8 @@ const JfLayout = ({ children, id }) => {
     <div className="layout-task">
       <Navbar />
       <Layout className="site-layout" style={{ marginLeft: 0 }}>
-
         <Sider
           style={{
-            background: '#bae8e8',
             left: 0,
             zIndex: 100,
           }}
@@ -64,42 +68,84 @@ const JfLayout = ({ children, id }) => {
           collapsed={collapsed}
         >
           <Menu
-            style={{
-              height: '100vh',
-            }}
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub1']}
             mode="inline"
             theme="dark"
             inlineCollapsed={collapsed}
           >
-            <div className="relative h-10 ">
+            <div className="relative h-10 " style={{ marginBottom: '32px' }}>
               <div className="absolute top-0 right-0 ">
-                <div
-                  className="button"
-                  type="primary"
-                  onClick={toggleCollapsed}
-                  style={{ marginBottom: 16 }}
-                >
-                  {collapsed ? <ArrowRightOutlined /> : <ArrowLeftOutlined />}
+                <div className="button" type="primary" onClick={toggleCollapsed}>
+                  {collapsed ? (
+                    <MenuOutlined className="sidebar-icons" />
+                  ) : (
+                    <MenuOutlined className="sidebar-icons" />
+                  )}
                 </div>
               </div>
             </div>
-            <Menu.Item key="1" icon={<HomeOutlined />}>
-              <Link href={`/jf-toppage/${id}`}>ホーム</Link>
-            </Menu.Item>
-            <Menu.Item key="2" icon={<FileProtectOutlined />}>
-              <Link href={`/tasks/${id}`}>タスク</Link>
-            </Menu.Item>
-            <Menu.Item key="3" icon={<BarChartOutlined />}>
-              <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
-            </Menu.Item>
-            <Menu.Item key="4" icon={<TableOutlined />}>
-              <Link href={`/kanban/${id}`}>カンバン</Link>
-            </Menu.Item>
-            <Menu.Item key="5" icon={<FileOutlined />}>
-              <Link href={`/file/${id}`}>ファイル</Link>
-            </Menu.Item>
+            {bgr === 1 ? (
+              <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item
+                key="1"
+                icon={<HomeOutlined className="sidebar-icons" />}
+                style={{ background: '#e3f6f5' }}
+              >
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
+              </Menu.Item>
+            )}
+
+            {bgr === 2 ? (
+              <Menu.Item
+                key="2"
+                icon={<FileProtectOutlined className="sidebar-icons" />}
+                style={styles}
+              >
+                <Link href={`/tasks/${id}`}>タスク</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
+                <Link href={`/tasks/${id}`}>タスク</Link>
+              </Menu.Item>
+            )}
+
+            {bgr === 3 ? (
+              <Menu.Item
+                key="3"
+                icon={<BarChartOutlined className="sidebar-icons" />}
+                style={styles}
+              >
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+              </Menu.Item>
+            )}
+
+            {bgr === 4 ? (
+              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
+              </Menu.Item>
+            )}
+
+            {bgr === 5 ? (
+              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            ) : (
+              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />}>
+                <Link href={`/file/${id}`}>ファイル</Link>
+              </Menu.Item>
+            )}
           </Menu>
         </Sider>
         <Layout className="site-layout">
@@ -107,21 +153,12 @@ const JfLayout = ({ children, id }) => {
             <h1>{name}</h1>
             <div className="admin__jf">
               <h3>{startDate}</h3>
-              <h3>
-                {`企業:${numberOfStudents}`}
-              </h3>
-              <h3>
-                {`学生:${numberOfCompanies}`}
-              </h3>
+              <h3>{`企業:${numberOfStudents}`}</h3>
+              <h3>{`学生:${numberOfCompanies}`}</h3>
               <img className="avt" src={avt} alt="avatar" />
             </div>
           </div>
-          <Content
-            className="site-layout-background"
-          >
-
-            {_get(main, 'props.children')}
-          </Content>
+          <Content className="site-layout-background">{_get(main, 'props.children')}</Content>
         </Layout>
       </Layout>
     </div>
@@ -130,14 +167,12 @@ const JfLayout = ({ children, id }) => {
 JfLayout.Main = () => null
 JfLayout.propTypes = {
   id: PropTypes.number.isRequired,
+  bgr: PropTypes.number.isRequired,
 }
 JfLayout.defaultProps = {
   children: [],
 }
 JfLayout.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.node,
-    PropTypes.arrayOf(PropTypes.node),
-  ]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 }
 export default JfLayout

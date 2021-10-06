@@ -271,18 +271,20 @@ const index = () => {
             <div className="grid grid-cols-2 mx-10">
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="JF名:"
+                  label={
+                    <p className="font-bold">JF名</p>
+                  }
                   name="name"
                   rules={[
                     {
                       validator: JFNameValidator,
+                      required: true,
                     },
                   ]}
                 >
                   <Input
                     type="text"
                     placeholder="JF名入力する"
-                    maxLength={20}
                     onChange={onValueNameChange}
                   />
                 </Form.Item>
@@ -290,10 +292,13 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="start_date"
-                  label="開始日:"
+                  label={
+                    <p className="font-bold">開始日</p>
+                  }
                   rules={[
                     {
                       validator: startDayValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -309,11 +314,14 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="参加企業社数:"
+                  label={
+                    <p className="font-bold">参加企業社数</p>
+                  }
                   name="number_of_companies"
                   rules={[
                     {
                       validator: companiesJoinValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -322,7 +330,7 @@ const index = () => {
                     size="large"
                     min={1}
                     onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
+                    // style={{ width: '130px' }}
                     placeholder="参加企業社数"
                   />
                 </Form.Item>
@@ -330,10 +338,13 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="number_of_students"
-                  label="推定参加学生数:"
+                  label={
+                    <p className="font-bold">推定参加学生数</p>
+                  }
                   rules={[
                     {
                       validator: studentsJoinValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -342,19 +353,22 @@ const index = () => {
                     size="large"
                     min={1}
                     onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
+                    // style={{ width: '130px' }}
                     placeholder="推定参加学生数"
                   />
                 </Form.Item>
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item
-                  label="管理者:"
+                  label={
+                    <p className="font-bold">管理者</p>
+                  }
                   name="jobfair_admin_id"
                   onSelect={adminSelect}
                   rules={[
                     {
                       validator: JFAdminValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -370,10 +384,13 @@ const index = () => {
               <div className="col-span-1 mx-4">
                 <Form.Item
                   name="schedule_id"
-                  label="JFスケジュール:"
+                  label={
+                    <p className="font-bold">JFスケジュール</p>
+                  }
                   rules={[
                     {
                       validator: JFScheduleValidator,
+                      required: true,
                     },
                   ]}
                 >
@@ -393,7 +410,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  マイルストーン一覧:
+                  <p className="font-bold">マイルストーン一覧</p>
                   <List
                     className="demo-infinite-container"
                     bordered
@@ -413,7 +430,7 @@ const index = () => {
               </div>
               <div className="col-span-1 mx-4">
                 <Form.Item label=" ">
-                  タスク一覧:
+                  <p className="font-bold">タスク一覧</p>
                   <List
                     className="demo-infinite-container"
                     bordered

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import {
   CheckCircleTwoTone,
   ExclamationCircleOutlined,
@@ -5,9 +7,12 @@ import {
 } from '@ant-design/icons'
 import {
   Button,
-  DatePicker, Empty, Form,
+  DatePicker,
+  Empty,
+  Form,
   Input,
-  List, Modal,
+  List,
+  Modal,
   notification,
   Select,
   Space,
@@ -46,6 +51,7 @@ const index = () => {
     }
     return true
   }
+
   useEffect(() => {
     // Extensions.unSaveChangeConfirm(true)
 
@@ -211,11 +217,23 @@ const index = () => {
     }
   }
 
+  const handleInputEmpty = () => {
+    form.setFieldsValue({
+      name: '*',
+      number_of_companies: '*',
+      jobfair_admin_id: '*',
+      number_of_students: '*',
+      schedule_id: '*',
+    })
+  }
+
   /* Validator of all input. */
-  const JFNameValidator = (_, value) => {
+  const JFNameValidator = (_, value, name) => {
     if (!value) {
+      handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
+
     // if (value) {
     //   if (checkIsJFNameExisted()) {
     //     return Promise.reject(new Error('JF名はすでに存在します'))
@@ -256,7 +274,6 @@ const index = () => {
     }
     // check case when user set number of company that join JF smaller than 1
     if (Extensions.isFullWidth(value)) {
-
       // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
     // setinputTest(Extention.toHalfWidth(value.toString()))
@@ -266,8 +283,9 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const studentsJoinValidator = (_, value) => {
+  const studentsJoinValidator = (_, value, name) => {
     if (!value) {
+      handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
     if (value <= 0) {
@@ -283,15 +301,17 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const JFAdminValidator = (_, value) => {
+  const JFAdminValidator = (_, value, name) => {
     if (!value) {
+      handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
 
     return Promise.resolve()
   }
-  const JFScheduleValidator = (_, value) => {
+  const JFScheduleValidator = (_, value, name) => {
     if (!value) {
+      handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
     return Promise.resolve()
@@ -322,13 +342,16 @@ const index = () => {
                   initialValues={{ defaultInputValue: 0 }}
                   onFinish={onFinishSuccess}
                   onFinishFailed={onFinishFailed}
+                  labelAlign="right"
 
                 >
                   <div className="flex justify-center">
                     <div className="left-side w-1/2">
                       {/* jobfair name */}
                       <Form.Item
-                        label="JF名"
+                        label={
+                          <p className="font-bold text-right">JF名</p>
+                        }
                         required
                       >
                         <Form.Item
@@ -345,22 +368,34 @@ const index = () => {
                             id="validate_name"
                             onBlur={checkIsJFNameExisted}
                             onChange={() => {
-                              document.getElementById('error-msg').setAttribute('hidden', 'true')
-                              document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                              document
+                                .getElementById('error-msg')
+                                .setAttribute('hidden', 'true')
+                              document.getElementById(
+                                'validate_name',
+                              ).style.border = '1px solid #e5e7eb'
                             }}
                             placeholder="JF名を入力する"
                             maxLength={200}
                           />
-
                         </Form.Item>
 
-                        <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
+                        <span
+                          id="error-msg"
+                          style={{ color: '#ff3860', fontSize: '14px' }}
+                          className="text-red-600"
+                          hidden
+                        >
+                          この名前はすでに存在します
+                        </span>
                       </Form.Item>
                       {/* number of companies */}
                       <Form.Item
                         required
                         // hasFeedback
-                        label="参加企業社数"
+                        label={
+                          <p className="font-bold">参加企業社数</p>
+                        }
                         name="number_of_companies"
                         rules={[
                           {
@@ -372,8 +407,9 @@ const index = () => {
                           type="text"
                           size="large"
                           min={1}
-                          onChange={autoConvertHalfwidth}
-                          style={{ width: '130px' }}
+                          onChange={() => {
+                            autoConvertHalfwidth()
+                          }}
                           placeholder="参加企業社数"
                         />
                       </Form.Item>
@@ -381,7 +417,9 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
-                        label="管理者"
+                        label={
+                          <p className="font-bold">管理者</p>
+                        }
                         name="jobfair_admin_id"
                         rules={[
                           {
@@ -404,13 +442,18 @@ const index = () => {
 
                       {/* list milestones */}
                       <Form.Item label=" ">
-                        <span className="label">マイルストーン一覧</span>
+                        <span className="label font-bold">マイルストーン一覧</span>
                         <List
                           className="demo-infinite-container"
                           bordered
-                          locale={
-                            { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                          }
+                          locale={{
+                            emptyText: (
+                              <Empty
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                description="データがありません"
+                              />
+                            ),
+                          }}
                           // style={{ backgroundColor: '#e3f6f5' }}
                           size="small"
                           dataSource={listMilestone}
@@ -421,14 +464,15 @@ const index = () => {
                           )}
                         />
                       </Form.Item>
-
                     </div>
                     <div className="right-side w-1/2">
                       {/* start date */}
                       <Form.Item
                         required
+                        label={
+                          <p className="font-bold">開始日</p>
+                        }
                         name="start_date"
-                        label="開始日"
                         // hasFeedback
                         rules={[
                           {
@@ -443,18 +487,20 @@ const index = () => {
                           format={Extensions.dateFormat}
                           placeholder={Extensions.dateFormat}
 
-                        // disable date in the past
-                        // disabledDate={(current) => {
-                        //   return current < moment();
-                        // }}
+                          // disable date in the past
+                          // disabledDate={(current) => {
+                          //   return current < moment();
+                          // }}
                         />
                       </Form.Item>
                       {/* number of students */}
                       <Form.Item
                         required
                         // hasFeedback
+                        label={
+                          <p className="font-bold">推定参加学生数</p>
+                        }
                         name="number_of_students"
-                        label="推定参加学生数"
                         rules={[
                           {
                             validator: studentsJoinValidator,
@@ -465,8 +511,9 @@ const index = () => {
                           type="text"
                           size="large"
                           min={1}
-                          onChange={autoConvertHalfwidth}
-                          style={{ width: '130px' }}
+                          onChange={() => {
+                            autoConvertHalfwidth()
+                          }}
                           placeholder="推定参加学生数"
                         />
                       </Form.Item>
@@ -474,8 +521,12 @@ const index = () => {
                       <Form.Item
                         required
                         // hasFeedback
+                        // className="font-bold"
+                        label={
+                          <p className="font-bold text-right">JFスケジュール</p>
+                        }
                         name="schedule_id"
-                        label="JFスケジュール"
+                        // label="JFスケジュール"
                         rules={[
                           {
                             validator: JFScheduleValidator,
@@ -498,15 +549,20 @@ const index = () => {
 
                       {/* list task */}
                       <Form.Item label=" ">
-                        <span className="label">タスク一覧</span>
+                        <span className="label font-bold">タスク一覧</span>
                         <List
                           className="demo-infinite-container"
                           bordered
                           // style={{ backgroundColor: '#e3f6f5' }}
                           size="small"
-                          locale={
-                            { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="データがありません" /> }
-                          }
+                          locale={{
+                            emptyText: (
+                              <Empty
+                                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                                description="データがありません"
+                              />
+                            ),
+                          }}
                           dataSource={listTask}
                           renderItem={(item) => (
                             <List.Item className="list-items" key={item.id}>
@@ -515,16 +571,13 @@ const index = () => {
                           )}
                         />
                       </Form.Item>
-
                     </div>
-
                   </div>
                   {/* 2 button */}
                   <Form.Item
                     label=" "
                     className="my-10"
                     style={{ marginRight: '30px' }}
-
                   >
                     <Space size={20} className="flex justify-end">
                       <Button

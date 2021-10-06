@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Layout from '~/layouts/Default'
 import { updatePassword } from '~/api/authenticate'
 import './style.scss'
+import '../global.scss'
 
 const ResetPage = () => {
   const [form] = Form.useForm()
@@ -20,7 +21,7 @@ const ResetPage = () => {
 
   /* eslint-disable no-template-curly-in-string */
   const validateMessages = {
-    required: '${label}を入力してください。',
+    required: 'この項目は必須です。',
     types: {
       string: '',
     },
@@ -35,13 +36,14 @@ const ResetPage = () => {
       token,
       password: values.confirm_password,
     }
-    // console.log(data);
     try {
       const response = await updatePassword(data)
-      if (response.request.status === 200) openNotification('success', 'パスワードを正常に変更しました')
-      setTimeout(() => {
-        router.push('/login')
-      }, 2500)
+      if (response.request.status === 200) {
+        setTimeout(() => {
+          router.push('/')
+          openNotification('success', 'パスワードを正常に変更しました')
+        }, 2500)
+      }
     } catch (error) {
       if (error.request.status === 400) {
         openNotification('error', 'パスワードを正常に変更しません')
@@ -69,7 +71,7 @@ const ResetPage = () => {
             validateMessages={validateMessages}
           >
             <Form.Item
-              label="新しいパスワード"
+              label={<p className="font-bold">新しいパスワード</p>}
               name="password"
               rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
               hasFeedback
@@ -78,7 +80,7 @@ const ResetPage = () => {
             </Form.Item>
 
             <Form.Item
-              label="パスワード確認用"
+              label={<p className="font-bold">パスワード確認用</p>}
               name="confirm_password"
               dependencies={['password']}
               hasFeedback

@@ -25,9 +25,9 @@ body {
   }
 
   h1 {
-    font-size: 36px;
-    margin-left: 40px;
-    margin-bottom: 50px;
+    font-size: 24px;
+    // margin-left: 40px;
+    margin-bottom: 20px;
     color: #272343;
     flex-wrap: nowrap;
   }
@@ -42,11 +42,13 @@ body {
       color: rgba(0, 0, 0, 0.85);
     }
   }
+
   .ant-btn:hover,
   .ant-btn:focus {
     color: #ffd803;
     border-color: #ffd803;
   }
+
   // disabled
   .ant-btn-primary[disabled],
   .ant-btn-primary[disabled]:hover,
@@ -58,12 +60,19 @@ body {
     text-shadow: none;
     box-shadow: none;
   }
+
   //input
-  .ant-input {
+  .ant-input,
+  .ant-input-affix-wrapper {
     color: #272343;
     padding: 7px 10px;
     border-radius: 6px;
     font-size: 14px;
+  }
+
+  .ant-input-affix-wrapper .ant-input:hover,
+  .ant-input-affix-wrapper .ant-input:focus {
+    border: 0;
   }
 
   .ant-input:hover,
@@ -74,7 +83,7 @@ body {
   .ant-table-row:hover {
     cursor: pointer;
   }
-  
+
   .ant-input::placeholder {
     color: #afadb1;
   }
@@ -82,12 +91,14 @@ body {
   .input {
     padding: 10px;
   }
+
   .no-border {
     .ant-input:hover,
     .ant-input:focus {
       border: none;
     }
   }
+
   //Tooltip
   .ant-tooltip-inner {
     color: #272343;
@@ -107,7 +118,8 @@ body {
   .ant-pagination-item-active,
   .ant-pagination-item-link:hover {
     border-color: #ffd803;
-    color: #ffd803;
+    background-color: #ffd803;
+    color: black;
 
     .ant-pagination-item-link-icon {
       color: #ffd803;
@@ -117,7 +129,6 @@ body {
   //select
   .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
     border-color: #ffd803;
-   
   }
 
   .ant-select:hover,
@@ -129,6 +140,7 @@ body {
     .ant-select-selector {
     border-color: #ffd803;
   }
+
   /* width */
   ::-webkit-scrollbar {
     width: 16px;
@@ -152,7 +164,27 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
   }
+
   thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
-}
+  }
+
+  .ant-form-item-label
+    > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+    font-family: inherit;
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+  .sidebar-icons {
+    font-size: 25px !important;
+  }
+  .ant-btn {
+    height: 38px;
+  }
+  .ant-select-arrow {
+    display: flex;
+    justify-items: center;
+    align-self: center;
+    align-items: center;
+  }
 }

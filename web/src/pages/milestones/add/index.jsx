@@ -9,6 +9,7 @@ import {
 } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
+import './style.scss'
 
 const AddMilestonePage = () => {
   const [form] = Form.useForm()
@@ -106,12 +107,20 @@ const AddMilestonePage = () => {
     })
   }
   const onValueTimeChange = (e) => {
-    setTimeInput(e.target.value)
+    setTimeInput(Number(toHalfWidth(e.target.value)))
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
+    const specialCharRegex = new RegExp(/^([^0-9]*)$/)
+    if (specialCharRegex.test(e.target.value)) {
+      form.setFields([
+        {
+          name: 'time',
+          errors: ['０以上の半角の整数で入力してください。'],
+        },
+      ])
+    }
   }
-
   const handleCancel = () => {
     setIsModalVisible(false)
   }
@@ -145,7 +154,7 @@ const AddMilestonePage = () => {
   const blockInvalidChar = (e) => ['e', 'E', '+'].includes(e.key) && e.preventDefault()
 
   return (
-    <>
+    <div className="add-milestone">
       <OtherLayout>
         <OtherLayout.Main>
           {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>
@@ -159,6 +168,7 @@ const AddMilestonePage = () => {
           <div className="pt-10">
             <Form
               form={form}
+              colon={false}
               name="addMilestone"
               // onFinish={onFinish}
               initialValues={{
@@ -171,7 +181,7 @@ const AddMilestonePage = () => {
             >
               <Form.Item
                 label={(
-                  <p style={{ margin: 0 }}>
+                  <p className="font-bold text-right">
                     マイルストーン名
                   </p>
                 )}
@@ -207,7 +217,7 @@ const AddMilestonePage = () => {
               </Form.Item>
               <Form.Item
                 label={
-                  <p style={{ margin: 0 }}>期日</p>
+                  <p className="font-bold text-right">期日</p>
                 }
                 name="time"
                 rules={[
@@ -220,10 +230,11 @@ const AddMilestonePage = () => {
                     pattern: /^(?:\d*)$/,
                     message: '０以上の半角の整数で入力してください。',
                   },
+
                 ]}
               >
                 <Input
-                  /* type="number" */
+                  // type="number"
                   type="text"
                   placeholder="期日"
                   addonAfter={selectAfter}
@@ -250,6 +261,7 @@ const AddMilestonePage = () => {
                       className="w-32"
                       onClick={showModal}
                       htmlType="submit"
+                      style={{ letterSpacing: '-0.1em' }}
                     >
                       登録
                     </Button>
@@ -287,7 +299,7 @@ const AddMilestonePage = () => {
           </div>
         </OtherLayout.Main>
       </OtherLayout>
-    </>
+    </div>
   )
 }
 AddMilestonePage.middleware = ['auth:superadmin']
