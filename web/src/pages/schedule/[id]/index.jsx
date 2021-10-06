@@ -71,21 +71,24 @@ function ScheduleDetailGeneral() {
         <Navbar />
       </header>
       <div className="px-12">
-        <span className="text-3xl inline-block mt-4 " id="title">
-          <h1>{scheduleName}</h1>
-        </span>
-        <div
-          className="flex justify-end"
-          style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
-        >
-          <Link href={`/jf-schedule/${id}/edit`}>
-            <EditTwoTone className="border-none mx-1 text-2xl" />
-          </Link>
-          <DeleteTwoTone onClick={showModal} className="border-none mx-1 text-2xl" />
-          <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
-            <p>削除してもよろしいですか？</p>
-          </Modal>
+        <div className="flex items-center justify-between">
+          <h1 className="my-5 text-2xl font-bold" style={{ color: '#272343' }}>
+            {scheduleName}
+          </h1>
+          <div
+            className="flex justify-end"
+            style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
+          >
+            <Link href={`/jf-schedule/${id}/edit`}>
+              <EditTwoTone className="border-none mx-1 text-2xl" />
+            </Link>
+            <DeleteTwoTone onClick={showModal} className="border-none mx-1 text-2xl" />
+            <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
+              <p>削除してもよろしいですか？</p>
+            </Modal>
+          </div>
         </div>
+
         <Spin spinning={loading}>
           <div className="mt-12 relative">
             {status ? <GanttChart id={id} /> : <ScheduleDetail />}

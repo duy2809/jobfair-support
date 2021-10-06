@@ -303,7 +303,7 @@ function JFList() {
           <div className="mx-auto flex flex-col space-y-3 justify-center">
             <div className="space-y-8">
               <div className="flex items-center">
-                <h1 className="text-3xl float-left">JF一覧</h1>
+                <h1>JF一覧</h1>
               </div>
               <div className="flex items-center justify-between">
                 <div className="items-center">
