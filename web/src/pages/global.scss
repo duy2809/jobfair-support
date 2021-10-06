@@ -25,9 +25,9 @@ body {
   }
 
   h1 {
-    font-size: 36px;
-    margin-left: 40px;
-    margin-bottom: 50px;
+    font-size: 24px;
+    // margin-left: 40px;
+    margin-bottom: 20px;
     color: #272343;
     flex-wrap: nowrap;
   }
@@ -165,7 +165,7 @@ body {
     background: #a0aec0;
   }
 
-  thead[class*='ant-table-thead'] th {
+  thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
   }
 

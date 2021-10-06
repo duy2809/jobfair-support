@@ -17,13 +17,13 @@ const Otherlayout = ({ children }) => {
           <Navbar />
           <Content
             style={{
-              margin: '45px 16px',
+              margin: '20px 16px 45px 16px',
               padding: 24,
               minHeight: 280,
               backgroud: '#fff',
             }}
           >
-            { _get(main, 'props.children') }
+            {_get(main, 'props.children')}
           </Content>
         </Layout>
       </Layout>
