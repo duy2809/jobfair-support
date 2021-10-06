@@ -106,7 +106,7 @@ export default function index() {
         const link = generateLink(beforeTasks.data, afterTasks.data)
         console.log(beforeTasks.data, afterTasks.data)
         setJobfairStartDate(new Date(jobfair.data.start_date))
-        setLoading(false)
+        setLoading(true)
         setMilestones(jobfairMilestone.data.schedule.milestones)
         setTask({ ...data, ...link })
         setchartMethod(method)
@@ -268,7 +268,7 @@ export default function index() {
                         >
                           <Spin
                             style={{ color: '#ffd803' }}
-                            spinning={loadingIcon}
+                            spinning={loading}
                             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
                             indicator={loadingIcon}
                             size="large"

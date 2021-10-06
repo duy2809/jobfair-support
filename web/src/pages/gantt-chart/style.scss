@@ -81,17 +81,7 @@
   .gantt_tree_content {
     cursor: pointer;
   }
-}
-#testt:hover {
-  background: red;
-  box-icon {
-    background-color: red;
+  .ant-spin-spinning {
+    position: absolute;
   }
-
-  svg {
-    fill: red;
-  }
-}
-.bx-tada {
-  background-color: red;
 }
