@@ -72,7 +72,7 @@ function ScheduleDetailGeneral() {
       </header>
       <div className="px-12">
         <span className="text-3xl inline-block mt-4 " id="title">
-          {scheduleName}
+          <h1>{scheduleName}</h1>
         </span>
         <div
           className="flex justify-end"
