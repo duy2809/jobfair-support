@@ -106,7 +106,7 @@ export default function index() {
         const link = generateLink(beforeTasks.data, afterTasks.data)
         console.log(beforeTasks.data, afterTasks.data)
         setJobfairStartDate(new Date(jobfair.data.start_date))
-        setLoading(true)
+        setLoading(false)
         setMilestones(jobfairMilestone.data.schedule.milestones)
         setTask({ ...data, ...link })
         setchartMethod(method)
