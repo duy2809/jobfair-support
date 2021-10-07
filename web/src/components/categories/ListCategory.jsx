@@ -120,7 +120,7 @@ export default function ListCategories() {
             </div>
           </div>
           <div>
-            <div className="absolute right-12 no-border">
+            <div className="absolute right-6 no-border">
               <Space direction="vertical">
                 <div ref={ref}>
                   <div

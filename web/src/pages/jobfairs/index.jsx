@@ -391,7 +391,7 @@ function JFList() {
                   />
                   {users === 'superadmin' ? (
                     <>
-                      <Button size="large" className="float-right mr-3" href="/add-jobfair" type="primary">
+                      <Button size="large" className="float-right" href="/add-jobfair" type="primary">
                         <span> 追加 </span>
                       </Button>
                     </>
