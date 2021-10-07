@@ -315,7 +315,7 @@ function TemplateTaskList() {
                       visible={visible}
                       onVisibleChange={handleVisibleChange}
                     >
-                      {isFilter ? (
+                      {isFilter || visible ? (
                         <Button
                           size="large"
                           shape="circle"

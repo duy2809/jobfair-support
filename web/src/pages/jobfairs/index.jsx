@@ -33,6 +33,7 @@ import { webInit } from '../../api/web-init'
 function JFList() {
   // state of table
   const [users, setUsers] = useState('')
+  const [visible, setVisible] = useState(false)
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({
     position: ['bottomCenter'],
@@ -54,6 +55,9 @@ function JFList() {
     }))
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+  }
+  const handleVisibleChange = () => {
+    setVisible(!visible)
   }
   const handleRow = (record) => ({
     onClick: () => {
@@ -371,11 +375,11 @@ function JFList() {
                   </Select>
                 </div>
                 <div className="flex">
-                  <Popover className="mr-2" placement="bottomLeft" content={content} trigger="click">
+                  <Popover onVisibleChange={handleVisibleChange} visible={visible} className="mr-2" placement="bottomLeft" content={content} trigger="click">
                     <Button
                       size="large"
                       shape="circle"
-                      style={{ background: statusFilter ? '#ffd803' : null }}
+                      style={{ background: statusFilter || visible ? '#ffd803' : null }}
                       icon={(
                         <FilterOutlined />
                       )}
@@ -391,7 +395,7 @@ function JFList() {
                   />
                   {users === 'superadmin' ? (
                     <>
-                      <Button size="large" className="float-right mr-3" href="/add-jobfair" type="primary">
+                      <Button size="large" className="float-right" href="/add-jobfair" type="primary">
                         <span> 追加 </span>
                       </Button>
                     </>
