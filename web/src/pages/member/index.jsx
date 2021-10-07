@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Modal, Input, Button, Empty, Space, notification } from 'antd'
+import { Select, Table, Modal, Input, Button, Empty, Tooltip, Space, notification } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -163,7 +163,11 @@ function MemberList() {
       dataIndex: 'name',
       key: 'メンバ名',
       width: '30%',
-      render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+      render: (taskName) => (
+        <Tooltip title={taskName}>
+          <a>{taskName}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -171,7 +175,7 @@ function MemberList() {
       key: 'メールアドレス',
       dataIndex: 'email',
       width: '40%',
-      render: (email) => email,
+      render: (taskName) => <a>{taskName}</a>,
       onCell: handleRow,
     },
     {
@@ -179,7 +183,7 @@ function MemberList() {
       dataIndex: 'date',
       width: `${role === 'superadmin' ? '20%' : '30%'}`,
       key: '参加日',
-      render: (date) => formatDate(date),
+      render: (taskName) => <a>{formatDate(taskName)}</a>,
       onCell: handleRow,
     },
     {
