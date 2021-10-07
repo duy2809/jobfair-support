@@ -26,7 +26,7 @@ body {
 
   h1 {
     font-size: 24px;
-    // margin-left: 40px;
+    font-weight: 700;
     margin-bottom: 20px;
     color: #272343;
     flex-wrap: nowrap;
@@ -65,7 +65,7 @@ body {
   .ant-input,
   .ant-input-affix-wrapper {
     color: #272343;
-    padding: 7px 10px;
+    padding: 9px 10px;
     border-radius: 6px;
     font-size: 14px;
   }
@@ -165,7 +165,7 @@ body {
     background: #a0aec0;
   }
 
-  thead[class*="ant-table-thead"] th {
+  thead[class*='ant-table-thead'] th {
     background-color: #bae8e8 !important;
   }
 
@@ -177,9 +177,6 @@ body {
   }
   .sidebar-icons {
     font-size: 25px !important;
-  }
-  .ant-btn {
-    height: 38px;
   }
   .ant-select-arrow {
     display: flex;
