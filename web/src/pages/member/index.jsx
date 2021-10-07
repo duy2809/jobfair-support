@@ -154,6 +154,9 @@ function MemberList() {
       cancelText: 'いいえ',
     })
   }
+  const handleEdit = (idMb) => {
+    router.push(`/member/${idMb}/edit`)
+  }
   const columns = [
     {
       title: 'メンバ名',
@@ -161,6 +164,7 @@ function MemberList() {
       key: 'メンバ名',
       width: '30%',
       render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+      onCell: handleRow,
     },
     {
       title: 'メールアドレス',
@@ -168,6 +172,7 @@ function MemberList() {
       dataIndex: 'email',
       width: '40%',
       render: (email) => email,
+      onCell: handleRow,
     },
     {
       title: '参加日',
@@ -175,6 +180,7 @@ function MemberList() {
       width: `${role === 'superadmin' ? '20%' : '30%'}`,
       key: '参加日',
       render: (date) => formatDate(date),
+      onCell: handleRow,
     },
     {
       title: `${role === 'superadmin' ? 'アクション' : ''}`,
@@ -184,13 +190,8 @@ function MemberList() {
         <Space size="middle">
           <EditTwoTone
             id={record.id}
-            onClick={(e) => {
-              e.stopPropagation()
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                edit: true,
-              }))
+            onClick={() => {
+              handleEdit(record.id)
             }}
           />
 
@@ -222,15 +223,13 @@ function MemberList() {
   return (
     <Layout>
       <Layout.Main>
+        <h1>メンバ一覧</h1>
         <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <div className="w-full flex justify-between items-center title">
-            <h1 className="ml-0">メンバ一覧</h1>
-          </div>
           <div className="flex w-full items-center justify-between">
             <div>
-              <span id="display-number" className="text-xl">表示件数 </span>
+              <span className="hidden md:inline pr-2">表示件数 </span>
               <Select
-                className="ml-5 no-border"
+                className="no-border"
                 size="large"
                 value={itemCount}
                 onChange={handleSelect}
@@ -258,7 +257,7 @@ function MemberList() {
                   <Button
                     size="large"
                     type="primary"
-                    className="ml-5 no-border"
+                    className="ml-3 no-border"
                     htmlType="button"
                     enabled
                     onClick={handleClick}
@@ -276,7 +275,6 @@ function MemberList() {
             columns={columns}
             dataSource={filterData}
             rowKey={(record) => record.id}
-            onRow={handleRow}
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}
