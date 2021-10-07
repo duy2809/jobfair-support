@@ -55,7 +55,11 @@ function JFList() {
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
-
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/jf-toppage/${record.idJF}`)
+    },
+  })
   const initPagination = () => {
     const paginationData = JSON.parse(localStorage.getItem('pagination'))
     if (paginationData === null) {
@@ -141,6 +145,7 @@ function JFList() {
           <a href={`/jf-toppage/${record.idJF}`}>{truncateMax20(JF名)}</a>
         </Tooltip>
       ),
+      onCell: handleRow,
     },
 
     {
@@ -148,23 +153,31 @@ function JFList() {
       dataIndex: '開始日',
       fixed: 'left',
       width: 100,
+      render: (taskName) => <a>{taskName}</a>,
+      onCell: handleRow,
     },
     {
       title: '推定参加学生数',
       dataIndex: '推定参加学生数',
       width: 100,
       responsive: ['md'],
+      render: (taskName) => <a>{taskName}</a>,
+      onCell: handleRow,
     },
     {
       title: '参加企業社数',
       dataIndex: '参加企業社数',
       width: 100,
       responsive: ['sm'],
+      render: (taskName) => <a>{taskName}</a>,
+      onCell: handleRow,
     },
     {
       title: '管理者',
       dataIndex: '管理者',
       width: 80,
+      render: (taskName) => <a>{taskName}</a>,
+      onCell: handleRow,
     },
     {
       title: users === 'superadmin' ? 'アクション' : '',
@@ -312,12 +325,6 @@ function JFList() {
     )
     setTemperaryData(filteredData)
   }
-  const handleRow = (record) => ({
-    onClick: () => {
-      router.push(`/jf-toppage/${record.idJF}`)
-    },
-  })
-  const text = <span className="font-bold">フィルター</span>
   const content = (
     <div className="JFList items-center space-y-3">
       <p className="font-bold">開始日</p>
@@ -350,7 +357,7 @@ function JFList() {
       <OtherLayout.Main>
         <div className="JFList">
           <div className="mx-auto flex flex-col space-y-3 justify-center">
-            <div className="space-y-8">
+            <div className="space-y-3">
               <div className="flex items-center">
                 <h1>JF一覧</h1>
               </div>
@@ -363,20 +370,19 @@ function JFList() {
                     <Option value={50}>50</Option>
                   </Select>
                 </div>
-                <div className="flex space-x-5">
-                  <Popover placement="bottomLeft" title={text} content={content} trigger="click">
+                <div className="flex">
+                  <Popover className="mr-2" placement="bottomLeft" content={content} trigger="click">
                     <Button
+                      size="large"
                       shape="circle"
+                      style={{ background: statusFilter ? '#ffd803' : null }}
                       icon={(
-                        <FilterOutlined
-                          id="filter"
-                          style={{ color: statusFilter ? '#ffd803' : '#272343' }}
-                        />
+                        <FilterOutlined />
                       )}
                     />
                   </Popover>
                   <Input
-                    className="float-right w-40 md:w-64 mr-5"
+                    className="mr-3"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="JF名, 管理者"
@@ -385,7 +391,7 @@ function JFList() {
                   />
                   {users === 'superadmin' ? (
                     <>
-                      <Button className="float-right mr-5" href="/add-jobfair" type="primary">
+                      <Button size="large" className="float-right mr-3" href="/add-jobfair" type="primary">
                         <span> 追加 </span>
                       </Button>
                     </>
@@ -397,7 +403,6 @@ function JFList() {
               columns={columns}
               dataSource={temperaryData}
               loading={{ spinning: loading, indicator: loadingIcon }}
-              onRow={handleRow}
               pagination={pagination}
               locale={{
                 emptyText: (
