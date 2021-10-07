@@ -81,7 +81,7 @@ function TaskList() {
   }
   // add data of table
   const loadTableData = (response) => {
-    const dataResponse = response.data.schedule.tasks
+    const dataResponse = response ? response.data.schedule.tasks : null
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
@@ -549,7 +549,7 @@ function TaskList() {
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {isFilter ? (
+                    {isFilter || visible ? (
                       <Button
                         size="large"
                         shape="circle"
