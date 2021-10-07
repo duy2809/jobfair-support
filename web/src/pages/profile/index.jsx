@@ -4,35 +4,39 @@ import { EditFilled } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import Otherlayout from '../../layouts/OtherLayout'
 import { getProfile, getAvatar } from '../../api/profile'
+import Loading from '../../components/loading'
 
 const Profile = () => {
   const [avatarUser, setAvatarUser] = useState('')
   const [nameUser, setNameUser] = useState('')
   const [chatWorkIdUser, setChatWorkIdUser] = useState('')
   const [emailUser, setEmailUser] = useState('')
-
+  const [loading, setLoading] = useState(false)
   const { store } = useContext(ReactReduxContext)
 
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
+  useEffect(async () => {
+    setLoading(true)
     setUser(store.getState().get('auth').get('user'))
     if (user) {
       const id = user.get('id')
-      getProfile(id).then((response) => {
+      await getProfile(id).then((response) => {
         setNameUser(response.data.name)
         setChatWorkIdUser(response.data.chatwork_id)
         setEmailUser(response.data.email)
       })
-      getAvatar(id).then(() => {
+      await getAvatar(id).then(() => {
         const link = `api/avatar/${id}`
         setAvatarUser(link)
       })
     }
+    setLoading(false)
   }, [user])
 
   return (
     <>
+      {loading && <Loading loading={loading} overlay={loading} />}
       <Otherlayout>
         <Otherlayout.Main>
           {/* <p
