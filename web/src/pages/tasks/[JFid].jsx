@@ -431,13 +431,11 @@ function TaskList() {
   return (
     <JfLayout id={router.query.JFid} bgr={2}>
       <JfLayout.Main>
+        <h1>タスクー覧</h1>
         <div className="TaskList">
           <div className="space-y-2 justify-center">
             <div className="space-y-2">
               <div className="flex-col space-y-9">
-                <div className="flex items-center space-x-2">
-                  <h1>タスクー覧</h1>
-                </div>
                 <div className="flex justify-between">
                   <div className="flex items-center justify-center space-x-1">
                     <div>スターテス</div>
