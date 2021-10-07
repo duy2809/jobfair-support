@@ -1,9 +1,32 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Slider, DatePicker, Input, Empty, Select, Tooltip, Space, Modal, notification, Popover } from 'antd'
+import {
+  Table,
+  Button,
+  Slider,
+  DatePicker,
+  Input,
+  Empty,
+  Select,
+  Tooltip,
+  Space,
+  Modal,
+  notification,
+  Popover,
+} from 'antd'
 import './style.scss'
-import { SearchOutlined, FilterOutlined, EditTwoTone, DeleteTwoTone, ExclamationCircleOutlined, CheckCircleTwoTone } from '@ant-design/icons'
+import {
+  SearchOutlined,
+  FilterOutlined,
+  EditTwoTone,
+  DeleteTwoTone,
+  ExclamationCircleOutlined,
+  CheckCircleTwoTone,
+} from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../layouts/OtherLayout'
+import { loadingIcon } from '~/components/loading'
 import { getJFList, deleteJF } from '../../api/jf-list'
 import { webInit } from '../../api/web-init'
 
@@ -11,7 +34,12 @@ function JFList() {
   // state of table
   const [users, setUsers] = useState('')
   const [itemCount, setItemCount] = useState(10)
-  const [pagination, setPagination] = useState({ position: ['bottomCenter'], showTitle: false, showSizeChanger: false, pageSize: 10 })
+  const [pagination, setPagination] = useState({
+    position: ['bottomCenter'],
+    showTitle: false,
+    showSizeChanger: false,
+    pageSize: 10,
+  })
   const [loading, setLoading] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
@@ -72,7 +100,7 @@ function JFList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const confirmModle = (id) => {
@@ -93,7 +121,7 @@ function JFList() {
         }
         setLoading(false)
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -108,7 +136,11 @@ function JFList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (JF名, record) => <Tooltip title={JF名}><a href={`/jf-toppage/${record.idJF}`}>{truncateMax20(JF名)}</a></Tooltip>,
+      render: (JF名, record) => (
+        <Tooltip title={JF名}>
+          <a href={`/jf-toppage/${record.idJF}`}>{truncateMax20(JF名)}</a>
+        </Tooltip>
+      ),
     },
 
     {
@@ -138,27 +170,24 @@ function JFList() {
       title: users === 'superadmin' ? 'アクション' : '',
       fixed: 'right',
       width: users === 'superadmin' ? 50 : 1,
-      render: (text, record) => (users === 'superadmin'
-        && (
-          <Space size="middle">
-            <a href={`/edit-jf/${record.idJF}`}>
-              <abbr title="編集" style={{ cursor: 'pointer' }}>
-                <EditTwoTone />
-              </abbr>
-            </a>
-            <abbr title="消去" style={{ cursor: 'pointer' }}>
-              <DeleteTwoTone onClick={() => {
+      render: (text, record) => users === 'superadmin' && (
+        <Space size="middle">
+          <a href={`/edit-jf/${record.idJF}`}>
+            <abbr title="編集" style={{ cursor: 'pointer' }}>
+              <EditTwoTone />
+            </abbr>
+          </a>
+          <abbr title="消去" style={{ cursor: 'pointer' }}>
+            <DeleteTwoTone
+              onClick={() => {
                 confirmModle(record.idJF)
               }}
-              />
-            </abbr>
-          </Space>
-        )
+            />
+          </abbr>
+        </Space>
       ),
     },
   ]
-
-  // data of table get from database
 
   useEffect(async () => {
     setLoading(true)
@@ -166,14 +195,15 @@ function JFList() {
     await getJFList().then((response) => {
       addDataOfTable(response)
     })
-    await webInit().then((response) => {
-      setUsers(response.data.auth.user.role)
-    })
+    await webInit()
+      .then((response) => {
+        setUsers(response.data.auth.user.role)
+      })
       .catch((error) => Error(error.toString()))
     setLoading(false)
   }, [])
 
-  // State of filter'
+  // State of filter
   const [valueSearch, setValueSearch] = useState('')
   const [rangeStudentsNumber, setRangeStudentsNumber] = useState([0, 100])
   const [rangeBussinessesNumber, setRangeBussinessesNumber] = useState([0, 100])
@@ -183,13 +213,20 @@ function JFList() {
 
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
-    const filteredData = originalData.filter((JF) => (value ? (JF.JF名.toLowerCase().includes(value)
-      || JF.管理者.toLowerCase().includes(value)) : (JF.JF名))
-      && (rangeStudentsNumber[1] < 100 ? (JF.推定参加学生数 <= rangeStudentsNumber[1]
-        && JF.推定参加学生数 >= rangeStudentsNumber[0]) : JF.推定参加学生数 >= rangeStudentsNumber[0])
-      && (rangeBussinessesNumber[1] < 100 ? (JF.参加企業社数 <= rangeBussinessesNumber[1]
-        && JF.参加企業社数 >= rangeBussinessesNumber[0]) : JF.参加企業社数 >= rangeBussinessesNumber[0])
-      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
+    const filteredData = originalData.filter(
+      (JF) => (value
+        ? JF.JF名.toLowerCase().includes(value) || JF.管理者.toLowerCase().includes(value)
+        : JF.JF名)
+        && (rangeStudentsNumber[1] < 100
+          ? JF.推定参加学生数 <= rangeStudentsNumber[1]
+            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          : JF.推定参加学生数 >= rangeStudentsNumber[0])
+        && (rangeBussinessesNumber[1] < 100
+          ? JF.参加企業社数 <= rangeBussinessesNumber[1]
+            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          : JF.参加企業社数 >= rangeBussinessesNumber[0])
+        && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
+    )
     setTemperaryData(filteredData)
   }
   const onSearch = (e) => {
@@ -207,12 +244,20 @@ function JFList() {
       setStatusFilter(true)
     }
     setRangeStudentsNumber(value)
-    const filteredData = originalData.filter((JF) => (value[1] < 100 ? (JF.推定参加学生数 <= value[1] && JF.推定参加学生数 >= value[0]) : (JF.推定参加学生数 >= value[0]))
-      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
-      && (rangeBussinessesNumber[1] < 100 ? (JF.参加企業社数 <= rangeBussinessesNumber[1]
-        && JF.参加企業社数 >= rangeBussinessesNumber[0]) : JF.参加企業社数 >= rangeBussinessesNumber[0])
-      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
+    const filteredData = originalData.filter(
+      (JF) => (value[1] < 100
+        ? JF.推定参加学生数 <= value[1] && JF.推定参加学生数 >= value[0]
+        : JF.推定参加学生数 >= value[0])
+        && (valueSearch
+          ? JF.JF名.toLowerCase().includes(valueSearch)
+            || JF.管理者.toLowerCase().includes(valueSearch)
+          : JF.JF名)
+        && (rangeBussinessesNumber[1] < 100
+          ? JF.参加企業社数 <= rangeBussinessesNumber[1]
+            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          : JF.参加企業社数 >= rangeBussinessesNumber[0])
+        && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
+    )
     setTemperaryData(filteredData)
   }
   // filter by number of businesses
@@ -224,12 +269,20 @@ function JFList() {
       setStatusFilter(true)
     }
     setRangeBussinessesNumber(value)
-    const filteredData = originalData.filter((JF) => (value[1] < 100 ? (JF.参加企業社数 <= value[1] && JF.参加企業社数 >= value[0]) : (JF.参加企業社数 >= value[0]))
-      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
-      && (rangeStudentsNumber[1] < 100 ? (JF.推定参加学生数 <= rangeStudentsNumber[1]
-        && JF.推定参加学生数 >= rangeStudentsNumber[0]) : JF.推定参加学生数 >= rangeStudentsNumber[0])
-      && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日))
+    const filteredData = originalData.filter(
+      (JF) => (value[1] < 100
+        ? JF.参加企業社数 <= value[1] && JF.参加企業社数 >= value[0]
+        : JF.参加企業社数 >= value[0])
+        && (valueSearch
+          ? JF.JF名.toLowerCase().includes(valueSearch)
+            || JF.管理者.toLowerCase().includes(valueSearch)
+          : JF.JF名)
+        && (rangeStudentsNumber[1] < 100
+          ? JF.推定参加学生数 <= rangeStudentsNumber[1]
+            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          : JF.推定参加学生数 >= rangeStudentsNumber[0])
+        && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
+    )
     setTemperaryData(filteredData)
   }
 
@@ -242,13 +295,21 @@ function JFList() {
       setStatusFilter(true)
     }
     setStartDate(dateString)
-    const filteredData = originalData.filter((JF) => (dateString ? !JF.開始日.localeCompare(dateString) : JF.開始日)
-      && (valueSearch ? (JF.JF名.toLowerCase().includes(valueSearch)
-        || JF.管理者.toLowerCase().includes(valueSearch)) : JF.JF名)
-      && (rangeStudentsNumber[1] < 100 ? (JF.推定参加学生数 <= rangeStudentsNumber[1]
-        && JF.推定参加学生数 >= rangeStudentsNumber[0]) : JF.推定参加学生数 >= rangeStudentsNumber[0])
-      && (rangeBussinessesNumber[1] < 100 ? (JF.参加企業社数 <= rangeBussinessesNumber[1]
-        && JF.参加企業社数 >= rangeBussinessesNumber[0]) : JF.参加企業社数 >= rangeBussinessesNumber[0]))
+    const filteredData = originalData.filter(
+      (JF) => (dateString ? !JF.開始日.localeCompare(dateString) : JF.開始日)
+        && (valueSearch
+          ? JF.JF名.toLowerCase().includes(valueSearch)
+            || JF.管理者.toLowerCase().includes(valueSearch)
+          : JF.JF名)
+        && (rangeStudentsNumber[1] < 100
+          ? JF.推定参加学生数 <= rangeStudentsNumber[1]
+            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          : JF.推定参加学生数 >= rangeStudentsNumber[0])
+        && (rangeBussinessesNumber[1] < 100
+          ? JF.参加企業社数 <= rangeBussinessesNumber[1]
+            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          : JF.参加企業社数 >= rangeBussinessesNumber[0]),
+    )
     setTemperaryData(filteredData)
   }
   const handleRow = (record) => ({
@@ -278,22 +339,10 @@ function JFList() {
           )
         }}
       />
-      <p className="font-bold">
-        推定参加学生数
-      </p>
-      <Slider
-        range="true"
-        defaultValue={[0, 100]}
-        onAfterChange={FilterStudentsNumber}
-      />
-      <p className="font-bold">
-        参加企業社数
-      </p>
-      <Slider
-        range="true"
-        defaultValue={[0, 100]}
-        onAfterChange={FilterBussinessesNumber}
-      />
+      <p className="font-bold">推定参加学生数</p>
+      <Slider range="true" defaultValue={[0, 100]} onAfterChange={FilterStudentsNumber} />
+      <p className="font-bold">参加企業社数</p>
+      <Slider range="true" defaultValue={[0, 100]} onAfterChange={FilterBussinessesNumber} />
     </div>
   )
   return (
@@ -316,7 +365,15 @@ function JFList() {
                 </div>
                 <div className="flex space-x-5">
                   <Popover placement="bottomLeft" title={text} content={content} trigger="click">
-                    <Button shape="circle" icon={<FilterOutlined id="filter" style={{ color: statusFilter ? '#ffd803' : '#272343' }} />} />
+                    <Button
+                      shape="circle"
+                      icon={(
+                        <FilterOutlined
+                          id="filter"
+                          style={{ color: statusFilter ? '#ffd803' : '#272343' }}
+                        />
+                      )}
+                    />
                   </Popover>
                   <Input
                     className="float-right w-40 md:w-64 mr-5"
@@ -328,26 +385,28 @@ function JFList() {
                   />
                   {users === 'superadmin' ? (
                     <>
-                      <Button
-                        className="float-right mr-5"
-                        href="/add-jobfair"
-                        type="primary"
-                      >
+                      <Button className="float-right mr-5" href="/add-jobfair" type="primary">
                         <span> 追加 </span>
                       </Button>
                     </>
-                  )
-                    : null}
+                  ) : null}
                 </div>
               </div>
             </div>
             <Table
               columns={columns}
               dataSource={temperaryData}
-              loading={loading}
+              loading={{ spinning: loading, indicator: loadingIcon }}
               onRow={handleRow}
               pagination={pagination}
-              locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="該当結果が見つかりませんでした"
+                  />
+                ),
+              }}
             />
           </div>
         </div>

@@ -4,11 +4,9 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
-// import List from '../list'
-
 import { Input, Space, Table, Row, Col, Select, Button, Tooltip } from 'antd'
-import { LineHeightOutlined, SearchOutlined } from '@ant-design/icons'
-import { element } from 'prop-types'
+import { SearchOutlined } from '@ant-design/icons'
+import { loadingIcon } from '../loading'
 import AddCategory from './AddCategory'
 import EditCategory from './EditCategory'
 import DeleteCategory from './DeleteCategory'
@@ -18,18 +16,11 @@ import './style.scss'
 export default function ListCategories() {
   const [pageS, setPageS] = useState(10)
   const { store } = useContext(ReactReduxContext)
-  const [reload, setReload] = useState(false)
   const [category, setCategory] = useState([])
   const [searchValue, setSearchValue] = useState('')
   const role = store.getState().get('auth').get('user').get('role')
   const ref = useRef()
-  // fetch data
-  // useEffect(async () => {
-  //   setReload(false)
-  //   getCategories().then((res) => {
-  //     setCategory(res.data)
-  //   }).catch((error) => console.log(error.response.request.response))
-  // }, [reload])
+  const [loading, setLoading] = useState(true)
 
   // search data with key
   async function fetch(key) {
@@ -51,11 +42,10 @@ export default function ListCategories() {
     getCategories().then((res) => {
       setCategory(res.data)
     })
+    setLoading(false)
   }, [])
 
-  // set reload state
   const reloadPage = () => {
-    // setReload(true)
     getCategories().then((res) => {
       setCategory(res.data)
     })
@@ -112,11 +102,7 @@ export default function ListCategories() {
       </Row>
 
       <div className="list">
-        <div
-          className="flex"
-          // t qua bat luc voi code r day nen t moi phai inline style nhu nay :)
-          style={{ height: '38px' }}
-        >
+        <div className="flex" style={{ height: '38px' }}>
           <div className="flex">
             <div className="flex items-center content-center text-center pr-2">
               <p>表示件数 </p>
@@ -139,14 +125,6 @@ export default function ListCategories() {
           <div>
             <div className="absolute right-12 no-border">
               <Space direction="vertical">
-                {/* <Input
-                  placeholder="カテゴリを検索"
-                  onChange={(e) => fetch(e.target.value)}
-                  // style={{ width: 250 }}
-                  value={searchValue}
-                  bordered
-                  prefix={<SearchOutlined />}
-                /> */}
                 <div ref={ref}>
                   <div
                     style={{
@@ -182,6 +160,7 @@ export default function ListCategories() {
           dataSource={data}
           pagination={{ pageSize: pageS }}
           className="mt-4"
+          loading={{ spinning: loading, indicator: loadingIcon }}
         />
       </div>
     </div>

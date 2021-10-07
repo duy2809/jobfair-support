@@ -6,15 +6,16 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification, Input } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../api/category'
+import Loading from '../loading'
 
 const EditCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [nameInput, setNameInput] = useState({})
-  const [checkSpace, setcheckSpace] = useState(false)
+  const [checkSpace, setCheckSpace] = useState(false)
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
-  // const [reload, setReload] = useState(false)
   const role = props.role
+  const [loading, setLoading] = useState(true)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -27,6 +28,7 @@ const EditCategory = (props) => {
       form.setFieldsValue({
         name: res.data.name,
       })
+      setLoading(false)
     })
   }, [])
 
@@ -43,7 +45,6 @@ const EditCategory = (props) => {
     setReloadPage()
   }
 
-  // onBlur
   const onBlur = () => {
     const name = nameInput
     const id = props.record.id
@@ -62,7 +63,7 @@ const EditCategory = (props) => {
   }
 
   const onValueNameChange = (e) => {
-    setcheckSpace(false)
+    setCheckSpace(false)
     setNameInput(toHalfWidth(e.target.value))
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
@@ -76,14 +77,19 @@ const EditCategory = (props) => {
   const handleOk = () => {
     if (role === 'superadmin') {
       const id = props.record.id
+      setLoading(true)
       updateCategory(id, {
         category_name: nameInput,
-      }).then(() => openNotificationSuccess())
+      })
+        .then(() => {
+          openNotificationSuccess()
+        })
         .catch((error) => {
           notification.error({
             message: 'このカテゴリ名は存在しています',
           })
         })
+      setLoading(false)
     }
   }
 
@@ -94,62 +100,62 @@ const EditCategory = (props) => {
   return (
     <>
       <EditTwoTone onClick={showModal} />
-      <Modal
-        title="カテゴリ編集"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="保存"
-        cancelText="キャンセル"
-        okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
-        centered
-      >
-
-        <Form
-          form={form}
-          layout="horizontal"
-          labelCol={{
-            span: 6,
-          }}
-          wrapperCol={{
-            span: 16,
-          }}
-          colon={false}
+      <div>
+        <Modal
+          title="カテゴリ編集"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          okText="保存"
+          cancelText="キャンセル"
+          okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
+          centered
         >
-          <Form.Item
-            label={
-              <span className="font-bold">カテゴリ名</span>
-            }
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: 'この項目は必須です。',
-              },
-              () => ({
-                validator(_, value) {
-                  if (specialCharRegex.test(value)) {
-                    setcheckSpace(true)
-                    return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
-                  }
-                  return Promise.resolve()
-                },
-              }),
-            ]}
+          <Loading loading={loading} overlay={loading} />
+          <Form
+            form={form}
+            layout="horizontal"
+            labelCol={{
+              span: 6,
+            }}
+            wrapperCol={{
+              span: 16,
+            }}
+            colon={false}
           >
-            <Input
-              type="text"
-              required="required"
-              className="input-category"
-              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
-              onChange={onValueNameChange}
-              onBlur={onBlur}
-              placeholder="カテゴリ名を書いてください"
-              defaultValue={props.record.name}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+            <Form.Item
+              label={<span className="font-bold">カテゴリ名</span>}
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'この項目は必須です。',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (specialCharRegex.test(value)) {
+                      setCheckSpace(true)
+                      return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
+                    }
+                    return Promise.resolve()
+                  },
+                }),
+              ]}
+            >
+              <Input
+                type="text"
+                required="required"
+                className="input-category"
+                style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
+                onChange={onValueNameChange}
+                onBlur={onBlur}
+                placeholder="カテゴリ名を書いてください"
+                defaultValue={props.record.name}
+              />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     </>
   )
 }
