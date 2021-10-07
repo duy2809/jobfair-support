@@ -155,7 +155,7 @@ function ScheduleList() {
                 {role === 'superadmin' ? (
                   <Button
                     type="primary"
-                    className="px-12 ml-5"
+                    className="ml-5"
                     htmlType="button"
                     enabled
                     onClick={handleClick}
