@@ -504,7 +504,7 @@ function TaskList() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="pr-2">表示件数 </span>
+                  <span className="pr-3">表示件数 </span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -543,7 +543,7 @@ function TaskList() {
                         </Select>
                       </>
                     )}
-                    className="mr-5"
+                    className="mr-2"
                     placement="bottomLeft"
                     trigger="click"
                     visible={visible}
@@ -551,17 +551,18 @@ function TaskList() {
                   >
                     {visible || isFilter ? (
                       <Button
+                        size="large"
                         shape="circle"
-                        style={{ color: '#ffd803' }}
+                        style={{ background: '#ffd803' }}
                         icon={<FilterOutlined id="filter" />}
                       />
                     ) : (
-                      <Button shape="circle" icon={<FilterOutlined id="filter" />} />
+                      <Button size="large" shape="circle" icon={<FilterOutlined id="filter" />} />
                     )}
                   </Popover>
                   <Input
                     size="large"
-                    className="float-right mr-5"
+                    className="mr-3"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="タスク名, 担当者"
@@ -584,6 +585,7 @@ function TaskList() {
               </div>
             </div>
             <Table
+              className="my-5"
               columns={columns}
               dataSource={temperaryData}
               loading={{ spinning: loading, indicator: loadingIcon }}

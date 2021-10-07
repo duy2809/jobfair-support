@@ -319,7 +319,7 @@ function TemplateTaskList() {
                         <Button
                           size="large"
                           shape="circle"
-                          style={{ color: '#ffd803' }}
+                          style={{ background: '#ffd803' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       ) : (
