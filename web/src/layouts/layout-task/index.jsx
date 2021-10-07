@@ -20,7 +20,7 @@ import Navbar from '../../components/navbar'
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
     background: 'white',
-    borderLeft: '8px solid #ffd803',
+    borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
   const main = findSlot(JfLayout.Main, children)
@@ -30,8 +30,7 @@ const JfLayout = ({ children, id, bgr }) => {
   const [numberOfCompanies, setNumberOfCompanies] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
-
-  const [collapsed, Setcollapsed] = useState(false)
+  const [collapsed, Setcollapsed] = useState(true)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
@@ -50,10 +49,10 @@ const JfLayout = ({ children, id, bgr }) => {
         })
     }
   }
-
   useEffect(() => {
     fetchJF()
   }, [children])
+
   return (
     <div className="layout-task">
       <Navbar />
@@ -74,7 +73,7 @@ const JfLayout = ({ children, id, bgr }) => {
             theme="dark"
             inlineCollapsed={collapsed}
           >
-            <div className="relative h-10 " style={{ marginBottom: '32px' }}>
+            <div className="relative h-10 z-20" style={{ marginBottom: '15px', transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)' }}>
               <div className="absolute top-0 right-0 ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
