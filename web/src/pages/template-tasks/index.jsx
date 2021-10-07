@@ -227,6 +227,7 @@ function TemplateTaskList() {
     })
     await webInit().then((response) => {
       setUsers(response.data.auth.user.role)
+      console.log(response.data.auth.user.role)
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
@@ -335,7 +336,7 @@ function TemplateTaskList() {
                       )}
                     </Popover>
                     <Input
-                      className="float-right mr-3"
+                      className="float-right"
                       allowClear="true"
                       prefix={<SearchOutlined />}
                       placeholder="テンプレートタスク名"
@@ -346,7 +347,7 @@ function TemplateTaskList() {
                       <>
                         <Button
                           size="large"
-                          className="float-right"
+                          className="float-right ml-3"
                           href="/add-template-task"
                           type="primary"
                         >
