@@ -91,10 +91,9 @@ const AddCategory = (props) => {
       <Button
         type="primary"
         onClick={showModal}
-        className="add-btn text-base"
-        style={{ letterSpacing: '-0.1em' }}
+        size="large"
       >
-        追加
+        <span>追加</span>
       </Button>
       <Modal
         title="カテゴリ追加"

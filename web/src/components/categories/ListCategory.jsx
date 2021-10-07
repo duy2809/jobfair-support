@@ -60,12 +60,9 @@ export default function ListCategories() {
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>
-            <span
-              className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis"
-              style={{ maxWidth: '50ch' }}
-            >
+            <a>
               {name}
-            </span>
+            </a>
           </Tooltip>
         </div>
       ),
@@ -73,7 +70,7 @@ export default function ListCategories() {
     {
       key: '2',
       title: 'アクション',
-      width: '25%',
+      width: '10%',
       render: (record) => role === 'superadmin' && (
         <Space size="middle">
           <EditCategory record={record} reloadPage={reloadPage} role={role} />
@@ -110,7 +107,7 @@ export default function ListCategories() {
             &nbsp;
             <div className="flex items-center content-center text-center">
               <Select
-                className="flow-root"
+                className="mr-3"
                 size="large"
                 labelInValue
                 defaultValue={{ value: '10' }}
@@ -133,7 +130,7 @@ export default function ListCategories() {
                       marginBottom: '10px',
                     }}
                   >
-                    <div className="flex items-center mr-5">
+                    <div className="flex items-center mr-3">
                       <span className="queue-demo">
                         <span>
                           <Input
