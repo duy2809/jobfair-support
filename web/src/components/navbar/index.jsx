@@ -83,7 +83,7 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
-        <div className="flex items-center ml-6">
+        <div className="flex items-center ml-10">
           <div className="px-8">
             <Link href="/jobfairs">
               <a className="font-bold text-xl rounded-md py-2 px-5">JF</a>
