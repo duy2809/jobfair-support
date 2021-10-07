@@ -1,20 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import 'tailwindcss/tailwind.css'
-import {
-  Table,
-  Space,
-  Button,
-  Row,
-  Col,
-  Input,
-  Select,
-  notification,
-  Modal,
-} from 'antd'
+import { Table, Space, Button, Row, Col, Input, Select, notification, Modal } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
-import 'antd/dist/antd.css'
 import { webInit } from '../../api/web-init'
 import './styles.scss'
 
@@ -172,6 +160,7 @@ const MilestonePage = () => {
     Modal.confirm({
       title,
       visible: isModalVisible,
+      centered: true,
       onOk() {
         handleOk()
       },
@@ -182,13 +171,16 @@ const MilestonePage = () => {
       cancelText: 'いいえ',
     })
   }
-
+  const handleEdit = (idML) => {
+    window.location.href = `/milestones/${idML}/edit`
+  }
   const columns = [
     {
       title: 'マイルストーン一名',
       dataIndex: 'name',
-      render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+      render: (taskName) => <a>{taskName}</a>,
       width: '60%',
+
     },
     {
       title: '期日',
@@ -196,23 +188,19 @@ const MilestonePage = () => {
       width: `${role === 'superadmin' ? '30%' : '50%'}`,
       render: (period) => {
         const { numOfDays, type } = period
-        return convertPeriod(numOfDays, type)
+        return <a>{convertPeriod(numOfDays, type)}</a>
       },
     },
     {
       key: 'action',
       title: `${role === 'superadmin' ? 'アクション' : ''}`,
       width: `${role === 'superadmin' ? '10%' : '0%'}`,
-      render: (_text, record) => (role === 'superadmin' && (
+      render: (_text, record) => role === 'superadmin' && (
         <Space size="middle">
           <EditTwoTone
             id={record.id}
             onClick={() => {
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                edit: true,
-              }))
+              handleEdit(record.id)
             }}
           />
 
@@ -226,7 +214,7 @@ const MilestonePage = () => {
             }}
           />
         </Space>
-      )),
+      ),
     },
   ]
 
@@ -258,27 +246,21 @@ const MilestonePage = () => {
       <OtherLayout>
         <OtherLayout.Main>
           <div className="container-list">
-            <Row
-              style={{ alignItems: 'center', justifyContent: 'space-between' }}
-            >
+            <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
               <Col>
                 <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
               </Col>
-
             </Row>
 
             <Row style={{ justifyContent: 'space-between' }}>
               <Col>
-                <span
-                  style={{ paddingRight: '0.5rem' }}
-                  className="dropdown-label"
-                >
+                <span className="dropdown-label mr-3">
                   表示件数
                 </span>
                 <Select
                   labelInValue
                   defaultValue={{ value: '10' }}
-                  style={{ width: 60, borderRadius: '1rem' }}
+                  style={{ width: 60 }}
                   onChange={(e) => setPageSize(e)}
                 >
                   <Select.Option value="10">10</Select.Option>
@@ -286,24 +268,19 @@ const MilestonePage = () => {
                   <Select.Option value="50">50</Select.Option>
                 </Select>
               </Col>
-              <Col>
+              <div className="searchAdd">
                 <Input
                   placeholder="マイルストーン一名, 期日"
                   onChange={(e) => searchItemHandler(e)}
-                  style={{ width: 250, marginRight: 25 }}
                   value={searchValue}
                   prefix={<SearchOutlined />}
                 />
                 {role === 'superadmin' && (
                   <Button
-                    style={{
-                      backgroundColor: '#ffd803',
-                      borderColor: '#ffd803',
-                      color: 'black',
-                      letterSpacing: '-0.1em',
-                    }}
+                    size="large"
+                    className="ant-btn ml-3"
+                    style={{ letterSpacing: '-0.1em' }}
                     type="primary"
-                    danger
                     onClick={() => {
                       setIsModalType((preState) => ({
                         ...preState,
@@ -314,7 +291,7 @@ const MilestonePage = () => {
                     追加
                   </Button>
                 )}
-              </Col>
+              </div>
             </Row>
 
             <div className="box-body">

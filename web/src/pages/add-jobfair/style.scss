@@ -45,7 +45,6 @@
   .ant-form-horizontal .ant-form-item-control {
     max-width: 100%;
     min-width: 300px;
-    margin-left: 7px;
   }
 
   .ant-form-item {
@@ -79,6 +78,7 @@
 
   .ant-form-horizontal .ant-form-item-label {
     text-align: end;
+    margin: 0px 16px;
   }
 
   .ant-form-item-label>label,
@@ -110,5 +110,18 @@
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #a0aec0;
+  }
+
+  div.ant-select .ant-select-lg .addJF-selector .ant-select-single .ant-select-show-arrow,
+  div.ant-form-item-control-input-content {
+    margin: 0px 16px;
+  }
+
+  .ant-form-item-label > label::after {
+    margin: 0px;
+  }
+
+  .ant-picker {
+    width: 100%;
   }
 }

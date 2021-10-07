@@ -1,14 +1,28 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { useEffect, useState } from 'react'
 import {
   CheckCircleTwoTone,
   ExclamationCircleOutlined,
   ExclamationCircleTwoTone,
 } from '@ant-design/icons'
-import { Button, DatePicker, Empty, Form, Input, List, Modal, notification, Select, Space } from 'antd'
+import {
+  Button,
+  DatePicker,
+  Empty,
+  Form,
+  Input,
+  List,
+  Modal,
+  notification,
+  Select,
+  Space,
+} from 'antd'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import editApi from '../../api/edit-jobfair'
 import { editJF } from '../../api/jf-toppage'
+import Loading from '~/components/loading'
 import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 import './style.scss'
@@ -20,7 +34,7 @@ const index = () => {
   const [listSchedule, setlistSchedule] = useState([])
   const [listMilestone, setlistMilestone] = useState([])
   const [listTask, setlistTask] = useState([])
-  const [disableBtn, setdisableBtn] = useState(false)
+  const [disableBtn, setDisableBtn] = useState(false)
   const [changeAdmin, setAdmin] = useState(false)
   const [changeScedule, setSchedule] = useState(false)
   const [AdminDF, setAdminDF] = useState('')
@@ -29,6 +43,7 @@ const index = () => {
   const router = useRouter()
   const idJf = router.query.id
   const [isEdit, setIsEdit] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const checkIsFormInputEmpty = () => {
     const inputValues = form.getFieldsValue()
@@ -68,8 +83,8 @@ const index = () => {
         }
         setlistAdminJF(Array.from(admins.data))
         setlistSchedule(Array.from(schedules.data))
-        setScheduleDF((jfSchedules.data.data[0].id).toString())
-        setAdminDF((infoJF.data.user.id).toString())
+        setScheduleDF(jfSchedules.data.data[0].id.toString())
+        setAdminDF(infoJF.data.user.id.toString())
         form.setFieldsValue({
           name: infoJF.data.name,
           start_date: moment(infoJF.data.start_date.split('-').join('/'), dateFormat),
@@ -85,6 +100,7 @@ const index = () => {
       }
     }
     fetchAPI()
+    setLoading(false)
   }, [])
   // onValueNameChange
   const onValueNameChange = (e) => {
@@ -155,6 +171,7 @@ const index = () => {
   }
   // eslint-disable-next-line consistent-return
   const onFinishSuccess = async (values) => {
+    setLoading(true)
     try {
       Extensions.unSaveChangeConfirm(false)
       const data = {
@@ -165,17 +182,21 @@ const index = () => {
         number_of_companies: values.number_of_companies * 1.0,
         jobfair_admin_id: changeAdmin ? values.jobfair_admin_id * 1.0 : AdminDF,
       }
-      setdisableBtn(true)
-      await editJF(idJf, data).then((response) => {
-        console.log(response)
-        saveNotification()
-        router.push(`/jf-toppage/${idJf}`)
-      }).catch((error) => {
-        console.log(error)
-        setdisableBtn(false)
-      })
+      setDisableBtn(true)
+      await editJF(idJf, data)
+        .then((response) => {
+          if (response.status === 200) {
+            setLoading(false)
+            saveNotification()
+            router.push(`/jf-toppage/${idJf}`)
+          }
+        })
+        .catch(() => {
+          setDisableBtn(false)
+        })
     } catch (error) {
-      setdisableBtn(false)
+      setLoading(false)
+      setDisableBtn(false)
       const isDuplicate = JSON.parse(error.request.response).message
       if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
         notification.open({
@@ -250,238 +271,238 @@ const index = () => {
   }
 
   return (
-    <OtherLayout>
-      <OtherLayout.Main>
-        <h1>JF 編集 </h1>
-        <div className="edit__jf">
-          <Form
-            form={form}
-            labelCol={{
-              span: 4,
-            }}
-            wrapperCol={{
-              span: 18,
-            }}
-            layout="horizontal"
-            colon={false}
-            initialValues={{ defaultInputValue: 0 }}
-            onFinish={onFinishSuccess}
-            onFinishFailed={onFinishFailed}
-          >
-            <div className="grid grid-cols-2 mx-10">
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  label={
-                    <p className="font-bold">JF名</p>
-                  }
-                  name="name"
-                  rules={[
-                    {
-                      validator: JFNameValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Input
-                    type="text"
-                    placeholder="JF名入力する"
-                    onChange={onValueNameChange}
-                  />
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  name="start_date"
-                  label={
-                    <p className="font-bold">開始日</p>
-                  }
-                  rules={[
-                    {
-                      validator: startDayValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <DatePicker
-                    size="large"
-                    onChange={() => { setIsEdit(true) }}
-                    help="Please select the correct date"
-                    format={Extensions.dateFormat}
-                    placeholder={Extensions.dateFormat}
-                  />
-                </Form.Item>
-
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  label={
-                    <p className="font-bold">参加企業社数</p>
-                  }
-                  name="number_of_companies"
-                  rules={[
-                    {
-                      validator: companiesJoinValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Input
-                    type="text"
-                    size="large"
-                    min={1}
-                    onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
-                    placeholder="参加企業社数"
-                  />
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  name="number_of_students"
-                  label={
-                    <p className="font-bold">推定参加学生数</p>
-                  }
-                  rules={[
-                    {
-                      validator: studentsJoinValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Input
-                    type="text"
-                    size="large"
-                    min={1}
-                    onChange={autoConvertHalfwidth}
-                    style={{ width: '130px' }}
-                    placeholder="推定参加学生数"
-                  />
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  label={
-                    <p className="font-bold">管理者</p>
-                  }
-                  name="jobfair_admin_id"
-                  onSelect={adminSelect}
-                  rules={[
-                    {
-                      validator: JFAdminValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Select size="large" onChange={() => { setIsEdit(true) }} className="addJF-selector" placeholder="管理者を選択">
-                    {listAdminJF.map((element) => (
-                      <Select.Option key={element.id} value={element.id}>
-                        {element.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item
-                  name="schedule_id"
-                  label={
-                    <p className="font-bold">JFスケジュール</p>
-                  }
-                  rules={[
-                    {
-                      validator: JFScheduleValidator,
-                      required: true,
-                    },
-                  ]}
-                >
-                  <Select
-                    className="addJF-selector"
-                    placeholder="JF-スケジュールを選択"
-                    onSelect={onScheduleSelect}
-                    size="large"
+    <div>
+      <Loading loading={loading} overlay={loading} />
+      <OtherLayout>
+        <OtherLayout.Main>
+          <h1>JF 編集 </h1>
+          <div className="edit__jf">
+            <Form
+              form={form}
+              labelCol={{
+                span: 4,
+              }}
+              wrapperCol={{
+                span: 18,
+              }}
+              layout="horizontal"
+              colon={false}
+              initialValues={{ defaultInputValue: 0 }}
+              onFinish={onFinishSuccess}
+              onFinishFailed={onFinishFailed}
+            >
+              <div className="grid grid-cols-2 mx-10">
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    label={<p className="font-bold">JF名</p>}
+                    name="name"
+                    rules={[
+                      {
+                        validator: JFNameValidator,
+                        required: true,
+                      },
+                    ]}
                   >
-                    {listSchedule.map((element) => (
-                      <Select.Option key={element.id} value={element.id}>
-                        {element.name}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item label=" ">
-                  <p className="font-bold">マイルストーン一覧</p>
-                  <List
-                    className="demo-infinite-container"
-                    bordered
-                    locale={
-                      { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
-                    }
-                    style={{ height: 250, overflow: 'auto' }}
-                    size="small"
-                    dataSource={listMilestone}
-                    renderItem={(item) => (
-                      <List.Item className="list-items" key={item.id}>
-                        {item.name}
-                      </List.Item>
-                    )}
-                  />
-                </Form.Item>
-              </div>
-              <div className="col-span-1 mx-4">
-                <Form.Item label=" ">
-                  <p className="font-bold">タスク一覧</p>
-                  <List
-                    className="demo-infinite-container"
-                    bordered
-                    style={{ height: 250, overflow: 'auto' }}
-                    size="small"
-                    locale={
-                      { emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }
-                    }
-                    dataSource={listTask}
-                    renderItem={(item) => (
-                      <List.Item className="list-items" key={item.id}>
-                        {item.name}
-                      </List.Item>
-                    )}
-                  />
-                </Form.Item>
-              </div>
-
-            </div>
-            <div className="flex justify-end mr-10">
-              <Form.Item
-                label=" "
-                className=" mr-10 mt-4"
-
-              >
-                <Space size={12}>
-                  <Button
-                    htmlType="button"
-                    type="primary"
-                    onClick={cancelConfirmModle}
-                    disabled={disableBtn}
-                    className="button_cacel"
+                    <Input type="text" placeholder="JF名入力する" onChange={onValueNameChange} />
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    name="start_date"
+                    label={<p className="font-bold">開始日</p>}
+                    rules={[
+                      {
+                        validator: startDayValidator,
+                        required: true,
+                      },
+                    ]}
                   >
-                    キャンセル
-                  </Button>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    disabled={disableBtn}
-                    loading={disableBtn}
-                    className="mr-20"
+                    <DatePicker
+                      size="large"
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      help="Please select the correct date"
+                      format={Extensions.dateFormat}
+                      placeholder={Extensions.dateFormat}
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    label={<p className="font-bold">参加企業社数</p>}
+                    name="number_of_companies"
+                    rules={[
+                      {
+                        validator: companiesJoinValidator,
+                        required: true,
+                      },
+                    ]}
                   >
-                    <span> 保存 </span>
-                  </Button>
-                </Space>
-              </Form.Item>
-            </div>
-          </Form>
-        </div>
-      </OtherLayout.Main>
-    </OtherLayout>
+                    <Input
+                      type="text"
+                      size="large"
+                      min={1}
+                      onChange={autoConvertHalfwidth}
+                      // style={{ width: '130px' }}
+                      placeholder="参加企業社数"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    name="number_of_students"
+                    label={<p className="font-bold">推定参加学生数</p>}
+                    rules={[
+                      {
+                        validator: studentsJoinValidator,
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <Input
+                      type="text"
+                      size="large"
+                      min={1}
+                      onChange={autoConvertHalfwidth}
+                      // style={{ width: '130px' }}
+                      placeholder="推定参加学生数"
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    label={<p className="font-bold">管理者</p>}
+                    name="jobfair_admin_id"
+                    onSelect={adminSelect}
+                    rules={[
+                      {
+                        validator: JFAdminValidator,
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      className="addJF-selector"
+                      placeholder="管理者を選択"
+                    >
+                      {listAdminJF.map((element) => (
+                        <Select.Option key={element.id} value={element.id}>
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item
+                    name="schedule_id"
+                    label={<p className="font-bold">JFスケジュール</p>}
+                    rules={[
+                      {
+                        validator: JFScheduleValidator,
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <Select
+                      className="addJF-selector"
+                      placeholder="JF-スケジュールを選択"
+                      onSelect={onScheduleSelect}
+                      size="large"
+                    >
+                      {listSchedule.map((element) => (
+                        <Select.Option key={element.id} value={element.id}>
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item label=" ">
+                    <p className="font-bold">マイルストーン一覧</p>
+                    <List
+                      className="demo-infinite-container"
+                      bordered
+                      locale={{
+                        emptyText: (
+                          <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description="該当結果が見つかりませんでした"
+                          />
+                        ),
+                      }}
+                      style={{ height: 250, overflow: 'auto' }}
+                      size="small"
+                      dataSource={listMilestone}
+                      renderItem={(item) => (
+                        <List.Item className="list-items" key={item.id}>
+                          {item.name}
+                        </List.Item>
+                      )}
+                    />
+                  </Form.Item>
+                </div>
+                <div className="col-span-1 mx-4">
+                  <Form.Item label=" ">
+                    <p className="font-bold">タスク一覧</p>
+                    <List
+                      className="demo-infinite-container"
+                      bordered
+                      style={{ height: 250, overflow: 'auto' }}
+                      size="small"
+                      locale={{
+                        emptyText: (
+                          <Empty
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            description="該当結果が見つかりませんでした"
+                          />
+                        ),
+                      }}
+                      dataSource={listTask}
+                      renderItem={(item) => (
+                        <List.Item className="list-items" key={item.id}>
+                          {item.name}
+                        </List.Item>
+                      )}
+                    />
+                  </Form.Item>
+                </div>
+              </div>
+              <div className="flex justify-end mr-10">
+                <Form.Item label=" " className=" mr-10 mt-4">
+                  <Space size={12}>
+                    <Button
+                      htmlType="button"
+                      type="primary"
+                      onClick={cancelConfirmModle}
+                      disabled={disableBtn}
+                      className="button_cacel"
+                    >
+                      キャンセル
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      disabled={disableBtn}
+                      loading={disableBtn}
+                      className="mr-20"
+                    >
+                      <span> 保存 </span>
+                    </Button>
+                  </Space>
+                </Form.Item>
+              </div>
+            </Form>
+          </div>
+        </OtherLayout.Main>
+      </OtherLayout>
+    </div>
   )
 }
 index.middleware = ['auth:superadmin']

@@ -76,8 +76,39 @@ function jftoppage() {
     <div className="JFTopPage">
       <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
-          <div className="Jf__top">
+          <div className="container">
+            <div className="flex justify-between">
+              <div className="title w-3/5">
+                <h3 className="title-h3">
+                  最近の更新
+                </h3>
+                <NotificationsJf id={idJf} />
+              </div>
+              <div className="flex flex-col w-1/2 space-x-50 justify-center">
+                <div className="cha ...  w-11/12 ml-12">
+                  <SearchSugges className="h-7" listTask={listTask} id={idJf} />
+                </div>
+                <div className="justify-center ... w-11/12 ml-12 mt-12">
+                  <div className="status__global">
+                    <h3>ステータス</h3>
+                    <div className="status">
+                      <ChartStatus task={listTask} id={idJf} />
+                    </div>
+                  </div>
+                </div>
+                <div className="justify-center ... w-11/12 ml-12 mt-8">
+                  <div className="status__global">
+                    <h3>マイルストーン</h3>
+                    <div className="status">
+                      <ChartMilestone id={idJf} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+          </div>
+          {/* <div className="Jf__top">
             <div className="jf__main">
               <div className="grid grid-cols-12">
                 <div className="col-span-7">
@@ -94,7 +125,7 @@ function jftoppage() {
                   <div className="flex justify-end">
                     <div className="search__task">
                       <div className="button__right">
-                        {/* {role === 'superadmin' ? (
+                        {role === 'superadmin' ? (
                           <>
                             <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>
                               <span> 編集 </span>
@@ -104,7 +135,7 @@ function jftoppage() {
                             </Button>
                           </>
                         )
-                          : null} */}
+                          : null}
                       </div>
                     </div>
                   </div>
@@ -139,7 +170,7 @@ function jftoppage() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </JfLayout.Main>
       </JfLayout>
     </div>

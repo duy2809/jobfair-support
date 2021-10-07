@@ -34,7 +34,11 @@ function TemplateTaskList() {
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
-
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/template-task-dt/${record.idTemplateTask}`)
+    },
+  })
   const initPagination = () => {
     const paginationData = JSON.parse(localStorage.getItem('pagination'))
     if (paginationData === null) {
@@ -135,22 +139,25 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (templateTaskName, record) => <Tooltip title={templateTaskName}><a href={`/template-task-dt/${record.idTemplateTask}`}>{templateTaskName}</a></Tooltip>,
+      render: (templateTaskName) => <Tooltip title={templateTaskName}><a>{templateTaskName}</a></Tooltip>,
+      onCell: handleRow,
     },
     {
       title: 'カテゴリ',
       dataIndex: 'category_name',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/template-task-dt/${record.idTemplateTask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'マイルストーン',
       dataIndex: 'milestone_name',
-      render: (taskName, record) => (
-        <a href={`/template-task-dt/${record.idTemplateTask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'アクション',
@@ -182,22 +189,25 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (templateTaskName, record) => <Tooltip title={templateTaskName}><a href={`/template-task-dt/${record.idTemplateTask}`}>{templateTaskName}</a></Tooltip>,
+      render: (templateTaskName) => <Tooltip title={templateTaskName}><a>{templateTaskName}</a></Tooltip>,
+      onCell: handleRow,
     },
     {
       title: 'カテゴリ',
       dataIndex: 'category_name',
       fixed: 'left',
-      render: (taskName, record) => (
-        <a href={`/template-task-dt/${record.idTemplateTask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
     {
       title: 'マイルストーン',
       dataIndex: 'milestone_name',
-      render: (taskName, record) => (
-        <a href={`/template-task-dt/${record.idTemplateTask}`}>{taskName}</a>
+      render: (taskName) => (
+        <a>{taskName}</a>
       ),
+      onCell: handleRow,
     },
   ]
 
@@ -266,19 +276,14 @@ function TemplateTaskList() {
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
           <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
-              <div className="flex-col space-y-9">
-                <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
-                </div>
-
-              </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数 </span>
-                  <Select value={itemCount} onChange={handleSelect}>
+                  <span className="hidden md:inline pr-2">表示件数</span>
+                  <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -310,14 +315,16 @@ function TemplateTaskList() {
                       visible={visible}
                       onVisibleChange={handleVisibleChange}
                     >
-                      {visible || isFilter ? (
+                      {isFilter ? (
                         <Button
+                          size="large"
                           shape="circle"
-                          style={{ color: '#ffd803' }}
+                          style={{ background: '#ffd803' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       ) : (
                         <Button
+                          size="large"
                           shape="circle"
                           icon={<FilterOutlined id="filter" />}
                         />
@@ -334,6 +341,7 @@ function TemplateTaskList() {
                     {users === 'superadmin' ? (
                       <>
                         <Button
+                          size="large"
                           className="float-right"
                           href="/add-template-task"
                           type="primary"

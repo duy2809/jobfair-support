@@ -13,8 +13,15 @@
   .icon {
     font-size: 18px !important;
     font-weight: 600;
-    :hover {
-        color: #ffd803;
-    }
+   
+  }
+  .ant-btn:hover,
+  .ant-btn:focus {
+    color: black;
+    border-color: #d9d9d9;
+  }
+  .ant-btn
+  {
+    color: black;
   }
 }
