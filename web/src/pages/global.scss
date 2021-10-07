@@ -196,4 +196,10 @@ body {
     align-self: center;
     align-items: center;
   }
+  .ant-select-single > .ant-select-selector,
+  .ant-select-multiple > .ant-select-selector,
+  input {
+    height: 38px !important;
+    min-height: 38px !important;
+  }
 }
