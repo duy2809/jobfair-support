@@ -4,13 +4,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './style.scss'
 
+export const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
 function Loading(props) {
-  const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
-
   return (
     <div
       className="overlay  relative inset-0 h-full "
-      style={{ backgroundColor: `${props.overlay ? '' : 'transparent'}` }}
+      style={{ display: `${props.overlay ? 'block' : 'none'}` }}
     >
       <Spin
         spinning={props.loading ?? true}
