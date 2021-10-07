@@ -30,7 +30,7 @@ const JfLayout = ({ children, id, bgr }) => {
   const [numberOfCompanies, setNumberOfCompanies] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
-  const [collapsed, Setcollapsed] = useState(() => false)
+  const [collapsed, Setcollapsed] = useState(true)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
@@ -50,15 +50,8 @@ const JfLayout = ({ children, id, bgr }) => {
     }
   }
   useEffect(() => {
-    Setcollapsed(JSON.parse(localStorage.getItem('collapsed')))
-  }, [])
-  useEffect(() => {
     fetchJF()
   }, [children])
-
-  useEffect(() => {
-    localStorage.setItem('collapsed', JSON.stringify(collapsed))
-  }, [collapsed])
 
   return (
     <div className="layout-task">
@@ -80,7 +73,7 @@ const JfLayout = ({ children, id, bgr }) => {
             theme="dark"
             inlineCollapsed={collapsed}
           >
-            <div className="relative h-10" style={{ marginBottom: '32px', transform: collapsed ? 'translate(-20%)' : 'translate(0%)' }}>
+            <div className="relative h-10 z-20" style={{ marginBottom: '15px', transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)' }}>
               <div className="absolute top-0 right-0 ">
                 <div
                   className="button"
