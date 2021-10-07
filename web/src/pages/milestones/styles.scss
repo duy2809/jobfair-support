@@ -7,7 +7,7 @@
 
   .ant-table-thead > tr > * {
     background-color: #bae8e8 !important;
-    font-weight: 700 !important;
+    
   }
 
   .ant-table-pagination-right {
@@ -37,7 +37,10 @@
   .ant-modal-wrap {
     transform: translateY(210px);
   }
-
+  .searchAdd{
+    display: flex;
+    align-items: center;
+  }
   .ant-layout-content {
     margin: 15px 16px !important;
   }
