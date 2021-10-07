@@ -286,9 +286,9 @@ function TemplateTaskList() {
 
               </div>
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex gap-x-5 items-center">
                   <span style={{ fontSize: '14px' }}>表示件数 </span>
-                  <Select style={{ height: '38px' }} value={itemCount} onChange={handleSelect} className="ml-5">
+                  <Select style={{ height: '38px' }} value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>

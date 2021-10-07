@@ -248,17 +248,19 @@ const AddMilestonePage = () => {
                   <Form.Item>
                     <Button
                       onClick={showModalOfBtnCancel}
-
+                      size="large"
+                      style={{ height: '38px' }}
                     >
                       キャンセル
                     </Button>
                   </Form.Item>
                   <Form.Item>
                     <Button
+                      size="large"
                       type="primary"
                       onClick={showModal}
                       htmlType="submit"
-                      style={{ letterSpacing: '-0.1em' }}
+                      style={{ letterSpacing: '-0.1em', height: '38px' }}
                     >
                       登録
                     </Button>

@@ -226,27 +226,12 @@ function MemberList() {
         <div className="flex flex-col h-full items-center justify-center bg-white-background member-list">
           <div className="w-full flex justify-between items-center title">
             <h1 className="ml-0">メンバ一覧</h1>
-            <div>
-              {role === 'superadmin' ? (
-                <Button
-                  style={{ height: '38px' }}
-                  type="primary"
-                  className="ml-5"
-                  onClick={handleClick}
-                >
-                  メンバー招待
-                </Button>
-              ) : (
-                ''
-              )}
-            </div>
           </div>
           <div className="flex w-full items-center justify-between">
-            <div>
+            <div className="flex gap-x-5 items-center">
               <span style={{ fontSize: '14px' }}>表示件数</span>
               <Select
                 style={{ height: '38px' }}
-                className="ml-5"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -255,16 +240,31 @@ function MemberList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div>
+            <div className="flex ">
               <div className="text-2xl flex items-center">
                 <Input
                   size="large"
                   className="no-border"
+                  style={{ height: '38px' }}
                   placeholder="メンバ名"
                   onChange={handleInput}
                   bordered
                   prefix={<SearchOutlined />}
                 />
+              </div>
+              <div>
+                {role === 'superadmin' ? (
+                  <Button
+                    style={{ height: '38px' }}
+                    type="primary"
+                    className="ml-5"
+                    onClick={handleClick}
+                  >
+                    メンバー招待
+                  </Button>
+                ) : (
+                  ''
+                )}
               </div>
             </div>
           </div>

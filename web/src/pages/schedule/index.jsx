@@ -129,11 +129,10 @@ function ScheduleList() {
             <h1 className="ml-0">JFスケジュール一覧</h1>
           </div>
           <div className="flex w-full justify-between">
-            <div className="flex items-center content-center">
+            <div className="flex gap-x-5 items-center">
               <span style={{ fontSize: '14px' }}>表示件数</span>
               <Select
                 style={{ height: '38px' }}
-                className="ml-5"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -142,9 +141,10 @@ function ScheduleList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div>
+            <div className="flex">
               <div className="text-2xl ml-auto flex items-center">
                 <Input
+                  style={{ height: '38px' }}
                   placeholder="スケジュール"
                   onChange={handleInput}
                   bordered
@@ -155,7 +155,7 @@ function ScheduleList() {
                 {role === 'superadmin' ? (
                   <Button
                     type="primary"
-                    className="px-12"
+                    className="px-12 ml-5"
                     htmlType="button"
                     enabled
                     onClick={handleClick}
