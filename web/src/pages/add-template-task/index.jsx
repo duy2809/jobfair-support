@@ -514,7 +514,7 @@ const index = () => {
                                     >
                                       <Input
                                         className="h-1/2 py-1"
-                                        style={{ padding: '9px', minWidth: '53px' }}
+                                        style={{ padding: '10px', minWidth: '53px' }}
                                         type="text"
                                         size="large"
                                         min={1}

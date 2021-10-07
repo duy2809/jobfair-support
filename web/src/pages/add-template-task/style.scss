@@ -16,7 +16,7 @@
 
   .ant-form-horizontal .ant-form-item-label {
     // text-align: right;
-    margin-right: 3px;
+    margin-right: 16px;
     min-width: 155px;
     font-weight: 700;
   }
@@ -58,7 +58,8 @@
   .ant-form-item-control-input,
   .ant-form-item-explain.ant-form-item-explain-error {
     width: 100%;
-    margin: 0 auto;
+    margin: 0 16px;
+
   }
 
   .center-container {
@@ -114,7 +115,7 @@
   .ant-col-13 {
     min-width: 300px;
     width: 100%;
-    margin: 0px 8px;
+    // margin: 0px 8px;
     max-width: 100%;
   }
 
@@ -156,4 +157,9 @@
       // text-align: start;
     }
   }
+
+  .ant-form-item-label>label::after {
+    margin: 0px;
+  }
+
 }
