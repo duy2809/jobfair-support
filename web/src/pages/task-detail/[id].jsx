@@ -16,6 +16,7 @@ import {
   afterTask,
   deleteTask,
 } from '../../api/task-detail'
+import Loading from '../../components/loading'
 
 function TaskDetail() {
   const router = useRouter()
@@ -25,6 +26,7 @@ function TaskDetail() {
   const { store } = useContext(ReactReduxContext)
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
+  const [loading, setLoading] = useState(false)
   const [infoTask, setInfoTask] = useState({
     id: null,
     name: '',
@@ -47,19 +49,22 @@ function TaskDetail() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
   const deletetpl = async () => {
+    setLoading(true)
     await deleteTask(idTask)
       .then(async (response) => {
         console.log(response.data)
         await router.push(`/tasks/${infoJF.id}`)
         await saveNotification()
+        setLoading(false)
       })
       .catch((error) => {
         console.log(error)
+        setLoading(false)
       })
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
@@ -118,7 +123,7 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -132,6 +137,7 @@ function TaskDetail() {
   }
 
   useEffect(() => {
+    setLoading(true)
     setUser(store.getState().get('auth').get('user'))
     if (user) {
       setRole(user.get('role'))
@@ -139,9 +145,11 @@ function TaskDetail() {
     fetchTaskData()
     fetchBeforeTask()
     fetchafterTask()
+    setLoading(false)
   }, [user])
   return (
     <div>
+      {loading && <Loading loading={loading} overlay={loading} />}
       <JfLayout id={infoJF.id}>
         <JfLayout.Main>
           <div className="task-details">

@@ -23,6 +23,8 @@ import JfLayout from '../../layouts/JFLayout'
 import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } from '../../api/file'
 import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
+import Loading from '../../components/loading'
+
 // TODO call API add file + folder + search + visit folder
 export default function File() {
   const { store } = useContext(ReactReduxContext)
@@ -39,7 +41,7 @@ export default function File() {
   const [isDisableEditFile, setIsDisableEditFile] = useState(false)
   const [isDisableEditFolder, setIsDisableEditFolder] = useState(false)
   const [isCheckAll, setIsCheckAll] = useState(false)
-
+  const [loading, setLoading] = useState(false)
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
 
@@ -92,6 +94,7 @@ export default function File() {
       render: (name, record) => (
         <div
           onClick={async () => {
+            setLoading(true)
             if (record.is_file) {
               window.open(record.link)
             } else if (record.key !== -1) {
@@ -154,6 +157,7 @@ export default function File() {
               setIsCheckAll(false)
               setDirectory(directory.slice(0, directory.length - 1))
             }
+            setLoading(false)
           }}
           className="cursor-pointer flex flex-row items-center"
         >
@@ -195,6 +199,7 @@ export default function File() {
     },
   ]
   useEffect(async () => {
+    setLoading(true)
     let res = await getRootPathFile(JFid)
     let result = res.data.map((element) => ({
       key: element.id,
@@ -217,6 +222,7 @@ export default function File() {
       link: element.link,
     }))
     setRecentUpdated(result)
+    setLoading(false)
   }, [])
   useEffect(() => {
     const temp = []
@@ -376,6 +382,7 @@ export default function File() {
     })
   }
   const handleOkDelete = async () => {
+    setLoading(true)
     const idArray = []
     data.forEach((element, index) => {
       if (isChecked[index] && element.checkbox) idArray.push(element.key)
@@ -407,9 +414,11 @@ export default function File() {
     } else setData(result)
     setIsModalDeleteVisible(false)
     setIsCheckAll(false)
+    setLoading(false)
   }
   return (
     <div className="File">
+      {loading && <Loading loading={loading} overlay={loading} />}
       <JfLayout bgr={5}>
         <JfLayout.Main>
           <div className="container">
@@ -449,6 +458,7 @@ export default function File() {
                         {directory.map((ele, index) => (
                           <Breadcrumb.Item
                             onClick={async () => {
+                              setLoading(true)
                               let queryPath = ''
                               for (let i = 0; i <= index; i += 1) {
                                 if (i !== index && i !== 0) {
@@ -466,7 +476,6 @@ export default function File() {
                                   path: queryPath,
                                 },
                               })
-
                               const result = res.data.map((element) => ({
                                 key: element.id,
                                 checkbox:
@@ -481,6 +490,7 @@ export default function File() {
                               setData(result)
                               setIsCheckAll(false)
                               setDirectory(directory.slice(0, index + 1))
+                              setLoading(false)
                             }}
                             className="underline text-xl cursor-pointer"
                           >
