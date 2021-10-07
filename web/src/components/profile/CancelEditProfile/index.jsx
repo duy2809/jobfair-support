@@ -20,7 +20,12 @@ const CancelEditProfile = () => {
 
   return (
     <>
-      <Button onClick={showModal} className="text-base px-8 mr-2" style={{ backgroundColor: '#fff' }}>
+      <Button
+        size="large"
+        onClick={showModal}
+        className="text-base px-8 mr-2"
+        style={{ backgroundColor: '#fff' }}
+      >
         キャンセル
       </Button>
       <Modal
@@ -33,7 +38,6 @@ const CancelEditProfile = () => {
         okText="はい"
       >
         <p>変更内容が保存されません。よろしいですか？</p>
-
       </Modal>
     </>
   )

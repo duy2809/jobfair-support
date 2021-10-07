@@ -75,6 +75,18 @@ body {
     border: 0;
   }
 
+  .ant-input-affix-wrapper {
+    padding: 0;
+  }
+
+  .ant-input-affix-wrapper .ant-input {
+    padding: 9px 10px;
+  }
+
+  .ant-input-suffix {
+    margin-right: 10px;
+  }
+
   .ant-input:hover,
   .ant-input:focus {
     border: #ffd803 solid 1.2px;
