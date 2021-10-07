@@ -276,18 +276,13 @@ function TemplateTaskList() {
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
           <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
-              <div className="flex-col space-y-9">
-                <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
-                </div>
-
-              </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数 </span>
+                  <span className="hidden md:inline pr-2">表示件数</span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -322,12 +317,14 @@ function TemplateTaskList() {
                     >
                       {visible || isFilter ? (
                         <Button
+                          size="large"
                           shape="circle"
                           style={{ color: '#ffd803' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       ) : (
                         <Button
+                          size="large"
                           shape="circle"
                           icon={<FilterOutlined id="filter" />}
                         />
