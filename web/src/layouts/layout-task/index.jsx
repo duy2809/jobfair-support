@@ -91,11 +91,7 @@ const JfLayout = ({ children, id, bgr }) => {
             ) : (
               <Menu.Item
                 key="1"
-<<<<<<< HEAD
-                icon={<HomeOutlined />}
-=======
                 icon={<HomeOutlined className="sidebar-icons" />}
->>>>>>> 996b7bee501091a667cdc2aa27aa9d8e8ea479ec
                 style={{ background: '#e3f6f5' }}
               >
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
@@ -161,13 +157,7 @@ const JfLayout = ({ children, id, bgr }) => {
               <img className="avt" src={avt} alt="avatar" />
             </div>
           </div>
-<<<<<<< HEAD
-          <Content className="site-layout-background">
-            {_get(main, 'props.children')}
-          </Content>
-=======
           <Content className="site-layout-background">{_get(main, 'props.children')}</Content>
->>>>>>> 996b7bee501091a667cdc2aa27aa9d8e8ea479ec
         </Layout>
       </Layout>
     </div>
