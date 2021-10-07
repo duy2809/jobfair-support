@@ -107,6 +107,7 @@ const ResetPage = () => {
               {() => (
                 <div className="flex justify-center">
                   <Button
+                    style={{ height: '38px' }}
                     type="primary"
                     htmlType="submit"
                     className="text-base px-14"
