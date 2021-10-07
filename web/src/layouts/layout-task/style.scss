@@ -1,7 +1,7 @@
 .layout-task {
   .site-layout-background {
     margin: 24px 16px;
-    padding: 24px;
+    padding: 0 24px;
   }
 
   .ant-layout-sider .ant-layout-sider-dark .ant-layout-sider-collapsed {
@@ -9,6 +9,9 @@
   }
   .ant-layout-sider .ant-layout-sider-dark {
     background-color: #e3f6f5 !important;
+  }
+  .ant-layout .site-layout{
+    background: white ;
   }
   .ant-menu-dark.ant-menu-inline,
   .ant-menu-dark.ant-menu-vertical,

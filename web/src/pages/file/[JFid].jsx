@@ -412,10 +412,10 @@ export default function File() {
     <div className="File">
       <JfLayout bgr={5}>
         <JfLayout.Main>
+          <h1>ファイル</h1>
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-7 gap-x-12">
               <div className="md:col-span-5">
-                <h1 className="text-3xl inline">ファイル</h1>
                 <div className="w-full h-14 flex flex-row justify-end gap-x-6">
                   <ButtonAddFile
                     updater={user}

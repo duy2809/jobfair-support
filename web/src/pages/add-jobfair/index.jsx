@@ -310,11 +310,10 @@ const index = () => {
       <Loading loading={loading} overlay={loading} />
       <OtherLayout>
         <OtherLayout.Main>
+          <h1>JF追加 </h1>
           <div className="addJF-page">
             {/* JF名 戻る JF-スケジュール 管理者 開始日 参加企業社数  推定参加学生数 タスク一賜 マイルストーン一覧 */}
             <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-              {/* page title */}
-              <h1 className="text-3xl">JF追加 </h1>
               <div>
                 <div className="container ">
                   <Form
