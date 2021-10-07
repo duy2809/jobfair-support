@@ -549,7 +549,7 @@ function TaskList() {
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {visible || isFilter ? (
+                    {isFilter ? (
                       <Button
                         size="large"
                         shape="circle"
