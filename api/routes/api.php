@@ -23,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+//TODO: middleware authorization
+
 Route::get('/web-init', WebInit::class);
 
 Route::resource('/jobfair', 'JobfairController');
@@ -164,5 +166,5 @@ Route::get('/kanban/{jfId}/{userId}', [TaskController::class, 'getJobfair']);
 Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 
 // comment
-Route::resource('/comment', CommentController::class);
-Route::get('/show-more-comment/{comment}', 'CommentController@showMore');
+Route::apiResource('/comment', CommentController::class);
+Route::get('/show-more-comment/{id}', 'CommentController@showMore');
