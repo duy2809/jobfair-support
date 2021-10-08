@@ -6,10 +6,16 @@ import Otherlayout from '../../../layouts/OtherLayout'
 // import Avatar from '../UI/avatar/Avatar'
 import ButtonChangePassword from '../../../components/profile/ButtonChangePassword'
 import CancelEditProfile from '../../../components/profile/CancelEditProfile'
-import { updateInfo, getAllProfile, getProfile, getAvatar } from '../../../api/profile'
+import {
+  updateInfo,
+  getAllProfile,
+  getProfile,
+  getAvatar,
+} from '../../../api/profile'
 import { webInit } from '../../../api/web-init'
 import axios from '../../../api/axios'
 import './styles.scss'
+import Loading from '../../../components/loading'
 
 const EditProfilePage = () => {
   const [nameInput, setNameInput] = useState('')
@@ -21,6 +27,7 @@ const EditProfilePage = () => {
   const [preview, setPreview] = useState()
   const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   webInit().then((res) => {
@@ -32,6 +39,7 @@ const EditProfilePage = () => {
   }, [])
 
   const updateAvt = async () => {
+    setLoading(true)
     const formData = new FormData()
     formData.append('avatar', image)
 
@@ -47,6 +55,7 @@ const EditProfilePage = () => {
         },
       },
     )
+    setLoading(false)
     return data
   }
 
@@ -61,6 +70,7 @@ const EditProfilePage = () => {
   }, [image])
 
   useEffect(async () => {
+    setLoading(true)
     const resId = await webInit()
     const id = resId.data.auth.user.id
     const result = await getProfile(id)
@@ -74,9 +84,11 @@ const EditProfilePage = () => {
       chatwork: data.chatwork_id,
       email: data.email,
     })
+    setLoading(false)
   }, [])
 
   const fetchData = async (term) => {
+    setLoading(true)
     const resId = await webInit()
     const id = resId.data.auth.user.id
     const resCur = await getProfile(id)
@@ -93,6 +105,7 @@ const EditProfilePage = () => {
         },
       ])
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -109,12 +122,16 @@ const EditProfilePage = () => {
       message: '変更は正常に保存されました。',
       duration: 2,
     })
-    setTimeout(() => { router.push('/profile') }, 2500)
+    setTimeout(() => {
+      router.push('/profile')
+    }, 2500)
   }
 
   const handleOk = async () => {
+    setLoading(true)
     if (nameInput === '' || emailInput === '' || idChatWorkInput === '' || isDisable === true) {
       setIsDisable(true)
+      setLoading(false)
     } else {
       let avtPath = pathName
       if (image) {
@@ -129,6 +146,7 @@ const EditProfilePage = () => {
         avatar: avtPath,
       })
       openNotificationSuccess()
+      setLoading(false)
     }
   }
 
@@ -180,6 +198,7 @@ const EditProfilePage = () => {
 
   return (
     <div>
+      {loading && <Loading loading={loading} overlay={loading} />}
       <Otherlayout>
         <Otherlayout.Main>
           <h1>プロフィール編集</h1>
@@ -196,10 +215,7 @@ const EditProfilePage = () => {
                   />
                   {preview ? (
                     <div onClick={clickHandler}>
-                      <img
-                        src={preview}
-                        alt="user-img"
-                      />
+                      <img src={preview} alt="user-img" />
                     </div>
                   ) : (
                     <div onClick={clickHandler}>
@@ -228,9 +244,7 @@ const EditProfilePage = () => {
                     colon={false}
                   >
                     <Form.Item
-                      label={
-                        <p className="font-bold">ユーザー名</p>
-                      }
+                      label={<p className="font-bold">ユーザー名</p>}
                       name="name"
                       rules={[
                         {
@@ -242,17 +256,15 @@ const EditProfilePage = () => {
                             if (/[0-9]/.test(value)) {
                               setIsDisable(true)
                               return Promise.reject(
-                                new Error(
-                                  '数字を入力しないでください。',
-                                ),
+                                new Error('数字を入力しないでください。'),
                               )
                             }
-                            if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)) {
+                            if (
+                              /[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)
+                            ) {
                               setIsDisable(true)
                               return Promise.reject(
-                                new Error(
-                                  '特殊文字を入力しないでください。',
-                                ),
+                                new Error('特殊文字を入力しないでください。'),
                               )
                             }
 
@@ -270,9 +282,7 @@ const EditProfilePage = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label={
-                        <p className="font-bold">チャットワークID</p>
-                      }
+                      label={<p className="font-bold">チャットワークID</p>}
                       name="chatwork"
                       rules={[
                         {
@@ -283,14 +293,16 @@ const EditProfilePage = () => {
                           validator(_, value) {
                             if (specialCharRegex.test(value)) {
                               setIsDisable(true)
-                              return Promise.reject(new Error('スペースを入力しないでください。'))
+                              return Promise.reject(
+                                new Error('スペースを入力しないでください。'),
+                              )
                             }
-                            if (/[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)) {
+                            if (
+                              /[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)
+                            ) {
                               setIsDisable(true)
                               return Promise.reject(
-                                new Error(
-                                  '特殊文字を入力しないでください。',
-                                ),
+                                new Error('特殊文字を入力しないでください。'),
                               )
                             }
                             return Promise.resolve()
@@ -304,13 +316,10 @@ const EditProfilePage = () => {
                         onChange={onChatworkIdChange}
                         placeholder="チャットワークID"
                       />
-
                     </Form.Item>
 
                     <Form.Item
-                      label={
-                        <p className="font-bold">メール</p>
-                      }
+                      label={<p className="font-bold">メール</p>}
                       name="email"
                       rules={[
                         {
@@ -319,7 +328,12 @@ const EditProfilePage = () => {
                         },
                         () => ({
                           validator(_, value) {
-                            if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(value) && value !== '') {
+                            if (
+                              !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/.test(
+                                value,
+                              )
+                              && value !== ''
+                            ) {
                               setIsDisable(true)
                               return Promise.reject(
                                 new Error(
@@ -332,24 +346,21 @@ const EditProfilePage = () => {
                         }),
                       ]}
                     >
-
                       <Input
                         type="text"
                         size="large"
                         onChange={onEmailChange}
                         placeholder="メール"
                       />
-
                     </Form.Item>
-
                   </Form>
                 </div>
               </div>
-
             </div>
             <div className="container-btn justify-end gap-1">
               <CancelEditProfile />
               <Button
+                size="large"
                 type="primary"
                 className="text-base px-9 mr-20"
                 htmlType="submit"

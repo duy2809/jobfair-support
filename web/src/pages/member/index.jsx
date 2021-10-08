@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Modal, Input, Button, Empty, Space, notification } from 'antd'
+import { Select, Table, Modal, Input, Button, Empty, Tooltip, Space, notification } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { formatDate } from '~/utils/utils'
-import './style.scss'
-
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
+import './styles.scss'
 
 function MemberList() {
   const [members, setMembers] = useState([])
@@ -155,27 +154,37 @@ function MemberList() {
       cancelText: 'いいえ',
     })
   }
+  const handleEdit = (idMb) => {
+    router.push(`/member/${idMb}/edit`)
+  }
   const columns = [
     {
       title: 'メンバ名',
       dataIndex: 'name',
       key: 'メンバ名',
       width: '30%',
-      render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+      render: (taskName) => (
+        <Tooltip title={taskName}>
+          <a>{taskName}</a>
+        </Tooltip>
+      ),
+      onCell: handleRow,
     },
     {
       title: 'メールアドレス',
       key: 'メールアドレス',
       dataIndex: 'email',
       width: '40%',
-      render: (email) => email,
+      render: (taskName) => <a>{taskName}</a>,
+      onCell: handleRow,
     },
     {
       title: '参加日',
       dataIndex: 'date',
       width: `${role === 'superadmin' ? '20%' : '30%'}`,
       key: '参加日',
-      render: (date) => formatDate(date),
+      render: (taskName) => <a>{formatDate(taskName)}</a>,
+      onCell: handleRow,
     },
     {
       title: `${role === 'superadmin' ? 'アクション' : ''}`,
@@ -185,13 +194,8 @@ function MemberList() {
         <Space size="middle">
           <EditTwoTone
             id={record.id}
-            onClick={(e) => {
-              e.stopPropagation()
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                edit: true,
-              }))
+            onClick={() => {
+              handleEdit(record.id)
             }}
           />
 
@@ -223,15 +227,14 @@ function MemberList() {
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full items-center justify-center bg-white-background member-list">
-          <div className="w-full flex justify-between items-center title">
-            <h1 className="ml-0">メンバ一覧</h1>
-          </div>
+        <h1>メンバ一覧</h1>
+        <div className="flex flex-col h-full items-center justify-center bg-white-background">
           <div className="flex w-full items-center justify-between">
-            <div className="flex gap-x-5 items-center">
-              <span style={{ fontSize: '14px' }}>表示件数</span>
+            <div>
+              <span className="hidden md:inline pr-2">表示件数 </span>
               <Select
-                style={{ height: '38px' }}
+                className="no-border"
+                size="large"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -240,24 +243,27 @@ function MemberList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div className="flex ">
-              <div className="text-2xl flex items-center">
-                <Input
-                  size="large"
-                  className="no-border"
-                  style={{ height: '38px' }}
-                  placeholder="メンバ名"
-                  onChange={handleInput}
-                  bordered
-                  prefix={<SearchOutlined />}
-                />
+            <div className="flex justify-end">
+              <div>
+                <div className="text-2xl flex items-center">
+                  <Input
+                    size="large"
+                    className="no-border"
+                    placeholder="メンバ名"
+                    onChange={handleInput}
+                    bordered
+                    prefix={<SearchOutlined />}
+                  />
+                </div>
               </div>
               <div>
                 {role === 'superadmin' ? (
                   <Button
-                    style={{ height: '38px' }}
+                    size="large"
                     type="primary"
-                    className="ml-5"
+                    className="ml-3 no-border"
+                    htmlType="button"
+                    enabled
                     onClick={handleClick}
                   >
                     メンバー招待
@@ -269,11 +275,10 @@ function MemberList() {
             </div>
           </div>
           <Table
-            className="w-full rounded-3xl table-styled my-5 table-striped-rows"
+            className="w-full rounded-3xl table-styled my-2 table-striped-rows"
             columns={columns}
             dataSource={filterData}
             rowKey={(record) => record.id}
-            onRow={handleRow}
             onChange={handleChange}
             loading={dataLoading}
             pagination={pagination}

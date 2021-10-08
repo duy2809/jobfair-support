@@ -227,7 +227,6 @@ function TemplateTaskList() {
     })
     await webInit().then((response) => {
       setUsers(response.data.auth.user.role)
-      console.log(response.data.auth.user.role)
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
@@ -277,19 +276,14 @@ function TemplateTaskList() {
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
           <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
-              <div className="flex-col space-y-9">
-                <div className="text-left">
-                  <h1 className="text-3xl">テンプレートタスクー覧</h1>
-                </div>
-
-              </div>
               <div className="flex items-center justify-between">
-                <div className="flex gap-x-5 items-center">
-                  <span style={{ fontSize: '14px' }}>表示件数 </span>
-                  <Select style={{ height: '38px' }} value={itemCount} onChange={handleSelect}>
+                <div>
+                  <span className="hidden md:inline pr-2">表示件数</span>
+                  <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -302,13 +296,13 @@ function TemplateTaskList() {
                         <>
                           <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
 
-                          <Select size="large" style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
+                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                             {optionCategory}
                           </Select>
 
                           <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
 
-                          <Select size="large" style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
+                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
                             {optionMilestone}
                           </Select>
 
@@ -321,22 +315,23 @@ function TemplateTaskList() {
                       visible={visible}
                       onVisibleChange={handleVisibleChange}
                     >
-                      {visible || isFilter ? (
+                      {isFilter || visible ? (
                         <Button
+                          size="large"
                           shape="circle"
-                          style={{ color: '#ffd803', height: '38px', width: '46px' }}
+                          style={{ background: '#ffd803' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       ) : (
                         <Button
+                          size="large"
                           shape="circle"
-                          style={{ height: '38px', width: '46px' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       )}
                     </Popover>
                     <Input
-                      className="float-right"
+                      className="float-right mr-3"
                       allowClear="true"
                       prefix={<SearchOutlined />}
                       placeholder="テンプレートタスク名"
@@ -347,7 +342,7 @@ function TemplateTaskList() {
                       <>
                         <Button
                           size="large"
-                          className="float-right ml-3"
+                          className="float-right"
                           href="/add-template-task"
                           type="primary"
                         >

@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { useEffect, useState } from 'react'
 import {
   Table,
@@ -27,6 +29,7 @@ import { getAllMileStone } from '../../api/milestone'
 import { jftask } from '../../api/jf-toppage'
 import { webInit } from '../../api/web-init'
 import { deleteTask } from '../../api/task-detail'
+import { loadingIcon } from '~/components/loading'
 
 function TaskList() {
   const router = useRouter()
@@ -39,7 +42,7 @@ function TaskList() {
     pageSize: 10,
   })
   const [isFilter, setIsFilter] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(false)
   const [originalData, setOriginalData] = useState()
   const [temperaryData, setTemperaryData] = useState()
@@ -58,10 +61,7 @@ function TaskList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem(
-      'pagination',
-      JSON.stringify({ ...pagination, pageSize: value }),
-    )
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
   const handleVisibleChange = () => {
     setVisible(!visible)
@@ -80,8 +80,8 @@ function TaskList() {
     }
   }
   // add data of table
-  const addDataOfTable = (response) => {
-    const dataResponse = response.data.schedule.tasks
+  const loadTableData = (response) => {
+    const dataResponse = response ? response.data.schedule.tasks : null
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
@@ -100,7 +100,6 @@ function TaskList() {
         managers: manager,
       })
     }
-    console.log(temperaryData)
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
@@ -109,43 +108,30 @@ function TaskList() {
       setTemperaryData(filteredData)
     }
     if (status) {
-      const arrayStatus = [
-        '全て',
-        '未着手',
-        '進行中',
-        '完了',
-        '中断',
-        '未完了',
-      ]
+      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
       const index = arrayStatus.indexOf(router.query.status)
       const arr = [0, 0, 0, 0, 0, 0]
       arr[index] = 1
       setActive(arr)
-      const filteredData = data.filter(
-        (task) => !task.status.localeCompare(router.query.status),
-      )
+      const filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
       setTemperaryData(filteredData)
     }
   }
 
-  const addOptionCategory = (response) => {
+  const loadCategoryOptions = (response) => {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>
-          {response.data[i].category_name}
-        </Option>,
+        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
       )
     }
     setOptionCategory(option)
   }
 
-  const addOptionMilestone = (response) => {
+  const loadMilestoneOptions = (response) => {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
-      option.push(
-        <Option key={response.data[i].name}>{response.data[i].name}</Option>,
-      )
+      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
     }
     setOptionMileStone(option)
   }
@@ -193,16 +179,12 @@ function TaskList() {
     } else setIsFilter(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (task) => (value
-        ? !task.category_name.localeCompare(value)
-        : task.category_name)
+      (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -214,16 +196,12 @@ function TaskList() {
     } else setIsFilter(false)
     setMilestone(value)
     const filteredData = originalData.filter(
-      (task) => (value
-        ? !task.milestone_name.localeCompare(value)
-        : task.milestone_name)
+      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -234,196 +212,179 @@ function TaskList() {
     },
   })
   // columns of tables
-  const columns = users === 'superadmin' || users === 'admin' ? [
-    {
-      title: 'タスク名',
-      width: '15%',
-      dataIndex: 'taskName',
-      fixed: 'left',
-      ellipsis: {
-        showTitle: false,
+  const columns = users === 'superadmin' || users === 'admin'
+    ? [
+      {
+        title: 'タスク名',
+        width: '15%',
+        dataIndex: 'taskName',
+        fixed: 'left',
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (taskName) => (
+          <Tooltip title={taskName}>
+            <a>{taskName}</a>
+          </Tooltip>
+        ),
+        onCell: handleRow,
       },
-      render: (taskName) => (
-        <Tooltip title={taskName}>
-          <a>{taskName}</a>
-        </Tooltip>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: '開始日',
-      width: '10%',
-      dataIndex: 'start_date',
-      fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: '終了日',
-      width: '10%',
-      dataIndex: 'end_date',
-      fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: 'スターテス',
-      width: '7%',
-      dataIndex: 'status',
-      fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: 'カテゴリ',
-      width: '10%',
-      dataIndex: 'category_name',
-      fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: 'マイルストーン',
-      fixed: '30%',
-      dataIndex: 'milestone_name',
-      width: 80,
-      render: (taskName) => (
-        <a>{taskName}</a>
-      ),
-      onCell: handleRow,
-    },
-    {
-      title: '担当者',
-      width: '17%',
-      dataIndex: 'managers',
-      fixed: 'left',
-      render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
-      onCell: handleRow,
-    },
-    {
-      title: 'アクション',
-      key: 'action',
-      width: '10%',
-      render: (_text, record) => users === 'superadmin' && (
-        <Space size="middle">
-          <EditTwoTone
-            id={record.id}
-            onClick={() => {
-              handleEdit(record.idtask)
-            }}
-          />
+      {
+        title: '開始日',
+        width: '10%',
+        dataIndex: 'start_date',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: '終了日',
+        width: '10%',
+        dataIndex: 'end_date',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'スターテス',
+        width: '7%',
+        dataIndex: 'status',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'カテゴリ',
+        width: '10%',
+        dataIndex: 'category_name',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'マイルストーン',
+        fixed: '30%',
+        dataIndex: 'milestone_name',
+        width: 80,
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: '担当者',
+        width: '17%',
+        dataIndex: 'managers',
+        fixed: 'left',
+        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
+        onCell: handleRow,
+      },
+      {
+        title: 'アクション',
+        key: 'action',
+        width: '10%',
+        render: (_text, record) => users === 'superadmin' && (
+          <Space size="middle">
+            <EditTwoTone
+              id={record.id}
+              onClick={() => {
+                handleEdit(record.idtask)
+              }}
+            />
 
-          <DeleteTwoTone
-            id={record.id}
-            onClick={() => {
-              modelDelete(record.idtask)
-            }}
-          />
-        </Space>
-      ),
-    },
-  ] : [{
-    title: 'タスク名',
-    width: '15%',
-    dataIndex: 'taskName',
-    fixed: 'left',
-    ellipsis: {
-      showTitle: false,
-    },
-    render: (taskName) => (
-      <Tooltip title={taskName}>
-        <a>{taskName}</a>
-      </Tooltip>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: '開始日',
-    width: '10%',
-    dataIndex: 'start_date',
-    fixed: 'left',
-    render: (taskName) => (
-      <a>{taskName}</a>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: '終了日',
-    width: '10%',
-    dataIndex: 'end_date',
-    fixed: 'left',
-    render: (taskName) => (
-      <a>{taskName}</a>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: 'スターテス',
-    width: '7%',
-    dataIndex: 'status',
-    fixed: 'left',
-    render: (taskName) => (
-      <a>{taskName}</a>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: 'カテゴリ',
-    width: '10%',
-    dataIndex: 'category_name',
-    fixed: 'left',
-    render: (taskName) => (
-      <a>{taskName}</a>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: 'マイルストーン',
-    fixed: '30%',
-    dataIndex: 'milestone_name',
-    width: 80,
-    render: (taskName) => (
-      <a>{taskName}</a>
-    ),
-    onCell: handleRow,
-  },
-  {
-    title: '担当者',
-    width: '17%',
-    dataIndex: 'managers',
-    fixed: 'left',
-    render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
-    onCell: handleRow,
-  },
-  ]
+            <DeleteTwoTone
+              id={record.id}
+              onClick={() => {
+                modelDelete(record.idtask)
+              }}
+            />
+          </Space>
+        ),
+      },
+    ]
+    : [
+      {
+        title: 'タスク名',
+        width: '15%',
+        dataIndex: 'taskName',
+        fixed: 'left',
+        ellipsis: {
+          showTitle: false,
+        },
+        render: (taskName) => (
+          <Tooltip title={taskName}>
+            <a>{taskName}</a>
+          </Tooltip>
+        ),
+        onCell: handleRow,
+      },
+      {
+        title: '開始日',
+        width: '10%',
+        dataIndex: 'start_date',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: '終了日',
+        width: '10%',
+        dataIndex: 'end_date',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'スターテス',
+        width: '7%',
+        dataIndex: 'status',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'カテゴリ',
+        width: '10%',
+        dataIndex: 'category_name',
+        fixed: 'left',
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: 'マイルストーン',
+        fixed: '30%',
+        dataIndex: 'milestone_name',
+        width: 80,
+        render: (taskName) => <a>{taskName}</a>,
+        onCell: handleRow,
+      },
+      {
+        title: '担当者',
+        width: '17%',
+        dataIndex: 'managers',
+        fixed: 'left',
+        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
+        onCell: handleRow,
+      },
+    ]
   // data of table get from database
 
   useEffect(async () => {
     setLoading(true)
     initPagination()
     await jftask(router.query.JFid).then((response) => {
-      addDataOfTable(response)
+      loadTableData(response)
     })
+    setLoading(false)
     await getCategories().then((response) => {
-      addOptionCategory(response)
+      loadCategoryOptions(response)
     })
     await getAllMileStone().then((response) => {
-      addOptionMilestone(response)
+      loadMilestoneOptions(response)
     })
     await webInit()
       .then((response) => {
         setUsers(response.data.auth.user.role)
       })
       .catch((error) => Error(error.toString()))
-    setLoading(false)
   }, [])
 
   // Search data on Table
@@ -434,12 +395,8 @@ function TaskList() {
         ? task.taskName.toLowerCase().includes(value)
             || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -458,12 +415,8 @@ function TaskList() {
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name),
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
     )
     setTemperaryData(filteredData)
     setLoading(false)
@@ -478,13 +431,11 @@ function TaskList() {
   return (
     <JfLayout id={router.query.JFid} bgr={2}>
       <JfLayout.Main>
+        <h1>タスクー覧</h1>
         <div className="TaskList">
           <div className="space-y-2 justify-center">
             <div className="space-y-2">
               <div className="flex-col space-y-9">
-                <div className="flex items-center space-x-2">
-                  <h1 className="text-3xl float-left">タスクー覧</h1>
-                </div>
                 <div className="flex justify-between">
                   <div className="flex items-center justify-center space-x-1">
                     <div>スターテス</div>
@@ -553,7 +504,7 @@ function TaskList() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="pr-2">表示件数 </span>
+                  <span className="pr-3">表示件数 </span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -564,19 +515,23 @@ function TaskList() {
                   <Popover
                     content={(
                       <>
-                        <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
+                        <h6 className="mb-1" style={{ fontWeight: 700 }}>
+                          カテゴリ
+                        </h6>
 
                         <Select
                           placeholder="カテゴリ"
                           style={{ width: '300px' }}
                           allowClear="true"
                           onChange={handleSelectCategory}
-
                         >
                           {optionCategory}
                         </Select>
 
-                        <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
+                        <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>
+                          マイルストーン
+                          {' '}
+                        </h6>
 
                         <Select
                           placeholder="マイルストーン"
@@ -586,32 +541,28 @@ function TaskList() {
                         >
                           {optionMilestone}
                         </Select>
-
                       </>
-
                     )}
-                    className="mr-5"
+                    className="mr-2"
                     placement="bottomLeft"
                     trigger="click"
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {visible || isFilter ? (
+                    {isFilter || visible ? (
                       <Button
+                        size="large"
                         shape="circle"
-                        style={{ color: '#ffd803' }}
+                        style={{ background: '#ffd803' }}
                         icon={<FilterOutlined id="filter" />}
                       />
                     ) : (
-                      <Button
-                        shape="circle"
-                        icon={<FilterOutlined id="filter" />}
-                      />
+                      <Button size="large" shape="circle" icon={<FilterOutlined id="filter" />} />
                     )}
                   </Popover>
                   <Input
                     size="large"
-                    className="float-right mr-5"
+                    className="mr-3"
                     allowClear="true"
                     prefix={<SearchOutlined />}
                     placeholder="タスク名, 担当者"
@@ -634,9 +585,10 @@ function TaskList() {
               </div>
             </div>
             <Table
+              className="my-5"
               columns={columns}
               dataSource={temperaryData}
-              loading={loading}
+              loading={{ spinning: loading, indicator: loadingIcon }}
               pagination={pagination}
               locale={{
                 emptyText: (

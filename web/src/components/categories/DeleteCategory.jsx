@@ -27,7 +27,7 @@ const DeleteCategory = (props) => {
       icon: <ExclamationCircleOutlined />,
       content: 'このカテゴリを削除してもよろしいですか？',
       okText: '保存',
-      okType: 'danger',
+
       cancelText: 'キャンセル',
       centered: true,
       onOk() {

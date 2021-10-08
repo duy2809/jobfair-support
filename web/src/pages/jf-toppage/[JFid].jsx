@@ -13,18 +13,21 @@ import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
 import { jftask } from '../../api/jf-toppage'
 import SearchSugges from '../../components/search-sugges'
+import Loading from '../../components/loading'
 
 function jftoppage() {
   const [listTask, setlistTask] = useState([])
-
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const idJf = router.query.JFid
   const [user, setUser] = useState(null)
   // const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const fetchTasks = async () => {
+    setLoading(true)
     await jftask(idJf).then((response) => {
       setlistTask(response.data.schedule.tasks)
+      setLoading(false)
     }).catch((error) => {
       console.log(error)
     })
@@ -74,6 +77,7 @@ function jftoppage() {
 
   return (
     <div className="JFTopPage">
+      {loading && <Loading loading={loading} overlay={loading} />}
       <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
           <div className="container">
@@ -106,7 +110,6 @@ function jftoppage() {
                 </div>
               </div>
             </div>
-
           </div>
           {/* <div className="Jf__top">
             <div className="jf__main">
