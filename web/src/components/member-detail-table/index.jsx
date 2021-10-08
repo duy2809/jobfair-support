@@ -91,45 +91,45 @@ class MemberDetailTable extends React.Component {
         />
         <div className="member_table py-3" style={{ width: '650px' }}>
           <Row>
-            <Col span={7} className="text-right align-middle font-bold py-3 pl-5 whitespace-nowrap">
+            <Col span={7} className="text-right font-bold py-3 pl-5">
               フルネーム
             </Col>
             <Col
               offset={1}
-              className="align-middle py-3 text-left "
+              className="py-3 text-left "
             >
               {this.state.member.fullName}
             </Col>
           </Row>
           <Row>
-            <Col span={7} className="text-right align-middle font-bold py-3 pl-5 whitespace-nowrap">
+            <Col span={7} className="text-right font-bold py-3 pl-5">
               メールアドレス
             </Col>
             <Col
               offset={1}
-              className="align-middle py-3 text-left"
+              className="py-3 text-left"
             >
               {this.state.member.email}
             </Col>
           </Row>
           <Row>
-            <Col span={7} className="text-right align-middle font-bold py-3 pl-5 whitespace-nowrap">
+            <Col span={7} className="text-right font-bold py-3 pl-5">
               カテゴリー
             </Col>
             <Col
               offset={1}
-              className="align-middle py-3 text-left"
+              className="py-3 text-left"
             >
               {this.state.listCate}
             </Col>
           </Row>
           <Row>
-            <Col span={7} className="text-right align-middle font-bold py-3 pl-5 whitespace-nowrap">
+            <Col span={7} className="text-right font-bold py-3 pl-5">
               アサインされたJF
             </Col>
             <Col
               offset={1}
-              className="align-middle py-3 text-left"
+              className="py-3 text-left"
             >
               {this.state.listJF}
             </Col>
