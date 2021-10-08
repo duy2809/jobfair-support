@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Avatar } from 'antd'
-import { EditFilled } from '@ant-design/icons'
+import { EditTwoTone } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
+import { useRouter } from 'next/router'
 import Otherlayout from '../../layouts/OtherLayout'
 import { getProfile, getAvatar } from '../../api/profile'
 import Loading from '../../components/loading'
@@ -16,6 +17,7 @@ const Profile = () => {
 
   const [user, setUser] = useState(null)
 
+  const router = useRouter()
   useEffect(async () => {
     setLoading(true)
     setUser(store.getState().get('auth').get('user'))
@@ -36,7 +38,6 @@ const Profile = () => {
 
   return (
     <>
-      {loading && <Loading loading={loading} overlay={loading} />}
       <Otherlayout>
         <Otherlayout.Main>
           {/* <p
@@ -48,56 +49,69 @@ const Profile = () => {
           <h1 className="title">
             プロフィール
           </h1>
-          <div className="grid grid-cols-12 grid-rows-1 gap-2">
-            <div className="row-span-1 col-span-3 justify-self-end">
-              <Avatar
-                size={150}
-                style={{
-                  backgroundColor: '#FFD802',
-                  lineHeight: '100px',
-                  marginRight: '60px',
-                }}
-                src={avatarUser}
-              />
-            </div>
-            <div className="h-80 col-span-6 border-2 border-gray-300">
-              <div className="grid grid-cols-3">
-                <div className="col-start-3 pt-4 justify-self-center">
-                  <div className="flex items-center gap-4 ">
-                    <div>
-                      <EditFilled className="border-2 rounded-full py-1 px-1 border-black" />
+          {loading
+            ? (
+              <div
+                className="flex flex-wrap content-center"
+              >
+                <Loading loading={loading} overlay={loading} />
+              </div>
+            )
+            : (
+              <div className="grid grid-cols-12 grid-rows-1 gap-2">
+                <div className="row-span-1 col-span-3 justify-self-end">
+                  <Avatar
+                    size={150}
+                    style={{
+                      backgroundColor: '#FFD802',
+                      lineHeight: '100px',
+                      marginRight: '60px',
+                    }}
+                    src={avatarUser}
+                  />
+                </div>
+                <div className="h-80 col-span-6 border-2 border-gray-300">
+                  <div className="grid grid-cols-3" style={{ marginLeft: '75%' }}>
+                    <div className="col-start-3 pt-4 justify-self-center">
+                      <div className="flex items-center gap-4 ">
+                        <div>
+                          <EditTwoTone
+                            className="border-2 rounded-full py-1 px-1 border-white"
+                            style={{ fontSize: '18px' }}
+                            onClick={() => {
+                              router.push('/profile/edit')
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <a href="profile/edit" className="text-blue-500">
-                      プロフィール編集
-                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-12 gap-x-4 gap-y-10 text-lg pt-10">
+                    <div className="col-span-3 justify-self-end">
+                      <p style={{ margin: 0 }} className="font-bold">ユーザー名 </p>
+                    </div>
+                    <div className="col-span-6 col-start-5">
+                      <p style={{ marginLeft: -50 }}>{nameUser}</p>
+                    </div>
+
+                    <div className="col-span-3 justify-self-end">
+                      <p style={{ margin: 0 }} className="font-bold">チャットワークID </p>
+                    </div>
+                    <div className="col-span-6 col-start-5">
+                      <p style={{ marginLeft: -50 }}>{chatWorkIdUser}</p>
+                    </div>
+
+                    <div className="col-span-3 justify-self-end">
+                      <p style={{ margin: 0 }} className="font-bold">メール </p>
+                    </div>
+                    <div className="col-span-6 col-start-5">
+                      <p style={{ marginLeft: -50 }}>{emailUser}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-12 gap-x-4 gap-y-10 text-lg pt-10">
-                <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">ユーザー名 </p>
-                </div>
-                <div className="col-span-6 col-start-5">
-                  <p style={{ margin: 0 }}>{nameUser}</p>
-                </div>
-
-                <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">チャットワークID </p>
-                </div>
-                <div className="col-span-6 col-start-5">
-                  <p style={{ margin: 0 }}>{chatWorkIdUser}</p>
-                </div>
-
-                <div className="col-span-3 justify-self-end">
-                  <p style={{ margin: 0 }} className="font-bold">メール </p>
-                </div>
-                <div className="col-span-6 col-start-5">
-                  <p style={{ margin: 0 }}>{emailUser}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            )}
         </Otherlayout.Main>
       </Otherlayout>
     </>
