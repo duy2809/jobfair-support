@@ -46,7 +46,9 @@ function JFList() {
   const [temperaryData, setTemperaryData] = useState()
   const { Option } = Select
   const router = useRouter()
-  const [statusFilter, setStatusFilter] = useState(false)
+  const [statusFilterA, setStatusFilterA] = useState(false)
+  const [statusFilterB, setStatusFilterB] = useState(false)
+  const [statusFilterC, setStatusFilterC] = useState(false)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -256,9 +258,9 @@ function JFList() {
 
   const FilterStudentsNumber = (value) => {
     if (value[1] === 100 && value[0] === 0) {
-      setStatusFilter(false)
+      setStatusFilterA(false)
     } else {
-      setStatusFilter(true)
+      setStatusFilterA(true)
     }
     setRangeStudentsNumber(value)
     const filteredData = originalData.filter(
@@ -281,9 +283,9 @@ function JFList() {
 
   const FilterBussinessesNumber = (value) => {
     if (value[1] === 100 && value[0] === 0) {
-      setStatusFilter(false)
+      setStatusFilterB(false)
     } else {
-      setStatusFilter(true)
+      setStatusFilterB(true)
     }
     setRangeBussinessesNumber(value)
     const filteredData = originalData.filter(
@@ -307,9 +309,9 @@ function JFList() {
 
   const FilterStartDate = (date, dateString) => {
     if (!dateString) {
-      setStatusFilter(false)
+      setStatusFilterC(false)
     } else {
-      setStatusFilter(true)
+      setStatusFilterC(true)
     }
     setStartDate(dateString)
     const filteredData = originalData.filter(
@@ -379,7 +381,7 @@ function JFList() {
                     <Button
                       size="large"
                       shape="circle"
-                      style={{ background: statusFilter || visible ? '#ffd803' : null }}
+                      style={{ background: statusFilterA || statusFilterB || statusFilterC || visible ? '#ffd803' : null }}
                       icon={(
                         <FilterOutlined />
                       )}

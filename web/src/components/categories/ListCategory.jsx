@@ -92,16 +92,13 @@ export default function ListCategories() {
   }, [category])
   return (
     <div className="list-category">
-      <Row style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-        <Col>
-          <h1>カテゴリー覧</h1>
-        </Col>
-      </Row>
+
+      <h1>カテゴリー覧</h1>
 
       <div className="list">
         <div className="flex" style={{ height: '38px' }}>
-          <div className="flex">
-            <div className="flex items-center content-center text-center pr-2">
+          <div className="flex items-center">
+            <div className="flex items-center content-center text-center pr-3">
               <p>表示件数 </p>
             </div>
             &nbsp;
