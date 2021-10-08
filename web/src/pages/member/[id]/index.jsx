@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 
-import MemberDetailTable from '../../../components/member-detail-table'
+import MemberDetailTable from '../../../components/member-detail-table/index1'
 import TaskControl from '../../../components/member-detail-task-control'
 import Layout from '../../../layouts/OtherLayout'
 import { deleteMember } from '~/api/member-detail'

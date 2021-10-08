@@ -14,12 +14,12 @@ export default class TaskControl extends React.Component {
     return (
       <div className="flex justify-center mb-5 ml-40">
         <Link href={`/member/${this.props.id}/tasks`}>
-          <Button type="primary" size="middle" className="mr-2">
+          <Button type="primary" size="large" className="mr-2">
             タスクー覧
           </Button>
         </Link>
         <Link href="/member/gantt-chart">
-          <Button type="primary" size="middle" className="mr-2">
+          <Button type="primary" size="large" className="mr-2">
             ガンチャート
           </Button>
         </Link>

@@ -117,7 +117,9 @@ const index = () => {
         onCancel: () => {},
         centered: true,
         okText: 'はい',
+        okButtonProps: {size: 'large'},
         cancelText: 'いいえ',
+        cancelButtonProps: {size: 'large'}
       })
     }
   }
@@ -346,6 +348,7 @@ const index = () => {
                             ]}
                           >
                             <Input
+                              size="large"
                               type="text"
                               id="validate_name"
                               onBlur={checkIsJFNameExisted}
@@ -531,9 +534,10 @@ const index = () => {
                       </div>
                     </div>
                     {/* 2 button */}
-                    <Form.Item label=" " className="my-10" style={{ marginRight: '30px' }}>
+                    <Form.Item label=" " className="my-10">
                       <Space size={20} className="flex justify-end">
                         <Button
+                          size="large"
                           htmlType="button"
                           className="ant-btn"
                           onClick={cancelConfirmModle}
@@ -544,6 +548,7 @@ const index = () => {
                         </Button>
                         {/* --------------------------- */}
                         <Button
+                          size = "large"
                           type="primary"
                           htmlType="submit"
                           disabled={disableBtn}
