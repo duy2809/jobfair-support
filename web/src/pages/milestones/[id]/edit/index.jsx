@@ -1,26 +1,31 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { useState, useEffect } from 'react'
 import { Form, Input, Button, Select, Modal, notification } from 'antd'
-// import { useRouter } from 'next/router'
-import CancelEditMilestone from '../../../../components/CancelEditMilestone'
-import OtherLayout from '../../../../layouts/OtherLayout'
-import { updateMilestone, getMilestone, getNameExitEdit } from '../../../../api/milestone'
+import { useRouter } from 'next/router'
+import CancelEditMilestone from '~/components/CancelEditMilestone'
+import OtherLayout from '~/layouts/OtherLayout'
+import { updateMilestone, getMilestone, getNameExitEdit } from '~/api/milestone'
+import Loading from '~/components/loading'
 import './styles.scss'
 
-const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
+const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
 const EditMilestonePage = () => {
-  // {query['id']}
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
   const [typePeriodInput, setTypePeriodInput] = useState(0)
   const [checkSpace, setcheckSpace] = useState(false)
   const [form] = Form.useForm()
   const [errorUnique, setErrorUnique] = useState(false)
+  const [id, setId] = useState(1)
+  const router = useRouter()
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const { Option } = Select
+  const [loading, setLoading] = useState(true)
 
-  // fetch data
   useEffect(async () => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
+    setId(router.query.id)
     getMilestone(id).then((res) => {
       setNameInput(res.data.name)
       setTimeInput(res.data.period.toString())
@@ -30,19 +35,18 @@ const EditMilestonePage = () => {
         name: res.data.name,
         time: res.data.period,
       })
+      setLoading(false)
     })
   }, [])
-
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const { Option } = Select
 
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 0,
-
     })
-    setTimeout(() => { window.location.href = '/milestones' }, 3000)
+    setTimeout(() => {
+      window.location.href = '/milestones'
+    }, 3000)
   }
 
   const onValueNameChange = (e) => {
@@ -59,7 +63,6 @@ const EditMilestonePage = () => {
     form.setFieldsValue({
       time: toHalfWidth(e.target.value),
     })
-    console.log(e.target.value)
     const specialCharRegex = new RegExp(/^([^0-9]*)$/)
     if (specialCharRegex.test(e.target.value)) {
       form.setFields([
@@ -72,11 +75,15 @@ const EditMilestonePage = () => {
   }
 
   const showModal = () => {
-    if (nameInput !== '' && timeInput !== '' && timeInput >= 0 && checkSpace === false && errorUnique === false) {
+    if (
+      nameInput !== ''
+      && timeInput !== ''
+      && timeInput >= 0
+      && checkSpace === false
+      && errorUnique === false
+    ) {
       setIsModalVisible(true)
     } else {
-      const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-      const id = `${temp[1]}`
       const name = nameInput
       if (name !== '') {
         getNameExitEdit(id, name).then((res) => {
@@ -96,24 +103,28 @@ const EditMilestonePage = () => {
 
   const handleOk = () => {
     setIsModalVisible(false)
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
+    setLoading(true)
     updateMilestone(id, {
       name: nameInput,
       period: timeInput,
       is_week: typePeriodInput,
-    }).then(() => openNotificationSuccess())
+    })
+      .then(() => {
+        openNotificationSuccess()
+      })
       .catch((error) => {
-        if (JSON.parse(error.response.request.response).errors.name[0] === 'The name has already been taken.') {
+        if (
+          JSON.parse(error.response.request.response).errors.name[0]
+          === 'The name has already been taken.'
+        ) {
           notification.error({
             message: 'このマイルストーン名は存在しています',
           })
         }
       })
+    setLoading(false)
   }
   const onBlur = () => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
     const name = nameInput
     if (name !== '') {
       getNameExitEdit(id, name).then((res) => {
@@ -144,19 +155,16 @@ const EditMilestonePage = () => {
     >
       <Option value="0">日後</Option>
       <Option value="1">週間後</Option>
-
     </Select>
   )
   const specialCharRegex = new RegExp('[ 　]')
 
   return (
     <div className="edit-milestone">
+      <Loading loading={loading} overlay={loading} />
       <OtherLayout>
         <OtherLayout.Main>
-          {/* <p className="title mb-8" style={{ color: '#2d334a', fontSize: '36px' }}>マイルストーン編集</p> */}
-          <h1 className="title">
-            マイルストーン編集
-          </h1>
+          <h1 className="title">マイルストーン編集</h1>
           <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
             <Form
               form={form}
@@ -172,9 +180,7 @@ const EditMilestonePage = () => {
               size="large"
             >
               <Form.Item
-                label={
-                  <p className="font-bold text-right">マイルストーン名</p>
-                }
+                label={<p className="font-bold text-right">マイルストーン名</p>}
                 name="name"
                 rules={[
                   {
@@ -185,12 +191,12 @@ const EditMilestonePage = () => {
                     validator(_, value) {
                       if (specialCharRegex.test(value)) {
                         setcheckSpace(true)
-                        return Promise.reject(new Error('マイルストーン名はスペースが含まれていません。'))
+                        return Promise.reject(
+                          new Error('マイルストーン名はスペースが含まれていません。'),
+                        )
                       }
-
                       return Promise.resolve()
                     },
-
                   }),
                 ]}
               >
@@ -204,34 +210,24 @@ const EditMilestonePage = () => {
               </Form.Item>
 
               <Form.Item
-                label={
-                  <p className="font-bold text-right">期日</p>
-                }
+                label={<p className="font-bold text-right">期日</p>}
                 name="time"
                 rules={[
                   {
-
                     required: true,
                     message: 'この項目は必須です。',
-
                   },
-
                   {
                     pattern: /^(?:\d*)$/,
                     message: '０以上の半角の整数で入力してください。',
                   },
-
                   () => ({
                     validator(_, value) {
-                    //   if (value < 0) {
-                    //     return Promise.reject(new Error('半角の整数で入力してください。'))
-                    //   }
                       if (specialCharRegex.test(value)) {
                         setcheckSpace(true)
                       }
                       return Promise.resolve()
                     },
-
                   }),
                 ]}
               >
@@ -242,7 +238,6 @@ const EditMilestonePage = () => {
                   addonAfter={selectAfter}
                   onChange={onValueTimeChange}
                 />
-
               </Form.Item>
 
               <Modal
@@ -252,6 +247,7 @@ const EditMilestonePage = () => {
                 onCancel={handleCancel}
                 cancelText="いいえ"
                 okText="はい"
+                centered
               >
                 <p className="mb-5">このまま保存してもよろしいですか？ </p>
               </Modal>

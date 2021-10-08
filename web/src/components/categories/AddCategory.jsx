@@ -5,16 +5,17 @@ import 'antd/dist/antd.css'
 import React, { useState } from 'react'
 import { Modal, Button, notification, Form, Input } from 'antd'
 import { addCategory, checkUniqueAdd } from '../../api/category'
+import Loading from '../loading'
 
 const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
-  const [category, setCategory] = useState({ })
+  const [category, setCategory] = useState({})
   const [form] = Form.useForm()
   const specialCharRegex = new RegExp('[ 　]')
-  const [checkSpace, setcheckSpace] = useState(false)
+  const [checkSpace, setCheckSpace] = useState(false)
   const [errorUnique, setErrorUnique] = useState(true)
-  const [reload, setReload] = useState(false)
   const role = props.role
+  const [loading, setLoading] = useState(false)
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -33,22 +34,24 @@ const AddCategory = (props) => {
       message: '変更は正常に保存されました。',
       duration: 3,
     })
-    // setTimeout(() => { window.location.reload() }, 1000)
     setReloadPage()
     console.log('success')
   }
 
   const handleOk = () => {
     if (role === 'superadmin') {
+      setLoading(true)
       addCategory({
         category_name: category,
-      }).then(() => openNotificationSuccess())
+      })
+        .then(() => openNotificationSuccess())
         .catch((error) => {
           notification.error({
             message: 'このカテゴリ名は存在しています',
             duration: 3,
           })
         })
+      setLoading(false)
     }
   }
 
@@ -56,7 +59,6 @@ const AddCategory = (props) => {
     setIsModalVisible(false)
   }
 
-  // onBlur
   const onBlur = () => {
     const name = category
     if (name !== '') {
@@ -76,10 +78,8 @@ const AddCategory = (props) => {
     }
   }
 
-  // add
   const onValueNameChange = (e) => {
-    // setErrorUnique(false)
-    setcheckSpace(false)
+    setCheckSpace(false)
     setCategory(toHalfWidth(e.target.value))
     form.setFieldsValue({
       name: toHalfWidth(e.target.value),
@@ -88,8 +88,12 @@ const AddCategory = (props) => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} className="add-btn text-base" style={{ letterSpacing: '-0.1em' }}>
-        追加
+      <Button
+        type="primary"
+        onClick={showModal}
+        size="large"
+      >
+        <span>追加</span>
       </Button>
       <Modal
         title="カテゴリ追加"
@@ -101,7 +105,7 @@ const AddCategory = (props) => {
         okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
         centered
       >
-
+        <Loading loading={loading} overlay={loading} />
         <Form
           form={form}
           layout="horizontal"
@@ -114,9 +118,7 @@ const AddCategory = (props) => {
           colon={false}
         >
           <Form.Item
-            label={
-              <span className="font-bold">カテゴリ名</span>
-            }
+            label={<span className="font-bold">カテゴリ名</span>}
             name="name"
             rules={[
               {
@@ -126,7 +128,7 @@ const AddCategory = (props) => {
               () => ({
                 validator(_, value) {
                   if (specialCharRegex.test(value)) {
-                    setcheckSpace(true)
+                    setCheckSpace(true)
                     return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                   }
                   return Promise.resolve()

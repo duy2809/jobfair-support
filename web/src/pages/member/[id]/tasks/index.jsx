@@ -8,6 +8,7 @@ import { formatDate } from '~/utils/utils'
 import * as Extensions from '../../../../utils/extensions'
 import { MemberApi } from '~/api/member'
 import './style.scss'
+import Loading from '../../../../components/loading'
 
 const columns = [
   {
@@ -45,7 +46,7 @@ function TaskList() {
   const [tasks, setTasks] = useState([])
   const [filteredData, setFilteredData] = useState([])
   const [itemCount, setItemCount] = useState(10)
-  const [dataLoading, setDataLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [id, setID] = useState(0)
   const [pagination, setPagination] = useState({
     position: ['bottomCenter'],
@@ -115,7 +116,7 @@ function TaskList() {
   }
 
   const fetchData = useCallback(() => {
-    setDataLoading(true)
+    setLoading(true)
     initPagination()
     MemberApi.getTasksOfMember(router.query.id)
       .then((response) => {
@@ -123,10 +124,10 @@ function TaskList() {
         const { data } = response
         setFilteredData(data)
         setTasks(data)
-        setDataLoading(false)
+        setLoading(false)
       })
       .catch(() => {
-        setDataLoading(false)
+        setLoading(false)
       })
   })
 
@@ -160,125 +161,121 @@ function TaskList() {
     handleInput()
   }, [optionStatus, searchNameValue, searchDateValue])
   return (
-    <Layout>
-      <Layout.Main>
-        <div>
-          <Button
-            type="primary"
-            className="mb-5"
-            htmlType="button"
-            enabled
-            onClick={handleBackButton}
-          >
-            戻る
-          </Button>
-        </div>
-        <div className="flex flex-col h-full items-center justify-center bg-white-background">
-          <h1 className="m-0 flex justify-start w-full mb-5">
-            メンバ詳細（タスク一覧）
-          </h1>
-          <div className="text-xl w-full items-center">
-            <div className="flex items-center">
-              <div className="my-5 mr-5">ステータス:</div>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === 'すべて' ? 'option-active' : ''
-                }`}
-              >
-                すべて
-              </Button>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === '未着手' ? 'option-active' : ''
-                }`}
-              >
-                未着手
-              </Button>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === '進行中' ? 'option-active' : ''
-                }`}
-              >
-                進行中
-              </Button>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === '完 了' ? 'option-active' : ''
-                }`}
-              >
-                完了
-              </Button>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === '中 断' ? 'option-active' : ''
-                }`}
-              >
-                中断
-              </Button>
-              <Button
-                onClick={handleSelectStatus}
-                className={`border-0 mx-4 ${
-                  optionStatus === '未完了' ? 'option-active' : ''
-                }`}
-              >
-                未完了
-              </Button>
-            </div>
-            <DatePicker
-              className=""
-              help="Please select the correct date"
-              format={Extensions.dateFormat}
-              placeholder="終了時間"
-              onChange={handleInputDate}
-            />
+    <div>
+      {loading && <Loading loading={loading} overlay={loading} />}
+      <Layout>
+        <Layout.Main>
+          <div>
+            <Button
+              type="primary"
+              className="mb-5"
+              htmlType="button"
+              enabled
+              onClick={handleBackButton}
+            >
+              戻る
+            </Button>
           </div>
-          <div className="flex w-full items-center justify-between mt-10">
-            <div>
-              <span>表示件数: </span>
-              <Select
-                value={itemCount}
-                onChange={handleSelect}
-              >
-                <Option value={10}>10</Option>
-                <Option value={25}>25</Option>
-                <Option value={50}>50</Option>
-              </Select>
-            </div>
-            <div>
-              <Input
-                onChange={handleInputName}
-                placeholder="タスク名"
-                prefix={<SearchOutlined />}
+          <div className="flex flex-col h-full items-center justify-center bg-white-background">
+            <h1 className="m-0 flex justify-start w-full mb-5">
+              メンバ詳細（タスク一覧）
+            </h1>
+            <div className="text-xl w-full items-center">
+              <div className="flex items-center">
+                <div className="my-5 mr-5">ステータス:</div>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
+                  }`}
+                >
+                  すべて
+                </Button>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''
+                  }`}
+                >
+                  未着手
+                </Button>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
+                  }`}
+                >
+                  進行中
+                </Button>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '完 了' ? 'option-active' : ''
+                  }`}
+                >
+                  完了
+                </Button>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''
+                  }`}
+                >
+                  中断
+                </Button>
+                <Button
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '未完了' ? 'option-active' : ''
+                  }`}
+                >
+                  未完了
+                </Button>
+              </div>
+              <DatePicker
+                className=""
+                help="Please select the correct date"
+                format={Extensions.dateFormat}
+                placeholder="終了時間"
+                onChange={handleInputDate}
               />
             </div>
-          </div>
-          <Table
-            className="w-full rounded-3xl table-styled my-5 table-striped-rows"
-            columns={columns}
-            dataSource={filteredData}
-            rowKey={(record) => record.id}
-            scroll={{ y: 360 }}
-            onRow={handleRow}
-            onChange={handleChange}
-            loading={dataLoading}
-            pagination={pagination}
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="該当結果が見つかりませんでした"
+            <div className="flex w-full items-center justify-between mt-10">
+              <div>
+                <span>表示件数: </span>
+                <Select
+                  value={itemCount}
+                  onChange={handleSelect}
+                >
+                  <Option value={10}>10</Option>
+                  <Option value={25}>25</Option>
+                  <Option value={50}>50</Option>
+                </Select>
+              </div>
+              <div>
+                <Input
+                  onChange={handleInputName}
+                  placeholder="タスク名"
+                  prefix={<SearchOutlined />}
                 />
-              ),
-            }}
-          />
-        </div>
-      </Layout.Main>
-    </Layout>
+              </div>
+            </div>
+            <Table
+              className="w-full rounded-3xl table-styled my-5 table-striped-rows"
+              columns={columns}
+              dataSource={filteredData}
+              rowKey={(record) => record.id}
+              scroll={{ y: 360 }}
+              onRow={handleRow}
+              onChange={handleChange}
+              pagination={pagination}
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="該当結果が見つかりませんでした"
+                  />
+                ),
+              }}
+            />
+          </div>
+        </Layout.Main>
+      </Layout>
+    </div>
   )
 }
 

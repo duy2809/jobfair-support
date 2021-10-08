@@ -15,6 +15,7 @@ import {
 import { webInit } from '../../../api/web-init'
 import axios from '../../../api/axios'
 import './styles.scss'
+import Loading from '../../../components/loading'
 
 const EditProfilePage = () => {
   const [nameInput, setNameInput] = useState('')
@@ -26,6 +27,7 @@ const EditProfilePage = () => {
   const [preview, setPreview] = useState()
   const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   webInit().then((res) => {
@@ -37,6 +39,7 @@ const EditProfilePage = () => {
   }, [])
 
   const updateAvt = async () => {
+    setLoading(true)
     const formData = new FormData()
     formData.append('avatar', image)
 
@@ -52,6 +55,7 @@ const EditProfilePage = () => {
         },
       },
     )
+    setLoading(false)
     return data
   }
 
@@ -66,6 +70,7 @@ const EditProfilePage = () => {
   }, [image])
 
   useEffect(async () => {
+    setLoading(true)
     const resId = await webInit()
     const id = resId.data.auth.user.id
     const result = await getProfile(id)
@@ -79,9 +84,11 @@ const EditProfilePage = () => {
       chatwork: data.chatwork_id,
       email: data.email,
     })
+    setLoading(false)
   }, [])
 
   const fetchData = async (term) => {
+    setLoading(true)
     const resId = await webInit()
     const id = resId.data.auth.user.id
     const resCur = await getProfile(id)
@@ -98,6 +105,7 @@ const EditProfilePage = () => {
         },
       ])
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -120,13 +128,10 @@ const EditProfilePage = () => {
   }
 
   const handleOk = async () => {
-    if (
-      nameInput === ''
-      || emailInput === ''
-      || idChatWorkInput === ''
-      || isDisable === true
-    ) {
+    setLoading(true)
+    if (nameInput === '' || emailInput === '' || idChatWorkInput === '' || isDisable === true) {
       setIsDisable(true)
+      setLoading(false)
     } else {
       let avtPath = pathName
       if (image) {
@@ -141,6 +146,7 @@ const EditProfilePage = () => {
         avatar: avtPath,
       })
       openNotificationSuccess()
+      setLoading(false)
     }
   }
 
@@ -192,6 +198,7 @@ const EditProfilePage = () => {
 
   return (
     <div>
+      {loading && <Loading loading={loading} overlay={loading} />}
       <Otherlayout>
         <Otherlayout.Main>
           <h1>プロフィール編集</h1>

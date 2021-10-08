@@ -171,13 +171,16 @@ const MilestonePage = () => {
       cancelText: 'いいえ',
     })
   }
-
+  const handleEdit = (idML) => {
+    window.location.href = `/milestones/${idML}/edit`
+  }
   const columns = [
     {
       title: 'マイルストーン一名',
       dataIndex: 'name',
-      render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+      render: (taskName) => <a>{taskName}</a>,
       width: '60%',
+
     },
     {
       title: '期日',
@@ -185,7 +188,7 @@ const MilestonePage = () => {
       width: `${role === 'superadmin' ? '30%' : '50%'}`,
       render: (period) => {
         const { numOfDays, type } = period
-        return convertPeriod(numOfDays, type)
+        return <a>{convertPeriod(numOfDays, type)}</a>
       },
     },
     {
@@ -197,11 +200,7 @@ const MilestonePage = () => {
           <EditTwoTone
             id={record.id}
             onClick={() => {
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                edit: true,
-              }))
+              handleEdit(record.id)
             }}
           />
 
@@ -255,7 +254,7 @@ const MilestonePage = () => {
 
             <Row style={{ justifyContent: 'space-between' }}>
               <Col>
-                <span style={{ paddingRight: '0.5rem' }} className="dropdown-label">
+                <span className="dropdown-label mr-3">
                   表示件数
                 </span>
                 <Select
@@ -269,17 +268,17 @@ const MilestonePage = () => {
                   <Select.Option value="50">50</Select.Option>
                 </Select>
               </Col>
-              <Col>
+              <div className="searchAdd">
                 <Input
                   placeholder="マイルストーン一名, 期日"
                   onChange={(e) => searchItemHandler(e)}
-                  style={{ width: 250, marginRight: 25 }}
                   value={searchValue}
                   prefix={<SearchOutlined />}
                 />
                 {role === 'superadmin' && (
                   <Button
-                    className="ant-btn"
+                    size="large"
+                    className="ant-btn ml-3"
                     style={{ letterSpacing: '-0.1em' }}
                     type="primary"
                     onClick={() => {
@@ -292,7 +291,7 @@ const MilestonePage = () => {
                     追加
                   </Button>
                 )}
-              </Col>
+              </div>
             </Row>
 
             <div className="box-body">

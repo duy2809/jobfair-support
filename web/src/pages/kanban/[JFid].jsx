@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { DragDropContext } from 'react-beautiful-dnd'
-import { Modal, Input, Spin } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Modal, Input } from 'antd'
+// import { LoadingOutlined } from '@ant-design/icons'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { ReactReduxContext } from 'react-redux'
@@ -9,6 +9,7 @@ import JfLayout from '../../layouts/JFLayout'
 import 'antd/dist/antd.css'
 import './style.scss'
 import { getTaskByJfId, updateTask, getJobfair } from '../../api/task-kanban'
+import Loading from '../../components/loading'
 
 const singleTask = (type, taskIds) => {
   const obj = {}
@@ -32,7 +33,7 @@ export default function KanBan() {
   const idJf = router.query.JFid
 
   const [isLoading, setIsLoading] = useState(false)
-  const [loadingFirst, setLoadingFirst] = useState(true)
+  // const [loadingFirst, setLoadingFirst] = useState(true)
   const [task, setTask] = useState([])
   const [backupData, setBackupData] = useState([])
   const [visible, setVisible] = useState(false)
@@ -53,10 +54,7 @@ export default function KanBan() {
 
   const fetchData = async () => {
     try {
-      if (loadingFirst) {
-        setIsLoading(true)
-        setLoadingFirst(false)
-      }
+      setIsLoading(true)
       let { data } = await getTaskByJfId(idJf)
       const jobfairName = data[0].jobfairName
 
@@ -292,10 +290,11 @@ export default function KanBan() {
     fetchData()
   }, [])
 
-  const antIcon = <LoadingOutlined style={{ fontSize: 120 }} spin />
+  // const antIcon = <LoadingOutlined style={{ fontSize: 120 }} spin />
 
   return (
     <div className="container__kanban">
+      {isLoading && <Loading loading={isLoading} overlay={isLoading} />}
       <JfLayout style={{ padding: '0px' }} id={idJf} bgr={4}>
         <JfLayout.Main>
           <div
@@ -305,39 +304,31 @@ export default function KanBan() {
               justifyContent: 'space-between',
             }}
           >
-            {isLoading && (
-              <Spin indicator={antIcon} style={{ marginTop: '50px' }} />
-            )}
-            {!isLoading && (
-              <>
-                <h1>
-                  {task.jobfairName}
-                  {' '}
-                  (カンバン)
-                </h1>
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <div
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
-                  >
-                    {task?.columnOrder?.map((columnId) => {
-                      const column = task.columns[columnId]
-                      const tasks = column.taskIds.map(
-                        (taskId) => task.tasks[taskId],
-                      )
-                      return (
-                        <Column
-                          key={column.id}
-                          column={column}
-                          tasks={tasks}
-                          isControllable={isControllable}
-                        />
-                      )
-                    })}
-                  </div>
-                </DragDropContext>
-              </>
-            )}
-
+            <h1>
+              {task.jobfairName}
+              {' '}
+              (カンバン)
+            </h1>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <div
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                {task?.columnOrder?.map((columnId) => {
+                  const column = task.columns[columnId]
+                  const tasks = column.taskIds.map(
+                    (taskId) => task.tasks[taskId],
+                  )
+                  return (
+                    <Column
+                      key={column.id}
+                      column={column}
+                      tasks={tasks}
+                      isControllable={isControllable}
+                    />
+                  )
+                })}
+              </div>
+            </DragDropContext>
             <Modal
               centered="true"
               title="理由を入力する"
