@@ -62,6 +62,7 @@ const JfLayout = ({ children, id, bgr }) => {
             left: 0,
             zIndex: 100,
           }}
+          className="layout-icon"
           trigger={null}
           collapsible
           collapsed={collapsed}

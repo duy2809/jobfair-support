@@ -41,7 +41,8 @@ function TaskList() {
     showSizeChanger: false,
     pageSize: 10,
   })
-  const [isFilter, setIsFilter] = useState(false)
+  const [isFilterCA, setIsFilterCA] = useState(false)
+  const [isFilterMI, setIsFilterMI] = useState(false)
   const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(false)
   const [originalData, setOriginalData] = useState()
@@ -175,8 +176,8 @@ function TaskList() {
   }
   const handleSelectCategory = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterCA(true)
+    } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
       (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
@@ -192,8 +193,8 @@ function TaskList() {
 
   const handlSelectMilestone = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterMI(true)
+    } else setIsFilterMI(false)
     setMilestone(value)
     const filteredData = originalData.filter(
       (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
@@ -503,7 +504,7 @@ function TaskList() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex items-center">
                   <span className="pr-3">表示件数 </span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
@@ -549,7 +550,7 @@ function TaskList() {
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {isFilter || visible ? (
+                    {(isFilterCA || isFilterMI) || visible ? (
                       <Button
                         size="large"
                         shape="circle"

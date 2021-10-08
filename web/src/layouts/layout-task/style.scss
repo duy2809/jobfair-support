@@ -11,6 +11,9 @@
     .ant-layout-sider .ant-layout-sider-dark{
         background-color: #e3f6f5 !important;
     }
+    .ant-layout {
+        background: white;
+    }
     .ant-menu-dark.ant-menu-inline,
     .ant-menu-dark.ant-menu-vertical,
     .ant-menu-dark.ant-menu-vertical-left,
@@ -98,7 +101,7 @@
     }
     .anticon,
     .anticon-home,
-    .ant-menu-item-icon {
+    .ant-menu-item-icon .layout-icon {
         font-size: 25px !important;
     }
 
