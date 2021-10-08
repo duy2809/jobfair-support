@@ -117,9 +117,9 @@ const index = () => {
         onCancel: () => {},
         centered: true,
         okText: 'はい',
-        okButtonProps: {size: 'large'},
+        okButtonProps: { size: 'large' },
         cancelText: 'いいえ',
-        cancelButtonProps: {size: 'large'}
+        cancelButtonProps: { size: 'large' },
       })
     }
   }
@@ -548,7 +548,7 @@ const index = () => {
                         </Button>
                         {/* --------------------------- */}
                         <Button
-                          size = "large"
+                          size="large"
                           type="primary"
                           htmlType="submit"
                           disabled={disableBtn}
