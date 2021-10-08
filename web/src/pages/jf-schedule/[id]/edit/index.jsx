@@ -115,7 +115,7 @@ function editJobfairSchedule() {
                   setTimeout(() => {
                     setIsModalVisible(false)
                     openNotification('success', '変更は正常に保存されました。')
-                  }, 1000)
+                  }, 3000)
                 }
               })
               .catch()
@@ -130,7 +130,7 @@ function editJobfairSchedule() {
             setTimeout(() => {
               setIsModalVisible(false)
               openNotification('success', '変更は正常に保存されました。')
-            }, 1000)
+            }, 3000)
           }
         })
         .catch()
