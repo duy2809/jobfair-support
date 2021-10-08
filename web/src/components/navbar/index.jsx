@@ -83,20 +83,20 @@ export default function Navbar() {
             </a>
           </Link>
         </div>
-        <div className="flex items-center ml-6">
-          <div className="px-8">
+        <div className="flex items-center" style={{ marginLeft: '51px' }}>
+          <div className="px-8" style={{ minWidth: '140px' }}>
             <Link href="/jobfairs">
               <a className="font-bold text-xl rounded-md py-2 px-5">JF</a>
             </Link>
           </div>
-          <div className="px-8">
+          <div className="px-8" style={{ minWidth: '140px' }}>
             <Link href="/member">
               <a href="" className="font-bold text-xl">
                 メンバ
               </a>
             </Link>
           </div>
-          <div className="px-8">
+          <div className="px-8" style={{ minWidth: '140px' }}>
             <Dropdown overlay={moreNavbarOptions} trigger={['click']}>
               <div className="cursor-pointer">
                 <span className="font-bold text-xl">その他</span>
