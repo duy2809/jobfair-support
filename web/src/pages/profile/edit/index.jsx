@@ -229,6 +229,7 @@ const EditProfilePage = () => {
                 </div>
                 <ButtonChangePassword />
               </div>
+              <div />
               <div className="container-form">
                 <div className="flex my-14">
                   <Form
@@ -355,20 +356,22 @@ const EditProfilePage = () => {
                     </Form.Item>
                   </Form>
                 </div>
+                <div className="container-btn justify-end gap-1 w-full">
+                  <CancelEditProfile />
+                  <Button
+                    size="large"
+                    type="primary"
+                    className="text-base px-9"
+                    htmlType="submit"
+                    onClick={handleOk}
+                  >
+                    保存
+                  </Button>
+                </div>
               </div>
+
             </div>
-            <div className="container-btn justify-end gap-1">
-              <CancelEditProfile />
-              <Button
-                size="large"
-                type="primary"
-                className="text-base px-9 mr-20"
-                htmlType="submit"
-                onClick={handleOk}
-              >
-                保存
-              </Button>
-            </div>
+
           </div>
         </Otherlayout.Main>
       </Otherlayout>
