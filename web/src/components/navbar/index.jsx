@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <div className="flex justify-between items-center border-2 navbar select-none shadow-md relative" style={{ zIndex: '1000' }}>
       <div className="flex">
-        <div style={{ width: '13.5rem', paddingLeft: '3px' }} sty>
+        <div style={{ width: '13.5rem', paddingLeft: '3px' }}>
           <Link href="/top-page">
             <a>
               <img src="/images/5.svg" alt="logo" />
@@ -96,7 +96,7 @@ export default function Navbar() {
               </a>
             </Link>
           </div>
-          <div className="px-8" style={{ minWidth: '140px' }}>
+          <div className="px-8 ml-2" style={{ minWidth: '140px' }}>
             <Dropdown overlay={moreNavbarOptions} trigger={['click']}>
               <div className="cursor-pointer">
                 <span className="font-bold text-xl">その他</span>
