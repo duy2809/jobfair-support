@@ -26,7 +26,7 @@ class JfScheduleCancelButton extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button size="middle" onClick={this.showModal} className="w-32">
+        <Button size="large" onClick={this.showModal} className="w-32">
           キャンセル
         </Button>
         <Modal
@@ -36,10 +36,10 @@ class JfScheduleCancelButton extends React.Component {
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
-            <Button size="middle" key="back" onClick={this.handleCancel}>
+            <Button size="large" key="back" onClick={this.handleCancel}>
               いいえ
             </Button>,
-            <Button size="middle" key="submit" type="primary" onClick={this.handleOk}>
+            <Button size="large" key="submit" type="primary" onClick={this.handleOk}>
               はい
             </Button>,
           ]}
