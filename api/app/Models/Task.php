@@ -70,4 +70,9 @@ class Task extends Model
     {
         return $this->belongsTo(TemplateTask::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
