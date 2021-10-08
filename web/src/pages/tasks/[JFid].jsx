@@ -504,7 +504,7 @@ function TaskList() {
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex items-center">
                   <span className="pr-3">表示件数 </span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>

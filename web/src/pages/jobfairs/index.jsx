@@ -368,8 +368,8 @@ function JFList() {
                 <h1>JF一覧</h1>
               </div>
               <div className="flex items-center justify-between">
-                <div className="items-center">
-                  <span className="hidden md:inline pr-2">表示件数</span>
+                <div className="flex items-center">
+                  <span className="pr-3">表示件数</span>
                   <Select value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
