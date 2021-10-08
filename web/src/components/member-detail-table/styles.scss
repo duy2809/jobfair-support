@@ -7,17 +7,7 @@
   .border_gray {
     @apply border-blue-900;
   }
-
-  th {
-    @apply text-right text-lg;
-    height: 52px;
-    padding-left: 2rem;
-  }
-
-  tr {
-    @apply text-left text-lg;
-  }
-
+  
   img {
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.2);
   }
