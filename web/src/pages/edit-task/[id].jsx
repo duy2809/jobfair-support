@@ -240,7 +240,9 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       message: '変更は正常に保存されました。',
       onClick: () => {},
+      duration: 3,
     })
+    setTimeout(() => { router.push(`/task-detail/${idTask}`) }, 3000)
   }
   const onFinishSuccess = async (values) => {
     let checkName = false
@@ -296,7 +298,6 @@ function TaskList() {
           .then((response) => {
             saveNotification()
             console.log(response.data)
-            router.push(`/task-detail/${idTask}`)
           })
           .catch((error) => {
             console.log(error)
