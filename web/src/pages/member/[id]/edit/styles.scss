@@ -10,4 +10,16 @@
   .ant-form-item-label>label::after {
     margin: 0px;
   }
+
+  .ant-select-multiple .ant-select-selector {
+    min-height: 36px !important;
+  }
+
+  .ant-btn-lg {
+    height: 38px;
+  }
+
+  .ant-select-selection-overflow {
+    min-height: 34px;
+  }
 }

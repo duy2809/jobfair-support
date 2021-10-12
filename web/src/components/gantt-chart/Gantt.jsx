@@ -133,8 +133,8 @@ export default class Gantt extends Component {
       {
         name: 'task',
         label: 'タスクリスト',
-        resize: true,
-        width: 170,
+        // resize: true,
+        width: 180,
         align: 'center',
         template(item) {
           return `<p class="task-column" style="background-color:" > ${item.text}</p>`

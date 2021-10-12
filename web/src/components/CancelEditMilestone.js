@@ -25,7 +25,7 @@ class CancelEditMilestone extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="w-32">
+        <Button onClick={this.showModal}>
           キャンセル
         </Button>
         <Modal
