@@ -468,4 +468,19 @@ class ScheduleController extends Controller
             'categories' => $categories,
         ]);
     }
+    public function destroy($id)
+    {
+        try{
+            DB::table('milestone_schedule')->where('schedule_id', $id)->delete();
+            DB::table('tasks')->where('schedule_id', $id)->update(['schedule_id' => null]);
+            DB::table('list_members')->where('schedule_id', $id)->delete();
+            DB::table('schedule_template_task')->where('schedule_id', $id)->delete();
+            Schedule::findOrFail($id)->delete();
+        }catch(Exception $e){
+            // dd(1);
+            report($e);
+            $data = ['message' => 'Exist a relation with schedule, can not delete!'];
+            return response()->json($data, 204);
+        }
+    }
 }

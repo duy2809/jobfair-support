@@ -127,6 +127,11 @@ function ScheduleList() {
           description: '削除に失敗しました',
         })
       })
+    setPagination((preState) => ({
+      ...preState,
+      current: 1,
+    }))
+    fetchData()
   }
   const modelDelete = (id) => {
     Modal.confirm({

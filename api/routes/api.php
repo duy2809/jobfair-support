@@ -64,6 +64,8 @@ Route::prefix('schedule')->group(function () {
     Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
 });
 
+Route::delete('/schedules/{id}', 'ScheduleController@destroy');
+
 Route::get('/admins', 'AdminController@index');
 
 //milestone
