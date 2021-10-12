@@ -134,6 +134,7 @@ function InviteMember() {
                     ]}
                   >
                     <Input
+                      size="large"
                       name="email"
                       className="py-2"
                       onChange={onValueEmailChange}

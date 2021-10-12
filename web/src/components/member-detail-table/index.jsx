@@ -2,6 +2,7 @@ import React from 'react'
 import './styles.scss'
 import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
+import { Row, Col } from 'antd'
 import { getMember } from '~/api/member-detail'
 
 class MemberDetailTable extends React.Component {
@@ -51,19 +52,19 @@ class MemberDetailTable extends React.Component {
         const listJobfair = res.data.schedules
         this.setState({
           listJF: listJobfair.map((element) => (
-            <tr className="assigned-jf border-none block mx-auto">
-              <td className="border-none inline-block mr-2">{element.jobfair.name}</td>
-              <td className="border-none inline-block">{element.jobfair.start_date}</td>
-            </tr>
+            <div className="assigned-jf border-none block mx-auto">
+              <div className="border-none inline-block mr-2">{element.jobfair.name}</div>
+              <div className="border-none inline-block">{element.jobfair.start_date}</div>
+            </div>
           )),
         })
         const categorires = res.data.categories
         console.log(res.data)
         this.setState({
           listCate: categorires.map((element) => (
-            <tr className="category-name border-none block mx-auto">
+            <div className="category-name border-none block mx-auto">
               {element.category_name}
-            </tr>
+            </div>
           )),
         })
       })
@@ -88,39 +89,52 @@ class MemberDetailTable extends React.Component {
           id="avatar"
           className="mr-10"
         />
-        <table className="member_table m-5">
-          <tr>
-            <th style={{ fontSize: '14px' }}>フルネーム&emsp;&emsp;</th>
-            <td
-              className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
-              style={{ minHeight: '10px', marginRight: '200px' }}
+        <div className="member_table py-3" style={{ width: '650px' }}>
+          <Row>
+            <Col span={7} className="text-right font-bold py-3 pl-5">
+              フルネーム
+            </Col>
+            <Col
+              offset={1}
+              className="py-3 text-left "
             >
               {this.state.member.fullName}
-            </td>
-          </tr>
-          <tr>
-            <th style={{ fontSize: '14px' }}>メールアドレス&emsp;&emsp;</th>
-            <td
-              className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
-              style={{ minHeight: '10px', marginRight: '200px' }}
+            </Col>
+          </Row>
+          <Row>
+            <Col span={7} className="text-right font-bold py-3 pl-5">
+              メールアドレス
+            </Col>
+            <Col
+              offset={1}
+              className="py-3 text-left"
             >
               {this.state.member.email}
-            </td>
-          </tr>
-          <tr>
-            <th style={{ fontSize: '14px' }}>カテゴリー&emsp;&emsp;</th>
-            <td
-              className="min-w-1/2 block  ml-auto mr-auto  py-3 text-left"
-              style={{ minHeight: '10px', marginRight: '200px' }}
+            </Col>
+          </Row>
+          <Row>
+            <Col span={7} className="text-right font-bold py-3 pl-5">
+              カテゴリー
+            </Col>
+            <Col
+              offset={1}
+              className="py-3 text-left"
             >
               {this.state.listCate}
-            </td>
-          </tr>
-          <tr className="ml-auto mr-auto  py-3  text-left">
-            <th style={{ fontSize: '14px' }}>アサインされたJF&emsp;&emsp;</th>
-            <td>{this.state.listJF}</td>
-          </tr>
-        </table>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={7} className="text-right font-bold py-3 pl-5">
+              アサインされたJF
+            </Col>
+            <Col
+              offset={1}
+              className="py-3 text-left"
+            >
+              {this.state.listJF}
+            </Col>
+          </Row>
+        </div>
       </div>
     )
   }

@@ -92,19 +92,15 @@ export default function ListCategories() {
   }, [category])
   return (
     <div className="list-category">
-      <Row style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-        <Col>
-          <h1>カテゴリー覧</h1>
-        </Col>
-      </Row>
+
+      <h1>カテゴリー覧</h1>
 
       <div className="list">
-        <div className="flex" style={{ height: '38px' }}>
-          <div className="flex">
-            <div className="flex items-center content-center text-center pr-2">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <div className="flex items-center content-center text-center pr-3">
               <p>表示件数 </p>
             </div>
-            &nbsp;
             <div className="flex items-center content-center text-center">
               <Select
                 className="mr-3"
@@ -120,17 +116,17 @@ export default function ListCategories() {
             </div>
           </div>
           <div>
-            <div className="absolute right-6 no-border">
+            <div className="right-6 no-border">
               <Space direction="vertical">
                 <div ref={ref}>
                   <div
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      marginBottom: '10px',
+
                     }}
                   >
-                    <div className="flex items-center mr-3">
+                    <div className="flex mb-3 items-center mr-3">
                       <span className="queue-demo">
                         <span>
                           <Input
@@ -156,7 +152,7 @@ export default function ListCategories() {
           columns={columns}
           dataSource={data}
           pagination={{ pageSize: pageS }}
-          className="mt-4"
+          className="mt-3"
           loading={{ spinning: loading, indicator: loadingIcon }}
         />
       </div>

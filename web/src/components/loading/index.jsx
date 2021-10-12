@@ -8,7 +8,7 @@ export const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd8
 function Loading(props) {
   return (
     <div
-      className="overlay relative inset-0 h-full "
+      className="overlay relative inset-0 h-full w-full"
       style={{ display: `${props.overlay ? 'block' : 'none'}` }}
     >
       <Spin

@@ -1,31 +1,13 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Button, Tooltip } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Select, Input, Table, Empty, Modal, notification, Space, Button, Tooltip } from 'antd'
+import { SearchOutlined, CheckCircleTwoTone, EditTwoTone, ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { webInit } from '~/api/web-init'
-
+import { deleteSchedule } from '../../api/schedule-detail'
 import { ListScheduleApi } from '~/api/schedule'
-import './style.scss'
-
-const columns = [
-  {
-    title: 'No.',
-    dataIndex: 'key',
-    key: 'No.',
-    width: '5%',
-    render: (id) => id,
-  },
-  {
-    title: 'スケジュール',
-    dataIndex: 'name',
-    key: 'スケジュール',
-    width: '95%',
-    render: (name) => <Tooltip title={name}>{name}</Tooltip>,
-  },
-]
 
 function ScheduleList() {
   const [schedules, setSchedules] = useState([])
@@ -48,7 +30,11 @@ function ScheduleList() {
     setItemCount(value)
     localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
-
+  const handleRow = (record) => ({
+    onClick: () => {
+      router.push(`/schedule/${record.id}`)
+    },
+  })
   const handleChange = (e) => {
     setPagination((preState) => ({
       ...preState,
@@ -110,29 +96,108 @@ function ScheduleList() {
     router.push('/jf-schedule/add')
   }
 
-  const handleRow = (record) => ({
-    onClick: () => {
-      router.push(`/schedule/${record.id}`)
-    },
-  })
-
   useEffect(() => {
     fetchData()
   }, [itemCount])
   const { Option } = Select
   const role = user.role
+  const handleEdit = (id) => {
+    router.push(`/jf-schedule/${id}/edit`)
+  }
+  const saveNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
+      message: '正常に削除されました',
+      onClick: () => {},
+    })
+  }
+  const deletetpl = async (id) => {
+    const newList = Schedules.filter((x) => x.id !== id)
+    setSchedules(newList)
+    await deleteSchedule(id)
+      .then((response) => {
+        console.log(response.data)
+        saveNotification()
+      })
+      .catch((error) => {
+        console.log(error)
+        notification.error({
+          message: '失敗',
+          description: '削除に失敗しました',
+        })
+      })
+  }
+  const modelDelete = (id) => {
+    Modal.confirm({
+      title: '削除してもよろしいですか？',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      onOk: () => {
+        deletetpl(id)
+      },
+      onCancel: () => {},
+      centered: true,
+      okText: 'はい',
+      cancelText: 'いいえ',
+    })
+  }
+  const columns = role === 'superadmin' ? [
+    {
+      title: 'スケジュール',
+      dataIndex: 'name',
+      key: 'スケジュール',
+      width: '90%',
+      render: (name) => <Tooltip title={name}><a>{name}</a></Tooltip>,
+      onCell: handleRow,
+    },
+    {
+      title: 'アクション',
+      key: 'action',
+      width: '10%',
+      render: (_text, record) => role === 'superadmin' && (
+        <Space className="flex items-center" size="middle">
+          <EditTwoTone
+            id={record.id}
+            onClick={() => {
+              handleEdit(record.id)
+            }}
+          />
+
+          <DeleteTwoTone
+            id={record.id}
+            onClick={() => {
+              modelDelete(record.id)
+            }}
+          />
+        </Space>
+      ),
+    },
+  ] : [
+    {
+      title: 'スケジュール',
+      dataIndex: 'name',
+      key: 'スケジュール',
+      width: '95%',
+      render: (name) => <Tooltip title={name}><a>{name}</a></Tooltip>,
+      onCell: handleRow,
+    },
+  ]
+
   return (
     <Layout>
       <Layout.Main>
-        <div className="flex flex-col h-full bg-white-background schedule-list">
-          <div className="flex w-full justify-between">
-            <h1 className="ml-0">JFスケジュール一覧</h1>
-          </div>
-          <div className="flex w-full justify-between">
-            <div className="flex gap-x-5 items-center">
-              <span style={{ fontSize: '14px' }}>表示件数</span>
+        <h1>JFスケジュール一覧</h1>
+        <div>
+
+          <div
+            style={{ width: '100%' }}
+            className="flex items-center justify-between"
+          >
+            <div className="flex items-center justify-start ">
+              <span className="mr-3">表示件数 </span>
               <Select
-                style={{ height: '38px' }}
+                size="large"
                 value={itemCount}
                 onChange={handleSelect}
               >
@@ -141,54 +206,53 @@ function ScheduleList() {
                 <Option value={50}>50</Option>
               </Select>
             </div>
-            <div className="flex">
-              <div className="text-2xl ml-auto flex items-center">
+            <div>
+              <div className="flex items-center justify-end">
                 <Input
-                  style={{ height: '38px' }}
                   placeholder="スケジュール"
                   onChange={handleInput}
                   bordered
                   prefix={<SearchOutlined />}
                 />
-              </div>
-              <div>
-                {role === 'superadmin' ? (
-                  <Button
-                    type="primary"
-                    className="ml-5"
-                    htmlType="button"
-                    enabled
-                    onClick={handleClick}
-                    style={{ letterSpacing: '-0.1em', height: '38px' }}
-                  >
-                    追加
-                  </Button>
-                ) : (
-                  ''
-                )}
+                <div className="pl-3">
+                  {role === 'superadmin' ? (
+                    <Button
+                      size="large"
+                      type="primary"
+                      htmlType="button"
+                      enabled
+                      onClick={handleClick}
+                      style={{ letterSpacing: '-0.1em' }}
+                    >
+                      追加
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          <Table
-            className="rounded-3xl table-styled my-5 table-striped-rows"
-            columns={columns}
-            dataSource={Schedules}
-            rowKey={(record) => record.id}
-            scroll={{ y: 360 }}
-            onRow={handleRow}
-            onChange={handleChange}
-            loading={dataLoading}
-            pagination={pagination}
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="該当結果が見つかりませんでした"
-                />
-              ),
-            }}
-          />
+
         </div>
+        <Table
+          className="my-5"
+          columns={columns}
+          dataSource={Schedules}
+          rowKey={(record) => record.id}
+          onChange={handleChange}
+          loading={dataLoading}
+          pagination={pagination}
+          locale={{
+            emptyText: (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="該当結果が見つかりませんでした"
+              />
+            ),
+          }}
+        />
+
       </Layout.Main>
     </Layout>
   )

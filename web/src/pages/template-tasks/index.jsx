@@ -10,7 +10,8 @@ import { webInit } from '../../api/web-init'
 
 function TemplateTaskList() {
   // state of table
-  const [isFilter, setIsFilter] = useState(false)
+  const [isFilterCA, setIsFilterCA] = useState(false)
+  const [isFilterCI, setIsFilterCI] = useState(false)
   const [visible, setVisible] = useState(false)
   const router = useRouter()
   const [users, setUsers] = useState('')
@@ -250,8 +251,8 @@ function TemplateTaskList() {
 
   const handleSelectCategory = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterCA(true)
+    } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
@@ -263,8 +264,8 @@ function TemplateTaskList() {
 
   const handlSelectMilestone = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterCI(true)
+    } else setIsFilterCI(false)
     setMilestone(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
@@ -282,7 +283,7 @@ function TemplateTaskList() {
             <div className="space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="hidden md:inline pr-2">表示件数</span>
+                  <span className="pr-3">表示件数</span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -315,7 +316,7 @@ function TemplateTaskList() {
                       visible={visible}
                       onVisibleChange={handleVisibleChange}
                     >
-                      {isFilter || visible ? (
+                      {isFilterCA || isFilterCI || visible ? (
                         <Button
                           size="large"
                           shape="circle"

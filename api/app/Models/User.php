@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->morphToMany(Category::class, 'categoriable');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
