@@ -90,5 +90,8 @@
   }
   .gantt_grid_data {
     overflow: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
