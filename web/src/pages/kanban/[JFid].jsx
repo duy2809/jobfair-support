@@ -9,6 +9,7 @@ import JfLayout from '../../layouts/JFLayout'
 import 'antd/dist/antd.css'
 import './style.scss'
 import { getTaskByJfId, updateTask, getJobfair } from '../../api/task-kanban'
+import { checkAssignee } from '../../api/task-detail'
 import Loading from '../../components/loading'
 
 const singleTask = (type, taskIds) => {
@@ -39,7 +40,7 @@ export default function KanBan() {
   const [visible, setVisible] = useState(false)
   const [memo, setMemo] = useState('')
   const [id, setId] = useState('')
-  const [isControllable, setIsControllable] = useState(false)
+  const [isAdminJobfair, setIsAdminJobfair] = useState([])
 
   const { store } = useContext(ReactReduxContext)
 
@@ -47,9 +48,10 @@ export default function KanBan() {
 
   const getJf = async () => {
     const { data } = await getJobfair(idJf * 1, currentUserId)
-    if (data.length > 0) {
-      setIsControllable(true)
-    }
+    setIsAdminJobfair(data)
+    // if (data.length > 0) {
+    //   setIsControllable(true)
+    // }
   }
 
   const fetchData = async () => {
@@ -57,14 +59,6 @@ export default function KanBan() {
       setIsLoading(true)
       let { data } = await getTaskByJfId(idJf)
       const jobfairName = data[0].jobfairName
-
-      if (!isControllable) {
-        data.forEach((el) => {
-          if (el.userId === currentUserId) {
-            setIsControllable(true)
-          }
-        })
-      }
 
       // Auto update task's status when end_time expired
       /// //////////////////////////////////////
@@ -164,19 +158,19 @@ export default function KanBan() {
     }
   }
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result
-    if (
-      !destination
-      || source.droppableId === '未完了'
-      || source.droppableId === '未着手'
-      || source.droppableId === '完了'
-      || destination.droppableId === '完了'
-      || destination.droppableId === '未着手'
-      || destination.droppableId === '未完了'
-    ) {
-      return
-    }
+    // if (
+    //   !destination
+    //   || source.droppableId === '未完了'
+    //   || source.droppableId === '未着手'
+    //   || source.droppableId === '完了'
+    //   || destination.droppableId === '完了'
+    //   || destination.droppableId === '未着手'
+    //   || destination.droppableId === '未完了'
+    // ) {
+    //   return
+    // }
 
     if (
       destination.droppableId === source.droppableId
@@ -184,15 +178,27 @@ export default function KanBan() {
     ) {
       return
     }
-
     const start = task.columns[source.droppableId]
     const finish = task.columns[destination.droppableId]
+    const finishTaskIds = Array.from(finish.taskIds)
+    finishTaskIds.splice(destination.index, 0, draggableId)
+    let taskID = -1
+    finishTaskIds.forEach((taskId) => {
+      if (typeof taskId === 'string') {
+        taskID = taskId
+      }
+    })
 
+    const isAssignee = await checkAssignee(taskID, currentUserId)
+    if (store.getState().get('auth').get('user').get('role') !== 'superadmin'
+        && isAdminJobfair.length === 0 && isAssignee.data === ''
+    ) {
+      return
+    }
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds)
       newTaskIds.splice(source.index, 1)
       newTaskIds.splice(destination.index, 0, draggableId)
-
       const newColumn = {
         ...start,
         taskIds: newTaskIds,
@@ -219,8 +225,6 @@ export default function KanBan() {
       taskIds: startTaskIds,
     }
 
-    const finishTaskIds = Array.from(finish.taskIds)
-    finishTaskIds.splice(destination.index, 0, draggableId)
     const newFinish = {
       ...finish,
       taskIds: finishTaskIds,
@@ -240,7 +244,7 @@ export default function KanBan() {
 
       setVisible(true)
     }
-    if (source.droppableId === '中断' && destination.droppableId === '進行中') {
+    if (source.droppableId === '中断') {
       finishTaskIds.forEach((taskId) => {
         if (typeof taskId === 'string') {
           updateTask(taskId, { memo: null })
@@ -323,7 +327,6 @@ export default function KanBan() {
                       key={column.id}
                       column={column}
                       tasks={tasks}
-                      isControllable={isControllable}
                     />
                   )
                 })}
