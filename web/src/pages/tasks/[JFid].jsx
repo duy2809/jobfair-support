@@ -282,7 +282,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => (users === 'superadmin' || users === 'admin')  && (
+        render: (_text, record) => (users === 'superadmin' || users === 'admin') && (
           <Space size="middle">
             <EditTwoTone
               id={record.id}
