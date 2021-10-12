@@ -91,6 +91,13 @@ export default function index() {
     return link
   }
   const jobfairID = router.query.id
+  const chartData = async (jobfairTask) => {
+    const data = generateTask(jobfairTask.data.schedule.tasks)
+    const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
+    const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
+    const link = generateLink(beforeTasks.data, afterTasks.data)
+    setTask({ ...data, ...link })
+  }
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -100,16 +107,11 @@ export default function index() {
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
         const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
-        const data = generateTask(jobfairTask.data.schedule.tasks)
-        const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-        const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-        const link = generateLink(beforeTasks.data, afterTasks.data)
-        console.log(beforeTasks.data, afterTasks.data)
+        await chartData(jobfairTask)
         setJobfairStartDate(new Date(jobfair.data.start_date))
-        setLoading(false)
         setMilestones(jobfairMilestone.data.schedule.milestones)
-        setTask({ ...data, ...link })
         setchartMethod(method)
+        setLoading(false)
         return null
       } catch (error) {
         return Error('内容が登録されません。よろしいですか？')
@@ -196,6 +198,7 @@ export default function index() {
                     onChange={onStatusChange}
                     defaultValue={status}
                     buttonStyle="solid"
+                    className="flex items-center"
                   >
                     <Tooltip placement="topLeft" title="全て">
                       <Radio.Button
