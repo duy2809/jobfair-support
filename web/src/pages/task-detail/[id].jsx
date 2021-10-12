@@ -1,78 +1,79 @@
-import React, { useEffect, useState, useContext } from 'react'
-import './style.scss'
-import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip, Tag } from 'antd'
+import React, { useEffect, useState, useContext } from "react";
+import "./style.scss";
+import { useRouter } from "next/router";
+import { Button, Modal, notification, Tooltip, Tag } from "antd";
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
   EditTwoTone,
   DeleteTwoTone,
-} from '@ant-design/icons'
-import { ReactReduxContext } from 'react-redux'
-import JfLayout from '../../layouts/layout-task'
+} from "@ant-design/icons";
+import { ReactReduxContext } from "react-redux";
+import JfLayout from "../../layouts/layout-task";
 import {
   taskData,
   beforeTask,
   afterTask,
   deleteTask,
-} from '../../api/task-detail'
-import Loading from '../../components/loading'
+} from "../../api/task-detail";
+import Loading from "../../components/loading";
 
 function TaskDetail() {
-  const router = useRouter()
-  const idTask = router.query.id
-  const [user, setUser] = useState(null)
-  const [role, setRole] = useState(null)
-  const { store } = useContext(ReactReduxContext)
-  const [beforeTasks, setBeforeTask] = useState([])
-  const [afterTasks, setAfterTasks] = useState([])
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const idTask = router.query.id;
+  const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
+  const { store } = useContext(ReactReduxContext);
+  const [beforeTasks, setBeforeTask] = useState([]);
+  const [afterTasks, setAfterTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [infoTask, setInfoTask] = useState({
     id: null,
-    name: '',
-    categories: '',
-    milestone: '',
-    status: '',
-    start_time: '',
-    end_time: '',
-    effort: '',
+    name: "",
+    categories: "",
+    milestone: "",
+    status: "",
+    start_time: "",
+    end_time: "",
+    effort: "",
     is_day: null,
-    unit: '',
-    description_of_detail: '',
-  })
+    unit: "",
+    description_of_detail: "",
+  });
   const [infoJF, setInfoJF] = useState({
     id: null,
-    name: '',
-  })
+    name: "",
+  });
   const saveNotification = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
-      message: '正常に削除されました',
-      onClick: () => { },
-    })
-  }
-  const [listMemberAssignee, setListMemberAssignee] = useState([])
+      message: "正常に削除されました",
+      onClick: () => {},
+    });
+  };
+  const [listMemberAssignee, setListMemberAssignee] = useState([]);
   const deletetpl = async () => {
-    setLoading(true)
+    setLoading(true);
     await deleteTask(idTask)
       .then(async (response) => {
-        console.log(response.data)
-        await router.push(`/tasks/${infoJF.id}`)
-        await saveNotification()
-        setLoading(false)
+        console.log(response.data);
+        await router.push(`/tasks/${infoJF.id}`);
+        await saveNotification();
+        setLoading(false);
       })
       .catch((error) => {
-        console.log(error)
-        setLoading(false)
-      })
-  }
-  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+        console.log(error);
+        setLoading(false);
+      });
+  };
+  const truncate = (input) =>
+    input.length > 21 ? `${input.substring(0, 21)}...` : input;
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
-          const data = response.data
+          const data = response.data;
           setInfoTask({
             id: data.id,
             name: data.name,
@@ -85,68 +86,68 @@ function TaskDetail() {
             is_day: data.template_task.is_day,
             unit: data.template_task.unit,
             description_of_detail: data.description_of_detail,
-          })
-          setListMemberAssignee(data.users)
+          });
+          setListMemberAssignee(data.users);
           setInfoJF({
             id: data.schedule.jobfair.id,
             name: data.schedule.jobfair.name,
-          })
+          });
         }
       })
       .catch((error) => {
-        console.log(error)
-      })
-  }
+        console.log(error);
+      });
+  };
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
-        setBeforeTask(response.data.before_tasks)
+        setBeforeTask(response.data.before_tasks);
       })
       .catch((error) => {
-        console.log(error)
-      })
-  }
+        console.log(error);
+      });
+  };
   const fetchafterTask = async () => {
     await afterTask(idTask)
       .then((response) => {
-        setAfterTasks(response.data.after_tasks)
+        setAfterTasks(response.data.after_tasks);
       })
       .catch((error) => {
-        console.log(error)
-      })
-  }
+        console.log(error);
+      });
+  };
   const modelDelete = () => {
     Modal.confirm({
-      title: '削除してもよろしいですか？',
+      title: "削除してもよろしいですか？",
       icon: <ExclamationCircleOutlined />,
-      content: '',
+      content: "",
       onOk: () => {
-        deletetpl()
+        deletetpl();
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
-  }
+      okText: "はい",
+      cancelText: "いいえ",
+    });
+  };
   const handleBack = () => {
-    router.push(`/tasks/${infoJF.id}`)
-  }
+    router.push(`/tasks/${infoJF.id}`);
+  };
   const handleEdit = () => {
-    router.push(`/edit-task/${infoTask.id}`)
-  }
+    router.push(`/edit-task/${infoTask.id}`);
+  };
 
   useEffect(() => {
-    setLoading(true)
-    setUser(store.getState().get('auth').get('user'))
+    setLoading(true);
+    setUser(store.getState().get("auth").get("user"));
     if (user) {
-      setRole(user.get('role'))
+      setRole(user.get("role"));
     }
-    fetchTaskData()
-    fetchBeforeTask()
-    fetchafterTask()
-    setLoading(false)
-  }, [user])
+    fetchTaskData();
+    fetchBeforeTask();
+    fetchafterTask();
+    setLoading(false);
+  }, [user]);
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
@@ -156,7 +157,7 @@ function TaskDetail() {
             <div className="list__button">
               <div className="button__left">
                 <Button
-                  style={{ border: 'none' }}
+                  style={{ border: "none" }}
                   type="primary"
                   onClick={handleBack}
                 >
@@ -167,7 +168,7 @@ function TaskDetail() {
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
-                {role === 'admin' || role === 'superadmin' ? (
+                {role === "admin" || role === "superadmin" ? (
                   <>
                     <EditTwoTone
                       className="border-none mx-1 text-2xl"
@@ -227,21 +228,21 @@ function TaskDetail() {
                       <p className="font-bold text-right">工数</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      {infoTask.unit === 'none' ? (
+                      {infoTask.unit === "none" ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
                           <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
+                            {infoTask.is_day ? "日" : "時間"}
                           </span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
                           <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
+                            {infoTask.is_day ? "日" : "時間"}
                           </span>
                           <span>/</span>
-                          {infoTask.unit === 'students' ? (
+                          {infoTask.unit === "students" ? (
                             <span className="ef">学生数</span>
                           ) : (
                             <span className="ef">企業数</span>
@@ -260,8 +261,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {listMemberAssignee
                           ? listMemberAssignee.map((item) => (
-                            <li className="task__chil">{`${item.name},`}</li>
-                          ))
+                              <li className="task__chil">{`${item.name},`}</li>
+                            ))
                           : null}
                       </ul>
                     </div>
@@ -273,46 +274,46 @@ function TaskDetail() {
                       <p className="font-bold text-right">ステータス</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      {infoTask.status === '未着手' ? (
+                      {infoTask.status === "未着手" ? (
                         <span
-                          style={{ background: '#5EB5A6', color: '#fff' }}
+                          style={{ background: "#5EB5A6", color: "#fff" }}
                           className=" stt item__right"
                         >
                           {infoTask.status}
                         </span>
                       ) : null}
-                      {infoTask.status === '進行中' ? (
+                      {infoTask.status === "進行中" ? (
                         <span
-                          style={{ background: '#A1AF2F', color: '#fff' }}
+                          style={{ background: "#A1AF2F", color: "#fff" }}
                           className=" stt item__right"
                         >
                           {infoTask.status}
                         </span>
                       ) : null}
-                      {infoTask.status === '完了' ? (
+                      {infoTask.status === "完了" ? (
                         <span
-                          style={{ background: '#4488C5', color: '#fff' }}
+                          style={{ background: "#4488C5", color: "#fff" }}
                           className=" stt item__right"
                         >
                           {infoTask.status}
                         </span>
                       ) : null}
-                      {infoTask.status === '中断' ? (
+                      {infoTask.status === "中断" ? (
                         <span
                           style={{
-                            background: 'rgb(185, 86, 86)',
-                            color: '#fff',
+                            background: "rgb(185, 86, 86)",
+                            color: "#fff",
                           }}
                           className=" stt item__right"
                         >
                           {infoTask.status}
                         </span>
                       ) : null}
-                      {infoTask.status === '未完了' ? (
+                      {infoTask.status === "未完了" ? (
                         <span
                           style={{
-                            background: 'rgb(121, 86, 23)',
-                            color: '#fff',
+                            background: "rgb(121, 86, 23)",
+                            color: "#fff",
                           }}
                           className=" stt item__right"
                         >
@@ -349,63 +350,81 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
-                  <ul className="list__task col-span-6">
-                    {beforeTasks
-                      ? beforeTasks.map((item) => (
-                        <li>
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/task-detail/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
-                              >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                  {beforeTasks.length > 0 ? (
+                    <React.Fragment>
+                      <ul
+                        className="list__task col-span-6"
+                        style={{ border: "1px solid #d9d9d9" }}
+                      >
+                        {beforeTasks
+                          ? beforeTasks.map((item) => (
+                              <li>
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: "5px",
+                                    paddingBottom: "3px",
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={item.name}>
+                                    <a
+                                      href={`/task-detail/${item.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-block text-blue-600 whitespace-nowrap "
+                                    >
+                                      {truncate(item.name)}
+                                    </a>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))
+                          : null}
+                      </ul>
+                    </React.Fragment>
+                  ) : (
+                    <ul className="list__task col-span-6"></ul>
+                  )}
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
-                  <ul className="list__task col-span-6">
-                    {afterTasks
-                      ? afterTasks.map((item) => (
-                        <li>
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/task-detail/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
-                              >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                  {afterTasks.length > 0 ? (
+                    <React.Fragment>
+                      <ul
+                        className="list__task col-span-6"
+                        style={{ border: "1px solid #d9d9d9" }}
+                      >
+                        {afterTasks
+                          ? afterTasks.map((item) => (
+                              <li>
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: "5px",
+                                    paddingBottom: "3px",
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={item.name}>
+                                    <a
+                                      href={`/task-detail/${item.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-block text-blue-600 whitespace-nowrap "
+                                    >
+                                      {truncate(item.name)}
+                                    </a>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))
+                          : null}
+                      </ul>
+                    </React.Fragment>
+                  ) : (
+                    <ul className="list__task col-span-6"></ul>
+                  )}
                 </div>
               </div>
 
@@ -419,7 +438,7 @@ function TaskDetail() {
         </JfLayout.Main>
       </JfLayout>
     </div>
-  )
+  );
 }
-TaskDetail.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
-export default TaskDetail
+TaskDetail.middleware = ["auth:superadmin", "auth:admin", "auth:member"];
+export default TaskDetail;
