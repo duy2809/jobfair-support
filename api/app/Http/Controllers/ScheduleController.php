@@ -480,7 +480,7 @@ class ScheduleController extends Controller
         } catch (Exception $e) {
             report($e);
             $data = ['message' => 'Exist a relation with schedule, can not delete!'];
-            
+
             return response()->json($data, 204);
         }
     }
