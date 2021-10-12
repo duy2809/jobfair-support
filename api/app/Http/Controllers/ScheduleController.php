@@ -477,9 +477,10 @@ class ScheduleController extends Controller
             DB::table('list_members')->where('schedule_id', $id)->delete();
             DB::table('schedule_template_task')->where('schedule_id', $id)->delete();
             Schedule::findOrFail($id)->delete();
-        } catch (Exception $e){
+        } catch (Exception $e) {
             report($e);
             $data = ['message' => 'Exist a relation with schedule, can not delete!'];
+            
             return response()->json($data, 204);
         }
     }
