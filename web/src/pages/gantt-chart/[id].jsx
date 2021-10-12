@@ -1,11 +1,11 @@
 /* eslint-disable import/extensions */
-import { LoadingOutlined } from '@ant-design/icons'
 import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
+import { loadingIcon } from '../../components/loading'
 import JfLayout from '../../layouts/JFLayout'
 import './style.scss'
 
@@ -17,15 +17,13 @@ const GanttChart = dynamic(
 )
 
 export default function index() {
-  // const [data, setData] = useState({})
   const [status, setStatus] = useState('0')
   const [loading, setLoading] = useState(true)
-  const [tasks, setTask] = useState({})
+  const [tasks, setTask] = useState({ data: [], links: [] })
   const router = useRouter()
-  const [milestones, setMilestones] = useState([])
   const [filter, setfilter] = useState('全て')
-  const [chartMethod, setchartMethod] = useState()
-  const [jobfairStartDate, setJobfairStartDate] = useState(Date)
+  const [chartMethod, setchartMethod] = useState(null)
+  const [jobfairStartDate, setJobfairStartDate] = useState(new Date())
 
   const generateColor = (taskStatus) => {
     switch (taskStatus) {
@@ -48,6 +46,7 @@ export default function index() {
         return 'blue'
     }
   }
+
   const generateTask = (data) => {
     const result = { data: [] }
     data.forEach((element) => {
@@ -55,7 +54,6 @@ export default function index() {
         id: element.id,
         text: element.name,
         start_date: new Date(element.start_time.replace(/\//g, '-')),
-        // start_date: new Date(),
         end_date: new Date(element.end_time.replace(/\//g, '-')),
         open: true,
         color: generateColor(element.status),
@@ -106,19 +104,19 @@ export default function index() {
         // TODO: optimize this one by using axios.{all,spread}
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
-        await chartData(jobfairTask)
-        setJobfairStartDate(new Date(jobfair.data.start_date))
-        setMilestones(jobfairMilestone.data.schedule.milestones)
-        setchartMethod(method)
-        setLoading(false)
-        return null
+        await chartData(jobfairTask).then(() => {
+          setLoading(false)
+          setJobfairStartDate(new Date(jobfair.data.start_date))
+          setchartMethod(method)
+        })
+        return ''
       } catch (error) {
         return Error('内容が登録されません。よろしいですか？')
       }
     }
     fetchAPI()
-  }, [])
+    return ''
+  }, [tasks])
 
   const onStatusChange = (e) => {
     const cases = e.target.value * 1
@@ -150,9 +148,8 @@ export default function index() {
     setStatus(e.target.value)
   }
   const scrollToToday = async () => {
-    chartMethod.scrollToToday()
+    chartMethod?.scrollToToday()
   }
-  const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
   return (
     <JfLayout id={jobfairID}>
       <JfLayout.Main>
@@ -188,7 +185,11 @@ export default function index() {
             <div className="col-span-12 mb-6">
               <div className="flex justify-between px-10">
                 <div>
-                  <Button type="primary" onClick={scrollToToday} style={{ letterSpacing: '-3px' }}>
+                  <Button
+                    type="primary"
+                    onClick={loading ? '' : scrollToToday}
+                    style={{ letterSpacing: '-3px' }}
+                  >
                     今日
                   </Button>
                 </div>
@@ -282,7 +283,6 @@ export default function index() {
                       <GanttChart
                         tasks={tasks}
                         jobfairStartDate={jobfairStartDate}
-                        milestones={milestones}
                         filter={filter}
                       />
                     )}

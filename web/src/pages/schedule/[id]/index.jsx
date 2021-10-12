@@ -72,6 +72,7 @@ function ScheduleDetailGeneral() {
       </header>
       <div className="px-12">
         <div className="flex items-center justify-between">
+          <div />
           <h1 className="my-5 text-2xl font-bold" style={{ color: '#272343' }}>
             {scheduleName}
           </h1>
