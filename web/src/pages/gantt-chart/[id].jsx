@@ -22,10 +22,9 @@ export default function index() {
   const [loading, setLoading] = useState(true)
   const [tasks, setTask] = useState({})
   const router = useRouter()
-  const [milestones, setMilestones] = useState([])
   const [filter, setfilter] = useState('全て')
-  const [chartMethod, setchartMethod] = useState()
-  const [jobfairStartDate, setJobfairStartDate] = useState(Date)
+  const [chartMethod, setchartMethod] = useState(null)
+  const [jobfairStartDate, setJobfairStartDate] = useState(new Date())
 
   const generateColor = (taskStatus) => {
     switch (taskStatus) {
@@ -106,12 +105,10 @@ export default function index() {
         // TODO: optimize this one by using axios.{all,spread}
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
         await chartData(jobfairTask)
-        setJobfairStartDate(new Date(jobfair.data.start_date))
-        setMilestones(jobfairMilestone.data.schedule.milestones)
-        setchartMethod(method)
         setLoading(false)
+        setJobfairStartDate(new Date(jobfair.data.start_date))
+        setchartMethod(method)
         return null
       } catch (error) {
         return Error('内容が登録されません。よろしいですか？')
@@ -150,7 +147,7 @@ export default function index() {
     setStatus(e.target.value)
   }
   const scrollToToday = async () => {
-    chartMethod.scrollToToday()
+    chartMethod?.scrollToToday()
   }
   const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
   return (
@@ -188,7 +185,11 @@ export default function index() {
             <div className="col-span-12 mb-6">
               <div className="flex justify-between px-10">
                 <div>
-                  <Button type="primary" onClick={scrollToToday} style={{ letterSpacing: '-3px' }}>
+                  <Button
+                    type="primary"
+                    onClick={loading ? '' : scrollToToday}
+                    style={{ letterSpacing: '-3px' }}
+                  >
                     今日
                   </Button>
                 </div>
@@ -282,7 +283,6 @@ export default function index() {
                       <GanttChart
                         tasks={tasks}
                         jobfairStartDate={jobfairStartDate}
-                        milestones={milestones}
                         filter={filter}
                       />
                     )}
