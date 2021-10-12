@@ -281,4 +281,9 @@ class TaskController extends Controller
 
         return response()->json($templateTask);
     }
+
+    public function checkAssignee($taskID, $userID)
+    {
+        return Task::find($taskID)->users->pluck('id')->contains($userID);
+    }
 }

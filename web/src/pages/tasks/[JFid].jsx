@@ -96,7 +96,7 @@ function TaskList() {
         start_date: dataResponse[i].start_time,
         end_date: dataResponse[i].end_time,
         status: dataResponse[i].status,
-        category_name: dataResponse[i].categories[0].category_name,
+        category_name: dataResponse[i].categories[0]?.category_name,
         milestone_name: dataResponse[i].milestone.name,
         managers: manager,
       })

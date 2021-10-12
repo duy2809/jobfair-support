@@ -151,6 +151,7 @@ Route::resource('/task', 'TaskController');
 Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 Route::get('/users', 'MemberController@getMember');
+Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 
 // top-page
 Route::prefix('/top-page')->group(function () {
