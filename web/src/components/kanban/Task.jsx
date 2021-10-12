@@ -11,7 +11,6 @@ import AvatarKanban from './AvatarKanban'
 const Task = (props) => {
   const { title, task, isControllable, index } = props
   const { taskName, memo, user, end_time: endTime, id } = task
-
   let memoStyle
   let cardBorderedStyle
 
