@@ -9,7 +9,6 @@ import { CategoryApi } from '~/api/category'
 import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
-  console.log(data.categories)
   const [form] = Form.useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalCancelVisible, setIsModalCancelVisible] = useState(false)
@@ -96,6 +95,7 @@ const EditMember = ({ data }) => {
   }
 
   const handleChangeSelect = (value) => {
+    console.log('value', value)
     setCategories(value)
     setReqCategories(value)
     setShowExitPrompt(true)
@@ -194,7 +194,9 @@ const EditMember = ({ data }) => {
                 className="selectBar"
               >
                 {categoriesSystem.map((item) => (
-                  <Option value={item.id}>{item.category_name}</Option>
+                  <Option key={item.id} value={item.id}>
+                    <p style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.category_name}</p>
+                  </Option>
                 ))}
               </Select>
             </Form.Item>
