@@ -17,7 +17,6 @@ export default class Gantt extends Component {
     const { tasks } = this.props
     // const { tasks } = this.props
     console.log(tasks)
-    const milestones = this.props.milestones
     const jobfairStartDate = this.props.jobfairStartDate
     console.log(jobfairStartDate)
     /* Full List of Extensions */
@@ -66,14 +65,7 @@ export default class Gantt extends Component {
     }
     gantt.config.lightbox.sections = []
     gantt.attachEvent('onBeforeLightbox', () => false)
-    console.log(jobfairStartDate.getDate())
-    milestones.forEach((element) => {
-      // console.log(element)
-      console.log(element.period)
-    })
-    // const weekScaleTemplate = () => {
 
-    // }
     // custom link style
     gantt.templates.link_class = (link) => {
       const types = gantt.config.links
@@ -114,7 +106,6 @@ export default class Gantt extends Component {
           return 'month_scale'
 
         default:
-          // "week"
           return 'week_scale'
       }
     }
@@ -214,7 +205,6 @@ export default class Gantt extends Component {
 Gantt.propTypes = {
   tasks: PropTypes.object.isRequired,
   filter: PropTypes.string.isRequired,
-  milestones: PropTypes.array.isRequired,
   jobfairStartDate: PropTypes.object.isRequired,
 }
 export function scrollToToday() {

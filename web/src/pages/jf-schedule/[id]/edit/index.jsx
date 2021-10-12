@@ -247,6 +247,7 @@ function editJobfairSchedule() {
                 ]}
               >
                 <Input
+                  size="large"
                   placeholder="JFスケジュール名を入力してください。"
                   onChange={onValueNameChange}
                   onBlur={onBlur}
@@ -312,7 +313,7 @@ function editJobfairSchedule() {
               <div className="mt-5 flex justify-end">
                 <CancelBtn />
                 <Button
-                  size="middle"
+                  size="large"
                   type="primary"
                   style={{ letterSpacing: '-2px' }}
                   htmlType="submit"

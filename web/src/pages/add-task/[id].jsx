@@ -185,10 +185,8 @@ function index() {
       <Loading loading={loading} overlay={loading} />
       <OtherLayout id={router.query.id}>
         <OtherLayout.Main>
+          <h1>夕スク登録</h1>
           <div className="add-task-page">
-            <div className="page-title">
-              <h1>夕スク登録</h1>
-            </div>
             <div className="container mx-auto w-3/4">
               <div className="grid grid-cols-1 grid-flow-row justify-center">
                 {/* task header */}

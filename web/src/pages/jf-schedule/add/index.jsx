@@ -180,6 +180,7 @@ function addJobfairSchedule() {
                 ]}
               >
                 <Input
+                  size="large"
                   placeholder="JFスケジュール名を入力してください。"
                   onChange={onValueNameChange}
                   onBlur={onBlur}

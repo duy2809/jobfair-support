@@ -10,7 +10,8 @@ import { webInit } from '../../api/web-init'
 
 function TemplateTaskList() {
   // state of table
-  const [isFilter, setIsFilter] = useState(false)
+  const [isFilterCA, setIsFilterCA] = useState(false)
+  const [isFilterCI, setIsFilterCI] = useState(false)
   const [visible, setVisible] = useState(false)
   const router = useRouter()
   const [users, setUsers] = useState('')
@@ -250,8 +251,8 @@ function TemplateTaskList() {
 
   const handleSelectCategory = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterCA(true)
+    } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
@@ -263,8 +264,8 @@ function TemplateTaskList() {
 
   const handlSelectMilestone = (value) => {
     if (value) {
-      setIsFilter(true)
-    } else setIsFilter(false)
+      setIsFilterCI(true)
+    } else setIsFilterCI(false)
     setMilestone(value)
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
@@ -276,18 +277,13 @@ function TemplateTaskList() {
   return (
     <OtherLayout>
       <OtherLayout.Main>
+        <h1>テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
           <div className="mx-auto flex flex-col space-y-2 justify-center">
             <div className="space-y-5">
-              <div className="flex-col space-y-9">
-                <div className="flex items-center">
-                  <h1 className="text-3xl float-left">テンプレートタスクー覧</h1>
-                </div>
-
-              </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <span>表示件数 </span>
+                  <span className="pr-3">表示件数</span>
                   <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
@@ -320,14 +316,16 @@ function TemplateTaskList() {
                       visible={visible}
                       onVisibleChange={handleVisibleChange}
                     >
-                      {visible || isFilter ? (
+                      {isFilterCA || isFilterCI || visible ? (
                         <Button
+                          size="large"
                           shape="circle"
-                          style={{ color: '#ffd803' }}
+                          style={{ background: '#ffd803' }}
                           icon={<FilterOutlined id="filter" />}
                         />
                       ) : (
                         <Button
+                          size="large"
                           shape="circle"
                           icon={<FilterOutlined id="filter" />}
                         />
