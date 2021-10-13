@@ -13,6 +13,7 @@ import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
 import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
 import MarkDownView from '../../components/markDownView'
+
 function templatetTaskDt() {
   const router = useRouter()
   const idTplt = router.query.id

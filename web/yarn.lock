@@ -1915,6 +1915,15 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@mapbox/rehype-prism@0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/rehype-prism/-/rehype-prism-0.7.0.tgz#38077bda08bbb9a0acd6ed23111a126fcc5f2b06"
+  integrity sha512-zSG46selA6v+3THhCatTyOt9DuTzxTIVTxTbcj15kFmxPDtjzZ5VoFVCLZfjWFouYa9PiXxcbMLLhJoVzCxh9w==
+  dependencies:
+    hast-util-to-string "^1.0.4"
+    refractor "^3.4.0"
+    unist-util-visit "^2.0.3"
+
 "@mapbox/rehype-prism@0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@mapbox/rehype-prism/-/rehype-prism-0.8.0.tgz#c8b6eafb041a97e143fcbf93dd4e319ab0c131d6"
@@ -2770,6 +2779,20 @@
     prismjs "1.22.0"
     react-markdown "5.0.3"
     remark-gfm "1.0.0"
+
+"@uiw/react-markdown-preview@3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@uiw/react-markdown-preview/-/react-markdown-preview-3.3.2.tgz#e704e8e1220b8fed9602677dfada03c12b0a7a13"
+  integrity sha512-cfXJMoNvqCudhikReTWGq5vJ0CzQsiIsnvwB80ErN2eObaBcqWRHAKvAwr5KqlzN6YnMnkvZaGouXDM/JS6Eew==
+  dependencies:
+    "@babel/runtime" "7.15.4"
+    "@mapbox/rehype-prism" "0.7.0"
+    react-markdown "7.0.1"
+    rehype-autolink-headings "6.1.0"
+    rehype-raw "6.1.0"
+    rehype-rewrite "2.0.0"
+    rehype-slug "5.0.0"
+    remark-gfm "2.0.0"
 
 "@uiw/react-markdown-preview@3.3.4":
   version "3.3.4"
@@ -15285,6 +15308,13 @@ rehype-raw@6.1.0:
     "@types/hast" "^2.0.0"
     hast-util-raw "^7.2.0"
     unified "^10.0.0"
+
+rehype-rewrite@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/rehype-rewrite/-/rehype-rewrite-2.0.0.tgz#79a10ea252b832f0ec0ec1aa27081fdf875f20a0"
+  integrity sha512-94rAd44xCQG5+wdINfrq5ckNYQL04i6lx+iP2loOC9UYNAwoUeHRP7Ft3Awwk6o1adgWcTh9bRz8q3t3koDaTg==
+  dependencies:
+    unified "10.1.0"
 
 rehype-rewrite@3.0.0:
   version "3.0.0"
