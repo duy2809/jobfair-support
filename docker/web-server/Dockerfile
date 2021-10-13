@@ -3,7 +3,7 @@ ARG TAG
 
 FROM ${REGISTRY_PATH}/web-build:${TAG} as build
 
-FROM node:12-alpine
+FROM node:14-alpine
 
 WORKDIR /srv/jfs
 

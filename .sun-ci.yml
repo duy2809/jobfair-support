@@ -70,7 +70,7 @@ jobs:
   - name: install:yarn
     stage: install
     workspace: shared
-    image: node:12-alpine
+    image: node:14-alpine
     script:
       - apk add git --no-cache
       - yarn
@@ -93,7 +93,7 @@ jobs:
   - name: check:eslint
     stage: check
     workspace: shared
-    image: node:12-alpine
+    image: node:14-alpine
     script:
       - yarn lint
 
