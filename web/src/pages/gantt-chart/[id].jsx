@@ -15,6 +15,7 @@ const GanttChart = dynamic(
   // eslint-disable-next-line comma-dangle
   { ssr: false }
 )
+// const chartMethod = dynamic(import('~/components/gantt-chart/Gantt'), { ssr: false })
 
 export default function index() {
   const [status, setStatus] = useState('0')
@@ -22,7 +23,7 @@ export default function index() {
   const [tasks, setTask] = useState({ data: [], links: [] })
   const router = useRouter()
   const [filter, setfilter] = useState('全て')
-  const [chartMethod, setchartMethod] = useState(null)
+  // const [chartMethod, setchartMethod] = useState(null)
   const [jobfairStartDate, setJobfairStartDate] = useState(new Date())
 
   const generateColor = (taskStatus) => {
@@ -90,33 +91,36 @@ export default function index() {
   }
   const jobfairID = router.query.id
   const chartData = async (jobfairTask) => {
-    const data = generateTask(jobfairTask.data.schedule.tasks)
-    const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-    const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-    const link = generateLink(beforeTasks.data, afterTasks.data)
-    setTask({ ...data, ...link })
+    try {
+      const data = generateTask(jobfairTask.data.schedule.tasks)
+      const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
+      const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
+      const link = generateLink(beforeTasks.data, afterTasks.data)
+      setTask({ ...data, ...link })
+      return data
+    } catch (error) {
+      return error
+    }
   }
+
   useEffect(() => {
     const fetchAPI = async () => {
       try {
-        // eslint-disable-next-line import/no-unresolved
-        const method = await import('~/components/gantt-chart/Gantt')
         // TODO: optimize this one by using axios.{all,spread}
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        await chartData(jobfairTask).then(() => {
-          setLoading(false)
-          setJobfairStartDate(new Date(jobfair.data.start_date))
-          setchartMethod(method)
-        })
+        await chartData(jobfairTask)
+        setJobfairStartDate(new Date(jobfair.data.start_date))
+        setLoading(false)
         return ''
       } catch (error) {
-        return Error('内容が登録されません。よろしいですか？')
+        // return Error('内容が登録されません。よろしいですか？')
+        return error
       }
     }
     fetchAPI()
     return ''
-  }, [tasks])
+  }, [])
 
   const onStatusChange = (e) => {
     const cases = e.target.value * 1
@@ -148,7 +152,10 @@ export default function index() {
     setStatus(e.target.value)
   }
   const scrollToToday = async () => {
-    chartMethod?.scrollToToday()
+    // eslint-disable-next-line import/no-unresolved
+    const method = await import('~/components/gantt-chart/Gantt')
+    method?.scrollToToday()
+    return []
   }
   return (
     <JfLayout id={jobfairID}>
