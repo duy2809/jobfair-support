@@ -8,11 +8,12 @@ import '@uiw/react-markdown-preview/markdown.css'
 import dynamic from 'next/dynamic'
 import {
   EditOutlined,
-  LinkOutlined,
+  // LinkOutlined,
   PlusCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
 import { getUser, taskData } from '../../api/task-detail'
+
 const BoxComment = ({ id }) => {
   const [visible, setVisible] = useState(false)
   const [show, setShow] = useState(true)
@@ -29,18 +30,18 @@ const BoxComment = ({ id }) => {
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false)
 
-  const showModal = () => {
-    setIsModalVisible(true)
-  }
-  const title = {
-    name: 'title3',
-    keyCommand: 'title3',
-    buttonProps: { 'label': 'Insert title3', 'class':'button_link' },
-    icon: <LinkOutlined />,
-    execute: () => {
-      showModal()
-    },
-  }
+  // const showModal = () => {
+  //   setIsModalVisible(true)
+  // }
+  // const title = {
+  //   name: 'title3',
+  //   keyCommand: 'title3',
+  //   buttonProps: { label: 'Insert title3', class: 'button_link' },
+  //   icon: <LinkOutlined />,
+  //   execute: () => {
+  //     showModal()
+  //   },
+  // }
 
   const handleOk = () => {
     setIsModalVisible(false)
@@ -139,7 +140,7 @@ const BoxComment = ({ id }) => {
             onClick={showBox}
             placeholder="コメントを入力してください"
           />
-          <div className="btn" onClick={showBox} style={{ cursor: 'pointer'}}>
+          <div className="btn" onClick={showBox} style={{ cursor: 'pointer' }}>
             <EditOutlined className="ml-6" />
             <span>ステータス変更</span>
           </div>
@@ -162,12 +163,13 @@ const BoxComment = ({ id }) => {
                   >
                     <div>
                       <MDEditor
+                        style={{ height: '40px !important' }}
                         preview="edit"
                         height="200"
                         value={value}
                         onChange={setValue}
-                        commands={[title]}
-                        
+                        // commands={[title]}
+
                       />
                       <Modal title="ファイル追加" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="保存" cancelText="キャンセル">
                         <div className="flex items-center justify-between">

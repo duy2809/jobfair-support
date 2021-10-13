@@ -10,7 +10,6 @@ import {
   DeleteTwoTone,
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
-import BoxComment from '../../components/box-comment'
 import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
@@ -432,9 +431,6 @@ function TaskDetail() {
               <div className="mx-5 mt-5">
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
-                </div>
-                <div className="mx-7">
-                  <BoxComment id={idTask} />
                 </div>
               </div>
             </div>
