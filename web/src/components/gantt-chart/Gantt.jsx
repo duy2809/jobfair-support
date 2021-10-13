@@ -225,7 +225,3 @@ export function scrollToToday() {
     gantt.scrollTo(position - offset, null)
   }
 }
-
-export function taskFilter() {
-  // gantt.refreshData()
-}
