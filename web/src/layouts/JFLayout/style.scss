@@ -31,7 +31,7 @@
     font-size: 20px;
     font-weight: 900;
     margin: 0px;
-    border-left: 8px solid transparent;
+    border-left: 3px solid transparent;
     margin-bottom: 0px !important;
   }
   .ant-menu-item {
@@ -48,7 +48,7 @@
   .ant-menu > .ant-menu-submenu-open {
     box-sizing: content-box;
     background-color: white !important;
-    border-left: 8px solid #ffd803;
+    border-left: 3px solid #ffd803;
     margin-bottom: 0px;
   }
 
