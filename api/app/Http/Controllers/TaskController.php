@@ -309,17 +309,14 @@ class TaskController extends Controller
             $listMember = $request->assignee;
             $listOldMember = $task->users->pluck('id')->toArray();
 
-            if (!(
-                is_array($listMember)
-                && is_array($listOldMember)
-                && count($listMember) == count($listOldMember)
-                && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
-            )) {
+            if (!(is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember))) {
                 $task->users()->syncWithPivotValues($listMember, [
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
             }
-    
         }
 
         return response()->json(['message' => 'Edit Successfully'], 200);
