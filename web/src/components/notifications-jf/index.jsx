@@ -16,8 +16,6 @@ const NotificationsJf = ({ id }) => {
   const fetchTasks = async () => {
     await listupdate(id).then((response) => {
       setPost(response.data.schedule.tasks)
-    }).catch((error) => {
-      console.log(error)
     })
   }
   const [tp, setTop] = useState(100)

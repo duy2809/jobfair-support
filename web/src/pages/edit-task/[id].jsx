@@ -80,9 +80,6 @@ function TaskList() {
           })
         }
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const startDayValidator = (_, value) => {
     if (!value) {
@@ -229,10 +226,6 @@ function TaskList() {
           name: response.data.auth.user.name,
           role: response.data.auth.user.role,
         })
-        console.log(response.data.auth.user.role)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const saveNotification = () => {
@@ -293,13 +286,11 @@ function TaskList() {
         setdisableBtn(true)
 
         await editTask(idTask, data)
-          .then((response) => {
+          .then(() => {
             saveNotification()
-            console.log(response.data)
             router.push(`/task-detail/${idTask}`)
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             setdisableBtn(false)
           })
         setdisableBtn(true)
@@ -343,9 +334,6 @@ function TaskList() {
           taskBefore: listbfTask,
         })
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchafterTask = async () => {
     await afterTask(idTask)
@@ -354,13 +342,9 @@ function TaskList() {
         response.data.after_tasks.forEach((element) => {
           listatTask.push(element.name)
         })
-        console.log(listatTask)
         form.setFieldsValue({
           afterTask: listatTask,
         })
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const fetchListTask = async () => {
@@ -370,17 +354,11 @@ function TaskList() {
         setBeforeTaskNew(response.data.schedule.tasks)
         setafterTaskNew(response.data.schedule.tasks)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchListMember = async () => {
     await getUser()
       .then((response) => {
         setListUser(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   useEffect(() => {

@@ -108,12 +108,6 @@ function TemplateTaskList() {
     const newList = temperaryData.filter((x) => x.idTemplateTask !== id)
     setTemperaryData(newList)
     await deleteTptt(id)
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
     saveNotification()
   }
   const modelDelete = (id) => {

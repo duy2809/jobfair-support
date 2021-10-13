@@ -56,14 +56,12 @@ function TaskDetail() {
   const deletetpl = async () => {
     setLoading(true)
     await deleteTask(idTask)
-      .then(async (response) => {
-        console.log(response.data)
+      .then(async () => {
         await router.push(`/tasks/${infoJF.id}`)
         await saveNotification()
         setLoading(false)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setLoading(false)
       })
   }
@@ -93,26 +91,17 @@ function TaskDetail() {
           })
         }
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchafterTask = async () => {
     await afterTask(idTask)
       .then((response) => {
         setAfterTasks(response.data.after_tasks)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const modelDelete = () => {

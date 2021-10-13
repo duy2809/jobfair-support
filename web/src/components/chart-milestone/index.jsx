@@ -10,8 +10,6 @@ export default function ChartMilestone({ id }) {
   const fetchTasks = async () => {
     await listmilestone(id).then((response) => {
       setlistTask(response.data.schedule.milestones)
-    }).catch((error) => {
-      console.log(error)
     })
   }
   useEffect(() => {
