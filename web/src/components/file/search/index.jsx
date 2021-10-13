@@ -147,9 +147,9 @@ export default function Search() {
       updater: '',
     })
   }
-  const onFinishFailed = () => {
-    console.log(1)
-  }
+  // const onFinishFailed = () => {
+  //   console.log(1)
+  // }
   const handleCancel = () => {
     setIsModalVisible(false)
   }
@@ -169,7 +169,7 @@ export default function Search() {
         }}
         layout="horizontal"
         onFinish={onFinishSuccess}
-        onFinishFailed={onFinishFailed}
+        // onFinishFailed={onFinishFailed}
         colon={false}
       >
         <Form.Item label={<p className="font-bold">名前</p>} name="name">

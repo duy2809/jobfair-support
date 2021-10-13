@@ -252,7 +252,6 @@ const index = () => {
       return Promise.reject(new Error('この項目は必須です'))
     }
 
-    // console.log(Extensions.toHalfWidth(parseInt(value.toString(), 10)))
     if (value <= 0) {
       return Promise.reject(new Error('0以上の数字で入力してください'))
     }

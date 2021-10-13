@@ -28,7 +28,6 @@ function ScheduleDetailGeneral() {
     })
     setUser(store.getState().get('auth').get('user'))
     if (user) {
-      console.log()
       setRole(user.get('role'))
     }
     // alert(role);

@@ -44,9 +44,6 @@ function templatetTaskDt() {
         setUnit(response.data.unit)
         setDes(response.data.description_of_detail)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
 
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
@@ -55,17 +52,11 @@ function templatetTaskDt() {
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchafterTask = async () => {
     await afterTask(idTplt)
       .then((response) => {
         setAfterTasks(response.data.after_tasks)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
 
@@ -79,13 +70,9 @@ function templatetTaskDt() {
   }
   const deletetpl = async () => {
     await deleteTptt(idTplt)
-      .then(async (response) => {
-        console.log(response.data)
+      .then(async () => {
         await router.push('/template-tasks')
         await saveNotification()
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const modelDelete = () => {

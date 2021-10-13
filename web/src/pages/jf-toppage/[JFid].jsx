@@ -28,8 +28,6 @@ function jftoppage() {
     await jftask(idJf).then((response) => {
       setlistTask(response.data.schedule.tasks)
       setLoading(false)
-    }).catch((error) => {
-      console.log(error)
     })
   }
   // const handleEdit = () => {

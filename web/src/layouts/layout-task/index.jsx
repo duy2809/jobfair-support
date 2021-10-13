@@ -44,9 +44,9 @@ const JfLayout = ({ children, id, bgr }) => {
           setNumberOfStudents(response.data.number_of_students)
           setNumberOfCompanies(response.data.number_of_companies)
         })
-        .catch((error) => {
-          console.log(error)
-        })
+        // .catch((error) => {
+        //   console.log(error)
+        // })
     }
   }
   useEffect(() => {

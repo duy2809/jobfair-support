@@ -174,7 +174,6 @@ function index() {
       try {
         const data = { data: templateTaskSelect }
         const response = await addTaskAPI.addTasks(jobfair.id, data)
-        // console.log(response)
         if (response.status < 299) {
           await saveNotification()
           routeTo(`/tasks/${jobfair.id}`)

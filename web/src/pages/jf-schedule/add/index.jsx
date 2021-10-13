@@ -80,10 +80,8 @@ function addJobfairSchedule() {
                 openNotification('success', '変更は正常に保存されました。')
               }, 500)
             })
-            .catch((err) => console.log(err))
         }
       })
-      .catch((err) => console.log(err))
   }
 
   const onFinishFailed = (errorInfo) => {
@@ -143,7 +141,6 @@ function addJobfairSchedule() {
           ])
         }
       })
-      .catch((err) => console.log(err))
   }
 
   const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
