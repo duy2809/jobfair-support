@@ -211,4 +211,14 @@ body {
     padding: 0 !important;
     font-size: 16px;
   }
+  .ant-pagination-disabled, .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link, .ant-pagination-disabled .ant-pagination-item-link {
+    background: #ffd803;
+    color: black;
+    border: none;
+  }
+  .ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link {
+    background: #ffd803;
+    color: black;
+    border: none;
+  }
 }
