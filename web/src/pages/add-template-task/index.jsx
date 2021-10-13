@@ -1,22 +1,29 @@
-import { CheckCircleTwoTone,
+import {
+  CheckCircleTwoTone,
   ExclamationCircleOutlined, ExclamationCircleTwoTone,
-  LoadingOutlined } from '@ant-design/icons'
+  LoadingOutlined,
+} from '@ant-design/icons'
 import {
   Button, Form, Spin,
   Input, Modal, notification,
   Select, Space, Tag, Tooltip,
 } from 'antd'
-
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import addTemplateTasksAPI from '../../api/add-template-task'
 import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 // import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
 
+const MDEditor = dynamic(
+  () => import('@uiw/react-md-editor').then((mod) => mod.default),
+  { ssr: false },
+)
 const index = () => {
   // page state.
+  const [markdown, setMarkdown] = useState('')
   const [listCatergories, setlistCatergories] = useState([])
   const [listMilestones, setlistMilestones] = useState([])
   const [templateTasks, settemplateTasks] = useState([])
@@ -25,8 +32,6 @@ const index = () => {
   const [beforeTasks, setPreTasks] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
   // const [selectedItems, setSelectedItems] = useState([])
-  const { TextArea } = Input
-
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
   // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
@@ -127,7 +132,7 @@ const index = () => {
           onFormReset()
           routeTo('/template-tasks')
         },
-        onCancel: () => {},
+        onCancel: () => { },
         okText: 'はい',
         centered: true,
         cancelText: 'いいえ',
@@ -140,7 +145,7 @@ const index = () => {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に登録されました。',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
 
@@ -164,7 +169,7 @@ const index = () => {
         }
         const data = {
           name: values.template_name,
-          description_of_detail: values.detail,
+          description_of_detail: markdown,
           milestone_id: values.milestone_id,
           is_day: values.isDay,
           unit: values.unit,
@@ -192,14 +197,14 @@ const index = () => {
             icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
             duration: 3,
             message: 'このJF名は既に使用されています。',
-            onClick: () => {},
+            onClick: () => { },
           })
         } else {
           notification.open({
             icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
             duration: 3,
             message: '保存に失敗しました。',
-            onClick: () => {},
+            onClick: () => { },
           })
         }
         setdisableBtn(false)
@@ -338,8 +343,10 @@ const index = () => {
 
   const loadingIcon = (
     <LoadingOutlined
-      style={{ fontSize: 30,
-        color: '#ffd803' }}
+      style={{
+        fontSize: 30,
+        color: '#ffd803',
+      }}
       spin
     />
   )
@@ -374,7 +381,7 @@ const index = () => {
                           onFinish={onFinishSuccess}
                           onFinishFailed={onFinishFailed}
                         >
-                          <div className="flex ">
+                          <div className="flex">
                             <div className="left-side mx-4 w-1/2">
                               <div className="container ">
                                 {/* template task name */}
@@ -512,8 +519,8 @@ const index = () => {
                                       ]}
                                     >
                                       <Input
-                                        className="h-1/2 py-1"
-                                        style={{ padding: '10px', minWidth: '53px' }}
+                                        className="h-1/2"
+                                        style={{ padding: '10px', width: '180%' }}
                                         type="text"
                                         size="large"
                                         min={1}
@@ -609,14 +616,9 @@ const index = () => {
 
                           </div>
                           {/* details    */}
-                          <Form.Item
-                            label=""
-                            className="block mx-7"
-                            style={{ display: 'block' }}
-                            name="detail"
-                          >
-                            <TextArea className="text-area-description w-100" rows={10} placeholder="何かを入力してください" />
-                          </Form.Item>
+                          <div className="pr-3 pl-14 mb-2">
+                            <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={markdown} onChange={setMarkdown} />
+                          </div>
 
                           {/* 2 button */}
                           <Form.Item
@@ -624,7 +626,7 @@ const index = () => {
                             colon={false}
                             className="my-10 mx-4"
                           >
-                            <Space size={20} className="flex justify-end ">
+                            <Space size={20} className="flex place-content-end pr-4">
                               <Button
                                 htmlType="button"
                                 className="ant-btn"
