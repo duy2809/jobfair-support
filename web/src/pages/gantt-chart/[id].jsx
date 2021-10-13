@@ -102,25 +102,23 @@ export default function index() {
     }
   }
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      try {
-        // TODO: optimize this one by using axios.{all,spread}
-        const jobfair = await ganttChartAPI.getJobfair(jobfairID)
-        const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        const data = await chartData(jobfairTask)
+  useEffect(async () => {
+    try {
+      // TODO: optimize this one by using axios.{all,spread}
+      const jobfair = await ganttChartAPI.getJobfair(jobfairID)
+      const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
+      const data = await chartData(jobfairTask)
+      setTimeout(() => {
         setTask(data)
-        console.log(data)
-        setLoading(false)
-        setJobfairStartDate(new Date(jobfair.data.start_date))
-        return ''
-      } catch (error) {
-        // return Error('内容が登録されません。よろしいですか？')
-        return error
-      }
+      }, 0)
+      console.log('tai sao', data)
+      setLoading(false)
+      setJobfairStartDate(new Date(jobfair.data.start_date))
+      return ''
+    } catch (error) {
+      // return Error('内容が登録されません。よろしいですか？')
+      return error
     }
-    fetchAPI()
-    return ''
   }, [])
 
   const onStatusChange = (e) => {
@@ -288,11 +286,14 @@ export default function index() {
                         </Empty>
                       </div>
                     ) : (
-                      <GanttChart
-                        tasks={tasks}
-                        jobfairStartDate={jobfairStartDate}
-                        filter={filter}
-                      />
+                      <div>
+                        <p className="hidden">{JSON.stringify(tasks)}</p>
+                        <GanttChart
+                          tasks={tasks}
+                          jobfairStartDate={jobfairStartDate}
+                          filter={filter}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
