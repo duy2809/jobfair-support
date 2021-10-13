@@ -137,7 +137,7 @@ export default class Gantt extends Component {
         width: 180,
         align: 'center',
         template(item) {
-          return `<p class="task-column" style="background-color:" > ${item.text}</p>`
+          return `<p class="task-column" style="border:1px solid #e3e3e3; " > ${item.text}</p>`
         },
       },
     ]
@@ -153,12 +153,6 @@ export default class Gantt extends Component {
     gantt.templates.month_scale_date = (date) => formatMonthScale(date)
     gantt.config.autofit = false
     gantt.config.bar_height = 30
-    gantt.config.autosize = 'y'
-    // const onTaskClick = gantt.attachEvent('onTaskClick', (id) => {
-    //   gantt.message(`onTaskClick: Task ID: ${id}`)
-    //   return true
-    // }, '')
-    // gantt.setSizes()
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
     const lastOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
     const formatFirstOfMonth = firstOfMonth.toString('yyyy-MM-dd')
@@ -194,9 +188,8 @@ export default class Gantt extends Component {
           ref={(input) => {
             this.ganttContainer = input
           }}
-          style={{ width: '100%', maxHeight: '700px' }}
+          style={{ width: '100%', height: '700px' }}
         />
-        {/* <input type="button" value="Test" onClick={this.test} /> */}
       </>
     )
   }

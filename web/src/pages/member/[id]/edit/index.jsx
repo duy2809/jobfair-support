@@ -57,11 +57,12 @@ const EditMember = ({ data }) => {
         openNotificationSuccess()
         router.push(`/member/${data.user.id}`)
       })
-      .catch(() => {
-        const messageContent = 'メールはすでに存在します。'
+      .catch((error) => {
+        const errorMessage = error.response.data.errors.name[0]
         notification.error({
-          message: messageContent,
+          message: errorMessage,
         })
+        return error
       })
       .finally(() => {
         setIsModalCancelVisible(false)
@@ -79,9 +80,7 @@ const EditMember = ({ data }) => {
   }
 
   const showModal = () => {
-    if (
-      form.getFieldsError().filter(({ errors }) => errors.length).length === 0
-    ) {
+    if (form.getFieldsError().filter(({ errors }) => errors.length).length === 0) {
       setIsModalVisible(true)
     }
   }
@@ -124,9 +123,7 @@ const EditMember = ({ data }) => {
           >
             <Form.Item
               name="name"
-              label={
-                <span className="font-bold">フルネーム</span>
-              }
+              label={<span className="font-bold">フルネーム</span>}
               rules={[
                 {
                   message: 'この項目は必須です',
@@ -143,9 +140,11 @@ const EditMember = ({ data }) => {
             </Form.Item>
             <Form.Item
               name="email"
-              label={
-                <span style={{ fontSize: '14px' }} className="font-bold">メールアドレス</span>
-              }
+              label={(
+                <span style={{ fontSize: '14px' }} className="font-bold">
+                  メールアドレス
+                </span>
+              )}
               rules={[
                 {
                   type: 'email',
@@ -176,9 +175,11 @@ const EditMember = ({ data }) => {
 
             <Form.Item
               name="categories"
-              label={
-                <span style={{ fontSize: '14px' }} className="font-bold">カテゴリ</span>
-              }
+              label={(
+                <span style={{ fontSize: '14px' }} className="font-bold">
+                  カテゴリ
+                </span>
+              )}
               rules={[
                 {
                   required: false,
@@ -195,7 +196,9 @@ const EditMember = ({ data }) => {
               >
                 {categoriesSystem.map((item) => (
                   <Option key={item.id} value={item.id}>
-                    <p style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.category_name}</p>
+                    <p style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {item.category_name}
+                    </p>
                   </Option>
                 ))}
               </Select>
@@ -212,20 +215,13 @@ const EditMember = ({ data }) => {
                   okText="はい"
                   centered
                 >
-                  <p className="mb-5">
-                    変更内容が保存されません。よろしいですか？
-                  </p>
+                  <p className="mb-5">変更内容が保存されません。よろしいですか？</p>
                 </Modal>
 
                 <Button size="large" onClick={showCancelModal}>
                   キャンセル
                 </Button>
-                <Button
-                  size="large"
-                  className="ml-4"
-                  type="primary"
-                  onClick={showModal}
-                >
+                <Button size="large" className="ml-4" type="primary" onClick={showModal}>
                   保存
                 </Button>
               </div>
