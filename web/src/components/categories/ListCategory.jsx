@@ -99,11 +99,11 @@ export default function ListCategories() {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <div className="flex items-center content-center text-center pr-3">
-              <p>表示件数 </p>
+              <span>表示件数 </span>
             </div>
             <div className="flex items-center content-center text-center">
               <Select
-                className="mr-3"
+                className="no-border"
                 size="large"
                 labelInValue
                 defaultValue={{ value: '10' }}
