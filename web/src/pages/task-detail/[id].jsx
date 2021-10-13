@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { Button, Modal, notification, Tooltip, Tag } from 'antd'
-import BoxComment from '../../components/box-comment'
 
 import {
   ExclamationCircleOutlined,
@@ -11,6 +10,7 @@ import {
   DeleteTwoTone,
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
+import BoxComment from '../../components/box-comment'
 import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
@@ -416,11 +416,11 @@ function TaskDetail() {
                   {infoTask.description_of_detail}
                 </div>
                 <div className="mx-7">
-                  <BoxComment id={idTask}></BoxComment>
+                  <BoxComment id={idTask} />
                 </div>
               </div>
             </div>
-            
+
           </div>
         </JfLayout.Main>
       </JfLayout>
