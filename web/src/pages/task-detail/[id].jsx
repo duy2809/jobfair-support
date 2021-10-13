@@ -150,7 +150,7 @@ function TaskDetail() {
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
-      <JfLayout id={infoJF.id}>
+      <JfLayout id={infoJF.id} bgr={2}>
         <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
