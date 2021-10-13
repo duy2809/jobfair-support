@@ -12,6 +12,7 @@
     }
     .ant-layout {
         background: white;
+        height: 100vh;
     }
     .ant-layout-sider-children{
         background-color: #e3f6f5 !important;
@@ -101,11 +102,14 @@
     .ant-menu-item-selected:hover {
       opacity: 0.7;
     }
-    .anticon,
-    .anticon-home,
-    .ant-menu-item-icon .layout-icon {
-        font-size: 25px !important;
+    .layout-icon{
+      .anticon,
+      .anticon-home,
+      .ant-menu-item-icon .layout-icon {
+          font-size: 25px !important;
+      }
     }
+    
   
     .ant-layout-sider,
     .ant-layout-sider-dark {

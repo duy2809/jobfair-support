@@ -10,7 +10,7 @@ const Task = dynamic(() => import('./Task'), {
   ssr: false,
 })
 
-const Column = ({ column, tasks, isControllable }) => {
+const Column = ({ column, tasks }) => {
   const { id, title } = column
 
   let borderBottomStyle
@@ -68,7 +68,7 @@ const Column = ({ column, tasks, isControllable }) => {
                 task={task}
                 index={index}
                 title={title}
-                isControllable={isControllable}
+                isControllable
               />
             ))}
             {provided.placeholder}
@@ -81,7 +81,6 @@ const Column = ({ column, tasks, isControllable }) => {
 Column.propTypes = {
   tasks: PropTypes.array.isRequired,
   column: PropTypes.object.isRequired,
-  isControllable: PropTypes.bool.isRequired,
 }
 
 export default Column

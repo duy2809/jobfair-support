@@ -96,7 +96,7 @@ function TaskList() {
         start_date: dataResponse[i].start_time,
         end_date: dataResponse[i].end_time,
         status: dataResponse[i].status,
-        category_name: dataResponse[i].categories[0].category_name,
+        category_name: dataResponse[i].categories[0]?.category_name,
         milestone_name: dataResponse[i].milestone.name,
         managers: manager,
       })
@@ -282,7 +282,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => users === 'superadmin' && (
+        render: (_text, record) => (users === 'superadmin' || users === 'admin') && (
           <Space size="middle">
             <EditTwoTone
               id={record.id}

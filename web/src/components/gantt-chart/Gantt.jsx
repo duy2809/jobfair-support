@@ -17,7 +17,6 @@ export default class Gantt extends Component {
     const { tasks } = this.props
     // const { tasks } = this.props
     console.log(tasks)
-    const milestones = this.props.milestones
     const jobfairStartDate = this.props.jobfairStartDate
     console.log(jobfairStartDate)
     /* Full List of Extensions */
@@ -66,14 +65,7 @@ export default class Gantt extends Component {
     }
     gantt.config.lightbox.sections = []
     gantt.attachEvent('onBeforeLightbox', () => false)
-    console.log(jobfairStartDate.getDate())
-    milestones.forEach((element) => {
-      // console.log(element)
-      console.log(element.period)
-    })
-    // const weekScaleTemplate = () => {
 
-    // }
     // custom link style
     gantt.templates.link_class = (link) => {
       const types = gantt.config.links
@@ -114,7 +106,6 @@ export default class Gantt extends Component {
           return 'month_scale'
 
         default:
-          // "week"
           return 'week_scale'
       }
     }
@@ -142,11 +133,11 @@ export default class Gantt extends Component {
       {
         name: 'task',
         label: 'タスクリスト',
-        resize: true,
-        width: 170,
+        // resize: true,
+        width: 180,
         align: 'center',
         template(item) {
-          return `<p class="task-column" style="background-color:" > ${item.text}</p>`
+          return `<p class="task-column" style="border:1px solid #e3e3e3; " > ${item.text}</p>`
         },
       },
     ]
@@ -162,12 +153,6 @@ export default class Gantt extends Component {
     gantt.templates.month_scale_date = (date) => formatMonthScale(date)
     gantt.config.autofit = false
     gantt.config.bar_height = 30
-    gantt.config.autosize = 'y'
-    // const onTaskClick = gantt.attachEvent('onTaskClick', (id) => {
-    //   gantt.message(`onTaskClick: Task ID: ${id}`)
-    //   return true
-    // }, '')
-    // gantt.setSizes()
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1)
     const lastOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0)
     const formatFirstOfMonth = firstOfMonth.toString('yyyy-MM-dd')
@@ -203,9 +188,8 @@ export default class Gantt extends Component {
           ref={(input) => {
             this.ganttContainer = input
           }}
-          style={{ width: '100%', maxHeight: '700px' }}
+          style={{ width: '100%', height: '700px' }}
         />
-        {/* <input type="button" value="Test" onClick={this.test} /> */}
       </>
     )
   }
@@ -214,7 +198,6 @@ export default class Gantt extends Component {
 Gantt.propTypes = {
   tasks: PropTypes.object.isRequired,
   filter: PropTypes.string.isRequired,
-  milestones: PropTypes.array.isRequired,
   jobfairStartDate: PropTypes.object.isRequired,
 }
 export function scrollToToday() {
@@ -234,8 +217,4 @@ export function scrollToToday() {
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2
     gantt.scrollTo(position - offset, null)
   }
-}
-
-export function taskFilter() {
-  // gantt.refreshData()
 }

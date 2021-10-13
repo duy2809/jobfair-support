@@ -1,11 +1,11 @@
 /* eslint-disable import/extensions */
-import { LoadingOutlined } from '@ant-design/icons'
 import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
+import { loadingIcon } from '../../components/loading'
 import JfLayout from '../../layouts/JFLayout'
 import './style.scss'
 
@@ -15,17 +15,16 @@ const GanttChart = dynamic(
   // eslint-disable-next-line comma-dangle
   { ssr: false }
 )
+// const chartMethod = dynamic(import('~/components/gantt-chart/Gantt'), { ssr: false })
 
 export default function index() {
-  // const [data, setData] = useState({})
   const [status, setStatus] = useState('0')
   const [loading, setLoading] = useState(true)
-  const [tasks, setTask] = useState({})
+  const [tasks, setTask] = useState({ data: [], links: [] })
   const router = useRouter()
-  const [milestones, setMilestones] = useState([])
   const [filter, setfilter] = useState('全て')
-  const [chartMethod, setchartMethod] = useState()
-  const [jobfairStartDate, setJobfairStartDate] = useState(Date)
+  // const [chartMethod, setchartMethod] = useState(null)
+  const [jobfairStartDate, setJobfairStartDate] = useState(new Date())
 
   const generateColor = (taskStatus) => {
     switch (taskStatus) {
@@ -48,6 +47,7 @@ export default function index() {
         return 'blue'
     }
   }
+
   const generateTask = (data) => {
     const result = { data: [] }
     data.forEach((element) => {
@@ -55,7 +55,6 @@ export default function index() {
         id: element.id,
         text: element.name,
         start_date: new Date(element.start_time.replace(/\//g, '-')),
-        // start_date: new Date(),
         end_date: new Date(element.end_time.replace(/\//g, '-')),
         open: true,
         color: generateColor(element.status),
@@ -91,31 +90,35 @@ export default function index() {
     return link
   }
   const jobfairID = router.query.id
-  useEffect(() => {
-    const fetchAPI = async () => {
-      try {
-        // eslint-disable-next-line import/no-unresolved
-        const method = await import('~/components/gantt-chart/Gantt')
-        // TODO: optimize this one by using axios.{all,spread}
-        const jobfair = await ganttChartAPI.getJobfair(jobfairID)
-        const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        const jobfairMilestone = await ganttChartAPI.getMilestones(jobfairID)
-        const data = generateTask(jobfairTask.data.schedule.tasks)
-        const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-        const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-        const link = generateLink(beforeTasks.data, afterTasks.data)
-        console.log(beforeTasks.data, afterTasks.data)
-        setJobfairStartDate(new Date(jobfair.data.start_date))
-        setLoading(false)
-        setMilestones(jobfairMilestone.data.schedule.milestones)
-        setTask({ ...data, ...link })
-        setchartMethod(method)
-        return null
-      } catch (error) {
-        return Error('内容が登録されません。よろしいですか？')
-      }
+  const chartData = async (jobfairTask) => {
+    try {
+      const data = generateTask(jobfairTask.data.schedule.tasks)
+      const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
+      const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
+      const link = generateLink(beforeTasks.data, afterTasks.data)
+      return { ...data, ...link }
+    } catch (error) {
+      return error
     }
-    fetchAPI()
+  }
+
+  useEffect(async () => {
+    try {
+      // TODO: optimize this one by using axios.{all,spread}
+      const jobfair = await ganttChartAPI.getJobfair(jobfairID)
+      const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
+      const data = await chartData(jobfairTask)
+      setTimeout(() => {
+        setTask(data)
+      }, 0)
+      console.log('tai sao', data)
+      setLoading(false)
+      setJobfairStartDate(new Date(jobfair.data.start_date))
+      return ''
+    } catch (error) {
+      // return Error('内容が登録されません。よろしいですか？')
+      return error
+    }
   }, [])
 
   const onStatusChange = (e) => {
@@ -148,9 +151,11 @@ export default function index() {
     setStatus(e.target.value)
   }
   const scrollToToday = async () => {
-    chartMethod.scrollToToday()
+    // eslint-disable-next-line import/no-unresolved
+    const method = await import('~/components/gantt-chart/Gantt')
+    method?.scrollToToday()
+    return []
   }
-  const loadingIcon = <LoadingOutlined style={{ fontSize: 30, color: '#ffd803' }} spin />
   return (
     <JfLayout id={jobfairID}>
       <JfLayout.Main>
@@ -186,7 +191,11 @@ export default function index() {
             <div className="col-span-12 mb-6">
               <div className="flex justify-between px-10">
                 <div>
-                  <Button type="primary" onClick={scrollToToday} style={{ letterSpacing: '-3px' }}>
+                  <Button
+                    type="primary"
+                    onClick={loading ? '' : scrollToToday}
+                    style={{ letterSpacing: '-3px' }}
+                  >
                     今日
                   </Button>
                 </div>
@@ -196,6 +205,7 @@ export default function index() {
                     onChange={onStatusChange}
                     defaultValue={status}
                     buttonStyle="solid"
+                    className="flex items-center"
                   >
                     <Tooltip placement="topLeft" title="全て">
                       <Radio.Button
@@ -276,12 +286,14 @@ export default function index() {
                         </Empty>
                       </div>
                     ) : (
-                      <GanttChart
-                        tasks={tasks}
-                        jobfairStartDate={jobfairStartDate}
-                        milestones={milestones}
-                        filter={filter}
-                      />
+                      <div>
+                        <p className="hidden">{JSON.stringify(tasks)}</p>
+                        <GanttChart
+                          tasks={tasks}
+                          jobfairStartDate={jobfairStartDate}
+                          filter={filter}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>

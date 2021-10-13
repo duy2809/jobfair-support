@@ -11,7 +11,12 @@ import {
 
 import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
-import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
+import {
+  templateTask,
+  beforeTask,
+  afterTask,
+  deleteTptt,
+} from '../../api/template-task'
 
 function templatetTaskDt() {
   const router = useRouter()
@@ -119,7 +124,11 @@ function templatetTaskDt() {
           <div className="template-task-dt">
             <div className="list__button">
               <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
+                <Button
+                  style={{ border: 'none' }}
+                  type="primary"
+                  onClick={handleBack}
+                >
                   戻る
                 </Button>
               </div>
@@ -128,7 +137,7 @@ function templatetTaskDt() {
             <div className="flex items-center justify-between">
               <h1>テンプレートタスク詳細</h1>
               <div className="button__right mb-5">
-                {role === 'admin' || role === 'superadmin' ? (
+                {role === 'superadmin' ? (
                   <>
                     <EditTwoTone
                       className="border-none mx-1 text-2xl"
@@ -212,62 +221,89 @@ function templatetTaskDt() {
 
               <div className="grid grid-cols-2 mx-16 mt-5">
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">前のタスク </p>
-                  <ul className="list__task col-span-2">
-                    {beforeTasks
-                      ? beforeTasks.map((item) => (
-                        <li className="task__chil">
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/template-task-dt/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    前のタスク
+                    {' '}
+                  </p>
+                  {beforeTasks.length > 0 ? (
+                    <>
+                      <ul
+                        className="list__task col-span-2"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
+                        {beforeTasks
+                          ? beforeTasks.map((item) => (
+                            <li className="task__chil">
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
                               >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/template-task-dt/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
+                          : null}
+                      </ul>
+                    </>
+                  ) : (
+                    <>
+                      <ul className="list__task col-span-2" />
+                    </>
+                  )}
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">次のタスク</p>
-                  <ul className="list__task col-span-2">
-                    {afterTasks
-                      ? afterTasks.map((item) => (
-                        <li>
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/template-task-dt/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
+                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                    次のタスク
+                  </p>
+                  {afterTasks.length > 0 ? (
+                    <>
+                      <ul
+                        className="list__task col-span-2"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
+                        {afterTasks
+                          ? afterTasks.map((item) => (
+                            <li className="task__chil">
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
                               >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/template-task-dt/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
+                          : null}
+                      </ul>
+                    </>
+                  ) : (
+                    <>
+                      <ul className="list__task col-span-2" />
+                    </>
+                  )}
                 </div>
               </div>
 

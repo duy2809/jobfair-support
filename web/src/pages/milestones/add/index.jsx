@@ -243,25 +243,24 @@ const AddMilestonePage = () => {
                   min={0}
                 />
               </Form.Item>
-              <div className="grid grid-cols-12 grid-rows-1 mt-5 gap-x-5">
-                <div className="col-span-7 justify-self-end">
+              <div className="grid grid-cols-6 grid-rows-1 mt-5">
+                <div className="col-start-4 flex justify-end gap-x-4">
                   <Form.Item>
                     <Button
                       onClick={showModalOfBtnCancel}
-                      className="w-32"
+                      size="large"
+                      style={{ height: '38px' }}
                     >
                       キャンセル
                     </Button>
                   </Form.Item>
-                </div>
-                <div>
                   <Form.Item>
                     <Button
+                      size="large"
                       type="primary"
-                      className="w-32"
                       onClick={showModal}
                       htmlType="submit"
-                      style={{ letterSpacing: '-0.1em' }}
+                      style={{ letterSpacing: '-0.1em', height: '38px' }}
                     >
                       登録
                     </Button>

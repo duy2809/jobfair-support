@@ -19,7 +19,7 @@ import './style.scss'
 const JfLayout = ({ children, bgr }) => {
   const styles = {
     background: 'white',
-    borderLeft: '8px solid #ffd803',
+    borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
   const main = findSlot(JfLayout.Main, children)
@@ -41,6 +41,7 @@ const JfLayout = ({ children, bgr }) => {
             left: 0,
             zIndex: 100,
           }}
+          className="layout-icon"
           trigger={null}
           collapsible
           collapsed={collapsed}

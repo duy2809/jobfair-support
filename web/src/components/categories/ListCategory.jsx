@@ -56,7 +56,7 @@ export default function ListCategories() {
       key: '1',
       title: 'カテゴリー名',
       dataIndex: 'name',
-      width: '60%',
+      width: `${role === 'superadmin' ? '60%' : '100%'}`,
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>
@@ -69,8 +69,8 @@ export default function ListCategories() {
     },
     {
       key: '2',
-      title: 'アクション',
-      width: '10%',
+      title: `${role === 'superadmin' ? 'アクション' : ''}`,
+      width: `${role === 'superadmin' ? '40%' : '0%'}`,
       render: (record) => role === 'superadmin' && (
         <Space size="middle">
           <EditCategory record={record} reloadPage={reloadPage} role={role} />
@@ -99,11 +99,11 @@ export default function ListCategories() {
         <div className="flex justify-between items-center">
           <div className="flex items-center">
             <div className="flex items-center content-center text-center pr-3">
-              <p>表示件数 </p>
+              <span>表示件数 </span>
             </div>
             <div className="flex items-center content-center text-center">
               <Select
-                className="mr-3"
+                className="no-border"
                 size="large"
                 labelInValue
                 defaultValue={{ value: '10' }}
