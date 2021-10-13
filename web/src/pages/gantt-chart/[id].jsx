@@ -96,8 +96,7 @@ export default function index() {
       const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
       const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
       const link = generateLink(beforeTasks.data, afterTasks.data)
-      setTask({ ...data, ...link })
-      return data
+      return { ...data, ...link }
     } catch (error) {
       return error
     }
@@ -109,11 +108,11 @@ export default function index() {
         // TODO: optimize this one by using axios.{all,spread}
         const jobfair = await ganttChartAPI.getJobfair(jobfairID)
         const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        await chartData(jobfairTask).then(() => {
-          setLoading(false)
-          setJobfairStartDate(new Date(jobfair.data.start_date))
-        })
-
+        const data = await chartData(jobfairTask)
+        setTask(data)
+        console.log(data)
+        setLoading(false)
+        setJobfairStartDate(new Date(jobfair.data.start_date))
         return ''
       } catch (error) {
         // return Error('内容が登録されません。よろしいですか？')
