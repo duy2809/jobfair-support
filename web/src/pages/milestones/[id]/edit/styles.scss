@@ -1,3 +1,30 @@
+// .edit-milestone {
+//     label {
+//         margin-right: 2rem;
+//     }
+
+//     .ant-form-item-label>label::after {
+//         margin: 0px;
+//     }
+
+//     p {
+//         margin-bottom: 0px !important;
+//     }
+
+//     .ant-form-horizontal .ant-form-item-label {
+//         text-align: end;
+//         margin: 0px 16px;
+//     }
+
+//     div.ant-select .ant-select-lg .addJF-selector .ant-select-single .ant-select-show-arrow,
+//     div.ant-form-item-control-input-content {
+//         margin: 0px 16px;
+//     }
+
+//     .ant-form-item-label > label::after {
+//         margin: 0px;
+//     }
+// }
 .edit-milestone {
     label {
         margin-right: 2rem;
@@ -9,20 +36,6 @@
 
     p {
         margin-bottom: 0px !important;
-    }
-
-    .ant-form-horizontal .ant-form-item-label {
-        text-align: end;
-        margin: 0px 16px;
-    }
-
-    div.ant-select .ant-select-lg .addJF-selector .ant-select-single .ant-select-show-arrow,
-    div.ant-form-item-control-input-content {
-        margin: 0px 16px;
-    }
-
-    .ant-form-item-label > label::after {
-        margin: 0px;
     }
 }
     

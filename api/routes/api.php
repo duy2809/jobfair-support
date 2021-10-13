@@ -64,6 +64,8 @@ Route::prefix('schedule')->group(function () {
     Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
 });
 
+Route::delete('/schedules/{id}', 'ScheduleController@destroy');
+
 Route::get('/admins', 'AdminController@index');
 
 //milestone
@@ -152,6 +154,9 @@ Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
+
+Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
+Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
 
 // top-page
 Route::prefix('/top-page')->group(function () {

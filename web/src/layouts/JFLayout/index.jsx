@@ -19,7 +19,7 @@ import './style.scss'
 const JfLayout = ({ children, bgr }) => {
   const styles = {
     background: 'white',
-    borderLeft: '8px solid #ffd803',
+    borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
   const main = findSlot(JfLayout.Main, children)
