@@ -53,16 +53,13 @@ const List = ({
   }, [])
   useEffect(() => {
     let datas = [...list]
-    console.log(filter)
     if (filter) {
       if (filter.name) {
-        console.log('fil name')
         datas = datas.filter(
           (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
         )
       }
       if (filter.milestone) {
-        console.log('fil mil')
         datas = datas.filter(
           (data) => data.milestone
             .toLowerCase()
@@ -70,7 +67,6 @@ const List = ({
         )
       }
       if (filter.category) {
-        console.log('fil cate')
         datas = datas.filter(
           (data) => data.category
             .toLowerCase()
@@ -93,7 +89,6 @@ const List = ({
 
   const searchInput = (e, dateString = '') => {
     if (!dateString) {
-      console.log(e)
       if (e.target.name === 'name') {
         setFilter({ ...filter, name: e.target.value })
         if (e.target.value === '') {

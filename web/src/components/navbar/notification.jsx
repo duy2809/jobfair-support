@@ -137,7 +137,6 @@ export default function Notification() {
   }
 
   const convertDate = (date) => {
-    console.log(date)
     const currentdate = new Date(date)
     const hours = currentdate.getUTCHours()
     const datetime = `${currentdate.getFullYear()}-${

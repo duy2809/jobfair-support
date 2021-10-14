@@ -1,4 +1,8 @@
-import { CheckCircleTwoTone, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
+import {
+  CheckCircleTwoTone,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+} from '@ant-design/icons'
 import { Button, Input, Modal, Select, Space, Table, notification } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -96,7 +100,9 @@ function index() {
   const handleSelectCategory = (value) => {
     setCategory(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
+      (templateTask) => (value
+        ? !templateTask.category_name.localeCompare(value)
+        : templateTask.category_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -110,7 +116,9 @@ function index() {
   const handlSelectMilestone = (value) => {
     setMilestone(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
+      (templateTask) => (value
+        ? !templateTask.milestone_name.localeCompare(value)
+        : templateTask.milestone_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -166,7 +174,6 @@ function index() {
       try {
         const data = { data: templateTaskSelect }
         const response = await addTaskAPI.addTasks(jobfair.id, data)
-        // console.log(response)
         if (response.status < 299) {
           await saveNotification()
           routeTo(`/tasks/${jobfair.id}`)
@@ -190,7 +197,10 @@ function index() {
             <div className="container mx-auto w-3/4">
               <div className="grid grid-cols-1 grid-flow-row justify-center">
                 {/* task header */}
-                <div className="header flex justify-between mb-6 " style={{ flex: '0 0 100%' }}>
+                <div
+                  className="header flex justify-between mb-6 "
+                  style={{ flex: '0 0 100%' }}
+                >
                   <div className="flex space-x-2" style={{ flex: '0 0 70%' }}>
                     <Select
                       size="large"
@@ -201,7 +211,10 @@ function index() {
                       onChange={handleSelectCategory}
                     >
                       {listCatergories.map((element) => (
-                        <Select.Option key={element.id} value={element.category_name}>
+                        <Select.Option
+                          key={element.id}
+                          value={element.category_name}
+                        >
                           {element.category_name}
                         </Select.Option>
                       ))}
@@ -247,6 +260,7 @@ function index() {
                 <div className="data-controller">
                   <Space size={20} className="flex justify-end">
                     <Button
+                      size="large"
                       htmlType="button"
                       className="ant-btn"
                       onClick={cancelConfirmModle}
@@ -257,6 +271,7 @@ function index() {
                     </Button>
                     {/* --------------------------- */}
                     <Button
+                      size="large"
                       type="primary"
                       htmlType="submit"
                       onClick={addTask}

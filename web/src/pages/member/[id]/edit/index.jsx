@@ -94,7 +94,6 @@ const EditMember = ({ data }) => {
   }
 
   const handleChangeSelect = (value) => {
-    console.log('value', value)
     setCategories(value)
     setReqCategories(value)
     setShowExitPrompt(true)

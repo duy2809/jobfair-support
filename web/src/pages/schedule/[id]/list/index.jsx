@@ -20,12 +20,9 @@ function ScheduleDetail() {
   const [id, setID] = useState(0)
   const [currentURL, setCurrentURL] = useState('')
   useEffect(() => {
-    console.log(window.location.href.toString())
     setCurrentURL(window.location.href.toString())
-    console.log(router.query.id)
     setID(router.query.id)
     getMilestone(router.query.id).then((res) => {
-      console.log(res.data)
       const milestoneCopy = res.data
       milestoneCopy.forEach((element) => {
         if (element.name.length > 10) {

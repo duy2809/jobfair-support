@@ -30,12 +30,8 @@ function MemberDetailPage() {
 
   const deletetpl = async () => {
     await deleteMember(idMember)
-      .then((response) => {
-        console.log(response)
+      .then(() => {
         Router.push('/member/')
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
 

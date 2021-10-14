@@ -149,12 +149,6 @@ function TaskList() {
     const newList = temperaryData.filter((x) => x.idtask !== id)
     setTemperaryData(newList)
     await deleteTask(id)
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
     saveNotification()
   }
   const modelDelete = (id) => {

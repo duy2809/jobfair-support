@@ -59,7 +59,6 @@ class MemberDetailTable extends React.Component {
           )),
         })
         const categorires = res.data.categories
-        console.log(res.data)
         this.setState({
           listCate: categorires.map((element) => (
             <div className="category-name border-none block mx-auto">
@@ -68,7 +67,7 @@ class MemberDetailTable extends React.Component {
           )),
         })
       })
-      .catch((error) => console.log(error))
+      // .catch((error) => console.log(error))
   }
 
   setID(id) {

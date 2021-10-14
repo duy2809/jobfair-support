@@ -116,12 +116,10 @@ function ScheduleList() {
     const newList = Schedules.filter((x) => x.id !== id)
     setSchedules(newList)
     await deleteSchedule(id)
-      .then((response) => {
-        console.log(response.data)
+      .then(() => {
         saveNotification()
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',

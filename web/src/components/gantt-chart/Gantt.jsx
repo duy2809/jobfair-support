@@ -16,7 +16,6 @@ export default class Gantt extends Component {
   componentDidMount() {
     const { tasks } = this.props
     // const { tasks } = this.props
-    console.log(tasks)
     const jobfairStartDate = this.props.jobfairStartDate
     console.log(jobfairStartDate)
     /* Full List of Extensions */
@@ -159,7 +158,6 @@ export default class Gantt extends Component {
     const formatLastOfMonth = lastOfMonth.toString('yyyy-MM-dd')
     gantt.start_date = formatFirstOfMonth
     gantt.end_date = formatLastOfMonth
-    console.log('build')
     setTimeout(scrollToToday, 500)
     gantt.i18n.setLocale('jp')
     gantt.config.show_progress = false
