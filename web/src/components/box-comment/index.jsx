@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { Select, Button, Form, Input, Tag, Tooltip, Modal } from 'antd'
 import PropTypes from 'prop-types'
 import './style.scss'
+// eslint-disable-next-line import/no-unresolved
 import '@uiw/react-md-editor/markdown-editor.css'
+// eslint-disable-next-line import/no-unresolved
 import '@uiw/react-markdown-preview/markdown.css'
 import dynamic from 'next/dynamic'
 import {
@@ -22,11 +24,10 @@ const BoxComment = ({ id }) => {
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
-
-  const MDEditor = dynamic(
-    () => import('@uiw/react-md-editor').then((mod) => mod.default),
-    { ssr: false },
-  )
+  // eslint-disable-next-line import/no-unresolved
+  const MDEditor = dynamic(() => import('@uiw/react-md-editor').then((mod) => mod.default), {
+    ssr: false,
+  })
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -146,154 +147,151 @@ const BoxComment = ({ id }) => {
           </div>
         </div>
       ) : null}
-      {visible
-        ? (
-          <div className="box">
-            <Form
-              form={form}
-              layout="vertical"
-            >
-              <div className="pos flex items-center">
-                <div className="pos-left">
-                  <Form.Item
-                    label=""
-                    className="block mx-7"
-                    style={{ display: 'block' }}
-                    name="detail"
-                  >
-                    <div>
-                      <MDEditor
-                        style={{ height: '40px !important' }}
-                        preview="edit"
-                        height="200"
-                        value={value}
-                        onChange={setValue}
-                        // commands={[title]}
-
-                      />
-                      <Modal title="ファイル追加" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="保存" cancelText="キャンセル">
-                        <div className="flex items-center justify-between">
-                          <div className="ml-4">
-                            <Input size="large" style={{ width: '155%' }} placeholder="Search" prefix={<SearchOutlined />} />
-                          </div>
-                          <div className="">
-                            <PlusCircleOutlined
-                              style={{ fontSize: '25px', cursor: 'pointer' }}
-                              onClick={() => { setShowLink(!showLink) }}
-                            />
-                          </div>
+      {visible ? (
+        <div className="box">
+          <Form form={form} layout="vertical">
+            <div className="pos flex items-center">
+              <div className="pos-left">
+                <Form.Item
+                  label=""
+                  className="block mx-7"
+                  style={{ display: 'block' }}
+                  name="detail"
+                >
+                  <div>
+                    <MDEditor
+                      style={{ height: '40px !important' }}
+                      preview="edit"
+                      height="200"
+                      value={value}
+                      onChange={setValue}
+                      // commands={[title]}
+                    />
+                    <Modal
+                      title="ファイル追加"
+                      visible={isModalVisible}
+                      onOk={handleOk}
+                      onCancel={handleCancel}
+                      okText="保存"
+                      cancelText="キャンセル"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="ml-4">
+                          <Input
+                            size="large"
+                            style={{ width: '155%' }}
+                            placeholder="Search"
+                            prefix={<SearchOutlined />}
+                          />
                         </div>
-                        {showLink
-                          ? (
-                            <div className="mt-6">
-                              <Form
-                                layout="horizontal"
-                                colon={false}
-                                labelAlign="right"
-                                className="mr-14"
-                                labelCol={{
-                                  span: 5,
-                                }}
-
-                              >
-                                <Form.Item label={<p className="font-bold text-right">テキスト</p>}>
-                                  <Input size="large" placeholder="Add text" />
-                                </Form.Item>
-                                <Form.Item label={<p className="font-bold text-right">リンク</p>}>
-                                  <Input size="large" placeholder="Add text" />
-                                </Form.Item>
-                              </Form>
-                            </div>
-                          ) : null}
-                      </Modal>
-                    </div>
-                  </Form.Item>
-                </div>
-                <div className="pos-right">
-                  <Form.Item
-                    label={<p className="font-bold">ステータス</p>}
-                    name="status"
-                  >
-                    <Select
-                      size="large"
-                      className="addJF-selector"
-                      placeholder="ステータス"
-                    >
-                      {listStatus.map((element) => (
-                        <Select.Option value={element}>{element}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                  <Form.Item label={<p className="font-bold">担当者</p>} name="assignee" className="multiples">
-                    {assign ? (
-                      <Select mode="multiple" showArrow tagRender={tagRenderr}>
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.name}
+                        <div className="">
+                          <PlusCircleOutlined
+                            style={{ fontSize: '25px', cursor: 'pointer' }}
+                            onClick={() => {
+                              setShowLink(!showLink)
+                            }}
+                          />
+                        </div>
+                      </div>
+                      {showLink ? (
+                        <div className="mt-6">
+                          <Form
+                            layout="horizontal"
+                            colon={false}
+                            labelAlign="right"
+                            className="mr-14"
+                            labelCol={{
+                              span: 5,
+                            }}
                           >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    ) : (
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        tagRender={tagRenderr}
-                        style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
-                        className="multiples"
-                      >
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.name}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-
-                </div>
-
-              </div>
-              <div className="flex items-center justify-center ">
-                <Form.Item label=" " className=" ">
-                  <div className="flex">
-                    <Button
-                      htmlType="button"
-                      type="primary"
-                      className="button_cancel"
-                      onClick={closeBox}
-                    >
-                      キャンセル
-                    </Button>
-                    <Button
-                      htmlType="button"
-                      type="primary"
-                      className="button_preview mx-3"
-                    >
-                      プレビュー
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="button_save"
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      <span>追加</span>
-                    </Button>
+                            <Form.Item label={<p className="font-bold text-right">テキスト</p>}>
+                              <Input size="large" placeholder="Add text" />
+                            </Form.Item>
+                            <Form.Item label={<p className="font-bold text-right">リンク</p>}>
+                              <Input size="large" placeholder="Add text" />
+                            </Form.Item>
+                          </Form>
+                        </div>
+                      ) : null}
+                    </Modal>
                   </div>
                 </Form.Item>
               </div>
-            </Form>
-          </div>
-        )
-        : null}
+              <div className="pos-right">
+                <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
+                  <Select size="large" className="addJF-selector" placeholder="ステータス">
+                    {listStatus.map((element) => (
+                      <Select.Option value={element}>{element}</Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+                <Form.Item
+                  label={<p className="font-bold">担当者</p>}
+                  name="assignee"
+                  className="multiples"
+                >
+                  {assign ? (
+                    <Select mode="multiple" showArrow tagRender={tagRenderr}>
+                      {listUser.map((element) => (
+                        <Select.Option
+                          className="validate-user"
+                          key={element.id}
+                          value={element.name}
+                        >
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  ) : (
+                    <Select
+                      mode="multiple"
+                      showArrow
+                      tagRender={tagRenderr}
+                      style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                      className="multiples"
+                    >
+                      {listUser.map((element) => (
+                        <Select.Option
+                          className="validate-user"
+                          key={element.id}
+                          value={element.name}
+                        >
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  )}
+                </Form.Item>
+              </div>
+            </div>
+            <div className="flex items-center justify-center ">
+              <Form.Item label=" " className=" ">
+                <div className="flex">
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    className="button_cancel"
+                    onClick={closeBox}
+                  >
+                    キャンセル
+                  </Button>
+                  <Button htmlType="button" type="primary" className="button_preview mx-3">
+                    プレビュー
+                  </Button>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="button_save"
+                    style={{ letterSpacing: '-1px' }}
+                  >
+                    <span>追加</span>
+                  </Button>
+                </div>
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
+      ) : null}
     </div>
   )
 }

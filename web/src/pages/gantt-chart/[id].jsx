@@ -50,7 +50,7 @@ export default function index() {
 
   const generateTask = (data) => {
     const result = { data: [] }
-    data.forEach((element) => {
+    data?.forEach((element) => {
       const dataObj = {
         id: element.id,
         text: element.name,
@@ -69,7 +69,7 @@ export default function index() {
 
   const generateLink = (beforeTasks, afterTasks) => {
     const link = { links: [] }
-    beforeTasks.before_tasks.forEach((element) => {
+    beforeTasks.before_tasks?.forEach((element) => {
       const dummyObj = {
         id: uuidv4(),
         source: element.id,
@@ -78,7 +78,7 @@ export default function index() {
       }
       link.links.push(dummyObj)
     })
-    afterTasks.after_tasks.forEach((element) => {
+    afterTasks.after_tasks?.forEach((element) => {
       const dummyObj = {
         id: uuidv4(),
         source: afterTasks.id,
@@ -89,36 +89,35 @@ export default function index() {
     })
     return link
   }
-  const jobfairID = router.query.id
-  const chartData = async (jobfairTask) => {
-    try {
-      const data = generateTask(jobfairTask.data.schedule.tasks)
-      const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-      const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-      const link = generateLink(beforeTasks.data, afterTasks.data)
-      return { ...data, ...link }
-    } catch (error) {
-      return error
-    }
-  }
 
-  useEffect(async () => {
-    try {
-      // TODO: optimize this one by using axios.{all,spread}
-      const jobfair = await ganttChartAPI.getJobfair(jobfairID)
-      const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-      const data = await chartData(jobfairTask)
-      if (data) {
-        setTask(data)
-        console.log('tai sao', data)
+  const jobfairID = router.query.id
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        Promise.all([
+          ganttChartAPI.getBeforeTasks(jobfairID),
+          ganttChartAPI.getAfterTasks(jobfairID),
+          ganttChartAPI.getJobfair(jobfairID),
+          ganttChartAPI.getTasks(jobfairID),
+        ]).then((responses) => {
+          const beforeTasks = responses[0].data
+          const afterTasks = responses[1].data
+          const jobfair = responses[2].data
+          const resTasks = Array.from(responses[3].data.schedule.tasks)
+          const link = generateLink(beforeTasks, afterTasks)
+          const data = generateTask(resTasks)
+          setJobfairStartDate(new Date(jobfair.start_date))
+          setTask({ ...data, ...link })
+          setLoading(false)
+        })
+        return []
+      } catch (error) {
         setLoading(false)
+        return error
       }
-      setJobfairStartDate(new Date(jobfair.data.start_date))
-      return ''
-    } catch (error) {
-      // return Error('内容が登録されません。よろしいですか？')
-      return error
     }
+    fetchData()
   }, [])
 
   const onStatusChange = (e) => {
