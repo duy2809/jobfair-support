@@ -86,6 +86,12 @@ const Top = () => {
   const [templateData, setTemplateData] = useState([])
   const [scheduleData, setScheduleData] = useState([])
 
+  const [isLoadingTask, setLoadingTask] = useState(false)
+  const [isLoadingMember, setLoadingMember] = useState(false)
+  const [isLoadingJobfair, setLoadingJobfair] = useState(false)
+  const [isLoadingTemplate, setLoadingTemplate] = useState(false)
+  const [isLoadingSchedule, setLoadingSchedule] = useState(false)
+
   const { store } = useContext(ReactReduxContext)
   const [user, setUser] = useState(null)
   const [id, setId] = useState(0)
@@ -97,21 +103,28 @@ const Top = () => {
   }, [user])
   useEffect(() => {
     const getTask = async () => {
+      setLoadingTask(true)
       const response = await tasks()
       setTaskData(response.data)
+      setLoadingTask(false)
     }
 
     const getMember = async () => {
+      setLoadingMember(true)
       const response = await members()
       setMemberData(response.data)
+      setLoadingMember(false)
     }
 
     const getJobfair = async () => {
+      setLoadingJobfair(true)
       const response = await jobfairs()
       setJobfairData(response.data)
+      setLoadingJobfair(false)
     }
 
     const getTemplate = async () => {
+      setLoadingTemplate(true)
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
@@ -127,15 +140,18 @@ const Top = () => {
           })
         })
         setTemplateData(datas)
+        setLoadingTemplate(false)
       })
     }
 
     const getSchedule = async function () {
+      setLoadingSchedule(true)
       let dataItem = []
       await getListSchedule().then((res) => {
         dataItem = res.data.map((data) => ({ name: data.name }))
       })
       setScheduleData(dataItem)
+      setLoadingSchedule(false)
     }
 
     getTask()
@@ -194,6 +210,7 @@ const Top = () => {
                 showMilestoneInput={false}
                 route="/jobfairs"
                 routeToAdd="/add-jobfair"
+                isLoading={isLoadingJobfair}
               />
               <List
                 key={2}
@@ -206,6 +223,7 @@ const Top = () => {
                 showMilestoneInput={false}
                 route="/member"
                 routeToAdd="/member/invite"
+                isLoading={isLoadingMember}
               />
               <List
                 key={3}
@@ -218,6 +236,7 @@ const Top = () => {
                 showMilestoneInput={false}
                 route="/schedule"
                 routeToAdd="/jf-schedule/add"
+                isLoading={isLoadingSchedule}
               />
               <List
                 key={4}
@@ -230,6 +249,7 @@ const Top = () => {
                 showMilestoneInput
                 route="/template-tasks"
                 routeToAdd="/add-template-task"
+                isLoading={isLoadingTemplate}
               />
               <List
                 key={5}
@@ -242,6 +262,7 @@ const Top = () => {
                 showMilestoneInput={false}
                 showSearchByJFInput
                 route={`member/${id}/tasks`}
+                isLoading={isLoadingTask}
               />
             </div>
           </div>

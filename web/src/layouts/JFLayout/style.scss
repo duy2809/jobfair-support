@@ -83,6 +83,9 @@
   .site-layout {
     background: white;
   }
+  .ant-layout-content {
+    min-height: 100vh;
+  }
 
   .ant-menu-item,
   .ant-menu-item-selected {

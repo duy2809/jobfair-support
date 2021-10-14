@@ -11,12 +11,8 @@ import {
 
 import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
-import {
-  templateTask,
-  beforeTask,
-  afterTask,
-  deleteTptt,
-} from '../../api/template-task'
+import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
+import MarkDownView from '../../components/markDownView'
 
 function templatetTaskDt() {
   const router = useRouter()
@@ -65,7 +61,7 @@ function templatetTaskDt() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const deletetpl = async () => {
@@ -83,7 +79,7 @@ function templatetTaskDt() {
       onOk: async () => {
         deletetpl()
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -120,7 +116,6 @@ function templatetTaskDt() {
                 </Button>
               </div>
             </div>
-
             <div className="flex items-center justify-between">
               <h1>テンプレートタスク詳細</h1>
               <div className="button__right mb-5">
@@ -295,7 +290,9 @@ function templatetTaskDt() {
               </div>
 
               <div className="mx-16 mt-5">
-                <div className=" mx-7 des demo-infinite-container">{des}</div>
+                <div className="mr-7 ml-28 des">
+                  <MarkDownView source={des} />
+                </div>
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import withRedux from 'next-redux-wrapper'
 import withReduxSaga from 'next-redux-saga'
 import { Router, withRouter } from 'next/router'
-
+import 'antd/dist/antd.css'
 import App from 'next/app'
 import NProgress from 'nprogress'
 import { ConfigProvider } from 'antd'

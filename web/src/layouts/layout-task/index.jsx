@@ -36,17 +36,16 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   const fetchJF = async () => {
     if (id) {
-      await jfdata(id)
-        .then((response) => {
-          setName(response.data.name)
-          setStartDate(response.data.start_date.split('-').join('/'))
-          setAvt(response.data.user.avatar)
-          setNumberOfStudents(response.data.number_of_students)
-          setNumberOfCompanies(response.data.number_of_companies)
-        })
-        // .catch((error) => {
-        //   console.log(error)
-        // })
+      await jfdata(id).then((response) => {
+        setName(response.data.name)
+        setStartDate(response.data.start_date.split('-').join('/'))
+        setAvt(response.data.user.avatar)
+        setNumberOfStudents(response.data.number_of_students)
+        setNumberOfCompanies(response.data.number_of_companies)
+      })
+      // .catch((error) => {
+      //   console.log(error)
+      // })
     }
   }
   useEffect(() => {
@@ -74,8 +73,14 @@ const JfLayout = ({ children, id, bgr }) => {
             theme="dark"
             inlineCollapsed={collapsed}
           >
-            <div className="relative h-10 z-20" style={{ marginBottom: '15px', transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)' }}>
-              <div className="absolute top-0 right-0 ">
+            <div
+              className="relative h-10 z-20 mb-20"
+              style={{
+                marginBottom: '50px',
+                transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
+              }}
+            >
+              <div className="absolute top-0 right-0  ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />
@@ -123,7 +128,7 @@ const JfLayout = ({ children, id, bgr }) => {
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
-                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+                <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 
