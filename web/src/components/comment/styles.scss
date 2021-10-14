@@ -1,0 +1,32 @@
+.comment {
+  &__author {
+    font-weight: bold;
+  }
+  &__content {
+    &.collapse {
+      overflow: visible;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+    &.expanded {
+      height: max-content;
+      width: 95%;
+    }
+  }
+  &__overflow.collapse {
+    max-width: 75%;
+  }
+  &__edited {
+    cursor: default;
+  }
+  .see-more:visited &__edited {
+    color: red;
+    font-size: 50px;
+  }
+  .ant-avatar.ant-avatar-circle {
+    margin-right: 1rem;
+  }
+}
