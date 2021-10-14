@@ -76,7 +76,7 @@ const JfLayout = ({ children, id, bgr }) => {
             <div
               className="relative h-10 z-20 mb-20"
               style={{
-                marginBottom: '15px',
+                marginBottom: '50px',
                 transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
@@ -128,7 +128,7 @@ const JfLayout = ({ children, id, bgr }) => {
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
-                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+                <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 

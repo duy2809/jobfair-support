@@ -24,10 +24,12 @@ const BoxComment = ({ id }) => {
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
-  // eslint-disable-next-line import/no-unresolved
-  const MDEditor = dynamic(() => import('@uiw/react-md-editor').then((mod) => mod.default), {
-    ssr: false,
-  })
+
+  const MDEditor = dynamic(
+    // eslint-disable-next-line import/no-unresolved
+    () => import('@uiw/react-md-editor').then((mod) => mod.default),
+    { ssr: false },
+  )
   // Modal
   const [isModalVisible, setIsModalVisible] = useState(false)
 
