@@ -75,10 +75,12 @@ function addJobfairSchedule() {
         } else {
           await postData(dataSend)
             .then((res) => {
-              if (res.status === 200) router.push('/schedule')
-              setTimeout(() => {
-                openNotification('success', '変更は正常に保存されました。')
-              }, 500)
+              if (res.status === 200) {
+                router.push('/schedule')
+                setTimeout(() => {
+                  openNotification('success', '変更は正常に保存されました。')
+                }, 3000)
+              }
             })
         }
       })
