@@ -28,12 +28,12 @@ const Profile = () => {
         setChatWorkIdUser(response.data.chatwork_id)
         setEmailUser(response.data.email)
       })
+      setLoading(false)
       await getAvatar(id).then(() => {
         const link = `api/avatar/${id}`
         setAvatarUser(link)
       })
     }
-    setLoading(false)
   }, [user])
 
   return (
