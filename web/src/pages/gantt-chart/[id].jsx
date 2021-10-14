@@ -108,11 +108,11 @@ export default function index() {
       const jobfair = await ganttChartAPI.getJobfair(jobfairID)
       const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
       const data = await chartData(jobfairTask)
-      setTimeout(() => {
+      if (data) {
         setTask(data)
-      }, 0)
-      console.log('tai sao', data)
-      setLoading(false)
+        console.log('tai sao', data)
+        setLoading(false)
+      }
       setJobfairStartDate(new Date(jobfair.data.start_date))
       return ''
     } catch (error) {
