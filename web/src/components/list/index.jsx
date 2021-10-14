@@ -4,6 +4,7 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
+import { loadingIcon } from '../loading'
 
 // const { Search } = Input;
 
@@ -18,6 +19,7 @@ const List = ({
   dataSource,
   route,
   routeToAdd,
+  isLoading,
 }) => {
   const ref = useRef()
   const [show, setShow] = useState(false)
@@ -275,6 +277,7 @@ const List = ({
             pagination={false}
             dataSource={list}
             columns={dataColumn}
+            loading={{ spinning: isLoading, indicator: loadingIcon }}
           />
         </div>
       </div>
@@ -293,6 +296,7 @@ List.propTypes = {
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
   routeToAdd: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 }
 
 export default List
