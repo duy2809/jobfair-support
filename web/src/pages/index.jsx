@@ -114,9 +114,8 @@ const LoginPage = () => {
       <Loading loading={isLoading} overlay={isLoading} />
       <Layout>
         <Layout.Main>
-          <div className="h-screen flex flex-col items-center pt-10 bg-white">
-            <img src="./logo.png" className="w-24" alt="logo" />
-            <p className="text-3xl my-8">Jobfair サポート</p>
+          <div className="h-screen flex flex-col items-center bg-white pt-32">
+            <img src="/images/logo.png" alt="logo" className="w-48 mb-10" />
             <Form
               form={form}
               name="login"
