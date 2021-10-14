@@ -432,7 +432,7 @@ function TaskList() {
             <div className="">
               <div className="flex-col space-y-9">
                 <div className="flex justify-between">
-                  <div className="flex mb-2 items-center justify-center space-x-1">
+                  <div className="flex mb-3 items-center justify-center space-x-1">
                     <div>スターテス</div>
                     <Button
                       type="text"
