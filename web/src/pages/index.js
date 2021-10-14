@@ -41,7 +41,7 @@ const LoginPage = () => {
     notification[type]({
       message,
       description,
-      duration: 2.5,
+      duration: 3,
     })
   }
 
@@ -51,10 +51,10 @@ const LoginPage = () => {
       if (response.request.status === 200) {
         const { auth } = response.data
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
-        setTimeout(() => {
-          router.push('/top-page')
-          openNotification('success', '正常にログインしました')
-        }, 2000)
+
+        openNotification('success', '正常にログインしました')
+
+        router.push('/top-page')
       }
     } catch (error) {
       if (error.request.status === 400) {

@@ -275,7 +275,7 @@ function MemberList() {
             </div>
           </div>
           <Table
-            className="w-full rounded-3xl table-styled my-2 table-striped-rows"
+            className="w-full rounded-3xl table-styled mt-5 table-striped-rows"
             columns={columns}
             dataSource={filterData}
             rowKey={(record) => record.id}

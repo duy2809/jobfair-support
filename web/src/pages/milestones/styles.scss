@@ -1,9 +1,6 @@
 .container-list {
   background-color: white;
 
-  .box-body {
-    padding: 1rem 0;
-  }
 
   .ant-table-thead > tr > * {
     background-color: #bae8e8 !important;
@@ -19,12 +16,6 @@
     & > button {
       justify-content: flex-end !important;
     }
-  }
-  .mgt-28 {
-    margin-top: -2.8rem !important;
-  }
-  .mgt-3 {
-    margin-top: 2.8rem !important;
   }
   tr th:nth-child(1),
   tr td:nth-child(1) {

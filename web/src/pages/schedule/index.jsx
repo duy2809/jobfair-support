@@ -239,7 +239,7 @@ function ScheduleList() {
 
         </div>
         <Table
-          className="my-5"
+          className="mt-5"
           columns={columns}
           dataSource={Schedules}
           rowKey={(record) => record.id}
