@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { Button, Modal, notification, Tooltip, Tag } from 'antd'
+
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
@@ -422,6 +423,7 @@ function TaskDetail() {
                 </div>
               </div>
             </div>
+
           </div>
         </JfLayout.Main>
       </JfLayout>
