@@ -24,7 +24,15 @@
     margin-right: 1rem;
     min-width: 155px;
   }
-
+  
+  .w-md-editor-toolbar li > button {
+    height: 40px !important;
+    width: 40px !important;
+  }
+  .w-md-editor-toolbar {
+    height: 40px !important;
+  }
+  
   .ant-form-item-label>label::after {
     margin: 0px;
   }
