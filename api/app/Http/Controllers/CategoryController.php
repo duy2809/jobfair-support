@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Jobfair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -101,5 +102,14 @@ class CategoryController extends Controller
     public function checkUniqueEdit($id, $name)
     {
         return Category::where('id', '<>', $id)->where('category_name', '=', $name)->get();
+    }
+
+    public function getCategoriesWithMember($JFid)
+    {
+        return Category::with([
+            'users' => function ($query) use ($JFid) {
+                $query->whereIn('id', Jobfair::find($JFid)->schedule->users->pluck('id'))->get(['id', 'name']);
+            },
+        ])->get(['id', 'category_name']);
     }
 }

@@ -24,7 +24,6 @@ import {
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons'
-import { element, number } from 'prop-types'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
@@ -32,8 +31,7 @@ import { jftask } from '../../api/jf-toppage'
 import { webInit } from '../../api/web-init'
 import { deleteTask, updateManagerTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
-import { editTask } from '../../api/edit-task'
-import { includes } from 'lodash'
+import { getCategorys } from '../../api/edit-task'
 
 function TaskList() {
   const router = useRouter()
@@ -59,6 +57,7 @@ function TaskList() {
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
+  const [dataCategory, setDataCategory] = useState()
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -90,10 +89,10 @@ function TaskList() {
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
-      const idManager = []
+      const mem = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
-        idManager.push(dataResponse[i].users[j].id)
+        mem.push({ id: dataResponse[i].users[j].id, name: dataResponse[i].users[j].name })
       }
       data.push({
         id: i + 1,
@@ -105,10 +104,11 @@ function TaskList() {
         category_name: dataResponse[i].categories[0]?.category_name,
         milestone_name: dataResponse[i].milestone.name,
         managers: manager,
+        mems: mem,
         idCategory: dataResponse[i].categories[0].id,
-        idManagers: idManager,
       })
     }
+
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
@@ -214,7 +214,6 @@ function TaskList() {
       router.push(`/task-detail/${record.idtask}`)
     },
   })
-  const options = [{ value: 'gold', id: 1 }, { value: 'lime', id: 2 }, { value: 'green', id: 3 }, { value: 'cyan', id: 4 }]
   function tagRender(props) {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
@@ -237,37 +236,47 @@ function TaskList() {
   }
   const handleSave = async (value, record) => {
     const defaultText = value.filter((a) => typeof (a) === 'string')
-    const a = temperaryData.managers
-    a.filter((x) => x.name.includes(defaultText))
-    setTemperaryData({ ...temperaryData, managers: defaultText })
-    temperaryData.map()
     const defaultNumber = value.filter((a) => typeof (a) === 'number')
-    const newData = record.idManagers.concat(defaultNumber)
-    console.log(newData)
+    const m = []
+    // eslint-disable-next-line array-callback-return
+    record.mems.map((a) => {
+      if (defaultText.includes(a.name)) {
+        m.push(a.id)
+      }
+    })
+    const newData = defaultNumber.concat(m)
     const data = {
       assignee: newData,
     }
     await updateManagerTask(record.idtask, data)
       .then(() => {
-        console.log('thanh cong')
         saveNotification()
       })
   }
   const member = (managers, record) => {
     const [show, setShow] = useState(false)
     const [memberAS, setMemberAS] = useState(null)
+    let userAS = []
+    if (dataCategory) {
+      // eslint-disable-next-line array-callback-return
+      dataCategory.map((item) => {
+        if (record.idCategory === item.id) {
+          userAS = item.users
+        }
+      })
+    }
     return (
       <div className="listMember">
         <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
-          {options.map((element) => (
+          {userAS ? userAS.map((item) => (
             <Select.Option
               className="validate-user"
-              key={element.id}
-              value={element.id}
+              key={item.id}
+              value={item.id}
             >
-              {element.value}
+              {item.name}
             </Select.Option>
-          ))}
+          )) : null}
         </Select>
         {show ? (
           <div className="save">
@@ -430,11 +439,16 @@ function TaskList() {
         render: (managers, record) => member(managers, record),
       },
     ]
-  // data of table get from database
-
+  const fetchCTGR = async () => {
+    await getCategorys(router.query.JFid)
+      .then((response) => {
+        setDataCategory(response.data)
+      })
+  }
   useEffect(async () => {
     setLoading(true)
     initPagination()
+    fetchCTGR()
     await jftask(router.query.JFid).then((response) => {
       loadTableData(response)
     })
