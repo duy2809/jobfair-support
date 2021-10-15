@@ -80,7 +80,7 @@ const JfLayout = ({ children, id, bgr }) => {
                 transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
-              <div className="absolute top-0 right-0 ">
+              <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />

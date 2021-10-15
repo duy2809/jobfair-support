@@ -46,6 +46,17 @@
   .ant-radio-button-wrapper:not(:first-child)::before {
     display: none;
   }
+  .ant-radio-button-wrapper {
+    border-radius: 5px;
+    height: 40px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ant-radio {
+    height: 40px !important;
+  }
   .ant-radio-button {
     border-radius: 5px;
     border-color: yellow;
@@ -65,44 +76,38 @@
       padding: 8px;
     }
 
-    tr:nth-child(even) {
-      // background-color: #dddddd;
+    .gantt_tree_content {
+      cursor: pointer;
     }
-  }
-  .gantt_layout_content {
-    // cursor: grab;
-  }
-  .gantt_tree_content {
-    cursor: pointer;
-  }
-  .ant-spin-spinning {
-    position: absolute;
-  }
+    .ant-spin-spinning {
+      position: absolute;
+    }
 
-  .radio-button {
-    border-radius: 5px;
-    height: 38px;
-    line-height: 38px;
-    margin: 0 0.5rem;
-  }
-  .ant-btn {
-    height: 38px !important;
-  }
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  /* Track */
-  ::-webkit-scrollbar-track {
-    border-radius: 0;
-    background: #edf2f7;
-    width: 100%;
-  }
-  .gantt_grid_data {
-    overflow: auto;
+    .radio-button {
+      border-radius: 5px;
+      height: 38px;
+      line-height: 38px;
+      margin: 0 0.5rem;
+    }
+    .ant-btn {
+      height: 38px !important;
+    }
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    /* Track */
+    ::-webkit-scrollbar-track {
+      border-radius: 0;
+      background: #edf2f7;
+      width: 100%;
+    }
+    .gantt_grid_data {
+      overflow: auto;
 
-    &::-webkit-scrollbar {
-      display: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
   }
 }

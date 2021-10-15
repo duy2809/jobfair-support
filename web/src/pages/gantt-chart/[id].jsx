@@ -274,10 +274,22 @@ export default function index() {
               <div>
                 <div className="container xl ">
                   <div className="h-full">
-                    {tasks.data.length ? (
-                      <div className="flex items-center justify-center">
-                        <p className="hidden">{tasks.data.length}</p>
+                    {Boolean(tasks.data.length) ? (
+                      <div
+                        style={{
+                          height: '670px',
+                        }}
+                      >
+                        <p className="hidden">{Boolean(tasks.data.length).toString()}</p>
 
+                        <GanttChart
+                          tasks={tasks}
+                          jobfairStartDate={jobfairStartDate}
+                          filter={filter}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center">
                         <Empty
                           className="relative border w-full h-3/4 py-10 mx-10 border-solid rounded-sm "
                           image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -290,19 +302,6 @@ export default function index() {
                             size="large"
                           />
                         </Empty>
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          height: '670px',
-                        }}
-                      >
-                        <p className="hidden">{JSON.stringify(tasks)}</p>
-                        <GanttChart
-                          tasks={tasks}
-                          jobfairStartDate={jobfairStartDate}
-                          filter={filter}
-                        />
                       </div>
                     )}
                   </div>
