@@ -79,7 +79,7 @@ function editJobfairSchedule() {
     notification[type]({
       message,
       description,
-      duration: 2.5,
+      duration: 3,
     })
   }
 
@@ -111,11 +111,11 @@ function editJobfairSchedule() {
             putData(id, dataSend)
               .then((res) => {
                 if (res.status === 200) {
+                  setIsModalVisible(false)
                   router.push('/schedule/')
-                  setTimeout(() => {
-                    setIsModalVisible(false)
-                    openNotification('success', '変更は正常に保存されました。')
-                  }, 3000)
+                  openNotification('success', '変更は正常に保存されました。')
+                  // setTimeout(() => {
+                  // }, 1000)
                 }
               })
               .catch()
@@ -126,11 +126,9 @@ function editJobfairSchedule() {
       putData(id, dataSend)
         .then((res) => {
           if (res.status === 200) {
+            setIsModalVisible(false)
             router.push('/schedule/')
-            setTimeout(() => {
-              setIsModalVisible(false)
-              openNotification('success', '変更は正常に保存されました。')
-            }, 3000)
+            openNotification('success', '変更は正常に保存されました。')
           }
         })
         .catch()

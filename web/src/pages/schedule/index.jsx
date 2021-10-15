@@ -143,6 +143,7 @@ function ScheduleList() {
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',
+          duration: 3,
         })
       })
     setPagination((preState) => ({

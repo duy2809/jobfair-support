@@ -118,13 +118,11 @@ const EditProfilePage = () => {
   }, [emailInput])
 
   const openNotificationSuccess = () => {
+    router.push('/profile')
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 2,
+      duration: 3,
     })
-    setTimeout(() => {
-      router.push('/profile')
-    }, 2500)
   }
 
   const handleOk = async () => {
@@ -159,7 +157,7 @@ const EditProfilePage = () => {
       if (file?.size > 4194304 || (fileType !== 'jpg' && fileType !== 'png')) {
         notification.error({
           message: '.jpg, .png, サイズ4MB未満の画像を選択してください',
-          duration: 2,
+          duration: 3,
         })
         setImage(null)
       } else {

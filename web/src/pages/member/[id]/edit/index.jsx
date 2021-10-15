@@ -49,7 +49,7 @@ const EditMember = ({ data }) => {
   const openNotificationSuccess = () => {
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 1,
+      duration: 3,
     })
   }
 
@@ -63,13 +63,14 @@ const EditMember = ({ data }) => {
       categories: reqCategories,
     })
       .then(() => {
-        openNotificationSuccess()
         router.push(`/member/${data.user.id}`)
+        openNotificationSuccess()
       })
       .catch((error) => {
         const errorMessage = error.response.data.errors.name[0]
         notification.error({
           message: errorMessage,
+          duration: 3,
         })
         return error
       })

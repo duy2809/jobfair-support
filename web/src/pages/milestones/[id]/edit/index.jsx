@@ -40,13 +40,11 @@ const EditMilestonePage = () => {
   }, [])
 
   const openNotificationSuccess = () => {
+    window.location.href = '/milestones'
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 0,
+      duration: 3,
     })
-    setTimeout(() => {
-      window.location.href = '/milestones'
-    }, 3000)
   }
 
   const onValueNameChange = (e) => {
@@ -119,6 +117,7 @@ const EditMilestonePage = () => {
         ) {
           notification.error({
             message: 'このマイルストーン名は存在しています',
+            duration: 3,
           })
         }
       })
