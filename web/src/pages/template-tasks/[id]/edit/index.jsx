@@ -204,11 +204,14 @@ const EditTemplateTaskPage = () => {
       beforeTasks: submitPrevTasks,
       afterTasks: submitNextTasks,
     })
-      .then(() => openNotificationSuccess())
+      .then(() => {
+        openNotificationSuccess()
+        window.location.href = `/template-task-dt/${id}`
+      })
       .catch((error) => {
         if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
           notification.error({
-            message: 'このマイルストーン名は存在しています',
+            message: 'このテンプレートタスク名は存在しています',
             duration: 3,
           })
         }
@@ -216,9 +219,6 @@ const EditTemplateTaskPage = () => {
         //   message: 'Error',
         // });
       })
-    setTimeout(() => {
-      window.location.href = `/template-task-dt/${id}`
-    }, 3000)
   }
 
   const handleCancel = () => {

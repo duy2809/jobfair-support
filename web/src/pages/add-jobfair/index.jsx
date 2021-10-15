@@ -151,8 +151,8 @@ const index = () => {
       const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         setLoading(false)
-        await saveNotification()
         routeTo(`/jf-toppage/${response.data.id}`)
+        saveNotification()
       } else {
         setdisableBtn(false)
       }
@@ -385,8 +385,8 @@ const index = () => {
                             type="text"
                             size="large"
                             min={1}
-                            onChange={() => {
-                              autoConvertHalfwidth()
+                            onChange={(e) => {
+                              autoConvertHalfwidth(e)
                             }}
                             placeholder="参加企業社数"
                           />
@@ -476,8 +476,8 @@ const index = () => {
                             type="text"
                             size="large"
                             min={1}
-                            onChange={() => {
-                              autoConvertHalfwidth()
+                            onChange={(e) => {
+                              autoConvertHalfwidth(e)
                             }}
                             placeholder="推定参加学生数"
                           />
@@ -542,7 +542,7 @@ const index = () => {
                           className="ant-btn"
                           onClick={cancelConfirmModle}
                           disabled={disableBtn}
-                          loading={disableBtn}
+                          loading={loading}
                         >
                           キャンセル
                         </Button>
@@ -552,7 +552,7 @@ const index = () => {
                           type="primary"
                           htmlType="submit"
                           disabled={disableBtn}
-                          loading={disableBtn}
+                          loading={loading}
                           style={{ letterSpacing: '-1px' }}
                         >
                           登録

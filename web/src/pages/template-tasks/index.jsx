@@ -273,8 +273,8 @@ function TemplateTaskList() {
       <OtherLayout.Main>
         <h1>テンプレートタスクー覧</h1>
         <div className="TemplateTaskList">
-          <div className="mx-auto flex flex-col space-y-2 justify-center">
-            <div className="space-y-5">
+          <div className="mx-auto flex flex-col justify-center">
+            <div className="">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="pr-3">表示件数</span>
@@ -352,6 +352,7 @@ function TemplateTaskList() {
               </div>
             </div>
             <Table
+              className="mt-5"
               columns={columns}
               dataSource={temperaryData}
               loading={loading}

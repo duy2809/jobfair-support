@@ -126,7 +126,7 @@ export default function ListCategories() {
 
                     }}
                   >
-                    <div className="flex mb-3 items-center mr-3">
+                    <div className="flex items-center mr-3">
                       <span className="queue-demo">
                         <span>
                           <Input
@@ -152,7 +152,7 @@ export default function ListCategories() {
           columns={columns}
           dataSource={data}
           pagination={{ pageSize: pageS }}
-          className="mt-3"
+          className="mt-5"
           loading={{ spinning: loading, indicator: loadingIcon }}
         />
       </div>

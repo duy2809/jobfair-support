@@ -294,7 +294,7 @@ const MilestonePage = () => {
               </div>
             </Row>
 
-            <div className="box-body">
+            <div className="mt-5">
               <Table
                 columns={columns}
                 rowKey={(record) => record.id}

@@ -261,6 +261,7 @@ function TaskList() {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       message: '変更は正常に保存されました。',
+      duration: 3,
       onClick: () => {},
     })
   }
@@ -318,8 +319,8 @@ function TaskList() {
 
         await editTask(idTask, data)
           .then(() => {
-            saveNotification()
             router.push(`/task-detail/${idTask}`)
+            saveNotification()
           })
           .catch(() => {
             setdisableBtn(false)

@@ -87,6 +87,7 @@ const EditCategory = (props) => {
         .catch((error) => {
           notification.error({
             message: 'このカテゴリ名は存在しています',
+            duration: 3,
           })
         })
       setLoading(false)

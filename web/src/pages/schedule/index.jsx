@@ -143,6 +143,7 @@ function ScheduleList() {
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',
+          duration: 3,
         })
       })
     setPagination((preState) => ({
@@ -263,7 +264,7 @@ function ScheduleList() {
           </div>
         </div>
         <Table
-          className="my-5"
+          className="mt-5"
           columns={columns}
           dataSource={Schedules}
           rowKey={(record) => record.id}

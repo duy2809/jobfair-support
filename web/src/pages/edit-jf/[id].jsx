@@ -153,6 +153,7 @@ const index = () => {
     notification.open({
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       message: '変更は正常に保存されました。',
+      duration: 3,
       onClick: () => {},
     })
   }
@@ -186,8 +187,8 @@ const index = () => {
         .then((response) => {
           if (response.status === 200) {
             setLoading(false)
-            saveNotification()
             router.push(`/jf-toppage/${idJf}`)
+            saveNotification()
           }
         })
         .catch(() => {
@@ -201,12 +202,14 @@ const index = () => {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           message: 'このJF名は既に使用されています。',
+          duration: 3,
           onClick: () => {},
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           message: '保存に失敗しました。',
+          duration: 3,
           onClick: () => {},
         })
       }

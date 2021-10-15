@@ -32,6 +32,7 @@ export default function ButtonAddFile(props) {
     setIsModalVisible(false)
     notification.success({
       message: '新しいファイルを追加しました。',
+      duration: 3,
     })
   }
 

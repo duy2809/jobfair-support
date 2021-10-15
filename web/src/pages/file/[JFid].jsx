@@ -304,7 +304,7 @@ export default function File() {
       }
       notification.success({
         message: '成功に編集しました。',
-        duration: 2,
+        duration: 3,
       })
       const result = res.data.map((element) => ({
         key: element.id,
@@ -352,7 +352,7 @@ export default function File() {
       }
       notification.success({
         message: '成功に編集しました。',
-        duration: 2,
+        duration: 3,
       })
       const result = res.data.map((element) => ({
         key: element.id,
