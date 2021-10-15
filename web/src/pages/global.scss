@@ -294,6 +294,11 @@ body {
     font-weight: 900;
   }
 
+  .ant-table-thead > tr > th {
+    font-size: 14px;
+    font-weight: bold;
+  } 
+
   .ant-btn {
     height: 40px;
     padding: 6.4px 20px;
