@@ -44,7 +44,7 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
             if ((tasksList.find((item) => item.name === value)) !== undefined) {
               if ((tasksList.find((item) => item.name === value)).id !== Number(id)) {
                 return Promise.reject(
-                  new Error('このマイルストーン名は存在しています'),
+                  new Error('このテンプレートタスク名は存在しています'),
                 )
               }
             }

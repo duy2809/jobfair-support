@@ -41,18 +41,18 @@ function ScheduleDetailGeneral() {
 
     deleteSchedule(id)
       .then(() => {
+        router.push('/schedule')
         notification.success({
           message: '成功',
           description: '正常に削除されました',
+          duration: 3,
         })
-        setTimeout(() => {
-          router.push('/schedule')
-        }, 3000)
       })
       .catch(() => {
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',
+          duration: 3,
         })
       })
   }

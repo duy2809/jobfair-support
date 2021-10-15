@@ -38,7 +38,7 @@ export default function SearchSugges({ listTask, id }) {
   const openNotificationWithIcon = (type) => {
     notification[type]({
       closable: false,
-      duration: 1,
+      duration: 3,
       description:
         '該当結果が見つかりませんでした',
     })

@@ -101,6 +101,10 @@
       font-size: 25px !important;
     }
   }
+  .ant-layout-content {
+    min-height: 100vh;
+    height: fit-content;
+  }
 
   .ant-layout-sider,
   .ant-layout-sider-dark {

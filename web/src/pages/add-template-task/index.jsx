@@ -18,6 +18,7 @@ import * as Extensions from '../../utils/extensions'
 import './style.scss'
 
 const MDEditor = dynamic(
+  // eslint-disable-next-line import/no-unresolved
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false },
 )
@@ -183,8 +184,8 @@ const index = () => {
         const response = await addTemplateTasksAPI.addTemplateTask(data)
 
         if (response.status < 299) {
-          await successNotification()
           routeTo(`/template-task-dt/${response.data.id}`)
+          successNotification()
         } else {
           setdisableBtn(false)
           setLoading(false)

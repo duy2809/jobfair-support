@@ -4,7 +4,6 @@ import { Provider } from 'react-redux'
 import withRedux from 'next-redux-wrapper'
 import withReduxSaga from 'next-redux-saga'
 import { Router, withRouter } from 'next/router'
-import 'antd/dist/antd.css'
 import App from 'next/app'
 import NProgress from 'nprogress'
 import { ConfigProvider } from 'antd'
@@ -16,6 +15,9 @@ import createStore from '~/store'
 import { usePromise } from '~/utils/store'
 import Middleware from '~/modules/middleware'
 import { LOAD as INIT_AUTH_USER } from '~/store/modules/auth'
+
+import 'antd/dist/antd.css'
+import './global.scss'
 
 Sentry.init({ dsn: `${process.env.SENTRY_DSN}` })
 
@@ -46,9 +48,7 @@ class Jobfair extends App {
       })
     }
 
-    const pageProps = Component.getInitialProps
-      ? await Component.getInitialProps(ctx)
-      : {}
+    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {}
 
     const middleware = new Middleware(ctx)
     await middleware.validate(Component)

@@ -57,9 +57,9 @@ function TaskDetail() {
   const deletetpl = async () => {
     setLoading(true)
     await deleteTask(idTask)
-      .then(async () => {
-        await router.push(`/tasks/${infoJF.id}`)
-        await saveNotification()
+      .then(() => {
+        router.push(`/tasks/${infoJF.id}`)
+        saveNotification()
         setLoading(false)
       })
       .catch(() => {
