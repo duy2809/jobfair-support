@@ -29,14 +29,9 @@ function MemberDetailPage() {
   }
 
   const deletetpl = async () => {
-    await deleteMember(idMember)
-      .then((response) => {
-        console.log(response)
-        Router.push('/member/')
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    await deleteMember(idMember).then(() => {
+      Router.push('/member/')
+    })
   }
 
   const saveNotification = () => {
@@ -82,11 +77,17 @@ function MemberDetailPage() {
         <div className="flex justify-between">
           <h1>メンバ詳細</h1>
           <div className="flex mt-2">
-            {role === 'admin' || role === 'superadmin' ? (
+            {role === 'superadmin' ? (
               <>
-                <EditTwoTone onClick={handleEdit} className="border-none mx-1 text-2xl" />
+                <EditTwoTone
+                  onClick={handleEdit}
+                  className="border-none mx-1 text-2xl"
+                />
 
-                <DeleteTwoTone onClick={modelDelete} className="border-none mx-1 text-2xl" />
+                <DeleteTwoTone
+                  onClick={modelDelete}
+                  className="border-none mx-1 text-2xl"
+                />
               </>
             ) : null}
           </div>

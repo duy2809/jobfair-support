@@ -19,7 +19,7 @@ import './style.scss'
 const JfLayout = ({ children, bgr }) => {
   const styles = {
     background: 'white',
-    borderLeft: '8px solid #ffd803',
+    borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
   const main = findSlot(JfLayout.Main, children)
@@ -41,6 +41,7 @@ const JfLayout = ({ children, bgr }) => {
             left: 0,
             zIndex: 100,
           }}
+          className="layout-icon"
           trigger={null}
           collapsible
           collapsed={collapsed}
@@ -53,8 +54,14 @@ const JfLayout = ({ children, bgr }) => {
             inlineCollapsed={collapsed}
             className="sibar-jf"
           >
-            <div className="relative h-10 " style={{ marginBottom: '32px' }}>
-              <div className="absolute top-0 right-0 ">
+            <div
+              className="relative h-10 z-20 mb-20"
+              style={{
+                marginBottom: '50px',
+                transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
+              }}
+            >
+              <div className="absolute top-0 right-0  ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />

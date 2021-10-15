@@ -7,6 +7,7 @@ use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -285,5 +286,43 @@ class TaskController extends Controller
     public function checkAssignee($taskID, $userID)
     {
         return Task::find($taskID)->users->pluck('id')->contains($userID);
+    }
+
+    public function getUserSameCategory($id)
+    {
+        $task = Task::find($id);
+
+        $schedule = $task->schedule;
+
+        $user = $schedule->users()->whereHas('categories', function (Builder $query) use ($task) {
+            $query->whereIn('categories.id', $task->categories()->pluck('id'));
+        })->get(['users.id', 'users.name']);
+
+        return response()->json($user);
+    }
+
+    public function updateManagerTask(Request $request, $id)
+    {
+        $task = Task::find($id);
+
+        if ($request->has('assignee')) {
+            $listMember = $request->assignee;
+            $listOldMember = $task->users->pluck('id')->toArray();
+
+            if (
+                !(
+                    is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                )
+            ) {
+                $task->users()->syncWithPivotValues($listMember, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Edit Successfully'], 200);
     }
 }

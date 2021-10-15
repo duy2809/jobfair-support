@@ -149,12 +149,6 @@ function TaskList() {
     const newList = temperaryData.filter((x) => x.idtask !== id)
     setTemperaryData(newList)
     await deleteTask(id)
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
     saveNotification()
   }
   const modelDelete = (id) => {
@@ -434,11 +428,11 @@ function TaskList() {
       <JfLayout.Main>
         <h1>タスクー覧</h1>
         <div className="TaskList">
-          <div className="space-y-2 justify-center">
-            <div className="space-y-2">
+          <div className=" justify-center">
+            <div className="">
               <div className="flex-col space-y-9">
                 <div className="flex justify-between">
-                  <div className="flex items-center justify-center space-x-1">
+                  <div className="flex mb-3 items-center justify-center space-x-1">
                     <div>スターテス</div>
                     <Button
                       type="text"
@@ -586,7 +580,7 @@ function TaskList() {
               </div>
             </div>
             <Table
-              className="my-5"
+              className="mt-5"
               columns={columns}
               dataSource={temperaryData}
               loading={{ spinning: loading, indicator: loadingIcon }}

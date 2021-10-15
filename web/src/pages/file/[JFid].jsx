@@ -19,7 +19,7 @@ import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import { ReactReduxContext } from 'react-redux'
 import Search from '../../components/file/search'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } from '../../api/file'
 import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
@@ -419,7 +419,7 @@ export default function File() {
   return (
     <div className="File">
       {loading && <Loading loading={loading} overlay={loading} />}
-      <JfLayout bgr={5}>
+      <JfLayout id={JFid} bgr={5}>
         <JfLayout.Main>
           <h1>ファイル</h1>
           <div className="container">

@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
-import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
+import {
+  CheckCircleTwoTone,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import {
+  Form,
+  Input,
+  Select,
+  Tag,
+  DatePicker,
+  Button,
+  notification,
+  Modal,
+  Tooltip,
+} from 'antd'
 import moment from 'moment'
 import JfLayout from '../../layouts/layout-task'
-import { taskData, beforeTask, afterTask, getUser } from '../../api/task-detail'
+import {
+  taskData,
+  beforeTask,
+  afterTask,
+  getUser,
+} from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
@@ -74,14 +92,14 @@ function TaskList() {
             milestone: data.milestone.name,
             assignee: listmember,
             status: data.status,
-            start_time: moment(data.start_time.split('-').join('/'), dateFormat),
+            start_time: moment(
+              data.start_time.split('-').join('/'),
+              dateFormat,
+            ),
             end_time: moment(data.end_time.split('-').join('/'), dateFormat),
             detail: data.description_of_detail,
           })
         }
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const startDayValidator = (_, value) => {
@@ -145,7 +163,9 @@ function TaskList() {
     const { label, closable, onClose } = props
     const nameUser = form.getFieldValue('assignee')
     if (nameUser.length !== 0) {
-      document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+      document
+        .getElementById('error-user')
+        .setAttribute('hidden', 'text-red-600')
       setAssign(true)
     }
     const onPreventMouseDown = (event) => {
@@ -161,11 +181,15 @@ function TaskList() {
           const nameUsers = form.getFieldValue('assignee')
           if (nameUsers.length === 0) {
             setAssign(false)
-            document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
+            document
+              .getElementById('error-user')
+              .removeAttribute('hidden', 'text-red-600')
           }
           if (nameUsers.length !== 0) {
             setAssign(true)
-            document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+            document
+              .getElementById('error-user')
+              .setAttribute('hidden', 'text-red-600')
           }
         }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
@@ -216,7 +240,9 @@ function TaskList() {
     })
     if (e.target.value) {
       document.getElementById('validate_name').style.border = '1px solid #ffd803'
-      return document.getElementById('error-msg').setAttribute('hidden', 'text-red-600')
+      return document
+        .getElementById('error-msg')
+        .setAttribute('hidden', 'text-red-600')
     }
 
     document.getElementById('validate_name').style.border = '0.5px solid red'
@@ -229,10 +255,6 @@ function TaskList() {
           name: response.data.auth.user.name,
           role: response.data.auth.user.role,
         })
-        console.log(response.data.auth.user.role)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const saveNotification = () => {
@@ -250,7 +272,9 @@ function TaskList() {
         if (values.name === element.name) {
           checkName = true
           document.getElementById('validate_name').style.border = '1px solid red'
-          return document.getElementById('error-msg').removeAttribute('hidden', 'text-red-600')
+          return document
+            .getElementById('error-msg')
+            .removeAttribute('hidden', 'text-red-600')
         }
       }
     })
@@ -293,13 +317,11 @@ function TaskList() {
         setdisableBtn(true)
 
         await editTask(idTask, data)
-          .then((response) => {
+          .then(() => {
             saveNotification()
-            console.log(response.data)
             router.push(`/task-detail/${idTask}`)
           })
-          .catch((error) => {
-            console.log(error)
+          .catch(() => {
             setdisableBtn(false)
           })
         setdisableBtn(true)
@@ -343,9 +365,6 @@ function TaskList() {
           taskBefore: listbfTask,
         })
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchafterTask = async () => {
     await afterTask(idTask)
@@ -354,13 +373,9 @@ function TaskList() {
         response.data.after_tasks.forEach((element) => {
           listatTask.push(element.name)
         })
-        console.log(listatTask)
         form.setFieldsValue({
           afterTask: listatTask,
         })
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const fetchListTask = async () => {
@@ -370,17 +385,11 @@ function TaskList() {
         setBeforeTaskNew(response.data.schedule.tasks)
         setafterTaskNew(response.data.schedule.tasks)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchListMember = async () => {
     await getUser()
       .then((response) => {
         setListUser(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   useEffect(() => {
@@ -466,12 +475,16 @@ function TaskList() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -484,7 +497,12 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item label="担当者" name="assignee" required className="multiples">
+                  <Form.Item
+                    label="担当者"
+                    name="assignee"
+                    required
+                    className="multiples"
+                  >
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
                         {listUser.map((element) => (
@@ -502,7 +520,11 @@ function TaskList() {
                         mode="multiple"
                         showArrow
                         tagRender={tagRenderr}
-                        style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                        style={{
+                          width: '100%',
+                          border: '1px solid red',
+                          borderRadius: 6,
+                        }}
                         className="multiples"
                       >
                         {listUser.map((element) => (
@@ -603,7 +625,11 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
+                  <Form.Item
+                    label="前のタスク"
+                    name="taskBefore"
+                    className="tag_a"
+                  >
                     <Select
                       mode="multiple"
                       showArrow
@@ -620,7 +646,11 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item label="次のタスク" name="afterTask" className="tag_a">
+                  <Form.Item
+                    label="次のタスク"
+                    name="afterTask"
+                    className="tag_a"
+                  >
                     <Select
                       mode="multiple"
                       showArrow
@@ -652,6 +682,7 @@ function TaskList() {
                 <Form.Item label=" " className=" ">
                   <div className="flex ">
                     <Button
+                      size="large"
                       htmlType="button"
                       type="primary"
                       onClick={cancelConfirmModle}
@@ -661,6 +692,7 @@ function TaskList() {
                       キャンセル
                     </Button>
                     <Button
+                      size="large"
                       type="primary"
                       htmlType="submit"
                       disabled={disableBtn}

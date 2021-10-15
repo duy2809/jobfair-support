@@ -332,9 +332,11 @@ function JFList() {
     setTemperaryData(filteredData)
   }
   const content = (
-    <div className="JFList items-center space-y-3">
-      <p className="font-bold">開始日</p>
+    <div className="JFList items-center">
+      <p className="font-bold spaceM">開始日</p>
       <DatePicker
+        className="mb-3"
+        size="large"
         inputReadOnly="true"
         placeholder="開始日"
         onChange={FilterStartDate}
@@ -352,9 +354,9 @@ function JFList() {
           )
         }}
       />
-      <p className="font-bold">推定参加学生数</p>
+      <p className="font-bold spaceMG">推定参加学生数</p>
       <Slider range="true" defaultValue={[0, 100]} onAfterChange={FilterStudentsNumber} />
-      <p className="font-bold">参加企業社数</p>
+      <p className="font-bold spaceMG">参加企業社数</p>
       <Slider range="true" defaultValue={[0, 100]} onAfterChange={FilterBussinessesNumber} />
     </div>
   )
@@ -362,15 +364,15 @@ function JFList() {
     <OtherLayout>
       <OtherLayout.Main>
         <div className="JFList">
-          <div className="mx-auto flex flex-col space-y-3 justify-center">
-            <div className="space-y-3">
+          <div className="mx-auto flex flex-col  justify-center">
+            <div className="">
               <div className="flex items-center">
                 <h1>JF一覧</h1>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="pr-3">表示件数</span>
-                  <Select value={itemCount} onChange={handleSelect}>
+                  <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -406,6 +408,7 @@ function JFList() {
               </div>
             </div>
             <Table
+              className="mt-5"
               columns={columns}
               dataSource={temperaryData}
               loading={{ spinning: loading, indicator: loadingIcon }}

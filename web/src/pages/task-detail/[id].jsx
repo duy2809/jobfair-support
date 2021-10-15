@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import { Button, Modal, notification, Tooltip, Tag } from 'antd'
+
 import {
   ExclamationCircleOutlined,
   CheckCircleTwoTone,
@@ -49,21 +50,19 @@ function TaskDetail() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
   const deletetpl = async () => {
     setLoading(true)
     await deleteTask(idTask)
-      .then(async (response) => {
-        console.log(response.data)
+      .then(async () => {
         await router.push(`/tasks/${infoJF.id}`)
         await saveNotification()
         setLoading(false)
       })
-      .catch((error) => {
-        console.log(error)
+      .catch(() => {
         setLoading(false)
       })
   }
@@ -93,26 +92,17 @@ function TaskDetail() {
           })
         }
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchBeforeTask = async () => {
     await beforeTask(idTask)
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
       })
-      .catch((error) => {
-        console.log(error)
-      })
   }
   const fetchafterTask = async () => {
     await afterTask(idTask)
       .then((response) => {
         setAfterTasks(response.data.after_tasks)
-      })
-      .catch((error) => {
-        console.log(error)
       })
   }
   const modelDelete = () => {
@@ -123,7 +113,7 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -150,7 +140,7 @@ function TaskDetail() {
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
-      <JfLayout id={infoJF.id}>
+      <JfLayout id={infoJF.id} bgr={2}>
         <JfLayout.Main>
           <div className="task-details">
             <div className="list__button">
@@ -349,63 +339,81 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
-                  <ul className="list__task col-span-6">
-                    {beforeTasks
-                      ? beforeTasks.map((item) => (
-                        <li>
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/task-detail/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
+                  {beforeTasks.length > 0 ? (
+                    <>
+                      <ul
+                        className="list__task col-span-6"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
+                        {beforeTasks
+                          ? beforeTasks.map((item) => (
+                            <li>
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
                               >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
+                          : null}
+                      </ul>
+                    </>
+                  ) : (
+                    <ul className="list__task col-span-6" />
+                  )}
                 </div>
                 <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
-                  <ul className="list__task col-span-6">
-                    {afterTasks
-                      ? afterTasks.map((item) => (
-                        <li>
-                          <Tag
-                            style={{
-                              marginRight: 3,
-                              paddingTop: '5px',
-                              paddingBottom: '3px',
-                            }}
-                          >
-                            <Tooltip placement="top" title={item.name}>
-                              <a
-                                href={`/task-detail/${item.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-block text-blue-600 whitespace-nowrap "
+                  {afterTasks.length > 0 ? (
+                    <>
+                      <ul
+                        className="list__task col-span-6"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
+                        {afterTasks
+                          ? afterTasks.map((item) => (
+                            <li>
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
                               >
-                                {truncate(item.name)}
-                              </a>
-                            </Tooltip>
-                          </Tag>
-                        </li>
-                      ))
-                      : null}
-                  </ul>
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
+                          : null}
+                      </ul>
+                    </>
+                  ) : (
+                    <ul className="list__task col-span-6" />
+                  )}
                 </div>
               </div>
 
@@ -415,6 +423,7 @@ function TaskDetail() {
                 </div>
               </div>
             </div>
+
           </div>
         </JfLayout.Main>
       </JfLayout>

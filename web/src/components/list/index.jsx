@@ -4,6 +4,7 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
+import { loadingIcon } from '../loading'
 
 // const { Search } = Input;
 
@@ -18,6 +19,7 @@ const List = ({
   dataSource,
   route,
   routeToAdd,
+  isLoading,
 }) => {
   const ref = useRef()
   const [show, setShow] = useState(false)
@@ -53,16 +55,13 @@ const List = ({
   }, [])
   useEffect(() => {
     let datas = [...list]
-    console.log(filter)
     if (filter) {
       if (filter.name) {
-        console.log('fil name')
         datas = datas.filter(
           (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
         )
       }
       if (filter.milestone) {
-        console.log('fil mil')
         datas = datas.filter(
           (data) => data.milestone
             .toLowerCase()
@@ -70,7 +69,6 @@ const List = ({
         )
       }
       if (filter.category) {
-        console.log('fil cate')
         datas = datas.filter(
           (data) => data.category
             .toLowerCase()
@@ -93,7 +91,6 @@ const List = ({
 
   const searchInput = (e, dateString = '') => {
     if (!dateString) {
-      console.log(e)
       if (e.target.name === 'name') {
         setFilter({ ...filter, name: e.target.value })
         if (e.target.value === '') {
@@ -280,6 +277,7 @@ const List = ({
             pagination={false}
             dataSource={list}
             columns={dataColumn}
+            loading={{ spinning: isLoading, indicator: loadingIcon }}
           />
         </div>
       </div>
@@ -298,6 +296,7 @@ List.propTypes = {
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
   routeToAdd: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 }
 
 export default List

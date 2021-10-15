@@ -88,8 +88,19 @@
   .ant-btn {
     height: 38px !important;
   }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    border-radius: 0;
+    background: #edf2f7;
+    width: 100%;
+  }
   .gantt_grid_data {
     overflow: auto;
+
     &::-webkit-scrollbar {
       display: none;
     }

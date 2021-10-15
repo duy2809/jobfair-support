@@ -50,76 +50,80 @@ export default function index() {
 
   const generateTask = (data) => {
     const result = { data: [] }
-    data.forEach((element) => {
-      const dataObj = {
-        id: element.id,
-        text: element.name,
-        start_date: new Date(element.start_time.replace(/\//g, '-')),
-        end_date: new Date(element.end_time.replace(/\//g, '-')),
-        open: true,
-        color: generateColor(element.status),
-        status: element.status,
-        row_height: 40,
-        bar_height: 30,
-      }
-      result.data.push(dataObj)
-    })
+    if (data) {
+      data.forEach((element) => {
+        const dataObj = {
+          id: element.id,
+          text: element.name,
+          start_date: new Date(element.start_time.replace(/\//g, '-')),
+          end_date: new Date(element.end_time.replace(/\//g, '-')),
+          open: true,
+          color: generateColor(element.status),
+          status: element.status,
+          row_height: 40,
+          bar_height: 30,
+        }
+        result.data.push(dataObj)
+      })
+    }
     return result
   }
 
   const generateLink = (beforeTasks, afterTasks) => {
     const link = { links: [] }
-    beforeTasks.before_tasks.forEach((element) => {
-      const dummyObj = {
-        id: uuidv4(),
-        source: element.id,
-        target: beforeTasks.id,
-        type: '0',
-      }
-      link.links.push(dummyObj)
-    })
-    afterTasks.after_tasks.forEach((element) => {
-      const dummyObj = {
-        id: uuidv4(),
-        source: afterTasks.id,
-        target: element.id,
-        type: '0',
-      }
-      link.links.push(dummyObj)
-    })
+    if (beforeTasks.before_tasks) {
+      beforeTasks.before_tasks.forEach((element) => {
+        const dummyObj = {
+          id: uuidv4(),
+          source: element.id,
+          target: beforeTasks.id,
+          type: '0',
+        }
+        link.links.push(dummyObj)
+      })
+    }
+    if (afterTasks.after_tasks) {
+      afterTasks.after_tasks.forEach((element) => {
+        const dummyObj = {
+          id: uuidv4(),
+          source: afterTasks.id,
+          target: element.id,
+          type: '0',
+        }
+        link.links.push(dummyObj)
+      })
+    }
     return link
   }
+
   const jobfairID = router.query.id
-  const chartData = async (jobfairTask) => {
-    try {
-      const data = generateTask(jobfairTask.data.schedule.tasks)
-      const beforeTasks = await ganttChartAPI.getBeforeTasks(jobfairID)
-      const afterTasks = await ganttChartAPI.getAfterTasks(jobfairID)
-      const link = generateLink(beforeTasks.data, afterTasks.data)
-      setTask({ ...data, ...link })
-      return data
-    } catch (error) {
-      return error
-    }
-  }
 
   useEffect(() => {
-    const fetchAPI = async () => {
+    const fetchData = async () => {
       try {
-        // TODO: optimize this one by using axios.{all,spread}
-        const jobfair = await ganttChartAPI.getJobfair(jobfairID)
-        const jobfairTask = await ganttChartAPI.getTasks(jobfairID)
-        await chartData(jobfairTask)
-        setJobfairStartDate(new Date(jobfair.data.start_date))
-        setLoading(false)
-        return ''
+        Promise.all([
+          ganttChartAPI.getBeforeTasks(jobfairID),
+          ganttChartAPI.getAfterTasks(jobfairID),
+          ganttChartAPI.getJobfair(jobfairID),
+          ganttChartAPI.getTasks(jobfairID),
+        ]).then((responses) => {
+          const beforeTasks = responses[0].data
+          const afterTasks = responses[1].data
+          const jobfair = responses[2].data
+          const resTasks = Array.from(responses[3].data.schedule.tasks)
+          const link = generateLink(beforeTasks, afterTasks)
+          const data = generateTask(resTasks)
+          setJobfairStartDate(new Date(jobfair.start_date))
+          setTask({ ...data, ...link })
+          setLoading(false)
+        })
+        return []
       } catch (error) {
-        // return Error('内容が登録されません。よろしいですか？')
+        setLoading(false)
         return error
       }
     }
-    fetchAPI()
-    return ''
+    fetchData()
   }, [])
 
   const onStatusChange = (e) => {
@@ -287,11 +291,14 @@ export default function index() {
                         </Empty>
                       </div>
                     ) : (
-                      <GanttChart
-                        tasks={tasks}
-                        jobfairStartDate={jobfairStartDate}
-                        filter={filter}
-                      />
+                      <div>
+                        <p className="hidden">{JSON.stringify(tasks)}</p>
+                        <GanttChart
+                          tasks={tasks}
+                          jobfairStartDate={jobfairStartDate}
+                          filter={filter}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
