@@ -6,6 +6,7 @@ import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
 import { CategoryApi } from '~/api/category'
+import Loading from '../../../../components/loading'
 import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
@@ -15,10 +16,15 @@ const EditMember = ({ data }) => {
   const [emailInput, setEmailInput] = useState(data.user.email)
   const [nameInput, setNameInput] = useState(data.user.name)
   const router = useRouter()
-  const [categories, setCategories] = useState(data.categories.map((item) => item.id))
+  const [categories, setCategories] = useState(
+    data.categories.map((item) => item.id),
+  )
   const [categoriesSystem, setCategoriesSystem] = useState([])
-  const [reqCategories, setReqCategories] = useState(data.categories.map((item) => item.id))
+  const [reqCategories, setReqCategories] = useState(
+    data.categories.map((item) => item.id),
+  )
   const [showExitPrompt, setShowExitPrompt] = useState(false)
+  const [isLoading, setLoading] = useState(false)
 
   const { id } = router.query
 
@@ -48,6 +54,9 @@ const EditMember = ({ data }) => {
   }
 
   const handleOk = () => {
+    setLoading(true)
+    setIsModalVisible(false)
+    setIsModalCancelVisible(false)
     MemberApi.updateMember(id, {
       name: nameInput,
       email: emailInput,
@@ -66,8 +75,7 @@ const EditMember = ({ data }) => {
         return error
       })
       .finally(() => {
-        setIsModalCancelVisible(false)
-        setIsModalVisible(false)
+        setLoading(false)
       })
   }
 
@@ -81,7 +89,9 @@ const EditMember = ({ data }) => {
   }
 
   const showModal = () => {
-    if (form.getFieldsError().filter(({ errors }) => errors.length).length === 0) {
+    if (
+      form.getFieldsError().filter(({ errors }) => errors.length).length === 0
+    ) {
       setIsModalVisible(true)
     }
   }
@@ -101,7 +111,9 @@ const EditMember = ({ data }) => {
   }
 
   useEffect(() => {
+    setLoading(true)
     fetchData()
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -109,127 +121,143 @@ const EditMember = ({ data }) => {
   }, [showExitPrompt])
 
   return (
-    <Layout>
-      <Layout.Main>
-        <h1>メンバ編集</h1>
-        <div className="flex flex-col items-center inviteWrapper">
-          <Form
-            colon={false}
-            className="w-2/5"
-            labelCol={{ span: 8 }}
-            labelAlign="right"
-            form={form}
-            size="large"
-          >
-            <Form.Item
-              name="name"
-              label={<span className="font-bold">フルネーム</span>}
-              rules={[
-                {
-                  message: 'この項目は必須です',
-                  required: true,
-                },
-              ]}
+    <div>
+      <Loading loading={isLoading} overlay={isLoading} />
+      <Layout>
+        <Layout.Main>
+          <h1>メンバ編集</h1>
+          <div className="flex flex-col items-center inviteWrapper">
+            <Form
+              colon={false}
+              className="w-2/5"
+              labelCol={{ span: 8 }}
+              labelAlign="right"
+              form={form}
+              size="large"
             >
-              <Input
-                onChange={onValueNameChange}
-                type="name"
-                value={nameInput}
-                defaultValue={nameInput}
-              />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label={(
-                <span style={{ fontSize: '14px' }} className="font-bold">
-                  メールアドレス
-                </span>
-              )}
-              rules={[
-                {
-                  type: 'email',
-                  message: 'メールアドレス有効なメールではありません!',
-                  required: true,
-                },
-              ]}
-            >
-              <Input
-                onChange={onValueEmailChange}
-                type="email"
-                defaultValue={emailInput}
-                value={emailInput}
-              />
-            </Form.Item>
-
-            <Modal
-              title="メンバ編集"
-              visible={isModalVisible}
-              onOk={handleOk}
-              onCancel={handleCancel}
-              cancelText="いいえ"
-              okText="はい"
-              centered
-            >
-              <p className="mb-5">このまま保存してもよろしいですか？ </p>
-            </Modal>
-
-            <Form.Item
-              name="categories"
-              label={(
-                <span style={{ fontSize: '14px' }} className="font-bold">
-                  カテゴリ
-                </span>
-              )}
-              rules={[
-                {
-                  required: false,
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                defaultValue={categories}
-                onChange={handleChangeSelect}
-                placeholder="カテゴリ"
-                size="large"
-                className="selectBar"
+              <Form.Item
+                name="name"
+                label={<span className="font-bold">フルネーム</span>}
+                rules={[
+                  {
+                    message: 'この項目は必須です',
+                    required: true,
+                  },
+                ]}
               >
-                {categoriesSystem.map((item) => (
-                  <Option key={item.id} value={item.id}>
-                    <p style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {item.category_name}
-                    </p>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+                <Input
+                  onChange={onValueNameChange}
+                  type="name"
+                  value={nameInput}
+                  defaultValue={nameInput}
+                />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label={(
+                  <span style={{ fontSize: '14px' }} className="font-bold">
+                    メールアドレス
+                  </span>
+                )}
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'メールアドレス有効なメールではありません!',
+                    required: true,
+                  },
+                ]}
+              >
+                <Input
+                  onChange={onValueEmailChange}
+                  type="email"
+                  defaultValue={emailInput}
+                  value={emailInput}
+                />
+              </Form.Item>
 
-            <Form.Item>
-              <div className="flex justify-end">
-                <Modal
-                  title="メンバ編集"
-                  visible={isModalCancelVisible}
-                  onOk={handleClick}
-                  onCancel={handleCancelModal}
-                  cancelText="いいえ"
-                  okText="はい"
-                  centered
+              <Modal
+                title="メンバ編集"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                cancelText="いいえ"
+                okText="はい"
+                centered
+              >
+                <p className="mb-5">このまま保存してもよろしいですか？ </p>
+              </Modal>
+
+              <Form.Item
+                name="categories"
+                label={(
+                  <span style={{ fontSize: '14px' }} className="font-bold">
+                    カテゴリ
+                  </span>
+                )}
+                rules={[
+                  {
+                    required: false,
+                  },
+                ]}
+              >
+                <Select
+                  mode="multiple"
+                  defaultValue={categories}
+                  onChange={handleChangeSelect}
+                  placeholder="カテゴリ"
+                  size="large"
+                  className="selectBar"
                 >
-                  <p className="mb-5">変更内容が保存されません。よろしいですか？</p>
-                </Modal>
+                  {categoriesSystem.map((item) => (
+                    <Option key={item.id} value={item.id}>
+                      <p
+                        style={{
+                          maxWidth: '80px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {item.category_name}
+                      </p>
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
-                <Button size="large" onClick={showCancelModal}>
-                  キャンセル
-                </Button>
-                <Button size="large" className="ml-4" type="primary" onClick={showModal}>
-                  保存
-                </Button>
-              </div>
-            </Form.Item>
-          </Form>
-        </div>
-      </Layout.Main>
-    </Layout>
+              <Form.Item>
+                <div className="flex justify-end">
+                  <Modal
+                    title="メンバ編集"
+                    visible={isModalCancelVisible}
+                    onOk={handleClick}
+                    onCancel={handleCancelModal}
+                    cancelText="いいえ"
+                    okText="はい"
+                    centered
+                  >
+                    <p className="mb-5">
+                      変更内容が保存されません。よろしいですか？
+                    </p>
+                  </Modal>
+
+                  <Button size="large" onClick={showCancelModal}>
+                    キャンセル
+                  </Button>
+                  <Button
+                    size="large"
+                    className="ml-4"
+                    type="primary"
+                    onClick={showModal}
+                  >
+                    保存
+                  </Button>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
+        </Layout.Main>
+      </Layout>
+    </div>
   )
 }
 

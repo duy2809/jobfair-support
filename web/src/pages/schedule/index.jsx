@@ -1,13 +1,30 @@
 /* eslint-disable import/extensions */
 /* eslint-disable import/no-unresolved */
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Input, Table, Empty, Modal, notification, Space, Button, Tooltip } from 'antd'
-import { SearchOutlined, CheckCircleTwoTone, EditTwoTone, ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
+import {
+  Select,
+  Input,
+  Table,
+  Empty,
+  Modal,
+  notification,
+  Space,
+  Button,
+  Tooltip,
+} from 'antd'
+import {
+  SearchOutlined,
+  CheckCircleTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
+  DeleteTwoTone,
+} from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
 import { webInit } from '~/api/web-init'
 import { deleteSchedule } from '../../api/schedule-detail'
 import { ListScheduleApi } from '~/api/schedule'
+import { loadingIcon } from '../../components/loading'
 
 function ScheduleList() {
   const [schedules, setSchedules] = useState([])
@@ -28,7 +45,10 @@ function ScheduleList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
   const handleRow = (record) => ({
     onClick: () => {
@@ -146,65 +166,70 @@ function ScheduleList() {
       cancelText: 'いいえ',
     })
   }
-  const columns = role === 'superadmin' ? [
-    {
-      title: 'スケジュール',
-      dataIndex: 'name',
-      key: 'スケジュール',
-      width: '90%',
-      render: (name) => <Tooltip title={name}><a>{name}</a></Tooltip>,
-      onCell: handleRow,
-    },
-    {
-      title: 'アクション',
-      key: 'action',
-      width: '10%',
-      render: (_text, record) => role === 'superadmin' && (
-        <Space className="flex items-center" size="middle">
-          <EditTwoTone
-            id={record.id}
-            onClick={() => {
-              handleEdit(record.id)
-            }}
-          />
+  const columns = role === 'superadmin'
+    ? [
+      {
+        title: 'スケジュール',
+        dataIndex: 'name',
+        key: 'スケジュール',
+        width: '90%',
+        render: (name) => (
+          <Tooltip title={name}>
+            <a>{name}</a>
+          </Tooltip>
+        ),
+        onCell: handleRow,
+      },
+      {
+        title: 'アクション',
+        key: 'action',
+        width: '10%',
+        render: (_text, record) => role === 'superadmin' && (
+          <Space className="flex items-center" size="middle">
+            <EditTwoTone
+              id={record.id}
+              onClick={() => {
+                handleEdit(record.id)
+              }}
+            />
 
-          <DeleteTwoTone
-            id={record.id}
-            onClick={() => {
-              modelDelete(record.id)
-            }}
-          />
-        </Space>
-      ),
-    },
-  ] : [
-    {
-      title: 'スケジュール',
-      dataIndex: 'name',
-      key: 'スケジュール',
-      width: '95%',
-      render: (name) => <Tooltip title={name}><a>{name}</a></Tooltip>,
-      onCell: handleRow,
-    },
-  ]
+            <DeleteTwoTone
+              id={record.id}
+              onClick={() => {
+                modelDelete(record.id)
+              }}
+            />
+          </Space>
+        ),
+      },
+    ]
+    : [
+      {
+        title: 'スケジュール',
+        dataIndex: 'name',
+        key: 'スケジュール',
+        width: '95%',
+        render: (name) => (
+          <Tooltip title={name}>
+            <a>{name}</a>
+          </Tooltip>
+        ),
+        onCell: handleRow,
+      },
+    ]
 
   return (
     <Layout>
       <Layout.Main>
         <h1>JFスケジュール一覧</h1>
         <div>
-
           <div
             style={{ width: '100%' }}
             className="flex items-center justify-between"
           >
             <div className="flex items-center justify-start ">
               <span className="mr-3">表示件数 </span>
-              <Select
-                size="large"
-                value={itemCount}
-                onChange={handleSelect}
-              >
+              <Select size="large" value={itemCount} onChange={handleSelect}>
                 <Option value={10}>10</Option>
                 <Option value={25}>25</Option>
                 <Option value={50}>50</Option>
@@ -237,15 +262,14 @@ function ScheduleList() {
               </div>
             </div>
           </div>
-
         </div>
         <Table
-          className="my-5"
+          className="mt-5"
           columns={columns}
           dataSource={Schedules}
           rowKey={(record) => record.id}
           onChange={handleChange}
-          loading={dataLoading}
+          loading={{ spinning: dataLoading, indicator: loadingIcon }}
           pagination={pagination}
           locale={{
             emptyText: (
@@ -256,7 +280,6 @@ function ScheduleList() {
             ),
           }}
         />
-
       </Layout.Main>
     </Layout>
   )

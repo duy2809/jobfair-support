@@ -6,12 +6,14 @@ import OtherLayout from '../../../layouts/OtherLayout'
 import 'antd/dist/antd.css'
 import './styles.scss'
 import { sendInviteLink } from '~/api/member'
+import Loading from '../../../components/loading'
 
 function InviteMember() {
   const [emailInput, setEmailInput] = useState('')
   const router = useRouter()
   const [form] = Form.useForm()
   const [, forceUpdate] = useState({})
+  const [isLoading, setLoading] = useState(false)
 
   // Disable button when reload page
   useEffect(() => {
@@ -78,6 +80,7 @@ function InviteMember() {
 
   const handleInvite = async () => {
     const email = form.getFieldValue('email')
+    setLoading(true)
     try {
       const response = await sendInviteLink({ email })
       if (response.request.status === 200) {
@@ -93,82 +96,92 @@ function InviteMember() {
         document.getElementById('errorEmail').removeAttribute('hidden')
       }
     }
+    setLoading(false)
   }
+
   return (
-    <OtherLayout>
-      <OtherLayout.Main>
-        <h1>メンバ招待</h1>
-        <div className="invite-member-page">
-          <div className="container mx-auto flex-1 justify-center px-4 pb-20">
-            <div className="flex justify-center">
-              <Form
-                form={form}
-                labelCol={{
-                  span: 6,
-                }}
-                wrapperCol={{
-                  span: 14,
-                }}
-                layout="horizontal"
-                size="large"
-                colon={false}
-                className="invite-member-form"
-                labelAlign="right"
-                onFinish={handleInvite}
-                validateMessages={validateMessages}
-              >
-                <Form.Item
-                  label={<p className="font-bold">メールアドレス</p>}
-                  required
+    <div>
+      <Loading loading={isLoading} overlay={isLoading} />
+      <OtherLayout>
+        <OtherLayout.Main>
+          <h1>メンバ招待</h1>
+          <div className="invite-member-page">
+            <div className="container mx-auto flex-1 justify-center px-4 pb-20">
+              <div className="flex justify-center">
+                <Form
+                  form={form}
+                  labelCol={{
+                    span: 6,
+                  }}
+                  wrapperCol={{
+                    span: 14,
+                  }}
+                  layout="horizontal"
+                  size="large"
+                  colon={false}
+                  className="invite-member-form"
+                  labelAlign="right"
+                  onFinish={handleInvite}
+                  validateMessages={validateMessages}
                 >
                   <Form.Item
-                    name="email"
                     label={<p className="font-bold">メールアドレス</p>}
-                    noStyle
-                    rules={[
-                      {
-                        type: 'email',
-                        message: 'メールアドレス有効なメールではありません!',
-                        required: true,
-                      },
-                    ]}
+                    required
                   >
-                    <Input
-                      size="large"
+                    <Form.Item
                       name="email"
-                      className="py-2"
-                      onChange={onValueEmailChange}
-                      type="email"
-                      placeholder="email@example.com"
-                      initialValues={emailInput}
-                    />
-                  </Form.Item>
-                  <span id="errorEmail" hidden>
-                    このメールは既に存在しました
-                  </span>
-                </Form.Item>
-
-                <Form.Item label=" " className="my-10">
-                  <Space size={20} className="flex justify-end">
-                    <Button
-                      className="ant-btn"
-                      id="btn-cancel"
-                      size="large"
-                      onClick={handleModal}
+                      label={<p className="font-bold">メールアドレス</p>}
+                      noStyle
+                      rules={[
+                        {
+                          type: 'email',
+                          message: 'メールアドレス有効なメールではありません!',
+                          required: true,
+                        },
+                      ]}
                     >
-                      キャンセル
-                    </Button>
-                    <Button id="btn-submit" type="primary" size="large" htmlType="submit">
-                      招待
-                    </Button>
-                  </Space>
-                </Form.Item>
-              </Form>
+                      <Input
+                        size="large"
+                        name="email"
+                        className="py-2"
+                        onChange={onValueEmailChange}
+                        type="email"
+                        placeholder="email@example.com"
+                        initialValues={emailInput}
+                      />
+                    </Form.Item>
+                    <span id="errorEmail" hidden>
+                      このメールは既に存在しました
+                    </span>
+                  </Form.Item>
+
+                  <Form.Item label=" " className="my-10">
+                    <Space size={20} className="flex justify-end">
+                      <Button
+                        className="ant-btn"
+                        id="btn-cancel"
+                        size="large"
+                        onClick={handleModal}
+                      >
+                        キャンセル
+                      </Button>
+                      <Button
+                        id="btn-submit"
+                        type="primary"
+                        size="large"
+                        htmlType="submit"
+                      >
+                        招待
+                      </Button>
+                    </Space>
+                  </Form.Item>
+                </Form>
+              </div>
             </div>
           </div>
-        </div>
-      </OtherLayout.Main>
-    </OtherLayout>
+        </OtherLayout.Main>
+      </OtherLayout>
+    </div>
   )
 }
 

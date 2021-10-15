@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, Modal, notification } from 'antd'
+import dynamic from 'next/dynamic'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import ItemInput from '../../../../components/template-task-edit/form-item/input'
 import CancelEditTemplateTask from '../../../../components/CancelEditTemplateTask'
@@ -7,7 +8,6 @@ import './style.scss'
 import ItemDropdow from '../../../../components/template-task-edit/form-item/dropdown'
 import ItemMultipleDropdown from '../../../../components/template-task-edit/form-item/multiple-dropdown'
 import Effort from '../../../../components/template-task-edit/form-item/effort'
-import Detail from '../../../../components/template-task-edit/form-item/detail'
 import {
   getCategoryData,
   getTemplateTask,
@@ -17,6 +17,11 @@ import {
   updateTemplateTask,
   getTemplateTasksList,
 } from '../../../../api/template-task-edit'
+
+const MDEditor = dynamic(
+  () => import('@uiw/react-md-editor').then((mod) => mod.default),
+  { ssr: false },
+)
 
 const unitData = [
   { id: 1, name: '学生数', sumbit: 'students' },
@@ -314,9 +319,11 @@ const EditTemplateTaskPage = () => {
                     />
                   </div>
                 </div>
-                <Detail form={form} input={description} setInput={setDescription} />
+                <div className="pr-8 pl-12 mb-2">
+                  <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={description} onChange={setDescription} />
+                </div>
                 <Form.Item className="justify-end">
-                  <div className="submit-btn flex justify-end ">
+                  <div className="submit-btn flex justify-end pr-1">
                     <CancelEditTemplateTask id={pathId} />
                     <Button
                       type="primary"
