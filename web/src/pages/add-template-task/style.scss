@@ -1,5 +1,4 @@
 .add-template-task-page {
-
   /* https://www.happyhues.co/palettes/14 */
   h1,
   h2,
@@ -27,8 +26,8 @@
     color: rgb(16, 85, 189);
   }
 
-  .ant-tag>.anticon+span,
-  .ant-tag>span+.anticon {
+  .ant-tag > .anticon + span,
+  .ant-tag > span + .anticon {
     padding: 1px;
     margin-left: 7px;
     font-size: 11px;
@@ -36,8 +35,8 @@
     border-radius: 100%;
   }
 
-  .ant-tag>.anticon+span,
-  .ant-tag>span+.anticon:hover {
+  .ant-tag > .anticon + span,
+  .ant-tag > span + .anticon:hover {
     background-color: gray;
     border: 1px solid black;
   }
@@ -59,7 +58,6 @@
   .ant-form-item-explain.ant-form-item-explain-error {
     width: 100%;
     margin: 0 16px;
-
   }
 
   .center-container {
@@ -78,21 +76,12 @@
       width: 33%;
     }
   }
-
-  .special-selector {
-    // padding: 4px;
-  }
-
-  .ant-select-selection-overflow {
-    // padding: 3px;
-  }
-
   .slash-devider {
     padding: 0 5px;
     margin: 0;
   }
 
-  .ant-form-item-label>label,
+  .ant-form-item-label > label,
   .label {
     color: #272343;
   }
@@ -129,7 +118,7 @@
     padding-bottom: 26px;
   }
 
-  .ant-spin-nested-loading>div>.ant-spin {
+  .ant-spin-nested-loading > div > .ant-spin {
     position: fixed;
     top: 50%;
     left: 0;
@@ -141,13 +130,13 @@
     max-height: 400px;
   }
 
-  .ant-form-item-label>label,
+  .ant-form-item-label > label,
   .label {
     color: #272343;
     text-align: start;
   }
 
-  .ant-spin-nested-loading>div>.ant-spin-lg .ant-spin-dot {
+  .ant-spin-nested-loading > div > .ant-spin-lg .ant-spin-dot {
     font-size: 30px;
     color: #ffd803;
   }
@@ -159,8 +148,37 @@
   .w-md-editor-toolbar {
     height: 40px !important;
   }
-  .ant-form-item-label>label::after {
+  .ant-form-item-label > label::after {
     margin: 0px;
   }
-
+  .preview_btn {
+    background-color: aqua !important;
+  }
+  .des {
+    padding: 10px;
+    border: 1px solid #b5b5b8;
+    border-radius: 6px;
+    height: 300px;
+    overflow: auto;
+  }
+  .list__task {
+    display: flex;
+    align-items: center;
+    height: auto;
+    width: 100%;
+    // border: 1px solid #d9d9d9;
+    box-shadow: 2px #b5b5b8;
+    margin: 0 5px;
+    border-radius: 5px;
+    flex-wrap: wrap;
+    li {
+      white-space: nowrap;
+      padding: 2px;
+    }
+    .ant-tag,
+    .ant-tag a,
+    .ant-tag a {
+      color: rgb(16, 85, 189);
+    }
+  }
 }

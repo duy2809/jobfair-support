@@ -16,6 +16,7 @@ import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 // import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
+import MarkDownView from '../../components/markDownView'
 
 const MDEditor = dynamic(
   // eslint-disable-next-line import/no-unresolved
@@ -32,7 +33,8 @@ const index = () => {
   const [loading, setLoading] = useState(false)
   const [beforeTasks, setPreTasks] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
-  // const [selectedItems, setSelectedItems] = useState([])
+  const [isPreview, setIsPreview] = useState(false)
+  const [chosePreview, setChosePreview] = useState(false)
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
   // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
@@ -57,6 +59,21 @@ const index = () => {
     for (let i = 0; i < inputs.length; i += 1) {
       const element = inputs[i]
       if (element) {
+        return false
+      }
+    }
+    return true
+  }
+  // check if all input is not empty
+  const checkIsFormInputNotEmpty = () => {
+    // get all input values .
+    const inputValues = form.getFieldsValue()
+    //  return type :[]
+    const inputs = Object.values(inputValues)
+
+    for (let i = 0; i < inputs.length; i += 1) {
+      const element = inputs[i]
+      if (!element) {
         return false
       }
     }
@@ -116,7 +133,9 @@ const index = () => {
   }
 
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
-  const onFinishFailed = (errorInfo) => errorInfo
+  const onFinishFailed = () => {
+    setChosePreview(false)
+  }
 
   /* handle modal or popup to notifiy to user */
 
@@ -171,11 +190,11 @@ const index = () => {
         const data = {
           name: values.template_name,
           description_of_detail: markdown,
-          milestone_id: values.milestone_id,
-          is_day: values.isDay,
-          unit: values.unit,
+          milestone_id: values.milestone[1],
+          is_day: values.isDay[1],
+          unit: values.unit[1],
           effort: values.effort * 1.0,
-          category_id: values.category_id,
+          category_id: values.category[1],
           beforeTasks: beforeID,
           afterTasks: afterIDs,
         }
@@ -351,12 +370,33 @@ const index = () => {
       spin
     />
   )
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const [dataPreview, setDataPreview] = useState([])
+  const [beforeTasksChoose, setBeforeTasksChoose] = useState([])
+  const [afterTasksChoose, setAfterTasksChoose] = useState([])
+  const onPreview = (values) => {
+    setChosePreview(false)
+    if (checkIsFormInputNotEmpty) {
+      setIsPreview(true)
+      setBeforeTasksChoose(values.beforeTasks)
+      setAfterTasksChoose(values.afterTasks)
+      const data = {
+        name: values.template_name,
+        description_of_detail: markdown,
+        milestone: values.milestone[0],
+        is_day: values.isDay[0],
+        unit: values.unit[0],
+        effort: values.effort * 1.0,
+        category: values.category[0],
+      }
+      setDataPreview(data)
+    }
+  }
   return (
     <>
 
       <OtherLayout>
         <OtherLayout.Main>
-
           <div className="add-template-task-page">
             <div id="loading">
               <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large">
@@ -379,7 +419,7 @@ const index = () => {
                           layout="horizontal"
                           colon={false}
                           initialValues={{ defaultInputValue: 0 }}
-                          onFinish={onFinishSuccess}
+                          onFinish={chosePreview ? onPreview : onFinishSuccess}
                           onFinishFailed={onFinishFailed}
                         >
                           <div className="flex">
@@ -388,7 +428,7 @@ const index = () => {
                                 {/* template task name */}
                                 <Form.Item
                                   label="テンプレートタスク名"
-                                  required
+                                  required={!isPreview}
                                 >
                                   <Form.Item
                                     name="template_name"
@@ -408,40 +448,46 @@ const index = () => {
                                         document.getElementById('error-msg').setAttribute('hidden', 'true')
                                         document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
                                       }}
+                                      style={{ display: isPreview ? 'none' : '' }}
                                       placeholder="タスクテンプレート名を入力する"
                                       maxLength={200}
                                     />
-
                                   </Form.Item>
-
+                                  <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.name}</p>
                                   <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
                                 </Form.Item>
 
                                 {/* milestone */}
                                 <Form.Item
-                                  required
-                                  // hasFeedback
-                                  name="milestone_id"
                                   label="マイルストーン"
-                                  rules={[
-                                    {
-                                      validator: milestoneValidator,
-                                    },
-                                  ]}
+                                  required={!isPreview}
                                 >
-                                  <Select
-                                    showArrow
-                                    allowClear
-                                    size="large"
-                                    className="addJF-selector "
-                                    placeholder="マイルストーンを選択"
+                                  <Form.Item
+                                    noStyle
+                                    // hasFeedback
+                                    name="milestone"
+                                    rules={[
+                                      {
+                                        validator: milestoneValidator,
+                                      },
+                                    ]}
                                   >
-                                    {listMilestones.map((element) => (
-                                      <Select.Option key={element.id} value={element.id}>
-                                        {element.name}
-                                      </Select.Option>
-                                    ))}
-                                  </Select>
+                                    <Select
+                                      showArrow
+                                      allowClear
+                                      size="large"
+                                      className="addJF-selector "
+                                      placeholder="マイルストーンを選択"
+                                      style={{ display: isPreview ? 'none' : '' }}
+                                    >
+                                      {listMilestones.map((element) => (
+                                        <Select.Option key={element.id} value={[element.name, element.id]}>
+                                          {element.name}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                  <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.milestone}</p>
                                 </Form.Item>
 
                                 {/* relation */}
@@ -452,23 +498,58 @@ const index = () => {
                                   <p className="label">前のタスク:</p>
 
                                 </Form.Item> */}
-                                <Form.Item label="前のタスク" className="task ml-3" name="beforeTasks">
-                                  <Select
-                                    mode="multiple"
-                                    size="large"
-                                    showArrow
-                                    allowClear
-                                    tagRender={tagRender}
-                                    className="w-100"
-                                    placeholder="リレーションを選択"
-                                    onChange={filtedArr}
-                                  >
-                                    {beforeTasks.map((element) => (
-                                      <Select.Option key={element.id} value={element.name}>
-                                        {element.name}
-                                      </Select.Option>
-                                    ))}
-                                  </Select>
+                                <Form.Item label="前のタスク">
+                                  <Form.Item noStyle className="task ml-3" name="beforeTasks">
+                                    <Select
+                                      mode="multiple"
+                                      size="large"
+                                      showArrow
+                                      allowClear
+                                      tagRender={tagRender}
+                                      className="w-100"
+                                      placeholder="リレーションを選択"
+                                      onChange={filtedArr}
+                                      style={{ display: isPreview ? 'none' : '' }}
+                                    >
+                                      {beforeTasks.map((element) => (
+                                        <Select.Option key={element.id} value={element.name}>
+                                          {element.name}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                  {
+                                    beforeTasksChoose ? (
+                                      <ul
+                                        className="list__task col-span-2"
+                                        style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                                      >
+                                        {beforeTasksChoose.map((element) => (
+                                          <li className="task__chil">
+                                            <Tag
+                                              style={{
+                                                marginRight: 3,
+                                                paddingTop: '5px',
+                                                paddingBottom: '3px',
+                                              }}
+                                            >
+                                              <Tooltip placement="top" title={element}>
+                                                <div className="inline-block text-blue-600 whitespace-nowrap">
+                                                  {truncate(element)}
+                                                </div>
+                                              </Tooltip>
+                                            </Tag>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    ) : (
+                                      <ul
+                                        className="list__task col-span-2"
+                                        style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                                      />
+                                    )
+                                  }
+
                                 </Form.Item>
 
                               </div>
@@ -476,43 +557,48 @@ const index = () => {
                             <div className="right-side mx-4 w-1/2">
                               {/* category */}
                               <Form.Item
-                                required
+                                required={!isPreview}
                                 // hasFeedback
                                 label="カテゴリ"
-                                name="category_id"
-                                rules={[
-                                  {
-                                    validator: categoryValidator,
-                                  },
-                                ]}
                               >
-                                <Select
-                                  size="large"
-                                  showArrow
-                                  allowClear
-                                  className="addJF-selector "
-                                  placeholder="カテゴリを選択"
+                                <Form.Item
+                                  noStyle
+                                  name="category"
+                                  rules={[
+                                    {
+                                      validator: categoryValidator,
+                                    },
+                                  ]}
                                 >
-                                  {listCatergories.map((element) => (
-                                    <Select.Option key={element.id} value={element.id}>
-                                      {element.category_name}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-
+                                  <Select
+                                    size="large"
+                                    showArrow
+                                    allowClear
+                                    className="addJF-selector "
+                                    placeholder="カテゴリを選択"
+                                    style={{ display: isPreview ? 'none' : '' }}
+                                  >
+                                    {listCatergories.map((element) => (
+                                      <Select.Option key={element.id} value={[element.category_name, element.id]}>
+                                        {element.category_name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
+                                <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.category}</p>
                               </Form.Item>
 
                               {/* Kōsū - effort  */}
                               <Form.Item
                                 label="工数"
-                                required
+                                required={!isPreview}
                               >
                                 <Space className="space-items-special flex justify-between ">
                                   <div className="w-1/2 max-w-xs flex-grow ">
                                     <Form.Item
                                       noStyle
                                       name="effort"
-                                      required
+                                      required={!isPreview}
                                       rules={[
                                         {
                                           validator: numberInputValidator,
@@ -521,7 +607,7 @@ const index = () => {
                                     >
                                       <Input
                                         className="h-1/2"
-                                        style={{ padding: '10px', width: '180%' }}
+                                        style={{ padding: '10px', width: '180%', display: isPreview ? 'none' : '' }}
                                         type="text"
                                         size="large"
                                         min={1}
@@ -535,7 +621,7 @@ const index = () => {
                                     <Form.Item
                                       noStyle
                                       name="isDay"
-                                      required
+                                      required={!isPreview}
                                       rules={[
                                         {
                                           validator: isDayAndUnitValidator,
@@ -548,19 +634,26 @@ const index = () => {
                                         size="large"
                                         showSearch={false}
                                         placeholder="時間"
+                                        style={{ display: isPreview ? 'none' : '' }}
                                       >
                                         {isDayData.map((element) => (
-                                          <Select.Option key={element.id} value={element.id}>
+                                          <Select.Option key={element.id} value={[element.name, element.id]}>
                                             {element.name}
                                           </Select.Option>
                                         ))}
                                       </Select>
                                     </Form.Item>
-                                    <p className="slash-devider text-3xl font-extrabold leading-10"> / </p>
+                                    <p
+                                      className="slash-devider text-3xl font-extrabold leading-10"
+                                      style={{ display: isPreview ? 'none' : '' }}
+                                    >
+                                      {' '}
+                                      /
+                                    </p>
                                     <Form.Item
                                       noStyle
                                       name="unit"
-                                      required
+                                      required={!isPreview}
                                       rules={[
                                         {
                                           validator: isDayAndUnitValidator,
@@ -573,9 +666,10 @@ const index = () => {
                                         showArrow
                                         showSearch={false}
                                         placeholder="学生数"
+                                        style={{ display: isPreview ? 'none' : '' }}
                                       >
                                         {unitData.map((element) => (
-                                          <Select.Option key={element.id} value={element.id}>
+                                          <Select.Option key={element.id} value={[element.name, element.id]}>
                                             {element.name}
                                           </Select.Option>
                                         ))}
@@ -583,7 +677,15 @@ const index = () => {
                                     </Form.Item>
                                   </div>
                                 </Space>
-
+                                <p style={{ display: isPreview ? '' : 'none' }}>
+                                  {dataPreview.effort}
+                                  {' '}
+&nbsp;
+                                  {' '}
+                                  {dataPreview.is_day}
+                                  /
+                                  {dataPreview.unit}
+                                </p>
                               </Form.Item>
 
                               {/* <Form.Item
@@ -594,31 +696,66 @@ const index = () => {
                                 <p className="label">次のタスク:</p>
 
                               </Form.Item> */}
-                              <Form.Item name="afterTasks" className="task ml-3" label="次のタスク">
-                                <Select
-                                  mode="multiple"
-                                  size="large"
-                                  showArrow
-                                  allowClear
-                                  tagRender={tagRender}
-                                  className="w-100"
-                                  placeholder="リレーションを選択"
-                                  onChange={filtedArr}
-                                >
-                                  {afterTasks.map((element) => (
-                                    <Select.Option key={element.id} value={element.name}>
-                                      {element.name}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
+                              <Form.Item label="次のタスク">
+                                <Form.Item noStyle name="afterTasks" className="task ml-3">
+                                  <Select
+                                    mode="multiple"
+                                    size="large"
+                                    showArrow
+                                    allowClear
+                                    tagRender={tagRender}
+                                    className="w-100"
+                                    placeholder="リレーションを選択"
+                                    onChange={filtedArr}
+                                    style={{ display: isPreview ? 'none' : '' }}
+                                  >
+                                    {afterTasks.map((element) => (
+                                      <Select.Option key={element.id} value={element.name}>
+                                        {element.name}
+                                      </Select.Option>
+                                    ))}
+                                  </Select>
+                                </Form.Item>
+                                {afterTasksChoose
+                                  ? (
+                                    <ul
+                                      className="list__task col-span-2"
+                                      style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                                    >
+                                      {afterTasksChoose.map((element) => (
+                                        <li className="task__chil">
+                                          <Tag
+                                            style={{
+                                              marginRight: 3,
+                                              paddingTop: '5px',
+                                              paddingBottom: '3px',
+                                            }}
+                                          >
+                                            <Tooltip placement="top" title={element}>
+                                              <div className="inline-block text-blue-600 whitespace-nowrap">
+                                                {truncate(element)}
+                                              </div>
+                                            </Tooltip>
+                                          </Tag>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <ul
+                                      className="list__task col-span-2"
+                                      style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                                    />
+                                  )}
                               </Form.Item>
-
                             </div>
 
                           </div>
                           {/* details    */}
-                          <div className="pr-3 pl-14 mb-2">
+                          <div className="pr-3 pl-14 mb-2" style={{ display: isPreview ? 'none' : '' }}>
                             <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={markdown} onChange={setMarkdown} />
+                          </div>
+                          <div className="pr-3 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
+                            <MarkDownView source={markdown} />
                           </div>
 
                           {/* 2 button */}
@@ -627,7 +764,7 @@ const index = () => {
                             colon={false}
                             className="my-10 mx-4"
                           >
-                            <Space size={20} className="flex place-content-end pr-4">
+                            <Space size={20} className="flex place-content-end pr-4" style={{ display: isPreview ? 'none' : '' }}>
                               <Button
                                 htmlType="button"
                                 className="ant-btn"
@@ -638,6 +775,41 @@ const index = () => {
                                 キャンセル
                               </Button>
                               {/* --------------------------- */}
+                              <Button
+                                className="preview_btn"
+                                htmlType="submit"
+                                onClick={() => {
+                                  setChosePreview(!chosePreview)
+                                }}
+                                disabled={disableBtn}
+                                loading={disableBtn}
+                                style={{ letterSpacing: '-1px' }}
+                              >
+                                プレビュー
+                              </Button>
+                              {/* --------------------------- */}
+                              <Button
+                                type="primary"
+                                htmlType="submit"
+                                disabled={disableBtn}
+                                loading={disableBtn}
+                                style={{ letterSpacing: '-1px' }}
+                              >
+                                登録
+                              </Button>
+                            </Space>
+                            <Space style={{ display: isPreview ? '' : 'none' }} size={20} className="flex place-content-end pr-4">
+                              <Button
+                                htmlType="button"
+                                onClick={() => {
+                                  setIsPreview(false)
+                                }}
+                                disabled={disableBtn}
+                                loading={disableBtn}
+                                style={{ letterSpacing: '-1px' }}
+                              >
+                                編集
+                              </Button>
                               <Button
                                 type="primary"
                                 htmlType="submit"
