@@ -71,8 +71,8 @@ function templatetTaskDt() {
   const deletetpl = async () => {
     await deleteTptt(idTplt)
       .then(async () => {
-        await router.push('/template-tasks')
-        await saveNotification()
+        router.push('/template-tasks')
+        saveNotification()
       })
   }
   const modelDelete = () => {

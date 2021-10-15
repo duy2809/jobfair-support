@@ -30,6 +30,7 @@ export default function ButtonAddFolder(props) {
     setIsModalVisible(false)
     notification.success({
       message: '新しいフォルダを追加しました。',
+      duration: 3,
     })
   }
 

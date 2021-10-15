@@ -175,8 +175,8 @@ function index() {
         const data = { data: templateTaskSelect }
         const response = await addTaskAPI.addTasks(jobfair.id, data)
         if (response.status < 299) {
-          await saveNotification()
           routeTo(`/tasks/${jobfair.id}`)
+          saveNotification()
         } else {
           // setdisableBtn(false)
         }

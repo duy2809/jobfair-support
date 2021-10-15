@@ -72,7 +72,7 @@ function InviteMember() {
     notification[type]({
       message,
       description,
-      duration: 2.5,
+      duration: 3,
     })
   }
 
