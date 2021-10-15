@@ -205,8 +205,8 @@ export function scrollToToday() {
     position = gantt.posFromDate(endDate)
     gantt.scrollTo(position, null)
   } else if (
-    state.min_date.getTime() < today.getTime() &&
-    today.getTime() < state.max_date.getTime()
+    state.min_date.getTime() < today.getTime()
+    && today.getTime() < state.max_date.getTime()
   ) {
     position = gantt.posFromDate(today)
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2

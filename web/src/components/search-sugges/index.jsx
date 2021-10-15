@@ -12,8 +12,7 @@ export default function SearchSugges({ listTask, id }) {
   const [suggestions, setSuggestions] = useState([])
   const router = useRouter()
   const getSuggestionValue = (suggestion) => suggestion.name
-  const toHalfWidth = (v) =>
-    v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+  const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
   const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>
   const onChange = (event, { newValue }) => {
     const values = toHalfWidth(newValue)

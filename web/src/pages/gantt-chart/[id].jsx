@@ -203,70 +203,68 @@ export default function index() {
                     今日
                   </Button>
                 </div>
-                <div>
-                  <Radio.Group
-                    disabled={loading}
-                    onChange={onStatusChange}
-                    defaultValue={status}
-                    buttonStyle="solid"
-                    className="flex items-center"
-                  >
-                    <Tooltip placement="topLeft" title="全て">
-                      <Radio.Button
-                        className=" radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="0"
-                      >
-                        全て
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="未着手">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="1"
-                      >
-                        未着手
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="進行中">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="2"
-                      >
-                        進行中
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="完了">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="3"
-                      >
-                        完了
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="中断">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="4"
-                      >
-                        中断
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="未完了">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="5"
-                      >
-                        未完了
-                      </Radio.Button>
-                    </Tooltip>
-                  </Radio.Group>
-                </div>
+                <Radio.Group
+                  disabled={loading}
+                  onChange={onStatusChange}
+                  defaultValue={status}
+                  buttonStyle="solid"
+                  className="flex items-center flex-row"
+                >
+                  <Tooltip placement="topLeft" title="全て">
+                    <Radio.Button
+                      className=" radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="0"
+                    >
+                      全て
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="未着手">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="1"
+                    >
+                      未着手
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="進行中">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="2"
+                    >
+                      進行中
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="完了">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="3"
+                    >
+                      完了
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="中断">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="4"
+                    >
+                      中断
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="未完了">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="5"
+                    >
+                      未完了
+                    </Radio.Button>
+                  </Tooltip>
+                </Radio.Group>
               </div>
             </div>
 
@@ -274,7 +272,7 @@ export default function index() {
               <div>
                 <div className="container xl ">
                   <div className="h-full">
-                    {Boolean(tasks.data.length) ? (
+                    {tasks.data.length ? (
                       <div
                         style={{
                           height: '670px',

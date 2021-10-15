@@ -65,8 +65,8 @@ const LoginPage = () => {
 
   const onChangeDisableOk = () => {
     setDisableOk(
-      !form2.isFieldTouched('reset-email') ||
-        !!form2.getFieldsError().filter(({ errors }) => errors.length).length
+      !form2.isFieldTouched('reset-email')
+        || !!form2.getFieldsError().filter(({ errors }) => errors.length).length,
     )
   }
 
@@ -127,7 +127,11 @@ const LoginPage = () => {
                 name="password"
                 rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
               >
-                <Input.Password size="large" placeholder="パスワードを入力してください。" />
+                <Input.Password
+                  size="large"
+                  className="px-3"
+                  placeholder="パスワードを入力してください。"
+                />
               </Form.Item>
 
               <Form.Item name="remember" valuePropName="checked">
@@ -178,8 +182,8 @@ const LoginPage = () => {
                       className="text-base px-14"
                       size="large"
                       disabled={
-                        !(form.isFieldTouched('email') && form.isFieldTouched('password')) ||
-                        !!form.getFieldsError().filter(({ errors }) => errors.length).length
+                        !(form.isFieldTouched('email') && form.isFieldTouched('password'))
+                        || !!form.getFieldsError().filter(({ errors }) => errors.length).length
                       }
                     >
                       ログイン

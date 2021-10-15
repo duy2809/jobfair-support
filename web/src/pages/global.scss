@@ -76,7 +76,7 @@ body {
   }
 
   .ant-input-affix-wrapper {
-    padding: 0;
+    height: 40px;
   }
 
   .ant-input-affix-wrapper .ant-input {
@@ -309,10 +309,9 @@ body {
     box-shadow: 0 0 0 3px #fffffe;
     border-color: #ffd803;
   }
-  .ant-input-affix-wrapper, 
+
   .ant-btn {
     height: 40px;
-    padding: 6.4px 20px;
     font-size: 16px;
     border-radius: 5px;
   }

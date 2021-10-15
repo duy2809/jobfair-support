@@ -160,13 +160,15 @@ const JfLayout = ({ children, id, bgr }) => {
               <p className="text-lg ">{startDate ?? 'N/A'}</p>
               <p className="text-lg px-2">{`企業: ${numberOfStudents ?? 'N/A'}`}</p>
               <p className="text-lg px-2">{`学生: ${numberOfCompanies ?? 'N/A'}`}</p>
-              {avt ? (
-                <img className="avt" src={avt} alt="avatar" />
-              ) : (
-                <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
-                  <UserOutlined className="text-xl user-icon" />
-                </div>
-              )}
+              <div className="avatar pl-3 pr-5">
+                {avt ? (
+                  <img className="avt" src={avt} alt="avatar" />
+                ) : (
+                  <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
+                    <UserOutlined className="text-xl user-icon" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <Content className="site-layout-background">{_get(main, 'props.children')}</Content>
