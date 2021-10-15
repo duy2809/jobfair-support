@@ -202,6 +202,7 @@ body {
     align-self: center;
     align-items: center;
   }
+
   .ant-select-multiple .ant-select-selector {
     min-height: 38px !important;
     padding-top: 0;
@@ -257,29 +258,18 @@ body {
     border: 1px solid rgb(217, 217, 217) !important;
   }
 
-  .ant-pagination-prev:focus-visible .ant-pagination-item-link,
-  .ant-pagination-next:focus-visible .ant-pagination-item-link,
+  // .ant-pagination-prev:focus-visible .ant-pagination-item-link,
+  // .ant-pagination-next:focus-visible .ant-pagination-item-link,
   .ant-pagination-prev:hover .ant-pagination-item-link,
   .ant-pagination-next:hover .ant-pagination-item-link {
     color: black;
     border: none;
   }
 
-  // .ant-pagination-prev .ant-pagination-item-link,
-  // .ant-pagination-next .ant-pagination-item-link {
-  //   background: #ffd803;
-  //   color: black;
-  //   border: none;
-  // }
-
-  //   .ant-pagination-prev:focus-visible .ant-pagination-item-link,
-  // .ant-pagination-next:focus-visible .ant-pagination-item-link,
-  // .ant-pagination-prev:hover .ant-pagination-item-link,
-  // .ant-pagination-next:hover .ant-pagination-item-link {
-  //   color: black;
-  //   background-color: white;
-  //   border-color: rgb(217, 217, 217);
-  // }
+  .ant-pagination-prev .ant-pagination-item-link,
+  .ant-pagination-next .ant-pagination-item-link {
+    transition: none;
+  }
 
   .ant-pagination-prev,
   .ant-pagination-item,
