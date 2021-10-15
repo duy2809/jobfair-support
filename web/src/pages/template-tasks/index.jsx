@@ -7,6 +7,7 @@ import OtherLayout from '../../layouts/OtherLayout'
 import { getTaskList, getCategories, deleteTptt } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { webInit } from '../../api/web-init'
+import { loadingIcon } from '../../components/loading'
 
 function TemplateTaskList() {
   // state of table
@@ -355,7 +356,7 @@ function TemplateTaskList() {
               className="mt-5"
               columns={columns}
               dataSource={temperaryData}
-              loading={loading}
+              loading={{ spinning: loading, indicator: loadingIcon }}
               pagination={pagination}
               locale={{ emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="該当結果が見つかりませんでした" /> }}
             />
