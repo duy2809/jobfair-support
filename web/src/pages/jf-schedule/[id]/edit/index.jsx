@@ -128,14 +128,7 @@ function editJobfairSchedule() {
           if (res.status === 200) {
             setIsModalVisible(false)
             router.push('/schedule/')
-<<<<<<< HEAD
             openNotification('success', '変更は正常に保存されました。')
-=======
-            setTimeout(() => {
-              setIsModalVisible(false)
-              openNotification('success', '変更は正常に保存されました。')
-            }, 3000)
->>>>>>> develop
           }
         })
         .catch()
