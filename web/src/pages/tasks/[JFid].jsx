@@ -12,6 +12,7 @@ import {
   Button,
   Space,
   notification,
+  Tag,
 } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
@@ -23,13 +24,16 @@ import {
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons'
+import { element, number } from 'prop-types'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { jftask } from '../../api/jf-toppage'
 import { webInit } from '../../api/web-init'
-import { deleteTask } from '../../api/task-detail'
+import { deleteTask, updateManagerTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
+import { editTask } from '../../api/edit-task'
+import { includes } from 'lodash'
 
 function TaskList() {
   const router = useRouter()
@@ -86,8 +90,10 @@ function TaskList() {
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
+      const idManager = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
+        idManager.push(dataResponse[i].users[j].id)
       }
       data.push({
         id: i + 1,
@@ -99,6 +105,8 @@ function TaskList() {
         category_name: dataResponse[i].categories[0]?.category_name,
         milestone_name: dataResponse[i].milestone.name,
         managers: manager,
+        idCategory: dataResponse[i].categories[0].id,
+        idManagers: idManager,
       })
     }
     setTemperaryData(data)
@@ -206,6 +214,70 @@ function TaskList() {
       router.push(`/task-detail/${record.idtask}`)
     },
   })
+  const options = [{ value: 'gold', id: 1 }, { value: 'lime', id: 2 }, { value: 'green', id: 3 }, { value: 'cyan', id: 4 }]
+  function tagRender(props) {
+    // eslint-disable-next-line react/prop-types
+    const { label, closable, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+      >
+        <span className="text-blue-600 icon-tag">
+          {label}
+        </span>
+      </Tag>
+    )
+  }
+  const handleSave = async (value, record) => {
+    const defaultText = value.filter((a) => typeof (a) === 'string')
+    const a = temperaryData.managers
+    a.filter((x) => x.name.includes(defaultText))
+    setTemperaryData({ ...temperaryData, managers: defaultText })
+    temperaryData.map()
+    const defaultNumber = value.filter((a) => typeof (a) === 'number')
+    const newData = record.idManagers.concat(defaultNumber)
+    console.log(newData)
+    const data = {
+      assignee: newData,
+    }
+    await updateManagerTask(record.idtask, data)
+      .then(() => {
+        console.log('thanh cong')
+        saveNotification()
+      })
+  }
+  const member = (managers, record) => {
+    const [show, setShow] = useState(false)
+    const [memberAS, setMemberAS] = useState(null)
+    return (
+      <div className="listMember">
+        <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
+          {options.map((element) => (
+            <Select.Option
+              className="validate-user"
+              key={element.id}
+              value={element.id}
+            >
+              {element.value}
+            </Select.Option>
+          ))}
+        </Select>
+        {show ? (
+          <div className="save">
+            <Button onClick={() => { handleSave(memberAS, record); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary">save</Button>
+            {' '}
+          </div>
+        ) : null }
+      </div>
+    )
+  }
   // columns of tables
   const columns = users === 'superadmin' || users === 'admin'
     ? [
@@ -258,7 +330,7 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '30%',
+        fixed: '20%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
@@ -266,11 +338,10 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '17%',
+        width: '27%',
         dataIndex: 'managers',
         fixed: 'left',
-        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
-        onCell: handleRow,
+        render: (managers, record) => member(managers, record),
       },
       {
         title: 'アクション',
@@ -356,8 +427,7 @@ function TaskList() {
         width: '17%',
         dataIndex: 'managers',
         fixed: 'left',
-        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
-        onCell: handleRow,
+        render: (managers, record) => member(managers, record),
       },
     ]
   // data of table get from database
@@ -381,7 +451,6 @@ function TaskList() {
       })
       .catch((error) => Error(error.toString()))
   }, [])
-
   // Search data on Table
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
