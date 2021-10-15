@@ -18,6 +18,7 @@ import * as Extensions from '../../utils/extensions'
 import './style.scss'
 
 const MDEditor = dynamic(
+  // eslint-disable-next-line import/no-unresolved
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false },
 )
