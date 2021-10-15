@@ -77,10 +77,11 @@ const JfLayout = ({ children, id, bgr }) => {
               className="relative h-10 z-20 mb-20"
               style={{
                 marginBottom: '50px',
+                cursor: 'pointer',
                 transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
-              <div className="absolute top-0 right-0  ">
+              <div className="absolute top-1/2 right-0  ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />

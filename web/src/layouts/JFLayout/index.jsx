@@ -58,6 +58,7 @@ const JfLayout = ({ children, bgr }) => {
               className="relative h-10 z-20 mb-20"
               style={{
                 marginBottom: '50px',
+                cursor: 'pointer',
                 transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
