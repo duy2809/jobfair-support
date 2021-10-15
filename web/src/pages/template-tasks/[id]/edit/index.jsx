@@ -19,6 +19,7 @@ import {
 } from '../../../../api/template-task-edit'
 
 const MDEditor = dynamic(
+  // eslint-disable-next-line import/no-unresolved
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false },
 )

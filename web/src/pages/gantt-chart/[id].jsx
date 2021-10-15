@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
 import { loadingIcon } from '../../components/loading'
-import JfLayout from '../../layouts/JFLayout'
+import JfLayout from '../../layouts/layout-task'
 import './style.scss'
 
 const GanttChart = dynamic(
@@ -162,7 +162,7 @@ export default function index() {
     return []
   }
   return (
-    <JfLayout id={jobfairID}>
+    <JfLayout id={jobfairID} bgr={3}>
       <JfLayout.Main>
         {/* マイルストーン ガントチャート リストチャート 今日 から まで カテゴリ 全て すべて TC業務  次面接練習 タスクについて  私だけ テンプレート タスクリスト */}
         <div className="gantt-chart-page min-h-screen">
@@ -291,7 +291,11 @@ export default function index() {
                         </Empty>
                       </div>
                     ) : (
-                      <div>
+                      <div
+                        style={{
+                          height: '670px',
+                        }}
+                      >
                         <p className="hidden">{JSON.stringify(tasks)}</p>
                         <GanttChart
                           tasks={tasks}
