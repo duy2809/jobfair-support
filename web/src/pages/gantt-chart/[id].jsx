@@ -164,7 +164,6 @@ export default function index() {
   return (
     <JfLayout id={jobfairID}>
       <JfLayout.Main>
-        {/* マイルストーン ガントチャート リストチャート 今日 から まで カテゴリ 全て すべて TC業務  次面接練習 タスクについて  私だけ テンプレート タスクリスト */}
         <div className="gantt-chart-page min-h-screen">
           <div className="container mx-auto flex-1 justify-center px-4">
             {/* page title */}
@@ -275,8 +274,10 @@ export default function index() {
               <div>
                 <div className="container xl ">
                   <div className="h-full">
-                    {loading ? (
+                    {tasks.data.length ? (
                       <div className="flex items-center justify-center">
+                        <p className="hidden">{tasks.data.length}</p>
+
                         <Empty
                           className="relative border w-full h-3/4 py-10 mx-10 border-solid rounded-sm "
                           image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -292,7 +293,7 @@ export default function index() {
                       </div>
                     ) : (
                       <div>
-                        <p className="hidden">{JSON.stringify(tasks)}</p>
+                        <p className="hidden">{JSON.stringify(tasks.data.length)}</p>
                         <GanttChart
                           tasks={tasks}
                           jobfairStartDate={jobfairStartDate}

@@ -28,7 +28,6 @@ export default class Gantt extends Component {
       fullscreen: true,
       keyboard_navigation: true,
       multiselect: true,
-      // quick_info: true,
       undo: true,
       marker: true,
     })
@@ -37,7 +36,6 @@ export default class Gantt extends Component {
     gantt.config.min_column_width = 44
     gantt.config.scale_height = 120
     gantt.config.drag_progress = true
-    // gantt.config.show_markers = true
     gantt.config.work_time = true
 
     /* config layout */
@@ -112,7 +110,6 @@ export default class Gantt extends Component {
       { unit: 'month', step: 1, format: '%F' },
       { unit: 'week', step: 1, format: '%W', css: '' },
       { unit: 'day', step: 1, format: '%d', css: daysStyle },
-      // { unit: 'hour', step: 1, format: '%h', css: daysStyle },
     ]
 
     gantt.attachEvent('onGanttReady', () => {
@@ -186,7 +183,6 @@ export default class Gantt extends Component {
           ref={(input) => {
             this.ganttContainer = input
           }}
-          style={{ width: '100%', height: '700px' }}
         />
       </>
     )
@@ -208,8 +204,8 @@ export function scrollToToday() {
     position = gantt.posFromDate(endDate)
     gantt.scrollTo(position, null)
   } else if (
-    state.min_date.getTime() < today.getTime()
-    && today.getTime() < state.max_date.getTime()
+    state.min_date.getTime() < today.getTime() &&
+    today.getTime() < state.max_date.getTime()
   ) {
     position = gantt.posFromDate(today)
     const offset = (gantt.$container.offsetWidth - gantt.config.grid_width) / 2

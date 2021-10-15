@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import {
+  BarChartOutlined,
+  FileOutlined,
+  FileProtectOutlined,
+  HomeOutlined,
+  MenuOutlined,
+  TableOutlined,
+  UserOutlined,
+} from '@ant-design/icons'
 import { Layout, Menu } from 'antd'
+import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import './style.scss'
-import _get from 'lodash/get'
-import '../../pages/global.scss'
-import {
-  HomeOutlined,
-  FileProtectOutlined,
-  BarChartOutlined,
-  TableOutlined,
-  FileOutlined,
-  MenuOutlined,
-} from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
 import { jfdata } from '../../api/jf-toppage'
-import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
+import '../../pages/global.scss'
+import { findSlot } from '../../utils/pages'
+import './style.scss'
 
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
@@ -74,13 +75,12 @@ const JfLayout = ({ children, id, bgr }) => {
             inlineCollapsed={collapsed}
           >
             <div
-              className="relative h-10 z-20 mb-20"
+              className="relative h-20 cursor-pointer"
               style={{
-                marginBottom: '50px',
                 transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
-              <div className="absolute top-0 right-0  ">
+              <div className="absolute top-0 right-0 ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />
@@ -156,11 +156,17 @@ const JfLayout = ({ children, id, bgr }) => {
         <Layout className="site-layout">
           <div className="Jf__header">
             <h1>{name}</h1>
-            <div className="admin__jf">
-              <h3>{startDate}</h3>
-              <h3>{`企業:${numberOfStudents}`}</h3>
-              <h3>{`学生:${numberOfCompanies}`}</h3>
-              <img className="avt" src={avt} alt="avatar" />
+            <div className="admin__jf px-5">
+              <p className="text-lg ">{startDate}</p>
+              <p className="text-lg px-2">{`企業: ${numberOfStudents}`}</p>
+              <p className="text-lg px-2">{`学生: ${numberOfCompanies}`}</p>
+              {avt ? (
+                <img className="avt" src={avt} alt="avatar" />
+              ) : (
+                <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
+                  <UserOutlined className="text-xl user-icon" />
+                </div>
+              )}
             </div>
           </div>
           <Content className="site-layout-background">{_get(main, 'props.children')}</Content>

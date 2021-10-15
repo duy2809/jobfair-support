@@ -1,4 +1,6 @@
 .gantt-chart_G1-3 {
+  height: fit-content;
+  max-height: 700px;
   .milestone-row {
     font-size: 17px;
     overflow: hidden;
@@ -52,11 +54,7 @@
   .gantt_task_line.gantt_task_inline_color {
     z-index: 999;
   }
-  .day_scale {
-  }
-  .week_scale {
-    // border: none;
-  }
+
   .milestone-cell {
     width: 88px;
     position: absolute;
@@ -65,12 +63,7 @@
     background: rgb(81, 255, 0);
     border: 1px solid rgb(185, 36, 36);
   }
-  .week_scale .gantt_scale_cell {
-    // overflow: visible;
-    // border: none !important;
-  }
-  .month_scale {
-  }
+
   .today-mark {
     background-color: blueviolet;
   }
