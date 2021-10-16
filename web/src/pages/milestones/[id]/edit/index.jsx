@@ -26,6 +26,8 @@ const EditMilestonePage = () => {
 
   useEffect(async () => {
     setId(router.query.id)
+  }, [])
+  useEffect(() => {
     getMilestone(id).then((res) => {
       setNameInput(res.data.name)
       setTimeInput(res.data.period.toString())
@@ -37,7 +39,7 @@ const EditMilestonePage = () => {
       })
       setLoading(false)
     })
-  }, [])
+  }, [id])
 
   const openNotificationSuccess = () => {
     window.location.href = '/milestones'
