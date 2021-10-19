@@ -57,6 +57,7 @@ const LoginPage = () => {
         openNotification('success', '正常にログインしました')
       }
     } catch (error) {
+      setLoading(false)
       if (error.request.status === 400) {
         openNotification('error', 'メールアドレスもしくはパスワードが間違っています')
       }
