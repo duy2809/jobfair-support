@@ -17,6 +17,7 @@ import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
 import Loading from '~/components/loading'
 import BoxComment from '~/components/box-comment'
 import CommentHistory from '~/components/comment/CommentHistory'
+
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
