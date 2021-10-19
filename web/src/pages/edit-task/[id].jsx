@@ -27,7 +27,7 @@ import {
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask } from '../../api/edit-task'
+import { editTask, reviewers } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function TaskList() {
@@ -43,6 +43,7 @@ function TaskList() {
   const [allTask, setAllTask] = useState([])
   const [afterTasksNew, setafterTaskNew] = useState([])
   const [isEdit, setIsEdit] = useState(false)
+  const [reviewersSelected, setReviewersSelected] = useState([])
   const [users, setUsers] = useState({
     id: null,
     name: '',
@@ -62,7 +63,15 @@ function TaskList() {
   })
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
+  const [reviewersData, setReviewersData] = useState([])
   const fetchTaskData = async () => {
+    await reviewers(idTask).then((response) => {
+      if (response.status === 200) {
+        setReviewersData(response.data)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
@@ -86,6 +95,10 @@ function TaskList() {
           data.users.forEach((element) => {
             listmember.push(element.name)
           })
+          const listReviewers = []
+          reviewersData.forEach((element) => {
+            listReviewers.push(element.name)
+          })
           form.setFieldsValue({
             name: data.name,
             category: data.categories[0].category_name,
@@ -98,6 +111,7 @@ function TaskList() {
             ),
             end_time: moment(data.end_time.split('-').join('/'), dateFormat),
             detail: data.description_of_detail,
+            reviewers: listReviewers,
           })
         }
       })
@@ -247,6 +261,13 @@ function TaskList() {
 
     document.getElementById('validate_name').style.border = '0.5px solid red'
   }
+
+  const onReviewersChange = (value) => {
+    const newReviewers = []
+    newReviewers.push(value)
+    setReviewersSelected(newReviewers)
+  }
+
   const getDataUser = async () => {
     await webInit()
       .then((response) => {
@@ -263,6 +284,11 @@ function TaskList() {
       message: '変更は正常に保存されました。',
       duration: 3,
       onClick: () => {},
+    })
+  }
+  const forbidNotification = () => {
+    notification.error({
+      message: 'Method not allowed',
     })
   }
   const onFinishSuccess = async (values) => {
@@ -314,6 +340,7 @@ function TaskList() {
           admin: adminas,
           user_id: users.id,
           status: values.status,
+          reviewers: reviewersSelected,
         }
         setdisableBtn(true)
 
@@ -322,16 +349,17 @@ function TaskList() {
             router.push(`/task-detail/${idTask}`)
             saveNotification()
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error)
+            forbidNotification()
             setdisableBtn(false)
           })
-        setdisableBtn(true)
+        // setdisableBtn(true)
       } catch (error) {
         setdisableBtn(false)
         return error
       }
     }
-
     return ''
   }
 
@@ -385,6 +413,9 @@ function TaskList() {
         setAllTask(response.data.schedule.tasks)
         setBeforeTaskNew(response.data.schedule.tasks)
         setafterTaskNew(response.data.schedule.tasks)
+      })
+      .catch((err) => {
+        console.log(err)
       })
   }
   const fetchListMember = async () => {
@@ -498,61 +529,24 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="担当者"
-                    name="assignee"
-                    required
-                    className="multiples"
-                  >
-                    {assign ? (
-                      <Select mode="multiple" showArrow tagRender={tagRenderr}>
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.name}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    ) : (
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        tagRender={tagRenderr}
-                        style={{
-                          width: '100%',
-                          border: '1px solid red',
-                          borderRadius: 6,
-                        }}
-                        className="multiples"
-                      >
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.name}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    )}
+                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
+                    <Select
+                      showArrow
+                      tagRender={tagRender}
+                      style={{ width: '100%' }}
+                      onChange={onReviewersChange}
+                    >
+                      {listUser.map((element) => (
+                        <Select.Option
+                          className="validate-user"
+                          key={element.id}
+                          value={element.id}
+                        >
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
                   </Form.Item>
-                  <div className="ant-row">
-                    <div className="ant-col ant-col-6" />
-                    <div className="ant-col ant-col-18">
-                      <span
-                        id="error-user"
-                        style={{ color: '#ff3860', fontSize: '14px' }}
-                        className="text-red-600"
-                        hidden
-                      >
-                        この項目は必須です
-                      </span>
-                    </div>
-                  </div>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
@@ -666,6 +660,63 @@ function TaskList() {
                       ))}
                     </Select>
                   </Form.Item>
+                </div>
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item
+                    label="担当者"
+                    name="assignee"
+                    required
+                    className="multiples"
+                  >
+                    {assign ? (
+                      <Select mode="multiple" showArrow tagRender={tagRenderr}>
+                        {listUser.map((element) => (
+                          <Select.Option
+                            className="validate-user"
+                            key={element.id}
+                            value={element.name}
+                          >
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    ) : (
+                      <Select
+                        mode="multiple"
+                        showArrow
+                        tagRender={tagRenderr}
+                        style={{
+                          width: '100%',
+                          border: '1px solid red',
+                          borderRadius: 6,
+                        }}
+                        className="multiples"
+                      >
+                        {listUser.map((element) => (
+                          <Select.Option
+                            className="validate-user"
+                            key={element.id}
+                            value={element.name}
+                          >
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Form.Item>
+                  <div className="ant-row">
+                    <div className="ant-col ant-col-6" />
+                    <div className="ant-col ant-col-18">
+                      <span
+                        id="error-user"
+                        style={{ color: '#ff3860', fontSize: '14px' }}
+                        className="text-red-600"
+                        hidden
+                      >
+                        この項目は必須です
+                      </span>
+                    </div>
+                  </div>
                 </div>
                 <div className="col-span-2 mx-2 mb-2">
                   <Form.Item name="detail">

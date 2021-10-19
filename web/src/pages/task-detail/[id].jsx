@@ -14,6 +14,7 @@ import {
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '~/layouts/layout-task'
 import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
+import { reviewers } from '../../api/edit-task'
 import Loading from '~/components/loading'
 import BoxComment from '~/components/box-comment'
 import CommentHistory from '~/components/comment/CommentHistory'
@@ -101,6 +102,12 @@ function TaskDetail() {
       setAfterTasks(response.data.after_tasks)
     })
   }
+  const [reviewersList, setReviewersList] = useState([])
+  const fetchReviewersList = async () => {
+    await reviewers(idTask).then((response) => {
+      setReviewersList(response.data)
+    })
+  }
   const modelDelete = () => {
     Modal.confirm({
       title: '削除してもよろしいですか？',
@@ -131,6 +138,7 @@ function TaskDetail() {
     fetchTaskData()
     fetchBeforeTask()
     fetchAfterTask()
+    fetchReviewersList()
     setLoading(false)
   }, [user])
   return (
@@ -398,7 +406,24 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-
+              <div className="grid grid-cols-2 mx-4">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">レビュアー</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul className="list__member">
+                        {reviewersList
+                          ? reviewersList.map((item) => (
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                          ))
+                          : null}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="mx-5 mt-5">
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}

@@ -6,6 +6,7 @@ use App\Models\Jobfair;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -217,25 +218,82 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
         $task = Task::find($id);
-        $task->update($request->all());
-        if (!empty($request->beforeTasks)) {
-            $task->beforeTasks()->sync($request->beforeTasks);
+        $ad = $task->schedule->jobfair->user->id;
+        $request->validate([
+            'user_id' => 'exists:users,id',
+            'description_of_detail' => 'string|nullable',
+            'template_task_id' => 'exists:template_tasks,id',
+            'admin' => 'required',
+            'start_time' => 'required|date',
+            'end_time' => 'required|date',
+            'name' => [
+                Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
+            ],
+        ]);
+        if ($request->input('reviewers') === []) {
+            $task->update($request->all());
+            if (!empty($request->beforeTasks)) {
+                $task->beforeTasks()->sync($request->beforeTasks);
+            }
+
+            if (!empty($request->afterTasks)) {
+                $task->afterTasks()->sync($request->afterTasks);
+            }
+
+            if (!empty($request->admin)) {
+                $task->users()->syncWithPivotValues($request->admin, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+            }
+
+            $task->save();
+
+            return response()->json(['message' => 'Edit Successfully'], 200);
         }
 
-        if (!empty($request->afterTasks)) {
-            $task->afterTasks()->sync($request->afterTasks);
+        $checkKey = 1;
+        foreach ($request->input('reviewers') as $key => $reviewer) {
+            $user = User::find($reviewer);
+            $categories = array_column($user->categories->toArray(), 'category_name');
+            if (
+                (in_array('レビュアー', $categories) && in_array($task->categories()->first()->category_name, $categories))
+                || $reviewer === $ad
+            ) {
+                continue;
+            }
+
+            $checkKey = 0;
+
+            break;
         }
 
-        if (!empty($request->admin)) {
-            $task->users()->syncWithPivotValues($request->admin, [
-                'join_date' => Carbon::now()->toDateTimeString(),
-            ]);
+        if ($checkKey === 1) {
+            $task->update($request->all());
+            if (!empty($request->beforeTasks)) {
+                $task->beforeTasks()->sync($request->beforeTasks);
+            }
+
+            if (!empty($request->afterTasks)) {
+                $task->afterTasks()->sync($request->afterTasks);
+            }
+
+            if (!empty($request->admin)) {
+                $task->users()->syncWithPivotValues($request->admin, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+            }
+
+            $task->reviewers()->sync($request->input('reviewers'));
+            $task->save();
+
+            return response()->json(['message' => 'Edit Successfully'], 200);
         }
 
-        return response()->json(['message' => 'Edit Successfully'], 200);
+        return response()->json(['message' => 'Error'], 403);
     }
 
     /**
@@ -253,6 +311,11 @@ class TaskController extends Controller
         $task->delete();
 
         return response()->json(['message' => 'Delete Successfully'], 200);
+    }
+
+    public function getReviewers($id)
+    {
+        return Task::find($id)->reviewers;
     }
 
     public function getBeforeTasks($id)
