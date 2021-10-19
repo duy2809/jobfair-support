@@ -164,7 +164,6 @@ export default function index() {
   return (
     <JfLayout id={jobfairID} bgr={3}>
       <JfLayout.Main>
-        {/* マイルストーン ガントチャート リストチャート 今日 から まで カテゴリ 全て すべて TC業務  次面接練習 タスクについて  私だけ テンプレート タスクリスト */}
         <div className="gantt-chart-page min-h-screen">
           <div className="container mx-auto flex-1 justify-center px-4">
             {/* page title */}
@@ -204,70 +203,68 @@ export default function index() {
                     今日
                   </Button>
                 </div>
-                <div>
-                  <Radio.Group
-                    disabled={loading}
-                    onChange={onStatusChange}
-                    defaultValue={status}
-                    buttonStyle="solid"
-                    className="flex items-center"
-                  >
-                    <Tooltip placement="topLeft" title="全て">
-                      <Radio.Button
-                        className=" radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="0"
-                      >
-                        全て
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="未着手">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="1"
-                      >
-                        未着手
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="進行中">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="2"
-                      >
-                        進行中
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="完了">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="3"
-                      >
-                        完了
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="中断">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="4"
-                      >
-                        中断
-                      </Radio.Button>
-                    </Tooltip>
-                    <Tooltip placement="topLeft" title="未完了">
-                      <Radio.Button
-                        className="radio-button w-20 p-0 text-center mr-4"
-                        style={{ borderRadius: '5px' }}
-                        value="5"
-                      >
-                        未完了
-                      </Radio.Button>
-                    </Tooltip>
-                  </Radio.Group>
-                </div>
+                <Radio.Group
+                  disabled={loading}
+                  onChange={onStatusChange}
+                  defaultValue={status}
+                  buttonStyle="solid"
+                  className="flex items-center flex-row"
+                >
+                  <Tooltip placement="topLeft" title="全て">
+                    <Radio.Button
+                      className=" radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="0"
+                    >
+                      全て
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="未着手">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="1"
+                    >
+                      未着手
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="進行中">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="2"
+                    >
+                      進行中
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="完了">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="3"
+                    >
+                      完了
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="中断">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="4"
+                    >
+                      中断
+                    </Radio.Button>
+                  </Tooltip>
+                  <Tooltip placement="topLeft" title="未完了">
+                    <Radio.Button
+                      className="radio-button w-20 p-0 text-center mr-4"
+                      style={{ borderRadius: '5px' }}
+                      value="5"
+                    >
+                      未完了
+                    </Radio.Button>
+                  </Tooltip>
+                </Radio.Group>
               </div>
             </div>
 
@@ -275,7 +272,21 @@ export default function index() {
               <div>
                 <div className="container xl ">
                   <div className="h-full">
-                    {loading ? (
+                    {tasks.data.length ? (
+                      <div
+                        style={{
+                          height: '670px',
+                        }}
+                      >
+                        <p className="hidden">{Boolean(tasks.data.length).toString()}</p>
+
+                        <GanttChart
+                          tasks={tasks}
+                          jobfairStartDate={jobfairStartDate}
+                          filter={filter}
+                        />
+                      </div>
+                    ) : (
                       <div className="flex items-center justify-center">
                         <Empty
                           className="relative border w-full h-3/4 py-10 mx-10 border-solid rounded-sm "
@@ -289,19 +300,6 @@ export default function index() {
                             size="large"
                           />
                         </Empty>
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          height: '670px',
-                        }}
-                      >
-                        <p className="hidden">{JSON.stringify(tasks)}</p>
-                        <GanttChart
-                          tasks={tasks}
-                          jobfairStartDate={jobfairStartDate}
-                          filter={filter}
-                        />
                       </div>
                     )}
                   </div>

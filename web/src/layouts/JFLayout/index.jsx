@@ -28,7 +28,7 @@ const JfLayout = ({ children, bgr }) => {
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
-  const [idJF, setIdJf] = useState('')
+  const [id, setIdJf] = useState('')
   useEffect(() => {
     setIdJf(localStorage.getItem('id-jf'))
   }, [children])
@@ -52,17 +52,16 @@ const JfLayout = ({ children, bgr }) => {
             mode="inline"
             theme="dark"
             inlineCollapsed={collapsed}
-            className="sibar-jf"
           >
             <div
-              className="relative h-10 z-20 mb-20"
+              className="relative h-20"
               style={{
-                marginBottom: '50px',
+                marginBottom: '15px',
                 cursor: 'pointer',
-                transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
+                transform: collapsed ? 'translate(0)' : 'translate(30%)',
               }}
             >
-              <div className="absolute top-0 right-0  ">
+              <div className="absolute top-0 right-0 ">
                 <div className="button" type="primary" onClick={toggleCollapsed}>
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />
@@ -72,10 +71,9 @@ const JfLayout = ({ children, bgr }) => {
                 </div>
               </div>
             </div>
-
             {bgr === 1 ? (
               <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             ) : (
               <Menu.Item
@@ -83,7 +81,7 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<HomeOutlined className="sidebar-icons" />}
                 style={{ background: '#e3f6f5' }}
               >
-                <Link href={`/jf-toppage/${idJF}`}>ホーム</Link>
+                <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             )}
 
@@ -93,11 +91,11 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<FileProtectOutlined className="sidebar-icons" />}
                 style={styles}
               >
-                <Link href={`/tasks/${idJF}`}>タスク</Link>
+                <Link href={`/tasks/${id}`}>タスク</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
-                <Link href={`/tasks/${idJF}`}>タスク</Link>
+                <Link href={`/tasks/${id}`}>タスク</Link>
               </Menu.Item>
             )}
 
@@ -107,31 +105,31 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<BarChartOutlined className="sidebar-icons" />}
                 style={styles}
               >
-                <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
-                <Link href={`/grantt-chart/${idJF}`}>ガントチャート</Link>
+                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 
             {bgr === 4 ? (
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/kanban/${idJF}`}>カンバン</Link>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
-                <Link href={`/kanban/${idJF}`}>カンバン</Link>
+                <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             )}
 
             {bgr === 5 ? (
               <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/file/${idJF}`}>ファイル</Link>
+                <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />}>
-                <Link href={`/file/${idJF}`}>ファイル</Link>
+                <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             )}
           </Menu>

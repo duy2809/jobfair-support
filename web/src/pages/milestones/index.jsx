@@ -18,7 +18,6 @@ const MilestonePage = () => {
   const [isModalType, setIsModalType] = useState({
     delete: false,
     edit: false,
-    add: false,
   })
 
   webInit().then((res) => {
@@ -129,11 +128,6 @@ const MilestonePage = () => {
         setIsModalType((preState) => ({ ...preState, delete: false }))
       }
 
-      if (isModalType.add) {
-        setIsModalType((preState) => ({ ...preState, add: false }))
-        window.location.href = '/milestones/add'
-      }
-
       if (isModalType.edit) {
         setIsModalType((preState) => ({ ...preState, edit: false }))
         window.location.href = `/milestones/${id}/edit`
@@ -145,14 +139,12 @@ const MilestonePage = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false)
-    setIsModalType({ delete: false, add: false, edit: false })
+    setIsModalType({ delete: false, edit: false })
   }
   const showModal = (type) => {
     setIsModalVisible(true)
     let title
-    if (type.add) {
-      title = 'マイルストーンを追加しますか ?'
-    } else if (type.edit) {
+    if (type.edit) {
       title = 'マイルストーンを編集しますか ?'
     } else {
       title = 'マイルストーンを削除しますか ?'
@@ -235,7 +227,7 @@ const MilestonePage = () => {
     fetchData()
   }, [])
   useEffect(() => {
-    if (!isModalType.add && !isModalType.delete && !isModalType.edit) {
+    if (!isModalType.delete && !isModalType.edit) {
       return
     }
     showModal(isModalType)
@@ -282,10 +274,7 @@ const MilestonePage = () => {
                     style={{ letterSpacing: '-0.1em' }}
                     type="primary"
                     onClick={() => {
-                      setIsModalType((preState) => ({
-                        ...preState,
-                        add: true,
-                      }))
+                      window.location.href = '/milestones/add'
                     }}
                   >
                     追加

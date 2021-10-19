@@ -76,7 +76,7 @@ body {
   }
 
   .ant-input-affix-wrapper {
-    padding: 0;
+    height: 40px;
   }
 
   .ant-input-affix-wrapper .ant-input {
@@ -109,7 +109,6 @@ body {
   }
 
   .no-border {
-
     .ant-input:hover,
     .ant-input:focus {
       border: none;
@@ -130,8 +129,8 @@ body {
 
   //Pagination
   .ant-pagination-item:hover,
-  .ant-pagination-item>a:hover,
-  .ant-pagination-item-active>a,
+  .ant-pagination-item > a:hover,
+  .ant-pagination-item-active > a,
   .ant-pagination-item-active,
   .ant-pagination-item-link:hover {
     border-color: #ffd803;
@@ -153,7 +152,8 @@ body {
     border-color: #ffd803;
   }
 
-  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+  .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+    .ant-select-selector {
     border-color: #ffd803;
   }
 
@@ -181,11 +181,12 @@ body {
     background: #a0aec0;
   }
 
-  thead[class*="ant-table-thead"] th {
+  thead[class*='ant-table-thead'] th {
     background-color: #bae8e8 !important;
   }
 
-  .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  .ant-form-item-label
+    > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
     font-family: inherit;
     font-size: 1.125rem;
     font-weight: 700;
@@ -234,7 +235,6 @@ body {
     display: table-cell;
   }
 
-
   .ant-pagination-item {
     display: table;
   }
@@ -248,7 +248,6 @@ body {
   .ant-pagination-prev:hover button {
     border-color: #ffd803;
     background-color: #ffd803;
-
   }
 
   .ant-pagination-disabled .ant-pagination-item-link,
@@ -293,15 +292,37 @@ body {
   .ant-modal-confirm-body .ant-modal-confirm-title {
     font-weight: 900;
   }
+  /* 
+  reset autofill input
+   */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgb(255, 255, 255) inset !important;
+  }
+
+  .ant-input:focus,
+  .ant-input-focused,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper-focused {
+    box-shadow: 0 0 0 3px #fffffe;
+    border-color: #ffd803;
+  }
+
+
+  .ant-modal-title {
+    font-weight: bold;
+  }
 
   .ant-table-thead > tr > th {
     font-size: 14px;
     font-weight: bold;
   } 
 
+
   .ant-btn {
     height: 40px;
-    padding: 6.4px 20px;
     font-size: 16px;
     border-radius: 5px;
   }

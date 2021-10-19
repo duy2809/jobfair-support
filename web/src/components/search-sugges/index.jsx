@@ -12,12 +12,8 @@ export default function SearchSugges({ listTask, id }) {
   const [suggestions, setSuggestions] = useState([])
   const router = useRouter()
   const getSuggestionValue = (suggestion) => suggestion.name
-  const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0))
-  const renderSuggestion = (suggestion) => (
-    <div>
-      {suggestion.name}
-    </div>
-  )
+  const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
+  const renderSuggestion = (suggestion) => <div>{suggestion.name}</div>
   const onChange = (event, { newValue }) => {
     const values = toHalfWidth(newValue)
     setValue(values)
@@ -26,7 +22,9 @@ export default function SearchSugges({ listTask, id }) {
   const getSuggestions = (value) => {
     const inputValue = value.trim().toLowerCase()
     const inputLength = inputValue.length
-    return inputLength === 0 ? [] : listTask.filter((lang) => lang.name.toLowerCase().slice(0, inputLength) === inputValue)
+    return inputLength === 0
+      ? []
+      : listTask.filter((lang) => lang.name.toLowerCase().slice(0, inputLength) === inputValue)
   }
   // eslint-disable-next-line no-shadow
   const onSuggestionsFetchRequested = ({ value }) => {
@@ -39,8 +37,7 @@ export default function SearchSugges({ listTask, id }) {
     notification[type]({
       closable: false,
       duration: 3,
-      description:
-        '該当結果が見つかりませんでした',
+      description: '該当結果が見つかりませんでした',
     })
   }
   function search() {
@@ -61,7 +58,7 @@ export default function SearchSugges({ listTask, id }) {
     onChange,
   }
   return (
-    <div className="search-sugges flex items-center">
+    <div className="search-sugges flex items-center h-10">
       <Autosuggest
         style={{ border: 'none' }}
         suggestions={suggestions}
@@ -71,7 +68,15 @@ export default function SearchSugges({ listTask, id }) {
         renderSuggestion={renderSuggestion}
         inputProps={inputProps}
       />
-      <Button style={{ height: '21' }} type="primary" onClick={search} icon={<SearchOutlined />}>検索</Button>
+      <Button
+        size="large"
+        className="flex justify-center items-center"
+        type="primary"
+        onClick={search}
+        icon={<SearchOutlined />}
+      >
+        検索
+      </Button>
     </div>
   )
 }
