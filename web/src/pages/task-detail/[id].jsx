@@ -18,6 +18,7 @@ import {
   deleteTask,
 } from '../../api/task-detail'
 import Loading from '../../components/loading'
+import BoxComment from '../../components/box-comment'
 
 function TaskDetail() {
   const router = useRouter()
@@ -420,6 +421,9 @@ function TaskDetail() {
               <div className="mx-5 mt-5">
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
+                </div>
+                <div className="mx-7">
+                  <BoxComment id={idTask} />
                 </div>
               </div>
             </div>
