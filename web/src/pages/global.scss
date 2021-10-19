@@ -70,9 +70,9 @@ body {
     font-size: 14px;
   }
 
-  .ant-input-affix-wrapper .ant-input:hover,
-  .ant-input-affix-wrapper .ant-input:focus {
-    border: 0;
+  .ant-input-affix-wrapper:not(.ant-input-affix-wrapper-disabled):hover {
+    color: #ffd803;
+    border-color: #ffd803;
   }
 
   .ant-input-affix-wrapper {
@@ -310,10 +310,14 @@ body {
     border-color: #ffd803;
   }
 
+  .ant-modal-title {
+    font-weight: bold;
+  }
+
   .ant-table-thead > tr > th {
     font-size: 14px;
     font-weight: bold;
-  } 
+  }
 
   .ant-btn {
     height: 40px;
