@@ -18,7 +18,7 @@ const BoxComment = ({ id }) => {
   const [assign, setAssign] = useState(true)
 
   const MDEditor = dynamic(
-    () => import('~/components/box-comment/editor'),
+    () => import('~/components/box-comment/editor.jsx'),
     { ssr: false },
   )
   // Modal
