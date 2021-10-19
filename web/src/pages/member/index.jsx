@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Modal, Input, Button, Empty, Tooltip, Space, notification } from 'antd'
+import {
+  Select,
+  Table,
+  Modal,
+  Input,
+  Button,
+  Empty,
+  Tooltip,
+  Space,
+  notification,
+} from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import Layout from '../../layouts/OtherLayout'
@@ -7,13 +17,13 @@ import { formatDate } from '~/utils/utils'
 import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
+import { loadingIcon } from '../../components/loading'
 import './styles.scss'
 
 function MemberList() {
   const [members, setMembers] = useState([])
   const [itemCount, setItemCount] = useState(10)
   const [filterData, setFilterData] = useState([])
-  const [user, setUser] = useState({})
   const [dataLoading, setDataLoading] = useState(false)
   const [role, setRole] = useState()
   const [pagination, setPagination] = useState({
@@ -21,9 +31,6 @@ function MemberList() {
     current: 1,
     pageSize: 10,
     showSizeChanger: false,
-  })
-  webInit().then(() => {
-    setRole(user.role)
   })
   const router = useRouter()
   const handleSelect = (value) => {
@@ -70,7 +77,7 @@ function MemberList() {
     initPagination()
     webInit().then((res) => {
       if (res.data.auth !== null) {
-        setUser(res.data.auth.user)
+        setRole(res.data.auth.user.role)
       }
     })
     MemberApi.getListMember()
@@ -190,7 +197,7 @@ function MemberList() {
       title: `${role === 'superadmin' ? 'アクション' : ''}`,
       key: 'action',
       width: `${role === 'superadmin' ? '10%' : '0%'}`,
-      render: (_text, record) => (role === 'superadmin' && (
+      render: (_text, record) => role === 'superadmin' && (
         <Space size="middle">
           <EditTwoTone
             id={record.id}
@@ -210,7 +217,7 @@ function MemberList() {
             }}
           />
         </Space>
-      )),
+      ),
     },
   ]
 
@@ -280,7 +287,7 @@ function MemberList() {
             dataSource={filterData}
             rowKey={(record) => record.id}
             onChange={handleChange}
-            loading={dataLoading}
+            loading={{ spinning: dataLoading, indicator: loadingIcon }}
             pagination={pagination}
             locale={{
               emptyText: (
