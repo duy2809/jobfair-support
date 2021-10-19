@@ -8,6 +8,7 @@ import { MemberApi } from '~/api/member'
 import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
 import './styles.scss'
+import { loadingIcon } from '../../components/loading'
 
 function MemberList() {
   const [members, setMembers] = useState([])
@@ -280,7 +281,7 @@ function MemberList() {
             dataSource={filterData}
             rowKey={(record) => record.id}
             onChange={handleChange}
-            loading={dataLoading}
+            loading={{ spinning: dataLoading, indicator: loadingIcon }}
             pagination={pagination}
             locale={{
               emptyText: (

@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { Button, Form, Input, notification, Select, Divider, Row, Col, Modal } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  notification,
+  Select,
+  Divider,
+  Row,
+  Col,
+  Modal,
+} from 'antd'
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import List from '../../../../components/jf-schedule-edit-list'
@@ -135,12 +145,12 @@ function editJobfairSchedule() {
     }
   }
 
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = () => {
     setIsError(true)
-    const { errorFields } = errorInfo
-    errorFields.forEach((itemError) => {
-      itemError.errors.forEach((error) => openNotification('error', error))
-    })
+    // const { errorFields } = errorInfo;
+    // errorFields.forEach((itemError) => {
+    //   itemError.errors.forEach((error) => openNotification("error", error));
+    // });
   }
 
   const onDeleteTemplateTask = (id) => {
@@ -199,7 +209,10 @@ function editJobfairSchedule() {
   }
   const showModal = () => {
     if (
-      !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
+      !(
+        form.isFieldTouched('jfschedule_name')
+        && form.isFieldTouched('milestone_select')
+      )
       || !!form.getFieldsError().filter(({ errors }) => errors.length).length
       || isError === true
     ) {
