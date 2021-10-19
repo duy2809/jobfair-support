@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { ReactReduxContext } from 'react-redux'
 import { Avatar, Divider, Typography, Popover } from 'antd'
+import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import './styles.scss'
 
@@ -8,6 +11,8 @@ function Comment(props) {
   const MAX_CHAR_PER_LINE = 112
   const [expanded, setExpanded] = useState(false)
   const [commentOverflow, setCommentOverflow] = useState(false)
+  const { store } = useContext(ReactReduxContext)
+  const [userId, setUserId] = useState(1)
 
   const classNames = (...classes) => classes.filter(Boolean).join(' ')
 
@@ -16,8 +21,16 @@ function Comment(props) {
   }
 
   useEffect(() => {
+    setUserId(store.getState().get('auth').get('user').get('id'))
     setCommentOverflow(props.content.length > MAX_CHAR_PER_LINE)
-  }, [commentOverflow])
+  }, [])
+
+  const editComment = () => {
+    console.log('Edit')
+  }
+  const deleteComment = () => {
+    console.log('Delete')
+  }
 
   return (
     <div className="comment">
@@ -26,13 +39,29 @@ function Comment(props) {
           <Avatar
             className="mr-4 inline-block"
             size={AVATAR_SIZE}
-            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=387&q=80"
+            src={`${process.env.APP_URL}/api/avatar/${props.author.id}`}
           />
         </div>
-        <div className="flex flex-col">
-          <div className="flex flex-1 gap-4">
-            <span className="comment__author">{props.author.name}</span>
-            <span className="comment__time">{props.time}</span>
+        <div className="flex flex-col w-full">
+          <div className="flex flex-row justify-between">
+            <div className="flex gap-4">
+              <span className="comment__author">{props.author.name}</span>
+              <span className="comment__time">
+                {moment(props.created).format('YYYY/MM/DD HH:mm:ss')}
+              </span>
+            </div>
+            <div className="mr-4" hidden={userId !== props.author.id}>
+              <EditTwoTone
+                className="border-none mx-1 text-2xl"
+                type="primary"
+                onClick={editComment}
+              />
+              <DeleteTwoTone
+                className="border-none mx-1 text-2xl"
+                type="primary"
+                onClick={deleteComment}
+              />
+            </div>
           </div>
           <div className={classNames('flex flex-1 gap-4', expanded ? 'flex-col' : 'flex-row')}>
             <span
@@ -47,11 +76,14 @@ function Comment(props) {
             <div>
               <Typography.Link className="mr-4 see-more" onClick={toggleExpanded}>
                 {/* eslint-disable-next-line no-nested-ternary */}
-                {expanded ? 'Show less' : commentOverflow ? 'Show more' : ''}
+                {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
               </Typography.Link>
-              <Popover content={props.lastEdit} trigger="hover">
-                <span className="comment__edited" hidden={!props.edited}>
-                  Edited
+              <Popover
+                content={moment(props.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
+                trigger="hover"
+              >
+                <span className="comment__edited text-gray-500 italic" hidden={!props.edited}>
+                  編集済み
                 </span>
               </Popover>
             </div>
@@ -64,7 +96,7 @@ function Comment(props) {
 }
 Comment.propTypes = {
   author: PropTypes.object.isRequired,
-  time: PropTypes.string.isRequired,
+  created: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
   edited: PropTypes.bool.isRequired,
   lastEdit: PropTypes.string.isRequired,

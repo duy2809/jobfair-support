@@ -1,3 +1,5 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
 import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
@@ -10,14 +12,11 @@ import {
   DeleteTwoTone,
 } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
-import JfLayout from '../../layouts/layout-task'
-import {
-  taskData,
-  beforeTask,
-  afterTask,
-  deleteTask,
-} from '../../api/task-detail'
-import Loading from '../../components/loading'
+import JfLayout from '~/layouts/layout-task'
+import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
+import Loading from '~/components/loading'
+import BoxComment from '~/components/box-comment'
+import CommentHistory from '~/components/comment/CommentHistory'
 
 function TaskDetail() {
   const router = useRouter()
@@ -68,42 +67,39 @@ function TaskDetail() {
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
-    await taskData(idTask)
-      .then((response) => {
-        if (response.status === 200) {
-          const data = response.data
-          setInfoTask({
-            id: data.id,
-            name: data.name,
-            categories: data.categories[0].category_name,
-            milestone: data.milestone.name,
-            status: data.status,
-            start_time: data.start_time,
-            end_time: data.end_time,
-            effort: data.template_task.effort,
-            is_day: data.template_task.is_day,
-            unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
-          })
-          setListMemberAssignee(data.users)
-          setInfoJF({
-            id: data.schedule.jobfair.id,
-            name: data.schedule.jobfair.name,
-          })
-        }
-      })
+    await taskData(idTask).then((response) => {
+      if (response.status === 200) {
+        const data = response.data
+        setInfoTask({
+          id: data.id,
+          name: data.name,
+          categories: data.categories[0].category_name,
+          milestone: data.milestone.name,
+          status: data.status,
+          start_time: data.start_time,
+          end_time: data.end_time,
+          effort: data.template_task.effort,
+          is_day: data.template_task.is_day,
+          unit: data.template_task.unit,
+          description_of_detail: data.description_of_detail,
+        })
+        setListMemberAssignee(data.users)
+        setInfoJF({
+          id: data.schedule.jobfair.id,
+          name: data.schedule.jobfair.name,
+        })
+      }
+    })
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask)
-      .then((response) => {
-        setBeforeTask(response.data.before_tasks)
-      })
+    await beforeTask(idTask).then((response) => {
+      setBeforeTask(response.data.before_tasks)
+    })
   }
-  const fetchafterTask = async () => {
-    await afterTask(idTask)
-      .then((response) => {
-        setAfterTasks(response.data.after_tasks)
-      })
+  const fetchAfterTask = async () => {
+    await afterTask(idTask).then((response) => {
+      setAfterTasks(response.data.after_tasks)
+    })
   }
   const modelDelete = () => {
     Modal.confirm({
@@ -134,7 +130,7 @@ function TaskDetail() {
     }
     fetchTaskData()
     fetchBeforeTask()
-    fetchafterTask()
+    fetchAfterTask()
     setLoading(false)
   }, [user])
   return (
@@ -145,11 +141,7 @@ function TaskDetail() {
           <div className="task-details">
             <div className="list__button">
               <div className="button__left">
-                <Button
-                  style={{ border: 'none' }}
-                  type="primary"
-                  onClick={handleBack}
-                >
+                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
                   戻る
                 </Button>
               </div>
@@ -220,16 +212,12 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -250,7 +238,7 @@ function TaskDetail() {
                       <ul className="list__member">
                         {listMemberAssignee
                           ? listMemberAssignee.map((item) => (
-                            <li className="task__chil">{`${item.name},`}</li>
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
                           ))
                           : null}
                       </ul>
@@ -341,10 +329,7 @@ function TaskDetail() {
                   </div>
                   {beforeTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-6"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
                             <li>
@@ -381,10 +366,7 @@ function TaskDetail() {
                   </div>
                   {afterTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-6"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
                           ? afterTasks.map((item) => (
                             <li>
@@ -423,7 +405,8 @@ function TaskDetail() {
                 </div>
               </div>
             </div>
-
+            <CommentHistory id={idTask} />
+            <BoxComment id={2} />
           </div>
         </JfLayout.Main>
       </JfLayout>
