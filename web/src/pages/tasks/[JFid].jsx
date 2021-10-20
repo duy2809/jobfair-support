@@ -12,6 +12,7 @@ import {
   Button,
   Space,
   notification,
+  Tag,
 } from 'antd'
 import './style.scss'
 import { useRouter } from 'next/router'
@@ -28,8 +29,9 @@ import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { jftask } from '../../api/jf-toppage'
 import { webInit } from '../../api/web-init'
-import { deleteTask } from '../../api/task-detail'
+import { deleteTask, updateManagerTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
+import { getCategorys } from '../../api/edit-task'
 
 function TaskList() {
   const router = useRouter()
@@ -55,6 +57,8 @@ function TaskList() {
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
+  const [dataCategory, setDataCategory] = useState()
+  const [editOrDL, setEditOrDL] = useState(true)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -86,8 +90,10 @@ function TaskList() {
     const data = []
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
+      const mem = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
+        mem.push({ id: dataResponse[i].users[j].id, name: dataResponse[i].users[j].name })
       }
       data.push({
         id: i + 1,
@@ -99,8 +105,11 @@ function TaskList() {
         category_name: dataResponse[i].categories[0]?.category_name,
         milestone_name: dataResponse[i].milestone.name,
         managers: manager,
+        mems: mem,
+        idCategory: dataResponse[i].categories[0].id,
       })
     }
+
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
@@ -145,18 +154,34 @@ function TaskList() {
       onClick: () => {},
     })
   }
+  const saveEditNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
+      message: '変更は正常に保存されました。',
+      onClick: () => {},
+    })
+  }
   const deletetpl = async (id) => {
-    const newList = temperaryData.filter((x) => x.idtask !== id)
-    setTemperaryData(newList)
-    await deleteTask(id)
-    saveNotification()
+    setLoading(true)
+    try {
+      await deleteTask(id).then(() => {
+        const newList = temperaryData.filter((item) => item.idtask !== id)
+        setTemperaryData(newList)
+        saveNotification()
+      })
+    } catch (error) {
+      Error(error.toString())
+    }
+
+    setLoading(false)
   }
   const modelDelete = (id) => {
     Modal.confirm({
       title: '削除してもよろしいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
-      onOk: () => {
+      onOk: async () => {
         deletetpl(id)
       },
       onCancel: () => {},
@@ -206,6 +231,105 @@ function TaskList() {
       router.push(`/task-detail/${record.idtask}`)
     },
   })
+  function tagRender(props) {
+    // eslint-disable-next-line react/prop-types
+    const { label, closable, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+      >
+        <span className="text-blue-600 icon-tag">
+          {label}
+        </span>
+      </Tag>
+    )
+  }
+  const handleSave = async (value, record, userAS) => {
+    const defaultText = value ? value.filter((item) => typeof (item) === 'string') : null
+    const defaultNumber = value ? value.filter((item) => typeof (item) === 'number') : null
+
+    const allIdMember = []
+    // eslint-disable-next-line array-callback-return
+    record.mems.map((item) => {
+      if (defaultText.includes(item.name)) {
+        allIdMember.push(item.id)
+      }
+    })
+
+    const newData = defaultNumber.concat(allIdMember)
+    const allNameMember = []
+    // eslint-disable-next-line array-callback-return
+    userAS.map((item) => {
+      if (newData.includes(item.id)) {
+        allNameMember.push(item.name)
+      }
+    })
+    const data = {
+      assignee: newData,
+    }
+    const newRecord = { ...record, managers: allNameMember }
+    const List = [...temperaryData]
+    const newList = List.map((item) => {
+      if (item.id === record.id) {
+        return { ...newRecord }
+      }
+      return item
+    })
+    setTemperaryData(newList)
+    // record.managers = data
+    await updateManagerTask(record.idtask, data)
+      .then(() => {
+        saveEditNotification()
+      })
+  }
+  const member = (managers, record) => {
+    const [show, setShow] = useState(false)
+    const [edit, setEdit] = useState(false)
+    const [memberAS, setMemberAS] = useState(null)
+    let userAS = []
+    if (dataCategory) {
+      // eslint-disable-next-line array-callback-return
+      dataCategory.map((item) => {
+        if (record.idCategory === item.id) {
+          userAS = item.users
+        }
+      })
+    }
+    return (
+      <div className="listMember">
+        {edit && editOrDL
+          ? (
+            <>
+              <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
+                {userAS.map((item) => (
+                  <Select.Option
+                    className="validate-user"
+                    key={item.name}
+                    value={item.id}
+                  >
+                    {item.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              {show ? (
+                <div className="save">
+                  <Button onClick={() => { setEdit(false); handleSave(memberAS, record, userAS); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary"><span> 保存 </span></Button>
+                  {' '}
+                </div>
+              ) : null }
+            </>
+          )
+          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</> }
+      </div>
+    )
+  }
   // columns of tables
   const columns = users === 'superadmin' || users === 'admin'
     ? [
@@ -258,7 +382,7 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '30%',
+        fixed: '20%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
@@ -266,11 +390,10 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '17%',
+        width: '27%',
         dataIndex: 'managers',
         fixed: 'left',
-        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
-        onCell: handleRow,
+        render: (managers, record) => member(managers, record),
       },
       {
         title: 'アクション',
@@ -288,6 +411,7 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
+                setEditOrDL(false)
                 modelDelete(record.idtask)
               }}
             />
@@ -329,7 +453,7 @@ function TaskList() {
       },
       {
         title: 'スターテス',
-        width: '7%',
+        width: '10%',
         dataIndex: 'status',
         fixed: 'left',
         render: (taskName) => <a>{taskName}</a>,
@@ -345,7 +469,7 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '30%',
+        fixed: '20%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
@@ -353,18 +477,23 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '17%',
+        width: '30%',
         dataIndex: 'managers',
         fixed: 'left',
-        render: (managers) => (managers ? <a>{managers.join(', ')}</a> : <span />),
         onCell: handleRow,
+        render: (managers) => <a>{managers.join(', ')}</a>,
       },
     ]
-  // data of table get from database
-
+  const fetchCTGR = async () => {
+    await getCategorys(router.query.JFid)
+      .then((response) => {
+        setDataCategory(response.data)
+      })
+  }
   useEffect(async () => {
     setLoading(true)
     initPagination()
+    fetchCTGR()
     await jftask(router.query.JFid).then((response) => {
       loadTableData(response)
     })
@@ -380,8 +509,8 @@ function TaskList() {
         setUsers(response.data.auth.user.role)
       })
       .catch((error) => Error(error.toString()))
+    setLoading(false)
   }, [])
-
   // Search data on Table
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()

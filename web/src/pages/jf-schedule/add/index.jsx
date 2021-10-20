@@ -49,7 +49,7 @@ function addJobfairSchedule() {
     notification[type]({
       message,
       description,
-      duration: 2.5,
+      duration: 3,
     })
   }
 
@@ -77,9 +77,7 @@ function addJobfairSchedule() {
             .then((res) => {
               if (res.status === 200) {
                 router.push('/schedule')
-                setTimeout(() => {
-                  openNotification('success', '変更は正常に保存されました。')
-                }, 3000)
+                openNotification('success', '変更は正常に保存されました。')
               }
             })
         }

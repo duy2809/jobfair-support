@@ -30,40 +30,7 @@ function jftoppage() {
       setLoading(false)
     })
   }
-  // const handleEdit = () => {
-  //   router.push(`/edit-jf/${idJf}`)
-  // }
-  // const saveNotification = () => {
-  //   notification.open({
-  //     icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-  //     duration: 3,
-  //     message: '正常に削除されました',
-  //     onClick: () => {},
-  //   })
-  // }
-  // const deletetpl = async () => {
-  //   await deleteJF(idJf).then((response) => {  //remove edit and delete
-  //     console.log(response.data)
-  //     saveNotification()
-  //     router.push('/jobfairs')
-  //   }).catch((error) => {
-  //     console.log(error)
-  //   })
-  // }
-  // const modelDelete = () => {
-  //   Modal.confirm({
-  //     title: '削除してもよろしいですか？',
-  //     icon: <ExclamationCircleOutlined />,
-  //     content: '',
-  //     onOk: () => {
-  //       deletetpl()
-  //     },
-  //     onCancel: () => {},
-  //     centered: true,
-  //     okText: 'はい',
-  //     cancelText: 'いいえ',
-  //   })
-  // }
+
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
     setUser(store.getState().get('auth').get('user'))
@@ -81,9 +48,7 @@ function jftoppage() {
           <div className="container">
             <div className="flex justify-between">
               <div className="title w-3/5">
-                <h3 className="title-h3">
-                  最近の更新
-                </h3>
+                <h3 className="title-h3">最近の更新</h3>
                 <NotificationsJf id={idJf} />
               </div>
               <div className="flex flex-col w-1/2 space-x-50 justify-center">
@@ -109,69 +74,6 @@ function jftoppage() {
               </div>
             </div>
           </div>
-          {/* <div className="Jf__top">
-            <div className="jf__main">
-              <div className="grid grid-cols-12">
-                <div className="col-span-7">
-                  <div className="notifi">
-                    <div className="title">
-                      <h3 className="title-h3">
-                        最近の更新
-                      </h3>
-                      <NotificationsJf id={idJf} />
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-5">
-                  <div className="flex justify-end">
-                    <div className="search__task">
-                      <div className="button__right">
-                        {role === 'superadmin' ? (
-                          <>
-                            <Button className="button__edit" style={{ border: 'none' }} type="primary" onClick={handleEdit}>
-                              <span> 編集 </span>
-                            </Button>
-                            <Button style={{ border: 'none' }} type="primary" onClick={modelDelete}>
-                              <span> 削除 </span>
-                            </Button>
-                          </>
-                        )
-                          : null}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="progress">
-
-                    <div className="flex cha justify-center ...">
-                      <div className="search__task">
-                        <SearchSugges listTask={listTask} id={idJf} />
-                      </div>
-                    </div>
-                    <div className="chart__tt">
-                      <div className="flex justify-center ...">
-                        <div className="status__global">
-                          <h3>ステータス</h3>
-                          <div className="status">
-                            <ChartStatus task={listTask} id={idJf} />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-center ...">
-                        <div className="status__global">
-                          <h3>マイルストーン</h3>
-                          <div className="status">
-                            <ChartMilestone id={idJf} />
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </JfLayout.Main>
       </JfLayout>
     </div>

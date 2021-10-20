@@ -23,7 +23,7 @@ getTemplateTasksList().then((res) => {
 
 const ItemMultipleDropdown = ({
   form,
-  label,
+  display,
   name,
   options,
   selectedItems,
@@ -40,7 +40,7 @@ const ItemMultipleDropdown = ({
   return (
     <div className="multiple-dropdown">
       <Form.Item
-        label={label}
+        noStyle
         name={name}
         // style={{ display: 'flex', flexDirection: 'column', marginBottom: '3rem' }}
         className="justify-evenly"
@@ -49,13 +49,13 @@ const ItemMultipleDropdown = ({
         <Select
           showArrow
           mode="multiple"
-          placeholder={label}
           // className="overflow-hidden w-full"
           // maxTagCount="responsive"
           defaultValue={selectedItems.map((item) => item.name)}
           onChange={onValueNameChange}
           tagRender={tagRender}
           size="large"
+          style={{ display: display ? 'none' : '' }}
         >
           {options.map((item) => (
             <Option key={item.id} value={item.name}>
@@ -122,7 +122,7 @@ export default ItemMultipleDropdown
 
 ItemMultipleDropdown.propTypes = {
   form: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
+  display: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired,
   selectedItems: PropTypes.array.isRequired,

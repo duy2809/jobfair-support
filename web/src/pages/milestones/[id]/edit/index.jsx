@@ -26,6 +26,8 @@ const EditMilestonePage = () => {
 
   useEffect(async () => {
     setId(router.query.id)
+  }, [])
+  useEffect(() => {
     getMilestone(id).then((res) => {
       setNameInput(res.data.name)
       setTimeInput(res.data.period.toString())
@@ -37,16 +39,14 @@ const EditMilestonePage = () => {
       })
       setLoading(false)
     })
-  }, [])
+  }, [id])
 
   const openNotificationSuccess = () => {
+    window.location.href = '/milestones'
     notification.success({
       message: '変更は正常に保存されました。',
-      duration: 0,
+      duration: 3,
     })
-    setTimeout(() => {
-      window.location.href = '/milestones'
-    }, 3000)
   }
 
   const onValueNameChange = (e) => {
@@ -119,6 +119,7 @@ const EditMilestonePage = () => {
         ) {
           notification.error({
             message: 'このマイルストーン名は存在しています',
+            duration: 3,
           })
         }
       })

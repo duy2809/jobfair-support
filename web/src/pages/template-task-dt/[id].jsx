@@ -33,8 +33,12 @@ function templatetTaskDt() {
     await templateTask(idTplt)
       .then((response) => {
         setName(response.data.name)
-        setCategory(response.data.categories[0].category_name)
-        setMilestone(response.data.milestone.name)
+        if (response.data.categories[0]) {
+          setCategory(response.data.categories[0].category_name)
+        }
+        if (response.data.milestone) {
+          setMilestone(response.data.milestone.name)
+        }
         setEf(response.data.effort)
         setIsDay(response.data.is_day)
         setUnit(response.data.unit)
@@ -67,8 +71,8 @@ function templatetTaskDt() {
   const deletetpl = async () => {
     await deleteTptt(idTplt)
       .then(async () => {
-        await router.push('/template-tasks')
-        await saveNotification()
+        router.push('/template-tasks')
+        saveNotification()
       })
   }
   const modelDelete = () => {

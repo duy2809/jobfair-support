@@ -17,7 +17,7 @@ const ResetPage = () => {
     notification[type]({
       message,
       description,
-      duration: 2.5,
+      duration: 3,
     })
   }
 
@@ -42,10 +42,8 @@ const ResetPage = () => {
     try {
       const response = await updatePassword(data)
       if (response.request.status === 200) {
-        setTimeout(() => {
-          router.push('/')
-          openNotification('success', 'パスワードを正常に変更しました')
-        }, 2500)
+        router.push('/')
+        openNotification('success', 'パスワードを正常に変更しました')
       }
     } catch (error) {
       if (error.request.status === 400) {
@@ -64,8 +62,8 @@ const ResetPage = () => {
       <Loading loading={isLoading} overlay={isLoading} />
       <Layout>
         <Layout.Main>
-          <div className="h-screen flex flex-col items-center pt-10 bg-white">
-            <img src="./logo.png" className="w-24" alt="logo" />
+          <div className="h-screen flex flex-col items-center bg-white pt-32">
+            <img src="/images/logo.png" alt="logo" className="w-48" />
             <p className="text-3xl my-8">ログインパスワード変更</p>
             <Form
               form={form}

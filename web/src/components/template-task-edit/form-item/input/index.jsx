@@ -2,17 +2,11 @@ import React from 'react'
 import { Form, Input } from 'antd'
 import './style.scss'
 import PropTypes from 'prop-types'
-import { getTemplateTasksList } from '../../../../api/template-task-edit'
+import * as Extensions from '../../../../utils/extensions'
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
-let tasksList = []
-getTemplateTasksList().then((res) => {
-  tasksList = [...res.data]
-})
-
-const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
-  const specialCharRegex = new RegExp('[@!?$%]')
+const ItemInput = ({ display, form, name, setCheckSpace, setInput }) => {
   const onValueNameChange = (e) => {
     setCheckSpace(false)
     setInput(e.target.value)
@@ -20,44 +14,40 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
     temp[name] = toHalfWidth(e.target.value)
     form.setFieldsValue(temp)
   }
+  const templateTaskNameValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+
+    if (value.match(Extensions.Reg.specialCharacter)) {
+      return Promise.reject(new Error('使用できない文字が含まれています'))
+    }
+    // if (isTemplateExisted === true) {
+    //   return Promise.reject(new Error('da ton tai'))
+    // }
+    if (value.match(Extensions.Reg.onlyNumber)) {
+      return Promise.reject(new Error('数字のみを含めることはできない'))
+    }
+
+    return Promise.resolve()
+  }
   return (
     <Form.Item
-      label={label}
+      noStyle
       labelAlign="left"
       name={name}
       className="justify-evenly"
       rules={[
         {
-          required: true,
-          message: 'この項目は必須です。',
+          validator: templateTaskNameValidator,
         },
-        () => ({
-          validator(_, value) {
-            if (specialCharRegex.test(value)) {
-              setCheckSpace(true)
-              return Promise.reject(
-                new Error('使用できない文字が含まれています'),
-              )
-            }
-            const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-            const id = `${temp[1]}`
-            if ((tasksList.find((item) => item.name === value)) !== undefined) {
-              if ((tasksList.find((item) => item.name === value)).id !== Number(id)) {
-                return Promise.reject(
-                  new Error('このマイルストーン名は存在しています'),
-                )
-              }
-            }
-
-            return Promise.resolve()
-          },
-        }),
       ]}
     >
       <Input
+        style={{ display: display ? 'none' : '' }}
         type="text"
         onChange={onValueNameChange}
-        placeholder={label}
+        placeholder="テンプレートタスク名l"
       />
     </Form.Item>
   )
@@ -66,8 +56,8 @@ const ItemInput = ({ form, label, name, setCheckSpace, setInput }) => {
 export default ItemInput
 
 ItemInput.propTypes = {
+  display: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   setCheckSpace: PropTypes.func.isRequired,
   setInput: PropTypes.func.isRequired,

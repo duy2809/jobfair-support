@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }) => {
+const ItemDropdow = ({ form, display, name, setCheckSpace, data, setInput, setId }) => {
   const [fieldName, setFieldName] = useState('')
   const onValueNameChange = (value) => {
     setCheckSpace(false)
@@ -27,20 +27,30 @@ const ItemDropdow = ({ form, label, name, setCheckSpace, data, setInput, setId }
       setFieldName('name')
     }
   }, [])
+  const DropdownValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+
+    return Promise.resolve()
+  }
   return (
     <Form.Item
-      label={label}
+      noStyle
       labelAlign="left"
       name={name}
-      className="justify-evenly"
       rules={[
         {
-          required: true,
-          message: 'この項目は必須です。',
+          validator: DropdownValidator,
         },
       ]}
     >
-      <Select onChange={onValueNameChange} placeholder={label} size="large">
+      <Select
+        onChange={onValueNameChange}
+        placeholder="カテゴリ"
+        size="large"
+        style={{ display: display ? 'none' : '' }}
+      >
         {data.map((item) => (
           <Option key={item.id} value={item[fieldName]}>
             {item[fieldName]}
@@ -55,7 +65,7 @@ export default ItemDropdow
 
 ItemDropdow.propTypes = {
   form: PropTypes.object.isRequired,
-  label: PropTypes.string.isRequired,
+  display: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   setCheckSpace: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,

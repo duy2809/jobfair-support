@@ -79,6 +79,7 @@ class DatabaseSeeder extends Seeder
         Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => 'TC業務']);
         Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => '企業担当']);
         Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => '管理者']);
+        Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => 'レビュアー']);
 
         // create users
         User::factory(30)->create();

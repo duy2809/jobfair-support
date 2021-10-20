@@ -1,54 +1,73 @@
 .TaskList {
-      thead[class*="ant-table-thead"] th {
-            background-color: #bae8e8 !important;
-      }
-      .ant-input:hover,
-      .ant-input:focus {
-            border: none;
-      }
-      .active {
-            border-radius: 15px !important;
-            border-color: #ffd803 !important;
-            background-color: #ffd803 !important;
-      }
+  thead[class*="ant-table-thead"] th {
+    background-color: #bae8e8 !important;
+  }
+  .ant-input:hover,
+  .ant-input:focus {
+    border: none;
+  }
+  .active {
+    border-radius: 15px !important;
+    border-color: #ffd803 !important;
+    background-color: #ffd803 !important;
+  }
 
-      .ant-btn-text:hover,
-      .ant-btn-text:focus {
-            border-radius: 15px !important;
-            border-color: #ffd803 !important;
-            background-color: #ffd803 !important;
-      }
-      .label-sl{
-            display: flex;
-            flex-direction: column;
-      }
-      h1 {
-            font-size: 40px;
-            margin-left: 0px;
-            margin-bottom: 0px;
-            color: #272343;
-      }
-      .anticon {
-            font-size:16px !important;
-      }
-      .icon {
-        font-size: 18px !important;
-        font-weight: 600;
-        :hover {
-            color: #ffd803;
-        }
+  .ant-btn-text:hover,
+  .ant-btn-text:focus {
+    border-radius: 15px !important;
+    border-color: #ffd803 !important;
+    background-color: #ffd803 !important;
+  }
+  .label-sl {
+    display: flex;
+    flex-direction: column;
+  }
+  h1 {
+    font-size: 40px;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    color: #272343;
+  }
+  .listMember {
+    .anticon {
+      font-size: 11px !important;
     }
-    .searchAdd{
-          display: flex;
-          align-items: center;
+  }
+  .anticon {
+    font-size: 16px !important;
+  }
+
+  .icon {
+    font-size: 18px !important;
+    font-weight: 600;
+    :hover {
+      color: #ffd803;
     }
-    .ant-btn:hover,
-    .ant-btn:focus {
-      color: black;
-      border-color: #d9d9d9;
-    }
-    .ant-btn
-    {
-      color: black;
-    }
+  }
+  .searchAdd {
+    display: flex;
+    align-items: center;
+  }
+  .ant-btn:hover,
+  .ant-btn:focus {
+    color: black;
+    border-color: #d9d9d9;
+  }
+  .ant-btn {
+    color: black;
+  }
+  .demo-option-label-item > span {
+    margin-right: 6px;
+  }
+  .save {
+    width: 100%;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .ant-tag {
+    display: flex;
+    align-items: center;
+  }
 }

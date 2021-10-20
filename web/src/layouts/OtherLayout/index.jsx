@@ -17,7 +17,7 @@ const Otherlayout = ({ children }) => {
           <Navbar />
           <Content
             style={{
-              margin: '20px 16px 45px 16px',
+              margin: '20px 16px 20px 16px',
               padding: 24,
               minHeight: 280,
               backgroud: '#fff',

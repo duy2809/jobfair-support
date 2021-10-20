@@ -6,7 +6,7 @@ const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
-const Effort = ({ form, unitData, isDayData, setCheckSpace, setInput, setUnit, setIsDay }) => {
+const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, setUnit, setIsDay }) => {
   const numberInputValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -37,20 +37,18 @@ const Effort = ({ form, unitData, isDayData, setCheckSpace, setInput, setUnit, s
   }
   const onValueUnitChange = (value) => {
     setCheckSpace(false)
-    setUnit(unitData.find((o) => o.name === value).submit)
+    setUnit(unitData.find((o) => o.name === value).name)
     form.setFieldsValue({
       unit: toHalfWidth(value),
     })
   }
   return (
     <Form.Item
-      label="工数"
+      noStyle
       name="effort"
       labelAlign="left"
-      className="justify-evenly"
       rules={[
         {
-          required: true,
           // message: 'この項目は必須です。',
           validator: numberInputValidator,
         },
@@ -75,7 +73,10 @@ const Effort = ({ form, unitData, isDayData, setCheckSpace, setInput, setUnit, s
         // }),
       ]}
     >
-      <div className="flex flex-row justify-between items-center ">
+      <div
+        className="flex flex-row justify-between items-center "
+        style={{ display: display ? 'none' : '' }}
+      >
         <Form.Item name="effort" className=" w-1/4 h-full max-w-xs flex-1 pr-5">
           <Input size="large" type="text" placeholder="" onChange={onValueNameChange} />
         </Form.Item>
@@ -119,6 +120,7 @@ export default Effort
 
 Effort.propTypes = {
   form: PropTypes.object.isRequired,
+  display: PropTypes.bool.isRequired,
   unitData: PropTypes.array.isRequired,
   isDayData: PropTypes.array.isRequired,
   setCheckSpace: PropTypes.func.isRequired,

@@ -104,6 +104,7 @@
   }
   .ant-layout-content {
     min-height: 100vh;
+    height: fit-content;
   }
 
   .ant-layout-sider,
@@ -121,8 +122,8 @@
     width: 80px !important;
   }
   .Jf__header {
-    padding: 20px 40px;
     display: flex;
+    height: 80px;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 30px;
