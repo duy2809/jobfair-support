@@ -166,7 +166,7 @@ function TaskList() {
     setLoading(true)
     try {
       await deleteTask(id).then(() => {
-        const newList = temperaryData.filter((x) => x.idtask !== id)
+        const newList = temperaryData.filter((item) => item.idtask !== id)
         setTemperaryData(newList)
         saveNotification()
       })
@@ -252,23 +252,23 @@ function TaskList() {
     )
   }
   const handleSave = async (value, record, userAS) => {
-    const defaultText = value ? value.filter((a) => typeof (a) === 'string') : null
-    const defaultNumber = value ? value.filter((a) => typeof (a) === 'number') : null
+    const defaultText = value ? value.filter((item) => typeof (item) === 'string') : null
+    const defaultNumber = value ? value.filter((item) => typeof (item) === 'number') : null
 
     const allIdMember = []
     // eslint-disable-next-line array-callback-return
-    record.mems.map((a) => {
-      if (defaultText.includes(a.name)) {
-        allIdMember.push(a.id)
+    record.mems.map((item) => {
+      if (defaultText.includes(item.name)) {
+        allIdMember.push(item.id)
       }
     })
 
     const newData = defaultNumber.concat(allIdMember)
     const allNameMember = []
     // eslint-disable-next-line array-callback-return
-    userAS.map((a) => {
-      if (newData.includes(a.id)) {
-        allNameMember.push(a.name)
+    userAS.map((item) => {
+      if (newData.includes(item.id)) {
+        allNameMember.push(item.name)
       }
     })
     const data = {
