@@ -33,11 +33,10 @@ function templatetTaskDt() {
     await templateTask(idTplt)
       .then((response) => {
         setName(response.data.name)
-        if (response.data.categories[0])
-        {
+        if (response.data.categories[0]) {
           setCategory(response.data.categories[0].category_name)
         }
-        if(response.data.milestone) {
+        if (response.data.milestone) {
           setMilestone(response.data.milestone.name)
         }
         setEf(response.data.effort)

@@ -246,8 +246,11 @@ const EditTemplateTaskPage = () => {
     }
     return true
   }
+  const onFinishFail = () => {
+    setIsPreview(false)
+  }
   const onPreview = () => {
-    if (checkIsFormInputNotEmpty()) {
+    if (checkIsFormInputNotEmpty) {
       setIsPreview(true)
       const data = {
         name: templateTaskNameInput,
@@ -279,6 +282,7 @@ const EditTemplateTaskPage = () => {
                   span: 16,
                 }}
                 className="space-y-12 w-5/6"
+                onFinishFailed={onFinishFail}
               >
                 <div className="grid grid-cols-2">
                   <div className="col-span-1 ml-5 2xl:ml-8">
