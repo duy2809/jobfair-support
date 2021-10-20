@@ -11,7 +11,7 @@ import * as Extensions from '../../../../utils/extensions'
 
 const EditMember = ({ data }) => {
   const [form] = Form.useForm()
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  // const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalCancelVisible, setIsModalCancelVisible] = useState(false)
   const [emailInput, setEmailInput] = useState(data.user.email)
   const [nameInput, setNameInput] = useState(data.user.name)
@@ -55,8 +55,8 @@ const EditMember = ({ data }) => {
 
   const handleOk = () => {
     setLoading(true)
-    setIsModalVisible(false)
-    setIsModalCancelVisible(false)
+    // setIsModalVisible(false)
+    // setIsModalCancelVisible(false)
     MemberApi.updateMember(id, {
       name: nameInput,
       email: emailInput,
@@ -79,22 +79,22 @@ const EditMember = ({ data }) => {
       })
   }
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
+  // const handleCancel = () => {
+  //   setIsModalVisible(false)
+  // }
 
   const handleClick = (e) => {
     e.preventDefault()
     router.push(`/member/${data.user.id}`)
   }
 
-  const showModal = () => {
-    if (
-      form.getFieldsError().filter(({ errors }) => errors.length).length === 0
-    ) {
-      setIsModalVisible(true)
-    }
-  }
+  // const showModal = () => {
+  //   if (
+  //     form.getFieldsError().filter(({ errors }) => errors.length).length === 0
+  //   ) {
+  //     setIsModalVisible(true)
+  //   }
+  // }
 
   const showCancelModal = () => {
     setIsModalCancelVisible(true)
@@ -175,18 +175,6 @@ const EditMember = ({ data }) => {
                 />
               </Form.Item>
 
-              <Modal
-                title="メンバ編集"
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                cancelText="いいえ"
-                okText="はい"
-                centered
-              >
-                <p className="mb-5">このまま保存してもよろしいですか？ </p>
-              </Modal>
-
               <Form.Item
                 name="categories"
                 label={(
@@ -247,7 +235,7 @@ const EditMember = ({ data }) => {
                     size="large"
                     className="ml-4"
                     type="primary"
-                    onClick={showModal}
+                    onClick={handleOk}
                   >
                     保存
                   </Button>
