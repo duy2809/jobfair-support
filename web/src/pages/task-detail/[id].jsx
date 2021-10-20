@@ -428,6 +428,9 @@ function TaskDetail() {
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
                 </div>
+                <div className="mx-7">
+                  <BoxComment id={idTask} />
+                </div>
               </div>
             </div>
             <CommentHistory id={idTask} />

@@ -8,7 +8,7 @@
         margin-top:20px;
     }
     .pos-left {
-        width: 70%;
+        width: 66%;
         .button_link{
             padding: 0 ;
             margin: 0;
@@ -58,15 +58,20 @@
         margin-left: -4px;
       }
     .button_cancel {
-        background-color: white !important;
-        border: 1px solid rgb(224, 222, 222) !important;
+        background-color: white;
+        border: 1px solid rgb(224, 222, 222);
         padding-left: 18px;
       }
     .button_preview {
         background-color: #bae8e8;
-        border: 1px solid rgb(224, 222, 222) !important;
+        border: 1px solid rgb(224, 222, 222);
         padding-left: 18px;
     }
+
+    .button_save:hover {
+        color: #ffd803 !important;
+        border: 1px solid #ffd803 !important;
+      }
 
     .ant-tag {
         display: flex;
@@ -80,12 +85,12 @@
     }
 
     .button_save{
-        padding-right: 2px;
+        padding:0px 24px;
     }
 
     .ant-select-selector,
     .ant-btn {
-        height: 38px;
+        height: 38px!important;
     }
     .anticon.anticon-link > svg{
         font-size: 12px;
@@ -98,4 +103,5 @@
       .w-md-editor-toolbar {
         height: 40px !important;
       }
+   
 }
