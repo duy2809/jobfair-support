@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Modal, notification } from 'antd'
+import { Form, Button, notification, Tag, Tooltip, Space } from 'antd'
 import dynamic from 'next/dynamic'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import ItemInput from '../../../../components/template-task-edit/form-item/input'
@@ -17,6 +17,7 @@ import {
   updateTemplateTask,
   getTemplateTasksList,
 } from '../../../../api/template-task-edit'
+import MarkDownView from '../../../../components/markDownView'
 
 const MDEditor = dynamic(
   // eslint-disable-next-line import/no-unresolved
@@ -42,7 +43,7 @@ getTemplateTasksList().then((res) => {
 
 const EditTemplateTaskPage = () => {
   const [categoryId, setCategoryId] = useState(0)
-  const [milestoneId, setMilestoneId] = useState(0)
+  const [milestoneId, setMilestoneId] = useState()
   const [isDay, setIsDay] = useState(0)
   const [unit, setUnit] = useState('')
   const [description, setDescription] = useState('')
@@ -59,7 +60,7 @@ const EditTemplateTaskPage = () => {
   const [effortNumber, setEffortNumber] = useState('')
   const [form] = Form.useForm()
   const [checkSpace, setCheckSpace] = useState(false)
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  // const [isModalVisible, setIsModalVisible] = useState(false)
 
   const fetchTemplateTask = async (id) => {
     await getTemplateTask(id).then((res) => {
@@ -76,7 +77,11 @@ const EditTemplateTaskPage = () => {
       setMilestoneId(res.data.milestone.id)
       setDescription(res.data.description_of_detail)
       setEffortNumber(res.data.effort)
-      setUnit(res.data.unit)
+      if (res.data.unit === 'students') {
+        setUnit('学生数')
+      } else {
+        setUnit('企業数')
+      }
       setIsDay(res.data.is_day)
 
       form.setFieldsValue({
@@ -85,7 +90,7 @@ const EditTemplateTaskPage = () => {
         milestone: res.data.milestone.name,
         description: res.data.description_of_detail,
         effort: res.data.effort,
-        unit: res.data.unit,
+        unit,
         is_day: isDayData[res.data.is_day].name,
       })
     })
@@ -187,7 +192,7 @@ const EditTemplateTaskPage = () => {
   // }
 
   const handleOk = () => {
-    setIsModalVisible(false)
+    // setIsModalVisible(false)
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     const submitPrevTasks = []
@@ -221,9 +226,43 @@ const EditTemplateTaskPage = () => {
         // });
       })
   }
+  // const handleCancel = () => {
+  //   setIsModalVisible(false)
+  // }
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const [isPreview, setIsPreview] = useState(false)
+  const [dataPreview, setDataPreview] = useState([])
+  const checkIsFormInputNotEmpty = () => {
+    // get all input values .
+    const inputValues = form.getFieldsValue()
+    //  return type :[]
+    const inputs = Object.values(inputValues)
 
-  const handleCancel = () => {
-    setIsModalVisible(false)
+    for (let i = 0; i < inputs.length; i += 1) {
+      const element = inputs[i]
+      if (!element) {
+        return false
+      }
+    }
+    return true
+  }
+  const onFinishFail = () => {
+    setIsPreview(false)
+  }
+  const onPreview = () => {
+    if (checkIsFormInputNotEmpty) {
+      setIsPreview(true)
+      const data = {
+        name: templateTaskNameInput,
+        description_of_detail: description,
+        milestone: milestoneInput,
+        is_day: isDayData[isDay].name,
+        unit,
+        effort: effortNumber,
+        category: categoryInput,
+      }
+      setDataPreview(data)
+    }
   }
   return (
     <div>
@@ -243,89 +282,198 @@ const EditTemplateTaskPage = () => {
                   span: 16,
                 }}
                 className="space-y-12 w-5/6"
+                onFinishFailed={onFinishFail}
               >
                 <div className="grid grid-cols-2">
-                  <div className="col-span-1 mx-4">
-                    <ItemInput
-                      form={form}
+                  <div className="col-span-1 ml-5 2xl:ml-8">
+                    <Form.Item
                       label="テンプレートタスク名"
-                      name="templateTaskName"
-                      setCheckSpace={setCheckSpace}
-                      setInput={setTemplateTaskNameInput}
-                    />
-                  </div>
-                  <div className="col-span-1 mx-4">
-                    <ItemDropdow
-                      form={form}
-                      label="カテゴリ"
-                      name="category"
-                      setCheckSpace={setCheckSpace}
-                      data={categoryData}
-                      setInput={setCategoryInput}
-                      setId={setCategoryId}
-                    />
-                  </div>
-                  <div className="col-span-1 mx-4">
-                    <ItemDropdow
-                      form={form}
-                      label="マイルストーン"
-                      name="milestone"
-                      setCheckSpace={setCheckSpace}
-                      data={milestoneData}
-                      setInput={setMilestoneInput}
-                      setId={setMilestoneId}
-                    />
-                  </div>
-                  <div className="col-span-1 mx-4">
-                    <Modal
-                      title="マイルストーン編集"
-                      visible={isModalVisible}
-                      onOk={handleOk}
-                      onCancel={handleCancel}
-                      cancelText="いいえ"
-                      okText="はい"
-                      centered
+                      required={!isPreview}
                     >
-                      <p className="mb-5">このまま保存してもよろしいですか？ </p>
-                    </Modal>
-
-                    <Effort
-                      form={form}
-                      unitData={unitData}
-                      isDayData={isDayData}
-                      setCheckSpace={setCheckSpace}
-                      setInput={setEffortNumber}
-                      setUnit={setUnit}
-                      setIsDay={setIsDay}
-                    />
+                      <ItemInput
+                        form={form}
+                        name="templateTaskName"
+                        setCheckSpace={setCheckSpace}
+                        setInput={setTemplateTaskNameInput}
+                        display={isPreview}
+                      />
+                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.name}</p>
+                    </Form.Item>
                   </div>
-                  <div className="col-span-1 mx-4">
-                    <ItemMultipleDropdown
-                      form={form}
-                      label="前のタスク"
-                      name="prevTasks"
-                      options={tasks1}
-                      selectedItems={prevTasks}
-                      setSelectedItems={setPrevTasks}
-                    />
+                  <div className="col-span-1 ml-8">
+                    <Form.Item label="カテゴリ" required={!isPreview}>
+                      <ItemDropdow
+                        form={form}
+                        name="category"
+                        setCheckSpace={setCheckSpace}
+                        data={categoryData}
+                        setInput={setCategoryInput}
+                        setId={setCategoryId}
+                        display={isPreview}
+                      />
+                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.category}</p>
+                    </Form.Item>
                   </div>
-                  <div className="col-span-1 mx-4">
-                    <ItemMultipleDropdown
-                      form={form}
-                      label="次のタスク"
-                      name="nextTasks"
-                      options={tasks2}
-                      selectedItems={nextTasks}
-                      setSelectedItems={setNextTasks}
-                    />
+                  <div className="col-span-1 ml-8">
+                    <Form.Item label="マイルストーン" required={!isPreview}>
+                      <ItemDropdow
+                        form={form}
+                        name="milestone"
+                        setCheckSpace={setCheckSpace}
+                        data={milestoneData}
+                        setInput={setMilestoneInput}
+                        setId={setMilestoneId}
+                        display={isPreview}
+                      />
+                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.milestone}</p>
+                    </Form.Item>
+                  </div>
+                  <div className="col-span-1 ml-8">
+                    <Form.Item label="工数" required={!isPreview}>
+                      <Effort
+                        form={form}
+                        unitData={unitData}
+                        isDayData={isDayData}
+                        setCheckSpace={setCheckSpace}
+                        setInput={setEffortNumber}
+                        setUnit={setUnit}
+                        setIsDay={setIsDay}
+                        display={isPreview}
+                      />
+                      <p style={{ display: isPreview ? '' : 'none' }}>
+                        {dataPreview.effort}
+                        {' '}
+                        &nbsp;
+                        {' '}
+                        {dataPreview.is_day}
+                        /
+                        {dataPreview.unit}
+                      </p>
+                    </Form.Item>
+                  </div>
+                  <div className="col-span-1 ml-8">
+                    <Form.Item label="前のタスク">
+                      <ItemMultipleDropdown
+                        form={form}
+                        name="prevTasks"
+                        options={tasks1}
+                        selectedItems={prevTasks}
+                        setSelectedItems={setPrevTasks}
+                        display={isPreview}
+                      />
+                      {prevTasks
+                        ? (
+                          <ul
+                            className="list__task col-span-2"
+                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                          >
+                            {prevTasks.map((element) => (
+                              <li className="task__chil">
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: '5px',
+                                    paddingBottom: '3px',
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={element.name}>
+                                    <div className="inline-block text-blue-600 whitespace-nowrap">
+                                      {truncate(element.name)}
+                                    </div>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <ul
+                            className="list__task col-span-2"
+                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                          />
+                        )}
+                    </Form.Item>
+                  </div>
+                  <div className="col-span-1 ml-8">
+                    <Form.Item label="次のタスク">
+                      <ItemMultipleDropdown
+                        form={form}
+                        name="nextTasks"
+                        options={tasks2}
+                        selectedItems={nextTasks}
+                        setSelectedItems={setNextTasks}
+                        display={isPreview}
+                      />
+                      {nextTasks
+                        ? (
+                          <ul
+                            className="list__task col-span-2"
+                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                          >
+                            {nextTasks.map((element) => (
+                              <li className="task__chil">
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: '5px',
+                                    paddingBottom: '3px',
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={element.name}>
+                                    <div className="inline-block text-blue-600 whitespace-nowrap">
+                                      {truncate(element.name)}
+                                    </div>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <ul
+                            className="list__task col-span-2"
+                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
+                          />
+                        )}
+                    </Form.Item>
                   </div>
                 </div>
-                <div className="pr-8 pl-12 mb-2">
+                <div className="mr-4 2xl:mr-10 pl-12 mb-2" style={{ display: isPreview ? 'none' : '' }}>
                   <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={description} onChange={setDescription} />
                 </div>
+                <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
+                  <MarkDownView source={description} />
+                </div>
                 <Form.Item className="justify-end">
-                  <div className="submit-btn flex justify-end pr-1">
+                  <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
                     <CancelEditTemplateTask id={pathId} />
+                    <Button
+                      className="preview_btn"
+                      htmlType="submit"
+                      onClick={() => {
+                        onPreview()
+                      }}
+                      style={{ letterSpacing: '-1px' }}
+                    >
+                      プレビュー
+                    </Button>
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="text-base mr-5 2xl:mr-10"
+                      onClick={handleOk}
+                    >
+                      <span> 保存 </span>
+                    </Button>
+                  </Space>
+                  <Space style={{ display: isPreview ? '' : 'none' }} size={20} className="flex place-content-end mr-8">
+                    <Button
+                      htmlType="button"
+                      onClick={() => {
+                        setIsPreview(false)
+                      }}
+                      style={{ letterSpacing: '-1px' }}
+                    >
+                      編集
+                    </Button>
                     <Button
                       type="primary"
                       htmlType="submit"
@@ -334,7 +482,7 @@ const EditTemplateTaskPage = () => {
                     >
                       <span> 保存 </span>
                     </Button>
-                  </div>
+                  </Space>
                 </Form.Item>
               </Form>
             </div>

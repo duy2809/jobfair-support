@@ -28,7 +28,6 @@
   }
   .ant-radio-group {
     display: flex !important;
-    margin-right: 10px !important;
   }
   // .ant-radio-button-wrapper:not(:last-child) {
   //   margin-right: 10px !important;
@@ -58,6 +57,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-right: 10px !important;
   }
   .ant-radio {
     height: 40px !important;
