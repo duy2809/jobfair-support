@@ -11,5 +11,7 @@ class VerifyCsrfToken extends Middleware
      *
      * @var array
      */
-    protected $except = [];
+    protected $except = [
+        'http://jobfair.local:8000/api/import'
+    ];
 }

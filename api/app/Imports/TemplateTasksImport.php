@@ -16,11 +16,11 @@ class TemplateTasksImport implements ToModel
     {
         return new TemplateTask([
             'name' => $row[0],
-            'description' => $row[1],
-            'milestond_id' => $row[2],
-            'is_day' => $row[3],
-            'unit' => $row[4],
-            'effort' => $row[5],
+            'description_of_detail' => $row[2],
+            'milestonn_id' => $row[3],
+            'is_day' => $row[4],
+            'unit' => $row[5],
+            'effort' => $row[6],
 
         ]);
     }

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\TemplateTasksImport;
+use App\Imports\MultipleImport;
 
-class UserController extends Controller
+class ImportController extends Controller
 {
     /**
     * @return \Illuminate\Support\Collection
@@ -20,8 +20,11 @@ class UserController extends Controller
     */
     public function fileImport(Request $request) 
     {
-        Excel::import(new UsersImport, $request->file('file')->store('temp'));
-        return back();
+        $path1 = $request->file('file')->store('temp'); 
+        $path=storage_path('app').'/'.$path1; 
+        Excel::import(new MultipleImport, $path);
+        return response()->json(1);
+        
     }
 
     /**
@@ -29,6 +32,6 @@ class UserController extends Controller
     */
     public function fileExport() 
     {
-        return Excel::download(new UsersExport, 'users-collection.xlsx');
+        return Excel::download(new TemplateTasksImport, 'users-collection.xlsx');
     }    
 }
