@@ -58,6 +58,7 @@ function TaskList() {
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
+  const [editOrDL, setEditOrDL] = useState(true)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -153,18 +154,34 @@ function TaskList() {
       onClick: () => {},
     })
   }
+  const saveEditNotification = () => {
+    notification.open({
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+      duration: 3,
+      message: '変更は正常に保存されました。',
+      onClick: () => {},
+    })
+  }
   const deletetpl = async (id) => {
-    const newList = temperaryData.filter((x) => x.idtask !== id)
-    setTemperaryData(newList)
-    await deleteTask(id)
-    saveNotification()
+    setLoading(true)
+    try {
+      await deleteTask(id).then(() => {
+        const newList = temperaryData.filter((x) => x.idtask !== id)
+        setTemperaryData(newList)
+        saveNotification()
+      })
+    } catch (error) {
+      Error(error.toString())
+    }
+
+    setLoading(false)
   }
   const modelDelete = (id) => {
     Modal.confirm({
       title: '削除してもよろしいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
-      onOk: () => {
+      onOk: async () => {
         deletetpl(id)
       },
       onCancel: () => {},
@@ -234,9 +251,10 @@ function TaskList() {
       </Tag>
     )
   }
-  const handleSave = async (value, record) => {
-    const defaultText = value.filter((a) => typeof (a) === 'string')
-    const defaultNumber = value.filter((a) => typeof (a) === 'number')
+  const handleSave = async (value, record, userAS) => {
+    const defaultText = value ? value.filter((a) => typeof (a) === 'string') : null
+    const defaultNumber = value ? value.filter((a) => typeof (a) === 'number') : null
+
     const m = []
     // eslint-disable-next-line array-callback-return
     record.mems.map((a) => {
@@ -244,17 +262,36 @@ function TaskList() {
         m.push(a.id)
       }
     })
+
     const newData = defaultNumber.concat(m)
+    const n = []
+    // eslint-disable-next-line array-callback-return
+    userAS.map((a) => {
+      if (newData.includes(a.id)) {
+        n.push(a.name)
+      }
+    })
     const data = {
       assignee: newData,
     }
+    const newRecord = { ...record, managers: n }
+    const List = [...temperaryData]
+    const newList = List.map((item) => {
+      if (item.id === record.id) {
+        return { ...newRecord }
+      }
+      return item
+    })
+    setTemperaryData(newList)
+    // record.managers = data
     await updateManagerTask(record.idtask, data)
       .then(() => {
-        saveNotification()
+        saveEditNotification()
       })
   }
   const member = (managers, record) => {
     const [show, setShow] = useState(false)
+    const [edit, setEdit] = useState(false)
     const [memberAS, setMemberAS] = useState(null)
     let userAS = []
     if (dataCategory) {
@@ -267,23 +304,29 @@ function TaskList() {
     }
     return (
       <div className="listMember">
-        <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
-          {userAS ? userAS.map((item) => (
-            <Select.Option
-              className="validate-user"
-              key={item.id}
-              value={item.id}
-            >
-              {item.name}
-            </Select.Option>
-          )) : null}
-        </Select>
-        {show ? (
-          <div className="save">
-            <Button onClick={() => { handleSave(memberAS, record); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary">save</Button>
-            {' '}
-          </div>
-        ) : null }
+        {edit && editOrDL
+          ? (
+            <>
+              <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
+                {userAS.map((item) => (
+                  <Select.Option
+                    className="validate-user"
+                    key={item.name}
+                    value={item.id}
+                  >
+                    {item.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              {show ? (
+                <div className="save">
+                  <Button onClick={() => { setEdit(false); handleSave(memberAS, record, userAS); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary"><span> 保存 </span></Button>
+                  {' '}
+                </div>
+              ) : null }
+            </>
+          )
+          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</> }
       </div>
     )
   }
@@ -368,6 +411,7 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
+                setEditOrDL(false)
                 modelDelete(record.idtask)
               }}
             />
@@ -409,7 +453,7 @@ function TaskList() {
       },
       {
         title: 'スターテス',
-        width: '7%',
+        width: '10%',
         dataIndex: 'status',
         fixed: 'left',
         render: (taskName) => <a>{taskName}</a>,
@@ -425,7 +469,7 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '30%',
+        fixed: '20%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
@@ -433,10 +477,11 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '17%',
+        width: '30%',
         dataIndex: 'managers',
         fixed: 'left',
-        render: (managers, record) => member(managers, record),
+        onCell: handleRow,
+        render: (managers) => <a>{managers.join(', ')}</a>,
       },
     ]
   const fetchCTGR = async () => {
@@ -464,6 +509,7 @@ function TaskList() {
         setUsers(response.data.auth.user.role)
       })
       .catch((error) => Error(error.toString()))
+    setLoading(false)
   }, [])
   // Search data on Table
   const searchDataOnTable = (value) => {
