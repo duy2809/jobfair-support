@@ -255,26 +255,26 @@ function TaskList() {
     const defaultText = value ? value.filter((a) => typeof (a) === 'string') : null
     const defaultNumber = value ? value.filter((a) => typeof (a) === 'number') : null
 
-    const m = []
+    const allIdMember = []
     // eslint-disable-next-line array-callback-return
     record.mems.map((a) => {
       if (defaultText.includes(a.name)) {
-        m.push(a.id)
+        allIdMember.push(a.id)
       }
     })
 
-    const newData = defaultNumber.concat(m)
-    const n = []
+    const newData = defaultNumber.concat(allIdMember)
+    const allNameMember = []
     // eslint-disable-next-line array-callback-return
     userAS.map((a) => {
       if (newData.includes(a.id)) {
-        n.push(a.name)
+        allNameMember.push(a.name)
       }
     })
     const data = {
       assignee: newData,
     }
-    const newRecord = { ...record, managers: n }
+    const newRecord = { ...record, managers: allNameMember }
     const List = [...temperaryData]
     const newList = List.map((item) => {
       if (item.id === record.id) {
