@@ -100,14 +100,14 @@ jobs:
   - name: check:phpcs
     stage: check
     workspace: shared
-    image: vanquynguyen/php-workspace
+    image: kimyvgy/laravel-workspace:php7.3
     script:
       - composer sniff -d api
 
   - name: check:phpunit
     stage: check
     workspace: shared
-    image: vanquynguyen/php-workspace
+    image: kimyvgy/laravel-workspace:php7.3
     allow_failure: true
     services:
       - name: mysql
