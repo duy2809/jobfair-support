@@ -100,14 +100,14 @@ jobs:
   - name: check:phpcs
     stage: check
     workspace: shared
-    image: sunasteriskrnd/php-workspace:7.3
+    image: vanquynguyen/php-workspace
     script:
       - composer sniff -d api
 
   - name: check:phpunit
     stage: check
     workspace: shared
-    image: sunasteriskrnd/php-workspace:7.3
+    image: vanquynguyen/php-workspace
     allow_failure: true
     services:
       - name: mysql
@@ -184,5 +184,4 @@ jobs:
     <<: *deploy
     only: *master
     except: *pull-request
-    
     
