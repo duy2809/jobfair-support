@@ -41,6 +41,11 @@ class Task extends Model
         ]);
     }
 
+    public function reviewers()
+    {
+        return $this->belongsToMany(User::class, 'task_reviewer', 'task_id', 'reviewer_id');
+    }
+
     public function documents()
     {
         return $this->morphMany(Document::class, 'commentable');

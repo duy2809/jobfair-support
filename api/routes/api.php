@@ -155,6 +155,7 @@ Route::get('/before-tasks/{id}', 'TaskController@getBeforeTasks');
 Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
+Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
