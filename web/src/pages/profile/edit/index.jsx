@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { Form, Input, Button, notification } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
@@ -28,7 +28,7 @@ const EditProfilePage = () => {
   const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  // const router = useRouter()
 
   webInit().then((res) => {
     const id = res.data.auth.user.id
@@ -118,11 +118,15 @@ const EditProfilePage = () => {
   }, [emailInput])
 
   const openNotificationSuccess = () => {
-    router.push('/profile')
+    // router.push('/profile')
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,
     })
+    setTimeout(() => {
+      // router.push('/profile',null, { shallow: false, getServerSideProps:true })
+      window.location = '/profile/'
+    }, 2500)
   }
 
   const handleOk = async () => {
