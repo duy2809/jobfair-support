@@ -214,9 +214,6 @@ function TemplateTaskList() {
     await getTaskList().then((response) => {
       addDataOfTable(response)
     })
-    await getCategories().then((response) => {
-      addOptionCategory(response)
-    })
     await getAllMileStone().then((response) => {
       addOptionMilestone(response)
     })
@@ -225,6 +222,9 @@ function TemplateTaskList() {
     })
       .catch((error) => Error(error.toString()))
     setLoading(false)
+    await getCategories().then((response) => {
+      addOptionCategory(response)
+    })
   }, [])
 
   // Search data on Table
