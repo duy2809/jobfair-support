@@ -184,4 +184,3 @@ jobs:
     <<: *deploy
     only: *master
     except: *pull-request
-    
