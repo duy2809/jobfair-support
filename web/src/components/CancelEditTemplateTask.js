@@ -26,7 +26,7 @@ class CancelEditTemplateTask extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="text-base  mr-5">
+        <Button onClick={this.showModal} className="text-base">
           キャンセル
         </Button>
         <Modal
