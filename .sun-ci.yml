@@ -82,7 +82,7 @@ jobs:
   - name: install:composer
     stage: install
     workspace: shared
-    image: composer:1.9
+    image: sunasteriskrnd/php-workspace:7.4
     script:
       - composer install -d api
     cache:
@@ -100,14 +100,14 @@ jobs:
   - name: check:phpcs
     stage: check
     workspace: shared
-    image: kimyvgy/laravel-workspace:php7.3
+    image: vanquynguyen/php-workspace
     script:
       - composer sniff -d api
 
   - name: check:phpunit
     stage: check
     workspace: shared
-    image: kimyvgy/laravel-workspace:php7.3
+    image: vanquynguyen/php-workspace
     allow_failure: true
     services:
       - name: mysql
