@@ -42,7 +42,7 @@ const EditMilestonePage = () => {
   }, [id])
 
   const openNotificationSuccess = () => {
-    window.location.href = '/milestones'
+    window.location.href = '/master-setting'
     notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,

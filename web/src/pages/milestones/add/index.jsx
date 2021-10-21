@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  Modal,
-  notification,
-} from 'antd'
+import { Form, Input, Button, Select, Modal, notification } from 'antd'
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 import './style.scss'
@@ -161,9 +154,7 @@ const AddMilestonePage = () => {
             マイルストーン追加
           </p> */}
 
-          <h1 className="title">
-            マイルストーン追加
-          </h1>
+          <h1 className="title">マイルストーン追加</h1>
 
           <div className="pt-10">
             <Form
@@ -180,11 +171,7 @@ const AddMilestonePage = () => {
               wrapperCol={{ span: 6 }}
             >
               <Form.Item
-                label={(
-                  <p className="font-bold text-right">
-                    マイルストーン名
-                  </p>
-                )}
+                label={<p className="font-bold text-right">マイルストーン名</p>}
                 name="name"
                 rules={[
                   {
@@ -197,9 +184,7 @@ const AddMilestonePage = () => {
                       const specialCharRegex = new RegExp('[ 　]')
                       if (specialCharRegex.test(value)) {
                         return Promise.reject(
-                          new Error(
-                            'マイルストーン名はスペースが含まれていません。',
-                          ),
+                          new Error('マイルストーン名はスペースが含まれていません。'),
                         )
                       }
 
@@ -216,9 +201,7 @@ const AddMilestonePage = () => {
                 />
               </Form.Item>
               <Form.Item
-                label={
-                  <p className="font-bold text-right">期日</p>
-                }
+                label={<p className="font-bold text-right">期日</p>}
                 name="time"
                 rules={[
                   {
@@ -230,7 +213,6 @@ const AddMilestonePage = () => {
                     pattern: /^(?:\d*)$/,
                     message: '０以上の半角の整数で入力してください。',
                   },
-
                 ]}
               >
                 <Input
@@ -246,11 +228,7 @@ const AddMilestonePage = () => {
               <div className="grid grid-cols-6 grid-rows-1 mt-5">
                 <div className="col-start-4 flex justify-end gap-x-4">
                   <Form.Item>
-                    <Button
-                      onClick={showModalOfBtnCancel}
-                      size="large"
-                      style={{ height: '38px' }}
-                    >
+                    <Button onClick={showModalOfBtnCancel} size="large" style={{ height: '38px' }}>
                       キャンセル
                     </Button>
                   </Form.Item>
@@ -285,14 +263,12 @@ const AddMilestonePage = () => {
                   <Button key="back" onClick={handleCancelOfBtnCancel}>
                     いいえ
                   </Button>,
-                  <Button key="submit" type="primary" href="../milestones">
+                  <Button key="submit" type="primary" href="/master-setting">
                     はい
                   </Button>,
                 ]}
               >
-                <p className="mb-5">
-                  変更内容が保存されません。よろしいですか？
-                </p>
+                <p className="mb-5">変更内容が保存されません。よろしいですか？</p>
               </Modal>
             </Form>
           </div>
