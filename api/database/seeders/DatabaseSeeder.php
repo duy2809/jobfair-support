@@ -33,28 +33,28 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
         ]);
 
-        // $JFadmin = User::create([
-        //     'name' => 'JF Admin',
-        //     'email' => 'AnAdmin@sun-asterisk.com',
-        //     'password' => Hash::make('12345678'),
-        //     'avatar' => 'images/avatars/default.jpg',
-        //     'role' => 2,
-        //     'chatwork_id' => Str::random(10),
-        //     'remember_token' => null,
-        //     'updated_at' => now(),
-        //     'created_at' => now(),
-        // ]);
-        // User::create([
-        //     'name' => 'Member',
-        //     'email' => 'AMember@sun-asterisk.com',
-        //     'password' => Hash::make('12345678'),
-        //     'avatar' => 'images/avatars/default.jpg',
-        //     'role' => 3,
-        //     'chatwork_id' => Str::random(10),
-        //     'remember_token' => null,
-        //     'updated_at' => now(),
-        //     'created_at' => now(),
-        // ]);
+        User::create([
+            'name' => 'JF Admin',
+            'email' => 'AnAdmin@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'images/avatars/default.jpg',
+            'role' => 2,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
+        User::create([
+            'name' => 'Member',
+            'email' => 'AMember@sun-asterisk.com',
+            'password' => Hash::make('12345678'),
+            'avatar' => 'images/avatars/default.jpg',
+            'role' => 3,
+            'chatwork_id' => Str::random(10),
+            'remember_token' => null,
+            'updated_at' => now(),
+            'created_at' => now(),
+        ]);
         // // milestones data
         // $milestones = [
         //     [
