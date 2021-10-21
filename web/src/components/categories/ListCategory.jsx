@@ -56,7 +56,7 @@ export default function ListCategories() {
       key: '1',
       title: 'カテゴリー名',
       dataIndex: 'name',
-      width: `${role === 'superadmin' ? '85%' : '100%'}`,
+      width: `${role === 'superadmin' ? '90%' : '100%'}`,
       ellipsis: {
         showTitle: false,
       },
@@ -80,7 +80,6 @@ export default function ListCategories() {
           <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
         </Space>
       ),
-      ellipsis: true,
     },
   ]
 
