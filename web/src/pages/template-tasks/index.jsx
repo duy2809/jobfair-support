@@ -59,7 +59,7 @@ function TemplateTaskList() {
     const data = []
     if (response) {
       for (let i = 0; i < response.data.length; i += 1) {
-        if(response.data[i].categories[0] && response.data[i].milestone){
+        if (response.data[i].categories[0] && response.data[i].milestone) {
           data.push({
             id: i + 1,
             idTemplateTask: response.data[i].id,
@@ -147,9 +147,11 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (category_name) => <Tooltip title={category_name}>
-        <a>{category_name}</a>
-      </Tooltip>,
+      render: (categoryName) => (
+        <Tooltip title={categoryName}>
+          <a>{categoryName}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -158,9 +160,11 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      render: (milestone_name) => <Tooltip title={milestone_name} >
-        <a>{milestone_name}</a>
-      </Tooltip >,
+      render: (milestoneName) => (
+        <Tooltip title={milestoneName}>
+          <a>{milestoneName}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {

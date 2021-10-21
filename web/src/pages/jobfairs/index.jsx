@@ -178,9 +178,13 @@ function JFList() {
         showTitle: false,
       },
       render: (studentNumber) => (
-        <Tooltip title={studentNumber} >
-          <a> {studentNumber}</a>
-        </Tooltip >),
+        <Tooltip title={studentNumber}>
+          <a>
+            {' '}
+            {studentNumber}
+          </a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -192,9 +196,13 @@ function JFList() {
         showTitle: false,
       },
       render: (bussinessNumber) => (
-        <Tooltip title={bussinessNumber} >
-          <a> {bussinessNumber}</a>
-        </Tooltip >),
+        <Tooltip title={bussinessNumber}>
+          <a>
+            {' '}
+            {bussinessNumber}
+          </a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -205,9 +213,13 @@ function JFList() {
         showTitle: false,
       },
       render: (jfAdmin) => (
-        <Tooltip title={jfAdmin} >
-          <a> {jfAdmin}</a>
-        </Tooltip >),
+        <Tooltip title={jfAdmin}>
+          <a>
+            {' '}
+            {jfAdmin}
+          </a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {

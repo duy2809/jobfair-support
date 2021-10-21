@@ -173,9 +173,11 @@ const MilestonePage = () => {
       ellipsis: {
         showTitle: false,
       },
-      render: (milestone_name) => <Tooltip title={milestone_name} >
-      <a>{milestone_name}</a>
-      </Tooltip>,
+      render: (milestoneName) => (
+        <Tooltip title={milestoneName}>
+          <a>{milestoneName}</a>
+        </Tooltip>
+      ),
       width: '60%',
 
     },
