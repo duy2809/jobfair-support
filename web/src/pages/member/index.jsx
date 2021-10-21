@@ -170,9 +170,12 @@ function MemberList() {
       dataIndex: 'name',
       key: 'メンバ名',
       width: '30%',
-      render: (taskName) => (
-        <Tooltip title={taskName}>
-          <a>{taskName}</a>
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (memberName) => (
+        <Tooltip title={memberName}>
+          <a>{memberName}</a>
         </Tooltip>
       ),
       onCell: handleRow,
@@ -182,7 +185,14 @@ function MemberList() {
       key: 'メールアドレス',
       dataIndex: 'email',
       width: '40%',
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (email) => (
+        <Tooltip title={email}>
+          <a>{email}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -190,7 +200,15 @@ function MemberList() {
       dataIndex: 'date',
       width: `${role === 'superadmin' ? '20%' : '30%'}`,
       key: '参加日',
-      render: (taskName) => <a>{formatDate(taskName)}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+
+      render: (joinDate) => (
+        <Tooltip title={formatDate(joinDate)}>
+          <a>{formatDate(joinDate)}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
