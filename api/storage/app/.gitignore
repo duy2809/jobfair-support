@@ -2,3 +2,6 @@
 # !public
 # !.gitignore
 !images/avatars/default.jpg
+!categories.ods
+!milestone.ods
+!template_task.ods

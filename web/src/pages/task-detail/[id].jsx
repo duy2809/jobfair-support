@@ -50,7 +50,7 @@ function TaskDetail() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
@@ -116,7 +116,7 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -335,7 +335,7 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
-                  {beforeTasks.length > 0 ? (
+                  {beforeTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
@@ -372,7 +372,7 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
-                  {afterTasks.length > 0 ? (
+                  {afterTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
