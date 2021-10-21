@@ -599,7 +599,7 @@ export default function File() {
                         削除
                       </Button>
                       <Modal
-                        //title="ファイルとフォルダを削除してもよろしいですか?"
+                        // title="ファイルとフォルダを削除してもよろしいですか?"
                         visible={isModalDeleteVisible}
                         centered
                         onOk={handleOkDelete}
