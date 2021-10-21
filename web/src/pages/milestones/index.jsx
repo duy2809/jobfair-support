@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Space, Button, Row, Col, Input, Select, notification, Modal } from 'antd'
+import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -170,7 +170,12 @@ const MilestonePage = () => {
     {
       title: 'マイルストーン一名',
       dataIndex: 'name',
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (milestone_name) => <Tooltip title={milestone_name} >
+      <a>{milestone_name}</a>
+      </Tooltip>,
       width: '60%',
 
     },
@@ -178,10 +183,14 @@ const MilestonePage = () => {
       title: '期日',
       dataIndex: 'period',
       width: `${role === 'superadmin' ? '30%' : '50%'}`,
+      ellipsis: {
+        showTitle: false,
+      },
       render: (period) => {
         const { numOfDays, type } = period
-        return <a>{convertPeriod(numOfDays, type)}</a>
+        return <Tooltip title={convertPeriod(numOfDays, type)}><a>{convertPeriod(numOfDays, type)}</a></Tooltip>
       },
+
     },
     {
       key: 'action',

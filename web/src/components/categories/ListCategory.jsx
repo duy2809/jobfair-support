@@ -56,7 +56,10 @@ export default function ListCategories() {
       key: '1',
       title: 'カテゴリー名',
       dataIndex: 'name',
-      width: `${role === 'superadmin' ? '90%' : '100%'}`,
+      width: `${role === 'superadmin' ? '85%' : '100%'}`,
+      ellipsis: {
+        showTitle: false,
+      },
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>
@@ -77,6 +80,7 @@ export default function ListCategories() {
           <DeleteCategory record={record} reloadPage={reloadPage} role={role} />
         </Space>
       ),
+      ellipsis: true,
     },
   ]
 

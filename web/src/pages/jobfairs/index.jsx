@@ -110,7 +110,7 @@ function JFList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const confirmModle = (id) => {
@@ -131,7 +131,7 @@ function JFList() {
         }
         setLoading(false)
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -159,7 +159,14 @@ function JFList() {
       dataIndex: '開始日',
       fixed: 'left',
       width: 100,
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (taskName) => (
+        <Tooltip title={taskName}>
+          <a>{taskName}</a>
+        </Tooltip>
+      ),
       onCell: handleRow,
     },
     {
@@ -167,7 +174,13 @@ function JFList() {
       dataIndex: '推定参加学生数',
       width: 100,
       responsive: ['md'],
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (studentNumber) => (
+        <Tooltip title={studentNumber} >
+          <a> {studentNumber}</a>
+        </Tooltip >),
       onCell: handleRow,
     },
     {
@@ -175,14 +188,26 @@ function JFList() {
       dataIndex: '参加企業社数',
       width: 100,
       responsive: ['sm'],
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (bussinessNumber) => (
+        <Tooltip title={bussinessNumber} >
+          <a> {bussinessNumber}</a>
+        </Tooltip >),
       onCell: handleRow,
     },
     {
       title: '管理者',
       dataIndex: '管理者',
       width: 80,
-      render: (taskName) => <a>{taskName}</a>,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (jfAdmin) => (
+        <Tooltip title={jfAdmin} >
+          <a> {jfAdmin}</a>
+        </Tooltip >),
       onCell: handleRow,
     },
     {
@@ -238,11 +263,11 @@ function JFList() {
         : JF.JF名)
         && (rangeStudentsNumber[1] < 100
           ? JF.推定参加学生数 <= rangeStudentsNumber[1]
-            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          && JF.推定参加学生数 >= rangeStudentsNumber[0]
           : JF.推定参加学生数 >= rangeStudentsNumber[0])
         && (rangeBussinessesNumber[1] < 100
           ? JF.参加企業社数 <= rangeBussinessesNumber[1]
-            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          && JF.参加企業社数 >= rangeBussinessesNumber[0]
           : JF.参加企業社数 >= rangeBussinessesNumber[0])
         && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
     )
@@ -269,11 +294,11 @@ function JFList() {
         : JF.推定参加学生数 >= value[0])
         && (valueSearch
           ? JF.JF名.toLowerCase().includes(valueSearch)
-            || JF.管理者.toLowerCase().includes(valueSearch)
+          || JF.管理者.toLowerCase().includes(valueSearch)
           : JF.JF名)
         && (rangeBussinessesNumber[1] < 100
           ? JF.参加企業社数 <= rangeBussinessesNumber[1]
-            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          && JF.参加企業社数 >= rangeBussinessesNumber[0]
           : JF.参加企業社数 >= rangeBussinessesNumber[0])
         && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
     )
@@ -294,11 +319,11 @@ function JFList() {
         : JF.参加企業社数 >= value[0])
         && (valueSearch
           ? JF.JF名.toLowerCase().includes(valueSearch)
-            || JF.管理者.toLowerCase().includes(valueSearch)
+          || JF.管理者.toLowerCase().includes(valueSearch)
           : JF.JF名)
         && (rangeStudentsNumber[1] < 100
           ? JF.推定参加学生数 <= rangeStudentsNumber[1]
-            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          && JF.推定参加学生数 >= rangeStudentsNumber[0]
           : JF.推定参加学生数 >= rangeStudentsNumber[0])
         && (startDate ? !JF.開始日.localeCompare(startDate) : JF.開始日),
     )
@@ -318,15 +343,15 @@ function JFList() {
       (JF) => (dateString ? !JF.開始日.localeCompare(dateString) : JF.開始日)
         && (valueSearch
           ? JF.JF名.toLowerCase().includes(valueSearch)
-            || JF.管理者.toLowerCase().includes(valueSearch)
+          || JF.管理者.toLowerCase().includes(valueSearch)
           : JF.JF名)
         && (rangeStudentsNumber[1] < 100
           ? JF.推定参加学生数 <= rangeStudentsNumber[1]
-            && JF.推定参加学生数 >= rangeStudentsNumber[0]
+          && JF.推定参加学生数 >= rangeStudentsNumber[0]
           : JF.推定参加学生数 >= rangeStudentsNumber[0])
         && (rangeBussinessesNumber[1] < 100
           ? JF.参加企業社数 <= rangeBussinessesNumber[1]
-            && JF.参加企業社数 >= rangeBussinessesNumber[0]
+          && JF.参加企業社数 >= rangeBussinessesNumber[0]
           : JF.参加企業社数 >= rangeBussinessesNumber[0]),
     )
     setTemperaryData(filteredData)
