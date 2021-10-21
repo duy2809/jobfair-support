@@ -56,7 +56,7 @@ export default function ListCategories() {
       key: '1',
       title: 'カテゴリー名',
       dataIndex: 'name',
-      width: `${role === 'superadmin' ? '85%' : '100%'}`,
+      width: `${role === 'superadmin' ? '90%' : '100%'}`,
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>
@@ -70,7 +70,7 @@ export default function ListCategories() {
     {
       key: '2',
       title: `${role === 'superadmin' ? 'アクション' : ''}`,
-      width: `${role === 'superadmin' ? '15%' : '0%'}`,
+      width: `${role === 'superadmin' ? '10%' : '0%'}`,
       render: (record) => role === 'superadmin' && (
         <Space size="middle">
           <EditCategory record={record} reloadPage={reloadPage} role={role} />

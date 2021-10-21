@@ -290,7 +290,7 @@ body {
   }
 
   .ant-modal-confirm-body .ant-modal-confirm-title {
-    font-weight: 900;
+    font-weight: lighter;
   }
   /* 
   reset autofill input
@@ -311,11 +311,11 @@ body {
   }
 
   .ant-modal-title {
-    font-weight: 600;
+    font-weight: bold;
   }
 
   .ant-table-thead > tr > th {
-    font-size: 14px;
+    font-size: 14px!important;
     font-weight: bold;
   }
 

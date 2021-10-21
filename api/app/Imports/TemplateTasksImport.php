@@ -37,9 +37,12 @@ class TemplateTasksImport implements ToModel
         $milestone = $this->milestones->where('name', trim($row[1]))->first();
         $arr = explode(',', $row[2]);
         $category = $this->categories->whereIn('category_name', $arr)->pluck('id');
+        $description = $row[3].'
+        '.str_replace('・', '- [ ] ', $row[4]);
+        $description = substr($description, 0, strlen($row[3]) + 1).substr($description, strlen($row[3]) + 9);
         $newTemplateTask = TemplateTask::create([
             'name' => $row[0],
-            'description_of_detail' => $row[3],
+            'description_of_detail' => $description,
             'milestone_id' => $milestone->id ?? null,
             'is_day' => $row[6] === '時間' ? 0 : 1,
             'unit' => $unit,

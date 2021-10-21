@@ -1,0 +1,16 @@
+.master-settingPage {
+  .ant-tabs-tab {
+    color: #2d334a;
+    font-weight: bold;
+  }
+  .ant-tabs-tab:hover {
+    color: #1b1d25 !important;
+    font-weight: bold;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active {
+    background: none;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #2d334a;
+  }
+}
