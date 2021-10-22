@@ -9,7 +9,6 @@ import {
   Divider,
   Row,
   Col,
-  Modal,
 } from 'antd'
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
@@ -36,7 +35,7 @@ function editJobfairSchedule() {
   const [addedMilestonesList, setAddedMilestonesList] = useState([])
   const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([])
   const [nameInput, setNameInput] = useState('')
-  const [isModalVisible, setIsModalVisible] = useState(false)
+  // const [isModalVisible, setIsModalVisible] = useState(false)
   const [isError, setIsError] = useState(false)
 
   useEffect(async () => {
@@ -102,7 +101,7 @@ function editJobfairSchedule() {
     })
   })
 
-  const onFinish = async () => {
+  const onFinish = async (e) => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     const dataSend = {
@@ -115,13 +114,23 @@ function editJobfairSchedule() {
     if (nameInput !== beforeEditName) {
       await postCheckExistName(dataSend)
         .then(({ data }) => {
-          if (data === 'exist') {
+          if (
+            (data === 'exist'
+              && !(
+                form.isFieldTouched('jfschedule_name')
+                && form.isFieldTouched('milestone_select')
+              ))
+            || !!form.getFieldsError().filter(({ errors }) => errors.length)
+              .length
+            || isError === true
+          ) {
+            e.prevenDefault()
             openNotification('error', 'このJFスケジュール名は存在しています。')
           } else {
             putData(id, dataSend)
               .then((res) => {
                 if (res.status === 200) {
-                  setIsModalVisible(false)
+                  // setIsModalVisible(false)
                   router.push('/schedule/')
                   openNotification('success', '変更は正常に保存されました。')
                   // setTimeout(() => {
@@ -136,7 +145,7 @@ function editJobfairSchedule() {
       putData(id, dataSend)
         .then((res) => {
           if (res.status === 200) {
-            setIsModalVisible(false)
+            // setIsModalVisible(false)
             router.push('/schedule/')
             openNotification('success', '変更は正常に保存されました。')
           }
@@ -207,23 +216,21 @@ function editJobfairSchedule() {
         .catch()
     }
   }
-  const showModal = () => {
-    if (
-      !(
-        form.isFieldTouched('jfschedule_name')
-        && form.isFieldTouched('milestone_select')
-      )
-      || !!form.getFieldsError().filter(({ errors }) => errors.length).length
-      || isError === true
-    ) {
-      setIsModalVisible(false)
-    } else {
-      setIsModalVisible(true)
-    }
-  }
-  const handleCancel = () => {
-    setIsModalVisible(false)
-  }
+
+  // const showModal = () => {
+  //   if (
+  //     !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
+  //     || !!form.getFieldsError().filter(({ errors }) => errors.length).length
+  //     || isError === true
+  //   ) {
+  //     setIsModalVisible(false)
+  //   } else {
+  //     setIsModalVisible(true)
+  //   }
+  // }
+  // const handleCancel = () => {
+  //   setIsModalVisible(false)
+  // }
   const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
 
   return (
@@ -329,13 +336,13 @@ function editJobfairSchedule() {
                   style={{ letterSpacing: '-2px' }}
                   htmlType="submit"
                   className="ml-3"
-                  onClick={showModal}
+                  onClick={onFinish}
                 >
                   保存
                 </Button>
               </div>
             </Form.Item>
-            <Modal
+            {/* <Modal
               title="JFスケジュール編集"
               visible={isModalVisible}
               onOk={onFinish}
@@ -344,7 +351,7 @@ function editJobfairSchedule() {
               cancelText="いいえ"
             >
               <p className="mb-5">保存してもよろしいですか</p>
-            </Modal>
+            </Modal> */}
           </Form>
         </div>
       </Layout.Main>

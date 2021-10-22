@@ -116,6 +116,8 @@ export default class Gantt extends Component {
       const tooltips = gantt.ext.tooltips
       tooltips.tooltip.setViewport(gantt.$task_data)
     })
+    // gantt.config.tooltip_offset_x = 30
+    // gantt.config.tooltip_offset_y = 40
     const dateToStr = gantt.date.date_to_str('%F %j, %Y')
 
     const today = new Date()

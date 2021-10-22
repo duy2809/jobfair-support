@@ -33,13 +33,8 @@ export default function Navbar() {
         </Link>
       </Menu.Item>
       <Menu.Item key="2">
-        <Link href="/milestones">
+        <Link href="/master-setting">
           <a className="text-base">マスター設定</a>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key="3">
-        <Link href="/Category">
-          <a className="text-base">カテゴリー覧</a>
         </Link>
       </Menu.Item>
     </Menu>

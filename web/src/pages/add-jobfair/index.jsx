@@ -233,7 +233,7 @@ const index = () => {
   /* Validator of all input. */
   const JFNameValidator = (_, value, name) => {
     if (!value) {
-      handleInputEmpty(name)
+      // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
 
@@ -274,7 +274,7 @@ const index = () => {
   }
   const studentsJoinValidator = (_, value, name) => {
     if (!value) {
-      handleInputEmpty(name)
+      // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
     if (value <= 0) {
@@ -292,7 +292,7 @@ const index = () => {
   }
   const JFAdminValidator = (_, value, name) => {
     if (!value) {
-      handleInputEmpty(name)
+      // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
 
@@ -300,7 +300,7 @@ const index = () => {
   }
   const JFScheduleValidator = (_, value, name) => {
     if (!value) {
-      handleInputEmpty(name)
+      // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
     }
     return Promise.resolve()

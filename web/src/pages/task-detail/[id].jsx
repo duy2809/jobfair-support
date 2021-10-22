@@ -14,6 +14,7 @@ import {
 import { ReactReduxContext } from 'react-redux'
 import JfLayout from '~/layouts/layout-task'
 import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
+import { reviewers } from '../../api/edit-task'
 import Loading from '~/components/loading'
 import BoxComment from '~/components/box-comment'
 import CommentHistory from '~/components/comment/CommentHistory'
@@ -49,7 +50,7 @@ function TaskDetail() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
@@ -101,6 +102,12 @@ function TaskDetail() {
       setAfterTasks(response.data.after_tasks)
     })
   }
+  const [reviewersList, setReviewersList] = useState([])
+  const fetchReviewersList = async () => {
+    await reviewers(idTask).then((response) => {
+      setReviewersList(response.data)
+    })
+  }
   const modelDelete = () => {
     Modal.confirm({
       title: '削除してもよろしいですか？',
@@ -109,7 +116,7 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -131,6 +138,7 @@ function TaskDetail() {
     fetchTaskData()
     fetchBeforeTask()
     fetchAfterTask()
+    fetchReviewersList()
     setLoading(false)
   }, [user])
   return (
@@ -327,7 +335,7 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
-                  {beforeTasks.length > 0 ? (
+                  {beforeTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
@@ -364,7 +372,7 @@ function TaskDetail() {
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
-                  {afterTasks.length > 0 ? (
+                  {afterTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
@@ -398,10 +406,30 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-
+              <div className="grid grid-cols-2 mx-4">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">レビュアー</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul className="list__member">
+                        {reviewersList
+                          ? reviewersList.map((item) => (
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                          ))
+                          : null}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="mx-5 mt-5">
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
+                </div>
+                <div className="mx-7">
+                  <BoxComment id={idTask} />
                 </div>
               </div>
             </div>

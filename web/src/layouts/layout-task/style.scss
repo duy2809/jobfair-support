@@ -12,6 +12,7 @@
   }
   .ant-layout {
     background: white;
+    height: 100%;
   }
   .ant-layout-sider-children {
     background-color: #e3f6f5 !important;
@@ -129,7 +130,8 @@
     background-color: #eeedd8;
     .admin__jf {
       display: flex;
-      align-items: center;
+      padding-left: 1.25rem;
+      padding-right: 28px;
     }
     h1 {
       margin-bottom: 0;
