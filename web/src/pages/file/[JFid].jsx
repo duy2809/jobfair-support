@@ -567,7 +567,13 @@ export default function File() {
                         <Form
                           form={formEditFolder}
                           onValuesChange={onChangeDisableEditFolder}
-                          layout="vertical"
+                          layout="horizontal"
+                          labelCol={{
+                            span: 6,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
                           name="basic"
                         >
                           <Form.Item
@@ -593,8 +599,9 @@ export default function File() {
                         削除
                       </Button>
                       <Modal
-                        title="ファイルとフォルダを削除"
+                        // title="ファイルとフォルダを削除してもよろしいですか?"
                         visible={isModalDeleteVisible}
+                        centered
                         onOk={handleOkDelete}
                         onCancel={() => {
                           setIsModalDeleteVisible(false)
@@ -602,7 +609,7 @@ export default function File() {
                         cancelText="いいえ"
                         okText="はい"
                       >
-                        <p className="mb-5">削除してもよろしいですか？</p>
+                        <p>ファイルとフォルダを削除してもよろしいですか?</p>
                       </Modal>
                     </div>
                   </div>
