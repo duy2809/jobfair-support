@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import { Table, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import { Table, Typography } from 'antd'
+import React, { useEffect, useState } from 'react'
 import { ListScheduleApi } from '~/api/schedule'
+import { loadingIcon } from '../loading/index'
 import './style.scss'
 import colors from './_colors'
-
-const { Paragraph } = Typography
 
 function ScheduleGantt({ id }) {
   const [tasks, setTasks] = useState([])
   const [milestones, setMilestones] = useState([])
   const [categories, setCategories] = useState([])
+  const [loading, setloading] = useState(true)
   const taskWidth = 200
   const taskHeader = {
-    task: {
-      id: null,
-      name: '',
-      categoryId: null,
-      milestoneId: null,
-      orderIndex: null,
-    },
+    id: null,
+    name: '',
+    categoryId: null,
+    milestoneId: null,
+    orderIndex: null,
   }
   function compareTask(a, b) {
     if (a.categoryId < b.categoryId) {
@@ -51,7 +49,9 @@ function ScheduleGantt({ id }) {
       setCategories(response.data.categories.sort(compareCategories))
       const data = [taskHeader, ...response.data.tasks]
       setTasks(formatTask(data))
+      setloading(false)
     } catch (error) {
+      setloading(false)
       console.log(error)
     }
   }, [])
@@ -99,7 +99,8 @@ function ScheduleGantt({ id }) {
     if (categoryId != null) {
       // row 0: title => no data
       let startIndex = 1
-      for (let i = 0; i < categoryId; i += 1) {
+      const categoryIndex = categories.findIndex((category) => category.id === categoryId)
+      for (let i = 0; i < categoryIndex; i += 1) {
         startIndex += categories[i].numberOfTasks
       }
       return startIndex
@@ -112,22 +113,29 @@ function ScheduleGantt({ id }) {
       title: '',
       dataIndex: 'task',
       key: 'category',
-      width: 200,
+      width: 100,
       fixed: 'left',
       render: (task, _, rowIndex) => {
         const obj = {
           children: '',
           props: {},
         }
+
         if (task.categoryId == null) {
           obj.children = 'カテゴリ名'
         } else if (rowIndex) {
-          obj.children = categories[task.categoryId - 1].name
-          const startRowIndex = getStartRowIndex(task.categoryId - 1)
-          const rowSpan = categories[task.categoryId - 1].numberOfTasks
+          const category = categories.find((item) => item.id === task.categoryId)
+          // categories[0][task.categoryId]
+
+          obj.children = category.name
+          const startRowIndex = getStartRowIndex(category.id)
+          console.log(category)
+
+          const rowSpan = category.numberOfTasks
+          console.log(rowSpan)
           if (rowIndex === startRowIndex) {
             obj.props.rowSpan = rowSpan
-            obj.props.className = `bg-category-${task.categoryId}`
+            obj.props.className = `bg-category-${category.id}`
           } else if (rowIndex < startRowIndex + rowSpan) {
             obj.props.rowSpan = 0
           }
@@ -146,11 +154,14 @@ function ScheduleGantt({ id }) {
         }
         return (
           <>
-            <a href={`/template-task-dt/${task.id}`}>
-              <Paragraph className="break-words" ellipsis={{ rows: 1, tooltip: task.name }}>
-                {task.name}
-              </Paragraph>
-            </a>
+            <Tooltip placement="top" title={task.name}>
+              <span
+                className="text-sm inline-block cursor-pointer whitespace-nowrap overflow-hidden overflow-ellipsis "
+                style={{ maxWidth: '30ch' }}
+              >
+                <a href={`/template-task-dt/${task.id}`}>{task.name}</a>
+              </span>
+            </Tooltip>
           </>
         )
       },
@@ -161,10 +172,11 @@ function ScheduleGantt({ id }) {
     <div className="schedule-gantt mx-auto">
       <Table
         id="myTable"
-        scroll={{ x: '100vw', y: '100vh' }}
+        scroll={{ x: '100%', y: '100%' }}
         columns={columns}
         dataSource={tasks}
         pagination={false}
+        loading={{ spinning: loading, indicator: loadingIcon }}
         bordered
       />
     </div>

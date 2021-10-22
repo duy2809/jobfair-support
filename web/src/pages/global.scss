@@ -156,17 +156,23 @@ body {
     .ant-select-selector {
     border-color: #ffd803;
   }
-
-  /* width */
+  /*Scroll bar */
   ::-webkit-scrollbar {
-    width: 16px;
-    height: 16px;
+    width: 10px;
+    height: 10px;
   }
-
   /* Track */
   ::-webkit-scrollbar-track {
-    border-radius: 100vh;
+    border-radius: 0;
     background: #edf2f7;
+    width: 100%;
+  }
+  .gantt_grid_data {
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   /* Handle */
@@ -315,7 +321,7 @@ body {
   }
 
   .ant-table-thead > tr > th {
-    font-size: 14px!important;
+    font-size: 14px !important;
     font-weight: bold;
   }
 
