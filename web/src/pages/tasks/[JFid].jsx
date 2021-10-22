@@ -329,7 +329,7 @@ function TaskList() {
   }
   const modalConfilm = (memberAS, record, userAS) => {
     Modal.confirm({
-      title: '削除してもよろしいですか？',
+      title: 'このまま保存してもいいですか？',
       icon: <ExclamationCircleOutlined />,
       content: '',
       onOk: async () => {
