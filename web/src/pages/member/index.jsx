@@ -19,7 +19,6 @@ import { webInit } from '~/api/web-init'
 import { deleteMember } from '~/api/member-detail'
 import { loadingIcon } from '../../components/loading'
 import './styles.scss'
-import { loadingIcon } from '../../components/loading'
 
 function MemberList() {
   const [members, setMembers] = useState([])
