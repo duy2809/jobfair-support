@@ -154,7 +154,7 @@ const JfLayout = ({ children, id, bgr }) => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <div className="Jf__header px-5">
+          <div className="Jf__header px-11">
             <h1>{name}</h1>
             <div className="admin__jf px-5">
               <p className="text-lg  py-6">{startDate ?? 'N/A'}</p>

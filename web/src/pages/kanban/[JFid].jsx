@@ -302,6 +302,7 @@ export default function KanBan() {
       <JfLayout style={{ padding: '0px' }} id={idJf} bgr={4}>
         <JfLayout.Main>
           <div
+            className="px-8"
             style={{
               display: 'flex',
               flexDirection: 'column',
