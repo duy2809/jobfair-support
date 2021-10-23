@@ -3,6 +3,7 @@ import { ReactReduxContext } from 'react-redux'
 import { Avatar, Divider, Typography, Popover } from 'antd'
 import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import moment from 'moment'
+import * as deleteCommentAPI from '../../api/comment'
 import PropTypes from 'prop-types'
 import './styles.scss'
 
@@ -28,8 +29,8 @@ function Comment(props) {
   const editComment = () => {
     console.log('Edit')
   }
-  const deleteComment = () => {
-    console.log('Delete')
+  const deleteComment = async () => {
+    const response = await deleteCommentAPI.deleteComment(props.id)
   }
 
   return (
@@ -68,7 +69,7 @@ function Comment(props) {
               className={classNames(
                 'comment__content',
                 expanded ? 'expanded' : 'collapse',
-                commentOverflow ? 'comment__overflow' : '',
+                commentOverflow ? 'comment__overflow' : ''
               )}
             >
               {props.content}
@@ -95,6 +96,7 @@ function Comment(props) {
   )
 }
 Comment.propTypes = {
+  id: PropTypes.number.isRequired,
   author: PropTypes.object.isRequired,
   created: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,

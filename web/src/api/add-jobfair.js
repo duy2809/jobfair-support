@@ -4,14 +4,6 @@ const addJFAPI = {
   getSchedule: () => {
     const url = '/schedules'
     return instance.get(url)
-    // expect result
-    // "data": [
-    // {
-    //     "id": 7,
-    //     "name": "Marilou Mitchell",
-    //     "jobfair_id": null
-    // },
-    // ]
   },
 
   getTaskList: (id) => {
