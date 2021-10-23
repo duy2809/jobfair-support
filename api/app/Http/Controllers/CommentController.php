@@ -26,9 +26,8 @@ class CommentController extends Controller
         // $status = ['未着手', '進行中'];
         // validate request: add 'Accept: application/json' to request headers to get error message
         $request->validate([
-            'task_id'     => 'required|exists:tasks,id',
+            'task_id'     => 'required|numeric',
             'body'        => 'string',
-            'assignee'    => 'string',
             'status'      => 'string',
             'description' => 'string',
         ]);
@@ -80,7 +79,20 @@ class CommentController extends Controller
         }
 
         // return new comment
-        return Comment::create($input);
+        $comment = Comment::create($input);
+        return [
+            'id'        => $comment->id,
+            'author'    => [
+                'id'     => $comment->user->id,
+                'name'   => $comment->user->name,
+                'avatar' => $comment->user->avatar,
+            ],
+            'created'   => $comment->created_at,
+            'content'   => $comment->body,
+            'edited'    => $comment->updated_at > $comment->created_at,
+            'last_edit' => $comment->updated_at,
+        ];
+
     }
 
     /**
@@ -105,18 +117,18 @@ class CommentController extends Controller
             },
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
-        $result = $data->comments->map(function ($element) {
+        $result = $data->comments->map(function ($comment) {
             return [
-                'id'        => $element->id,
+                'id'        => $comment->id,
                 'author'    => [
-                    'id'     => $element->user->id,
-                    'name'   => $element->user->name,
-                    'avatar' => $element->user->avatar,
+                    'id'     => $comment->user->id,
+                    'name'   => $comment->user->name,
+                    'avatar' => $comment->user->avatar,
                 ],
-                'created'   => $element->created_at,
-                'content'   => $element->body,
-                'edited'    => $element->updated_at > $element->created_at,
-                'last_edit' => $element->updated_at,
+                'created'   => $comment->created_at,
+                'content'   => $comment->body,
+                'edited'    => $comment->updated_at > $comment->created_at,
+                'last_edit' => $comment->updated_at,
             ];
         });
 

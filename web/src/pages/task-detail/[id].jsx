@@ -434,7 +434,7 @@ function TaskDetail() {
               </div>
             </div>
             <CommentHistory id={idTask} />
-            <BoxComment id={2} />
+            <BoxComment id={idTask} />
           </div>
         </JfLayout.Main>
       </JfLayout>
