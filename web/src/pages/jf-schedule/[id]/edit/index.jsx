@@ -154,12 +154,12 @@ function editJobfairSchedule() {
     }
   }
 
-  const onFinishFailed = (errorInfo) => {
+  const onFinishFailed = () => {
     setIsError(true)
-    const { errorFields } = errorInfo
-    errorFields.forEach((itemError) => {
-      itemError.errors.forEach((error) => openNotification('error', error))
-    })
+    // const { errorFields } = errorInfo;
+    // errorFields.forEach((itemError) => {
+    //   itemError.errors.forEach((error) => openNotification("error", error));
+    // });
   }
 
   const onDeleteTemplateTask = (id) => {
@@ -216,6 +216,7 @@ function editJobfairSchedule() {
         .catch()
     }
   }
+
   // const showModal = () => {
   //   if (
   //     !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
