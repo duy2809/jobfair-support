@@ -11,6 +11,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
+use App\Events\Noti;
 
 /*
 |--------------------------------------------------------------------------
@@ -176,3 +177,8 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 // comment
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
+
+Route::get('test', function(){
+    Noti:: dispatch();
+    return 'dispatched';
+});
