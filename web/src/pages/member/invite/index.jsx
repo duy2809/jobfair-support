@@ -13,6 +13,7 @@ function InviteMember() {
   const router = useRouter()
   const [form] = Form.useForm()
   const [, forceUpdate] = useState({})
+  const [changeEmail, setChangeEmail] = useState(false)
   const [isLoading, setLoading] = useState(false)
 
   // Disable button when reload page
@@ -22,6 +23,7 @@ function InviteMember() {
 
   const onValueEmailChange = (e) => {
     document.getElementById('errorEmail').setAttribute('hidden', true)
+    setChangeEmail(true)
     setEmailInput(e.target.value)
   }
 
@@ -51,7 +53,7 @@ function InviteMember() {
   }
 
   const handleModal = () => {
-    if (isEmptyForm()) {
+    if (isEmptyForm() && !changeEmail) {
       router.push('/member')
     } else {
       return Modal.confirm({
