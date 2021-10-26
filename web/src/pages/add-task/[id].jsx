@@ -54,6 +54,7 @@ function index() {
         setLoading(false)
         return null
       } catch (error) {
+        setLoading(false)
         return Error('内容が登録されません。よろしいですか？')
       }
     }
