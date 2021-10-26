@@ -304,20 +304,20 @@ function TemplateTaskList() {
                         <>
                           <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
 
-                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
+                          <Select style={{ width: '300px' }} size="large" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                             {optionCategory}
                           </Select>
 
                           <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
 
-                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
+                          <Select style={{ width: '300px' }} size="large" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
                             {optionMilestone}
                           </Select>
 
                         </>
 
                       )}
-                      className="mr-2"
+                      className="mr-2 p-2"
                       placement="bottomLeft"
                       trigger="click"
                       visible={visible}
@@ -339,6 +339,7 @@ function TemplateTaskList() {
                       )}
                     </Popover>
                     <Input
+                      size="large"
                       className="float-right mr-3"
                       allowClear="true"
                       prefix={<SearchOutlined />}
