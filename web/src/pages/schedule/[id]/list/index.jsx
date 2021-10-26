@@ -24,6 +24,7 @@ function ScheduleDetail() {
     setID(router.query.id)
     getMilestone(router.query.id).then((res) => {
       const milestoneCopy = res.data
+      // TODO: ERRORRRRRRRR
       milestoneCopy.forEach((element) => {
         if (element.name.length > 10) {
           element.wrapped = true

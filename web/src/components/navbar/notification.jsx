@@ -239,9 +239,9 @@ export default function Notification() {
       visible={visible}
       placement="bottomCenter"
     >
-      <div className="mt-5 px-4 cursor-pointer">
-        <BellOutlined className="text-3xl bell-icon relative bottom-0.25" />
-        <span className="relative w-5 h-5 rounded-full -top-9 -right-4 flex number-notifications justify-center items-center text-center">
+      <div style={{ position: 'relative' }}>
+        <BellOutlined style={{ fontSize: '1.625rem', position: 'relative' }} className="bell-icon relative" />
+        <span style={{ position: 'absolute', top: '0', left: '70%', padding: '1px 3px', borderRadius: '100%' }} className="number-notifications">
           {unreadLength}
         </span>
       </div>
