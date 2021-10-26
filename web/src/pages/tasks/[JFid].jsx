@@ -774,6 +774,7 @@ function TaskList() {
                         </h6>
 
                         <Select
+                          size="large"
                           placeholder="カテゴリ"
                           style={{ width: '300px' }}
                           allowClear="true"
@@ -788,6 +789,7 @@ function TaskList() {
                         </h6>
 
                         <Select
+                          size="large"
                           placeholder="マイルストーン"
                           style={{ width: '300px' }}
                           allowClear="true"
