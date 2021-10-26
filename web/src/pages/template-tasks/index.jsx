@@ -59,13 +59,15 @@ function TemplateTaskList() {
     const data = []
     if (response) {
       for (let i = 0; i < response.data.length; i += 1) {
-        data.push({
-          id: i + 1,
-          idTemplateTask: response.data[i].id,
-          templateTaskName: response.data[i].name,
-          category_name: response.data[i].categories[0].category_name,
-          milestone_name: response.data[i].milestone.name,
-        })
+        if (response.data[i].categories[0] && response.data[i].milestone) {
+          data.push({
+            id: i + 1,
+            idTemplateTask: response.data[i].id,
+            templateTaskName: response.data[i].name,
+            category_name: response.data[i].categories[0].category_name,
+            milestone_name: response.data[i].milestone.name,
+          })
+        }
       }
       setTemperaryData(data)
       setOriginalData(data)
@@ -102,7 +104,7 @@ function TemplateTaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const deletetpl = async (id) => {
@@ -119,7 +121,7 @@ function TemplateTaskList() {
       onOk: () => {
         deletetpl(id)
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -142,16 +144,26 @@ function TemplateTaskList() {
       title: 'カテゴリ',
       dataIndex: 'category_name',
       fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (categoryName) => (
+        <Tooltip title={categoryName}>
+          <a>{categoryName}</a>
+        </Tooltip>
       ),
       onCell: handleRow,
     },
     {
       title: 'マイルストーン',
       dataIndex: 'milestone_name',
-      render: (taskName) => (
-        <a>{taskName}</a>
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (milestoneName) => (
+        <Tooltip title={milestoneName}>
+          <a>{milestoneName}</a>
+        </Tooltip>
       ),
       onCell: handleRow,
     },

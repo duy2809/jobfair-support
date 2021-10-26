@@ -173,6 +173,9 @@ function ScheduleList() {
         dataIndex: 'name',
         key: 'スケジュール',
         width: '90%',
+        ellipsis: {
+          showTitle: false,
+        },
         render: (name) => (
           <Tooltip title={name}>
             <a>{name}</a>

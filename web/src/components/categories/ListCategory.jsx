@@ -57,6 +57,9 @@ export default function ListCategories() {
       title: 'カテゴリー名',
       dataIndex: 'name',
       width: `${role === 'superadmin' ? '90%' : '100%'}`,
+      ellipsis: {
+        showTitle: false,
+      },
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>

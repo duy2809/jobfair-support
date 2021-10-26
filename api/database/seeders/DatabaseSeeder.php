@@ -164,8 +164,8 @@ class DatabaseSeeder extends Seeder
         // }
 
         // $this->call([FileSeeder::class]);
-        Excel::import(new MilestonesImport(), 'milestone.ods', null, \Maatwebsite\Excel\Excel::ODS);
-        Excel::import(new CategoriesImport(), 'categories.ods', null, \Maatwebsite\Excel\Excel::ODS);
-        Excel::import(new TemplateTasksImport(), 'template_task.ods', null, \Maatwebsite\Excel\Excel::ODS);
+        Excel::import(new MilestonesImport(), base_path('file/milestone.ods'), null, \Maatwebsite\Excel\Excel::ODS);
+        Excel::import(new CategoriesImport(), base_path('file/categories.ods'), null, \Maatwebsite\Excel\Excel::ODS);
+        Excel::import(new TemplateTasksImport(), base_path('file/template_task.ods'), null, \Maatwebsite\Excel\Excel::ODS);
     }
 }
