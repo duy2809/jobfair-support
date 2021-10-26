@@ -12,6 +12,7 @@ use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use App\Notifications\TestNotification;
 use Illuminate\Support\Facades\Route;
+use App\Events\Noti;
 
 /*
 |--------------------------------------------------------------------------
