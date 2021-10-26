@@ -25,11 +25,12 @@ class MemberController extends Controller
         // }
 
         // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
-        if(Auth::user()->role === 1 || Auth::user()->role === 2) {
+        if (Auth::user()->role === 1 || Auth::user()->role === 2) {
             return User::select('id', 'name', 'email', 'created_at')
-                    ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
+                ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
         }
-        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email','<>',Auth::user()->email)->get();
+
+        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
     }
 
     public function showMember($id)

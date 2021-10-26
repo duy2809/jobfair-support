@@ -53,9 +53,10 @@ class MemberDetailController extends Controller
             DB::table('assignments')->where('user_id', $id)->delete();
             DB::table('jobfairs')->where('jobfair_admin_id', $id)->delete();
             User::findOrFail($id)->delete();
+
             return response()->json('Delete Success');
-        }else {
-            return response()->json('Error', 403);
         }
+
+        return response()->json('Error', 403);
     }
 }
