@@ -178,3 +178,11 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
 Route::delete('/comment/{id}', 'CommentController@destroy');
+Route::post('/comment/{id}', 'CommentController@update');
+
+Route::get('/test', function () {
+
+    broadcast(new App\Events\Comment())->toOthers();
+    return 'hello';
+},
+);

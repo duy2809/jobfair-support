@@ -2,7 +2,7 @@
 import '@uiw/react-md-editor/markdown-editor.css'
 import '@uiw/react-markdown-preview/markdown.css'
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Modal, Input, Form } from 'antd'
 import './style.scss'
@@ -35,6 +35,9 @@ function BoxComment(props) {
     setLink('')
   }
 
+  useEffect(() => {
+    console.log('change state')
+  }, [value])
   const handleCancel = () => {
     setIsModalVisible(false)
   }

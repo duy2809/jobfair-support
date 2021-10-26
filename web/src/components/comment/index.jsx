@@ -1,39 +1,39 @@
-import { Button, Form, Input, Select, Tag, Tooltip } from 'antd'
 import { EditOutlined } from '@ant-design/icons'
-import { Divider, Typography } from 'antd'
-import { ReactReduxContext } from 'react-redux'
-import { usePromise } from '~/utils/store'
-
-import React, { useEffect, useState, useContext } from 'react'
-import { addComment, deleteComment, getComments } from '../../api/comment'
+import { Button, Divider, Form, Input, Select, Tag, Tooltip, Typography } from 'antd'
+// import CommentChannel from '../../libs/echo/channels/comment'
+import React, { useContext, useEffect, useState } from 'react'
+import { ReactReduxContext, useSelector } from 'react-redux'
+import { addComment, getComments, updateComment } from '../../api/comment'
 import { getUser, taskData } from '../../api/task-detail'
-import CommentHistory from './CommentHistory'
 import Editor from '../../components/box-comment/editor'
+import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
-
+import Comment from './Comment'
 function index({ id }) {
   const [visible, setVisible] = useState(false)
+  const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
   const [form] = Form.useForm()
+  const [reRender, setReRender] = useState(false)
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
-  const [comments, setComments] = useState([])
+  const [editingComment, setEditingComment] = useState({})
   const { store } = useContext(ReactReduxContext)
 
   const INIT_COMMENTS_NUM = 5
   const MORE_COMMENTS_NUM = 10
 
+  const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
+
   const getMoreComments = async (start, count) => {
     try {
       const response = await getComments(id, start, count)
       if (response.status === 200) {
-        setComments([...comments, ...response.data])
-        await usePromise(store.dispatch, {
+        store.dispatch({
           type: actions.LOAD_COMMENT,
           payload: [id, start, count],
         })
-        // store.dispatch({ type: actions.LOAD_COMMENT, payload: [id, start, count] })
       }
     } catch (error) {
       console.log(error)
@@ -69,10 +69,14 @@ function index({ id }) {
       })
     })
   }
-  // console.log(store.getState().get('exampleReducer').get('examples'))
-  console.log(store.getState())
 
   useEffect(() => {
+    // new CommentChannel()
+    //   .onOutput((data) => {
+    //     console.log('log' + data)
+    //   })
+    //   .listen()
+
     fetchListMember()
     fetchTaskData()
     getMoreComments(0, INIT_COMMENTS_NUM)
@@ -119,6 +123,8 @@ function index({ id }) {
   const onFormSummit = async () => {
     try {
       const { status, assignee } = form.getFieldsValue()
+      // console.log(form.getFieldsValue())
+      // console.log(assignee)
       // TODO: change task description
       const comment = {
         task_id: id,
@@ -127,10 +133,17 @@ function index({ id }) {
         status,
         description: 'Task Description',
       }
+
       const response = await addComment(comment)
       const newComment = response.data
+      window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
       if (newComment) {
-        setComments([newComment, ...comments])
+        store.dispatch({
+          type: actions.ADD_COMMENT,
+          payload: [newComment, ...commentArray],
+        })
+        form.resetFields()
+        setValue('')
       }
     } catch (error) {
       return error
@@ -139,17 +152,55 @@ function index({ id }) {
   const typing = (e) => {
     setValue(e.target.value)
   }
+  const callBack = (childState) => {
+    showBox()
+    // window.scrollByPages(1)
+    setEditingComment(childState)
+    setEditing(true)
+    form.resetFields()
+    setValue(childState.content)
+    form.setFieldsValue({ detail: childState.content })
+  }
+  const onDoneEditing = async () => {
+    const { status, assignee } = form.getFieldsValue()
+    console.log(value)
+    const newComment = { ...editingComment, content: value, status, assignee }
+    // const response = await updateComment(newComment.id, newComment)
+    // console.log(response)
+    // store.dispatch({
+    //   type: actions.EDIT_COMMENT,
+    //   payload: [newComment, ...commentArray],
+    // })
+    setEditing(false)
+    // form.resetFields()
+  }
+
   return (
     <div>
-      <span className="comment__count block">{`コメント(${comments.length})`}</span>
+      <span className="comment__count block">{`コメント(${commentArray.length})`}</span>
       <Typography.Link
         className="see-more block text-center"
-        onClick={() => getMoreComments(comments.length, MORE_COMMENTS_NUM)}
+        // onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
       >
         もっと読む
       </Typography.Link>
       <Divider className="mx-2 bg-gray-300" />
-      <CommentHistory comments={comments} />
+      {/* list comments history  */}
+      <div className="comment-history">
+        {commentArray.map((comment) => (
+          <Comment
+            key={comment.id}
+            id={comment.id}
+            author={comment.author}
+            created={comment.created}
+            content={comment.content}
+            edited={comment.edited}
+            lastEdit={comment.lastEdit}
+            parentCallBack={callBack}
+          />
+        ))}
+      </div>
+
       <div className="mt-5 box-comment">
         {show ? (
           <div className="flex">
@@ -176,17 +227,18 @@ function index({ id }) {
                     name="detail"
                     onChange={typing}
                   >
-                    <Editor value={value} />
+                    {reRender ? <Editor value={value} /> : <Editor value={value} />}
                   </Form.Item>
                 </div>
                 <div className="pos-right">
-                  <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
+                  <Form.Item label={<p className="font-bold">ステータス</p>} required name="status">
                     <Select size="large" className="addJF-selector" placeholder="ステータス">
                       {listStatus.map((element) => (
                         <Select.Option value={element}>{element}</Select.Option>
                       ))}
                     </Select>
                   </Form.Item>
+
                   <Form.Item
                     label={<p className="font-bold">担当者</p>}
                     name="assignee"
@@ -242,14 +294,25 @@ function index({ id }) {
                       プレビュー
                     </Button>
                     {/* =============================== */}
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="button_save"
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      <span>追加</span>
-                    </Button>
+                    {editing ? (
+                      <Button
+                        type="primary"
+                        onClick={onDoneEditing}
+                        className="button_edit"
+                        style={{ letterSpacing: '-1px' }}
+                      >
+                        <span>編集</span>
+                      </Button>
+                    ) : (
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="button_save"
+                        style={{ letterSpacing: '-1px' }}
+                      >
+                        <span>追加</span>
+                      </Button>
+                    )}
                   </div>
                 </Form.Item>
               </div>

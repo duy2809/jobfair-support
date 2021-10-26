@@ -5,7 +5,11 @@ import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import moment from 'moment'
 import * as deleteCommentAPI from '../../api/comment'
 import PropTypes from 'prop-types'
+import actions from '../../store/modules/comment/types'
+import { useSelector } from 'react-redux'
+import { commentSelectors } from '../../store/modules/comment'
 import './styles.scss'
+import MarkDownView from '../markDownView'
 
 function Comment(props) {
   const AVATAR_SIZE = 50
@@ -16,6 +20,7 @@ function Comment(props) {
   const [userId, setUserId] = useState(1)
 
   const classNames = (...classes) => classes.filter(Boolean).join(' ')
+  const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
   const toggleExpanded = () => {
     setExpanded(!expanded)
@@ -23,14 +28,24 @@ function Comment(props) {
 
   useEffect(() => {
     setUserId(store.getState().get('auth').get('user').get('id'))
-    setCommentOverflow(props.content.length > MAX_CHAR_PER_LINE)
+    setCommentOverflow(props.content?.length > MAX_CHAR_PER_LINE)
   }, [])
 
   const editComment = () => {
-    console.log('Edit')
+    props.parentCallBack(props)
   }
   const deleteComment = async () => {
-    const response = await deleteCommentAPI.deleteComment(props.id)
+    try {
+      const comments = commentArray.filter((comment) => comment.id !== props.id)
+      console.log(comments)
+      const response = await deleteCommentAPI.deleteComment(props.id)
+      if (response.status === 200) {
+        store.dispatch({
+          type: actions.DELETE_COMMENT,
+          payload: comments,
+        })
+      }
+    } catch (error) {}
   }
 
   return (
@@ -74,6 +89,15 @@ function Comment(props) {
             >
               {props.content}
             </span>
+            <MarkDownView
+              source={props.content}
+              className={classNames(
+                'comment__content',
+                expanded ? 'expanded' : 'collapse',
+                commentOverflow ? 'comment__overflow' : ''
+              )}
+            />
+
             <div>
               <Typography.Link className="mr-4 see-more" onClick={toggleExpanded}>
                 {/* eslint-disable-next-line no-nested-ternary */}
@@ -102,6 +126,7 @@ Comment.propTypes = {
   content: PropTypes.string.isRequired,
   edited: PropTypes.bool.isRequired,
   lastEdit: PropTypes.string.isRequired,
+  parentCallBack: PropTypes.func.isRequired,
 }
 
 export default Comment
