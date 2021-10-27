@@ -115,6 +115,7 @@ export default function index() {
           const data = generateTask(resTasks)
           setJobfairStartDate(new Date(jobfair.start_date))
           setTask({ ...data, ...link })
+          console.log({ ...data, ...link })
           setLoading(false)
         })
         return []
