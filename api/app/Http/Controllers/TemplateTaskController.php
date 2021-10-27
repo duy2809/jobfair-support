@@ -102,10 +102,8 @@ class TemplateTaskController extends Controller
 
         $templateTask->update($request->all());
         $templateTask->categories()->sync($request->category_id);
-        
-            $templateTask->beforeTasks()->sync($request->beforeTasks);
-            $templateTask->afterTasks()->sync($request->afterTasks);
-      
+        $templateTask->beforeTasks()->sync($request->beforeTasks);
+        $templateTask->afterTasks()->sync($request->afterTasks);
 
         return response()->json(['message' => 'Edit Successfully'], 200);
     }

@@ -189,8 +189,9 @@ const EditTemplateTaskPage = () => {
       beforeTasks: beforeID,
       afterTasks: afterIDs,
     })
-    router.push(`/template-task-dt/${id}`)
+
       .then(() => {
+        router.push(`/template-task-dt/${id}`)
         setTimeout(() => {
           openNotificationSuccess()
         }, 1000)
