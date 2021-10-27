@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button, notification, Tag, Tooltip, Space } from 'antd'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import OtherLayout from '../../../../layouts/OtherLayout'
 import ItemInput from '../../../../components/template-task-edit/form-item/input'
 import CancelEditTemplateTask from '../../../../components/CancelEditTemplateTask'
@@ -60,6 +61,7 @@ const EditTemplateTaskPage = () => {
   const [effortNumber, setEffortNumber] = useState('')
   const [form] = Form.useForm()
   const [checkSpace, setCheckSpace] = useState(false)
+  const router = useRouter()
   // const [isModalVisible, setIsModalVisible] = useState(false)
 
   const fetchTemplateTask = async (id) => {
@@ -211,8 +213,10 @@ const EditTemplateTaskPage = () => {
       afterTasks: submitNextTasks,
     })
       .then(() => {
-        openNotificationSuccess()
-        window.location.href = `/template-task-dt/${id}`
+        router.push(`/template-task-dt/${id}`)
+        setTimeout(() => {
+          openNotificationSuccess()
+        }, 1000)
       })
       .catch((error) => {
         if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
@@ -232,6 +236,7 @@ const EditTemplateTaskPage = () => {
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const [isPreview, setIsPreview] = useState(false)
   const [dataPreview, setDataPreview] = useState([])
+  const [chosePreview, setChosePreview] = useState(false)
   const checkIsFormInputNotEmpty = () => {
     // get all input values .
     const inputValues = form.getFieldsValue()
@@ -247,9 +252,10 @@ const EditTemplateTaskPage = () => {
     return true
   }
   const onFinishFail = () => {
-    setIsPreview(false)
+    setChosePreview(false)
   }
   const onPreview = () => {
+    setChosePreview(false)
     if (checkIsFormInputNotEmpty) {
       setIsPreview(true)
       const data = {
@@ -282,6 +288,7 @@ const EditTemplateTaskPage = () => {
                   span: 16,
                 }}
                 className="space-y-12 w-5/6"
+                onFinish={chosePreview ? onPreview : handleOk}
                 onFinishFailed={onFinishFail}
               >
                 <div className="grid grid-cols-2">
@@ -449,7 +456,7 @@ const EditTemplateTaskPage = () => {
                       className="preview_btn"
                       htmlType="submit"
                       onClick={() => {
-                        onPreview()
+                        setChosePreview(!chosePreview)
                       }}
                       style={{ letterSpacing: '-1px' }}
                     >
@@ -459,7 +466,6 @@ const EditTemplateTaskPage = () => {
                       type="primary"
                       htmlType="submit"
                       className="text-base mr-5 2xl:mr-10"
-                      onClick={handleOk}
                     >
                       <span> 保存 </span>
                     </Button>
@@ -478,7 +484,6 @@ const EditTemplateTaskPage = () => {
                       type="primary"
                       htmlType="submit"
                       className="text-base "
-                      onClick={handleOk}
                     >
                       <span> 保存 </span>
                     </Button>
