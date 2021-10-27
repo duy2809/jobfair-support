@@ -1,20 +1,21 @@
-import { EditOutlined } from '@ant-design/icons'
-import { Button, Divider, Form, Input, Select, Tag, Tooltip, Typography } from 'antd'
+import { EditOutlined, CheckCircleTwoTone } from '@ant-design/icons'
+import { Button, Divider, Form, Input, Select, Tag, Tooltip, Typography, notification } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
 import { getUser, taskData } from '../../api/task-detail'
-import Editor from '../../components/box-comment/editor'
+import Editor from '../box-comment/editor'
 import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
+import { editTask } from '../../api/edit-task'
 import Comment from './Comment'
-function index({ id }) {
+
+function index({ id, statusProp, assigneeProp, taskInfo }) {
   const [visible, setVisible] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
   const [form] = Form.useForm()
-  const [reRender, setReRender] = useState(false)
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
@@ -32,7 +33,10 @@ function index({ id }) {
       if (response.status === 200) {
         store.dispatch({
           type: actions.LOAD_COMMENT,
-          payload: [id, start, count],
+          payload: {
+            params: [id, start, count],
+            commentArray,
+          },
         })
       }
     } catch (error) {
@@ -64,7 +68,7 @@ function index({ id }) {
   const fetchTaskData = async () => {
     await taskData(id).then((response) => {
       form.setFieldsValue({
-        // assignee: listmember,
+        // assignee: listUser,
         status: response.data.status,
       })
     })
@@ -136,7 +140,7 @@ function index({ id }) {
 
       const response = await addComment(comment)
       const newComment = response.data
-      window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
+      // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
       if (newComment) {
         store.dispatch({
           type: actions.ADD_COMMENT,
@@ -145,34 +149,76 @@ function index({ id }) {
         form.resetFields()
         setValue('')
       }
+      return newComment
     } catch (error) {
       return error
     }
   }
+
   const typing = (e) => {
     setValue(e.target.value)
   }
+
   const callBack = (childState) => {
     showBox()
-    // window.scrollByPages(1)
     setEditingComment(childState)
     setEditing(true)
     form.resetFields()
     setValue(childState.content)
-    form.setFieldsValue({ detail: childState.content })
+
+    form.setFieldsValue({
+      detail: childState.content,
+      assignee: assigneeProp,
+      status: statusProp,
+    })
   }
-  const onDoneEditing = async () => {
+
+  const onDoneEditing = async (e) => {
+    e.preventDefault()
     const { status, assignee } = form.getFieldsValue()
-    console.log(value)
     const newComment = { ...editingComment, content: value, status, assignee }
-    // const response = await updateComment(newComment.id, newComment)
-    // console.log(response)
-    // store.dispatch({
-    //   type: actions.EDIT_COMMENT,
-    //   payload: [newComment, ...commentArray],
-    // })
+
+    const response = await updateComment(newComment.id, newComment)
+    if (response.status === 200) {
+      const newComments = commentArray.map((comment) => {
+        if (comment.id === newComment.id) {
+          return newComment
+        }
+        return comment
+      })
+      store.dispatch({
+        type: actions.EDIT_COMMENT,
+        payload: newComments,
+      })
+    }
     setEditing(false)
-    // form.resetFields()
+    form.resetFields()
+    const data = Object.assign(taskInfo, {
+      status,
+      admin: assignee,
+    })
+
+    const isEdited = await editTask(id, data)
+    if (isEdited.status === 200) {
+      notification.open({
+        icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+        duration: 3,
+        message: '更新しました!',
+        onClick: () => {},
+      })
+    }
+    // const data = {
+    //   name: values.name,
+    //   description_of_detail: values.detail,
+    //   beforeTasks: beforeID,
+    //   afterTasks: afterIDs,
+    //   start_time: values.start_time.format(Extensions.dateFormat),
+    //   end_time: values.end_time.format(Extensions.dateFormat),
+    //   admin: adminas,
+    //   user_id: users.id,
+    //   status: values.status,
+    //   reviewers: reviewersSelected,
+    // }
   }
 
   return (
@@ -180,7 +226,7 @@ function index({ id }) {
       <span className="comment__count block">{`コメント(${commentArray.length})`}</span>
       <Typography.Link
         className="see-more block text-center"
-        // onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
+        onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
       >
         もっと読む
       </Typography.Link>
@@ -196,6 +242,8 @@ function index({ id }) {
             content={comment.content}
             edited={comment.edited}
             lastEdit={comment.lastEdit}
+            assignee={comment.assignee}
+            status={comment.status}
             parentCallBack={callBack}
           />
         ))}
@@ -227,7 +275,7 @@ function index({ id }) {
                     name="detail"
                     onChange={typing}
                   >
-                    {reRender ? <Editor value={value} /> : <Editor value={value} />}
+                    <Editor value={value} />
                   </Form.Item>
                 </div>
                 <div className="pos-right">
@@ -297,9 +345,9 @@ function index({ id }) {
                     {editing ? (
                       <Button
                         type="primary"
-                        onClick={onDoneEditing}
-                        className="button_edit"
+                        className="edit_brn"
                         style={{ letterSpacing: '-1px' }}
+                        onClick={onDoneEditing}
                       >
                         <span>編集</span>
                       </Button>

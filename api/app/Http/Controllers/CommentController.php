@@ -90,6 +90,7 @@ class CommentController extends Controller
 
         // return new comment
         $comment = Comment::create($input);
+
         return [
             'id'        => $comment->id,
             'author'    => [
@@ -104,7 +105,6 @@ class CommentController extends Controller
             'assignee'  => $assignee,
             'status'    => $status,
         ];
-
     }
 
     /**
@@ -161,11 +161,12 @@ class CommentController extends Controller
         ]);
         if (
             !Comment::findOrFail($id)->update([
-                'body' => $request->body,
+                'body' => $request->content,
             ])
         ) {
             return response()->json(['message' => 'Fail to update'], 500);
         }
+
         $comment = Comment::find($id);
         $data = [
             'id'        => $comment->id,
@@ -181,6 +182,7 @@ class CommentController extends Controller
             'assignee'  => [],
             'status'    => 'status',
         ];
+
         return response()->json($data, 200);
     }
 

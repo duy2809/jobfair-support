@@ -19,7 +19,6 @@ class Comment implements ShouldBroadcastNow
      */
     public function __construct()
     {
-        //
     }
 
     /**

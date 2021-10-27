@@ -3,7 +3,6 @@ import { handleActions } from 'redux-actions'
 
 import types from './types'
 import enumsStatus from '~/enums/status'
-import _map from 'lodash/map'
 
 //= ============== SELECTOR ===============//
 const loadStatus = (state) => state.getIn(['commentReducer', 'loadStatus'])
@@ -18,21 +17,15 @@ export const selectors = {
 const initState = fromJS({
   loadStatus: enumsStatus.LOADING,
   comments: [],
-  commentEditing: {
-    
-  },
+  commentEditing: {},
 })
 
 const loading = (state) => state.set('loadStatus', enumsStatus.LOADING)
 
-const loadSuccess = (state, action) => {
-  return state.set('loadStatus', enumsStatus.SUCCESS).set('comments', fromJS(action.payload))
-}
+const loadSuccess = (state, action) => state.set('loadStatus', enumsStatus.SUCCESS).set('comments', fromJS(action.payload))
 const loadFail = (state) => state.set('loadStatus', enumsStatus.FAIL)
 
-const storeData = (state, action) => {
-  return state.set('comments', fromJS(action.payload))
-}
+const storeData = (state, action) => state.set('comments', fromJS(action.payload))
 
 const reducer = handleActions(
   {
@@ -44,7 +37,7 @@ const reducer = handleActions(
     [types.DELETE_COMMENT]: storeData,
     [types.EDIT_COMMENT]: storeData,
   },
-  initState
+  initState,
 )
 
 export default reducer

@@ -35,9 +35,7 @@ function BoxComment(props) {
     setLink('')
   }
 
-  useEffect(() => {
-    console.log('change state')
-  }, [value])
+  useEffect(() => {}, [value])
   const handleCancel = () => {
     setIsModalVisible(false)
   }

@@ -29,10 +29,10 @@ export function* sagas() {
 
 function* fetchData({ payload }) {
   try {
-    const { data: response } = yield call(commentAPI.getComments, ...payload)
-
-    yield put(storeData(response))
-    yield put(loadSuccess(response))
+    const { data: response } = yield call(commentAPI.getComments, ...payload.params)
+    const comments = [...payload.commentArray, ...response]
+    yield put(storeData(comments))
+    yield put(loadSuccess(comments))
   } catch (error) {
     console.log(error)
     yield put(loadFail())

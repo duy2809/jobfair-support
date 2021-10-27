@@ -1,15 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { ReactReduxContext } from 'react-redux'
-import { Avatar, Divider, Typography, Popover } from 'antd'
-import { EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
+import {
+  CheckCircleTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import { Avatar, Divider, Modal, notification, Popover, Typography } from 'antd'
 import moment from 'moment'
-import * as deleteCommentAPI from '../../api/comment'
 import PropTypes from 'prop-types'
-import actions from '../../store/modules/comment/types'
-import { useSelector } from 'react-redux'
+import React, { useContext, useEffect, useState } from 'react'
+import { ReactReduxContext, useSelector } from 'react-redux'
+import * as deleteCommentAPI from '../../api/comment'
 import { commentSelectors } from '../../store/modules/comment'
-import './styles.scss'
+import actions from '../../store/modules/comment/types'
 import MarkDownView from '../markDownView'
+import './styles.scss'
 
 function Comment(props) {
   const AVATAR_SIZE = 50
@@ -28,24 +32,49 @@ function Comment(props) {
 
   useEffect(() => {
     setUserId(store.getState().get('auth').get('user').get('id'))
-    setCommentOverflow(props.content?.length > MAX_CHAR_PER_LINE)
+    setCommentOverflow(props.content.length > MAX_CHAR_PER_LINE)
   }, [])
 
   const editComment = () => {
     props.parentCallBack(props)
   }
+
   const deleteComment = async () => {
     try {
       const comments = commentArray.filter((comment) => comment.id !== props.id)
-      console.log(comments)
+
       const response = await deleteCommentAPI.deleteComment(props.id)
+
       if (response.status === 200) {
         store.dispatch({
           type: actions.DELETE_COMMENT,
           payload: comments,
         })
+        notification.open({
+          icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+          duration: 3,
+          message: '正常に削除されました',
+          onClick: () => {},
+        })
       }
-    } catch (error) {}
+      return comments
+    } catch (error) {
+      return error
+    }
+  }
+  const onDeleteClick = () => {
+    Modal.confirm({
+      title: '削除してもよろしいですか？',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      onOk: () => {
+        deleteComment()
+      },
+      onCancel: () => {},
+      centered: true,
+      okText: 'はい',
+      cancelText: 'いいえ',
+    })
   }
 
   return (
@@ -75,12 +104,12 @@ function Comment(props) {
               <DeleteTwoTone
                 className="border-none mx-1 text-2xl"
                 type="primary"
-                onClick={deleteComment}
+                onClick={onDeleteClick}
               />
             </div>
           </div>
           <div className={classNames('flex flex-1 gap-4', expanded ? 'flex-col' : 'flex-row')}>
-            <span
+            {/* <span
               className={classNames(
                 'comment__content',
                 expanded ? 'expanded' : 'collapse',
@@ -88,13 +117,13 @@ function Comment(props) {
               )}
             >
               {props.content}
-            </span>
+            </span> */}
             <MarkDownView
               source={props.content}
               className={classNames(
                 'comment__content',
                 expanded ? 'expanded' : 'collapse',
-                commentOverflow ? 'comment__overflow' : ''
+                commentOverflow ? 'comment__overflow' : '',
               )}
             />
 
@@ -126,6 +155,8 @@ Comment.propTypes = {
   content: PropTypes.string.isRequired,
   edited: PropTypes.bool.isRequired,
   lastEdit: PropTypes.string.isRequired,
+  // assignee: PropTypes.array.isRequired,
+  // status: PropTypes.string.isRequired,
   parentCallBack: PropTypes.func.isRequired,
 }
 

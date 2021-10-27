@@ -2,7 +2,7 @@ import echo from '../connection'
 
 export default class CommentChannel {
   constructor() {
-    this.channel = echo.channel(`laravel_database_comment-channel`)
+    this.channel = echo.channel('laravel_database_comment-channel')
     this.onOutputCb = null
   }
 
