@@ -15,7 +15,7 @@ function index() {
       <OtherLayout>
         <OtherLayout.Main>
           <h1>マスター設定</h1>
-          <Tabs defaultActiveKey="1" onChange={changeTabs}>
+          <Tabs defaultActiveKey="1" onChange={changeTabs} size="large">
             <TabPane tab="カテゴリ" key="1">
               <ListCategory />
             </TabPane>

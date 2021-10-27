@@ -194,16 +194,17 @@ const MilestoneList = () => {
               handleEdit(record.id)
             }}
           />
+          <DeleteTwoTone className="cursor-default" />
 
-          <DeleteTwoTone
-            onClick={() => {
-              setId(record.id)
-              setIsModalType((preState) => ({
-                ...preState,
-                delete: true,
-              }))
-            }}
-          />
+          {/* <DeleteTwoTone
+              onClick={() => {
+                setId(record.id)
+                setIsModalType((preState) => ({
+                  ...preState,
+                  delete: true,
+                }))
+              }}
+            /> */}
         </Space>
       ),
     },

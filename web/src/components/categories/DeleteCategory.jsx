@@ -20,7 +20,7 @@ const DeleteCategory = (props) => {
     })
     setReloadPage()
   }
-
+  // eslint-disable-next-line no-unused-vars
   function showDeleteConfirm() {
     confirm({
       title: '削除カテゴリ',
@@ -47,7 +47,8 @@ const DeleteCategory = (props) => {
   return (
     <div>
       <Space>
-        <DeleteTwoTone onClick={showDeleteConfirm} />
+        {/* <DeleteTwoTone onClick={showDeleteConfirm} /> */}
+        <DeleteTwoTone />
       </Space>
     </div>
   )

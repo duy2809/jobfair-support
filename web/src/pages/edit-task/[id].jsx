@@ -467,6 +467,7 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
+
                   >
                     <Input
                       id="validate_name"
@@ -558,6 +559,7 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
+
                   >
                     <Select
                       size="large"
@@ -584,6 +586,7 @@ function TaskList() {
                         validator: startDayValidator,
                       },
                     ]}
+
                   >
                     <DatePicker
                       size="large"
@@ -607,6 +610,7 @@ function TaskList() {
                         validator: EndDayValidator,
                       },
                     ]}
+
                   >
                     <DatePicker
                       size="large"
@@ -624,6 +628,7 @@ function TaskList() {
                     label="前のタスク"
                     name="taskBefore"
                     className="tag_a"
+
                   >
                     <Select
                       mode="multiple"
@@ -645,6 +650,7 @@ function TaskList() {
                     label="次のタスク"
                     name="afterTask"
                     className="tag_a"
+
                   >
                     <Select
                       mode="multiple"
@@ -667,6 +673,7 @@ function TaskList() {
                     name="assignee"
                     required
                     className="multiples"
+
                   >
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
