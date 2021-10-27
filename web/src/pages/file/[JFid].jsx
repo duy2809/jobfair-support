@@ -24,6 +24,8 @@ import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } fro
 import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 import Loading from '../../components/loading'
+import NotificationChannel from '../../libs/echo/channels/notification-channel'
+
 
 export default function File() {
   const { store } = useContext(ReactReduxContext)
