@@ -234,7 +234,7 @@ class TaskController extends Controller
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
         ]);
-        if ($request->input('reviewers') === []) {
+        if ($request->input('reviewers') === [] || $request->input('reviewers') === [null]) {
             $task->update($request->all());
             if (!empty($request->beforeTasks)) {
                 $task->beforeTasks()->sync($request->beforeTasks);
@@ -250,6 +250,7 @@ class TaskController extends Controller
                 ]);
             }
 
+            $task->reviewers()->sync([]);
             $task->save();
 
             return response()->json(['message' => 'Edit Successfully'], 200);
@@ -316,6 +317,21 @@ class TaskController extends Controller
     public function getReviewers($id)
     {
         return Task::find($id)->reviewers;
+    }
+
+    public function getListReviewers($id)
+    {
+        $task = Task::find($id);
+        $ad = $task->schedule->jobfair->user->id;
+        $listReviewers = [];
+        foreach (User::all() as $user) {
+            $categories = array_column($user->categories->toArray(), 'category_name');
+            if ((in_array('レビュアー', $categories) && in_array($task->categories()->first()->category_name, $categories)) || $user->id === $ad) {
+                array_push($listReviewers, $user);
+            }
+        }
+
+        return response()->json($listReviewers);
     }
 
     public function getBeforeTasks($id)

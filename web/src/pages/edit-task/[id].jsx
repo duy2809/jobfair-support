@@ -27,7 +27,7 @@ import {
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers } from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function TaskList() {
@@ -64,6 +64,7 @@ function TaskList() {
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
+  const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const fetchTaskData = async () => {
     await reviewers(idTask).then((response) => {
       if (response.status === 200) {
@@ -72,6 +73,16 @@ function TaskList() {
     }).catch((err) => {
       console.log(err)
     })
+
+    await listReviewersSelectTag(idTask).then((response) => {
+      if (response.status === 200) {
+        console.log(response.data)
+        setReviewersSelectTag(response.data)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
@@ -537,7 +548,15 @@ function TaskList() {
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
                     >
-                      {listUser.map((element) => (
+                      <Select.Option
+                        className="validate-user"
+                        key={undefined}
+                        value={undefined}
+                      >
+                        None
+                      </Select.Option>
+
+                      {reviewersSelectTag.map((element) => (
                         <Select.Option
                           className="validate-user"
                           key={element.id}
