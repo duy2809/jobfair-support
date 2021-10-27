@@ -18,13 +18,19 @@ class MemberController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->role === 2) {
-            return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->orWhere('role', '=', 3)->get();
-        } else if (Auth::user()->role === 1) {
-            return User::select('id', 'name', 'email', 'created_at')->get();
+        // if (Auth::user()->role === 2) {
+        //     return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->orWhere('role', '=', 3)->get();
+        // } else if (Auth::user()->role === 1) {
+        //     return User::select('id', 'name', 'email', 'created_at')->get();
+        // }
+
+        // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
+        if (Auth::user()->role === 1 || Auth::user()->role === 2) {
+            return User::select('id', 'name', 'email', 'created_at')
+                ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
         }
 
-        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
+        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
     }
 
     public function showMember($id)
