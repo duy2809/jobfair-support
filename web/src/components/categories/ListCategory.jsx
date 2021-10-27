@@ -63,9 +63,7 @@ export default function ListCategories() {
       render: (name) => (
         <div>
           <Tooltip placement="top" title={name}>
-            <a>
-              {name}
-            </a>
+            <a>{name}</a>
           </Tooltip>
         </div>
       ),
@@ -95,7 +93,6 @@ export default function ListCategories() {
   }, [category])
   return (
     <div className="list-category">
-
       <h1>カテゴリー覧</h1>
 
       <div className="list">
@@ -126,7 +123,6 @@ export default function ListCategories() {
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-
                     }}
                   >
                     <div className="flex items-center mr-3">
