@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Jobfair;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -104,12 +103,8 @@ class CategoryController extends Controller
         return Category::where('id', '<>', $id)->where('category_name', '=', $name)->get();
     }
 
-    public function getCategoriesWithMember($JFid)
+    public function getCategoriesWithMember()
     {
-        return Category::with([
-            'users' => function ($query) use ($JFid) {
-                $query->whereIn('id', Jobfair::find($JFid)->schedule->users->pluck('id'))->get(['id', 'name']);
-            },
-        ])->get(['id', 'category_name']);
+        return Category::with('users:id,name')->get();
     }
 }

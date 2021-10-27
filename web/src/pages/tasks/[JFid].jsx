@@ -604,7 +604,7 @@ function TaskList() {
       },
     ]
   const fetchCTGR = async () => {
-    await getCategorys(router.query.JFid).then((response) => {
+    await getCategorys().then((response) => {
       setDataCategory(response.data)
     })
   }
