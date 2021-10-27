@@ -2,23 +2,25 @@
 
 namespace App\Notifications;
 
+use App\Models\Jobfair;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TestNotification extends Notification
+class JobfairCreated extends Notification
 {
     use Queueable;
 
+    protected $jobfair;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Jobfair $jobfair)
     {
-        //
+        $this->jobfair = $jobfair;
     }
 
     /**
@@ -55,15 +57,20 @@ class TestNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'invoice_id' => '1',
-            'amount' => '1000',
+            'jobfair' => [
+                'id' => $this->jobfair->id,
+                'name' => $this->jobfair->name,
+            ],
         ];
     }
+
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'invoice_id' => '1',
-            'amount' => '1000',
+            'jobfair' => [
+                'id' => $this->jobfair->id,
+                'name' => $this->jobfair->name,
+            ],
         ]);
     }
 }

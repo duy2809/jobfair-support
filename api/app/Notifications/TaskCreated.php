@@ -2,23 +2,25 @@
 
 namespace App\Notifications;
 
+use App\Models\Task;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TestNotification extends Notification
+class TaskCreated extends Notification
 {
     use Queueable;
 
+    protected $task;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Task $task)
     {
-        //
+        $this->task = $task;
     }
 
     /**
@@ -55,15 +57,19 @@ class TestNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'invoice_id' => '1',
-            'amount' => '1000',
+            'task' => [
+                'id' => $this->task->id,
+                'name' => $this->task->name,
+            ],
         ];
     }
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'invoice_id' => '1',
-            'amount' => '1000',
+            'task' => [
+                'id' => $this->task->id,
+                'name' => $this->task->name,
+            ],
         ]);
     }
 }
