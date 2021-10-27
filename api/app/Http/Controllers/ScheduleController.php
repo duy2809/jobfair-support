@@ -28,7 +28,7 @@ class ScheduleController extends Controller
 
     public function getAll()
     {
-        return Schedule::all();
+        return Schedule::whereNull('jobfair_id')->get();
     }
 
     /**
