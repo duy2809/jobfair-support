@@ -339,7 +339,7 @@ function TaskDetail() {
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
                             <li>
@@ -376,7 +376,7 @@ function TaskDetail() {
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
                           ? afterTasks.map((item) => (
                             <li>
@@ -426,11 +426,10 @@ function TaskDetail() {
                   </div>
                 </div>
               </div>
-              <div className="mx-5 mt-5">
-                <div className=" mx-7 des demo-infinite-container">
+              <div className="mx-12 mt-5">
+                <div className=" mx-10 des demo-infinite-container">
                   <MarkDownView source={infoTask.description_of_detail} />
                 </div>
-                <div className="mx-7" />
               </div>
             </div>
             <Comment
