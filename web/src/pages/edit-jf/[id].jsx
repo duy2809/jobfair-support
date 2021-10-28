@@ -62,10 +62,12 @@ const index = () => {
       setlistMilestone(Array.from(milestones.data.milestones))
     }
   }
-  const getTask = async (id) => {
-    const jobfair = await editApi.getTaskList(id)
-    const taskList = jobfair.data.schedule.tasks.map((task) => task.name)
-    console.log(taskList)
+  const getTask = async (name) => {
+    const listSchedules = await editApi.getSchedulesTaskByName(name)
+    const scheduleID = listSchedules.data.find((schedule) => schedule.jobfair_id == null).id
+    // console.log(scheduleID)
+    const schedule = await editApi.getTaskList(scheduleID)
+    const taskList = schedule.data.template_tasks.map((task) => task.name)
     if (taskList) {
       setlistTask(Array.from(taskList))
     }
@@ -80,8 +82,8 @@ const index = () => {
         const jfSchedules = await editApi.ifSchedule(idJf)
         if (jfSchedules.data.data[0].id) {
           getMilestone(jfSchedules.data.data[0].id)
-          // getTask(jfSchedules.data.data[0].id)
-          getTask(idJf)
+          getTask(jfSchedules.data.data[0].name)
+          // getTask(idJf)
         }
         setlistAdminJF(Array.from(admins.data))
         setlistSchedule(Array.from(schedules.data))
@@ -164,9 +166,10 @@ const index = () => {
     setIsEdit(true)
     setSchedule(true)
     const scheduleId = event.key
+    const scheduleName = event.children
 
     getMilestone(scheduleId)
-    getTask(scheduleId)
+    getTask(scheduleName)
   }
   const adminSelect = () => {
     setIsEdit(true)
@@ -244,9 +247,9 @@ const index = () => {
     if (value.match(Extensions.Reg.specialCharacter)) {
       return Promise.reject(new Error('使用できない文字が含まれています'))
     }
-    if (value.match(Extensions.Reg.vietnamese)) {
-      return Promise.reject(new Error('ベトナム語は入力できない'))
-    }
+    // if (value.match(Extensions.Reg.vietnamese)) {
+    //   return Promise.reject(new Error('ベトナム語は入力できない'))
+    // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
