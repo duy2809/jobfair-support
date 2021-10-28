@@ -29,7 +29,7 @@ class CommentController extends Controller
         $assignee = [];
         $status = '';
         $request->validate([
-            'task_id'     => 'required|numeric',
+            'task_id'     => 'required|numeric|exists:tasks,id',
             'body'        => 'string',
             'status'      => 'string',
             'description' => 'string',
