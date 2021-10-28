@@ -27,6 +27,8 @@ const EditMilestonePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { Option } = Select
   const [loading, setLoading] = useState(true)
+  const [prevNameInput, setPrevNameInput] = useState('')
+  const [prevTimeInput, setPrevTimeInput] = useState('')
 
   useEffect(async () => {
     setId(router.query.id)
@@ -35,6 +37,8 @@ const EditMilestonePage = () => {
     getMilestone(id).then((res) => {
       setNameInput(res.data.name)
       setTimeInput(res.data.period.toString())
+      setPrevNameInput(res.data.name)
+      setPrevTimeInput(res.data.period.toString())
       setTypePeriodInput(res.data.is_week)
 
       form.setFieldsValue({
@@ -77,34 +81,6 @@ const EditMilestonePage = () => {
       ])
     }
   }
-
-  const showModal = () => {
-    if (
-      nameInput !== ''
-      && timeInput !== ''
-      && timeInput >= 0
-      && checkSpace === false
-      && errorUnique === false
-    ) {
-      setIsModalVisible(true)
-    } else {
-      const name = nameInput
-      if (name !== '') {
-        getNameExitEdit(id, name).then((res) => {
-          if (res.data.length !== 0) {
-            setErrorUnique(true)
-            form.setFields([
-              {
-                name: 'name',
-                errors: ['このマイルストーン名は存在しています。'],
-              },
-            ])
-          }
-        })
-      }
-    }
-  }
-
   const handleOk = () => {
     setIsModalVisible(false)
     setLoading(true)
@@ -129,6 +105,34 @@ const EditMilestonePage = () => {
       })
     setLoading(false)
   }
+  const showModal = () => {
+    if (
+      nameInput !== ''
+      && timeInput !== ''
+      && timeInput >= 0
+      && checkSpace === false
+      && errorUnique === false
+    ) {
+      // setIsModalVisible(true)
+      handleOk()
+    } else {
+      const name = nameInput
+      if (name !== '') {
+        getNameExitEdit(id, name).then((res) => {
+          if (res.data.length !== 0) {
+            setErrorUnique(true)
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['このマイルストーン名は存在しています。'],
+              },
+            ])
+          }
+        })
+      }
+    }
+  }
+
   const onBlur = () => {
     const name = nameInput
     if (name !== '') {
@@ -264,7 +268,7 @@ const EditMilestonePage = () => {
               <div className="grid grid-cols-6 grid-rows-1 ">
                 <div className="col-start-5 flex justify-end gap-x-4">
                   <Form.Item>
-                    <CancelEditMilestone />
+                    <CancelEditMilestone prevNameInput={prevNameInput} prevTimeInput={prevTimeInput} curNameInput={nameInput} curTimeInput={timeInput} />
                   </Form.Item>
 
                   <Form.Item>
