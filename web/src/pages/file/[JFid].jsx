@@ -24,18 +24,10 @@ import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } fro
 import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 import Loading from '../../components/loading'
-import NotificationChannel from '../../libs/echo/channels/notification-channel'
 
 export default function File() {
   const { store } = useContext(ReactReduxContext)
   const user = store.getState().get('auth').get('user')
-  useEffect(() => {
-    new NotificationChannel(user.get('id'))
-      .onOutput((data) => {
-        console.log(data)
-      })
-      .listen()
-  }, [])
 
   const router = useRouter()
   const JFid = router.query.JFid
@@ -53,8 +45,6 @@ export default function File() {
   const [loading, setLoading] = useState(false)
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
-
-
 
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')

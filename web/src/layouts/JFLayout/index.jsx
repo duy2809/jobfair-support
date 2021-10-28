@@ -105,11 +105,11 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<BarChartOutlined className="sidebar-icons" />}
                 style={styles}
               >
-                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+                <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
-                <Link href={`/grantt-chart/${id}`}>ガントチャート</Link>
+                <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 

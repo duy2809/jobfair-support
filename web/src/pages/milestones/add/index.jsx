@@ -28,6 +28,27 @@ const AddMilestonePage = () => {
     })
   }
 
+  const handleOk = () => {
+    form.submit()
+    setIsModalVisible(false)
+    addMilestone({
+      name: nameInput,
+      period: timeInput,
+      is_week: typePeriodInput,
+    })
+      .then(() => openNotificationSuccess())
+      .catch((error) => {
+        if (
+          JSON.parse(error.response.request.response).errors.name[0]
+          === 'The name has already been taken.'
+        ) {
+          notification.error({
+            message: 'このマイルストーン名は存在しています',
+            duration: 3,
+          })
+        }
+      })
+  }
   const showModal = () => {
     if (
       !(form.isFieldTouched('name') && form.isFieldTouched('time'))
@@ -50,31 +71,11 @@ const AddMilestonePage = () => {
         })
       }
     } else {
-      setIsModalVisible(true)
+      // setIsModalVisible(true)
+      handleOk()
     }
   }
 
-  const handleOk = () => {
-    form.submit()
-    setIsModalVisible(false)
-    addMilestone({
-      name: nameInput,
-      period: timeInput,
-      is_week: typePeriodInput,
-    })
-      .then(() => openNotificationSuccess())
-      .catch((error) => {
-        if (
-          JSON.parse(error.response.request.response).errors.name[0]
-          === 'The name has already been taken.'
-        ) {
-          notification.error({
-            message: 'このマイルストーン名は存在しています',
-            duration: 3,
-          })
-        }
-      })
-  }
   const onBlur = () => {
     const name = nameInput
     if (name !== '') {
@@ -119,6 +120,10 @@ const AddMilestonePage = () => {
   }
 
   const showModalOfBtnCancel = () => {
+    if (nameInput === '' && timeInput === '') {
+      window.location.href = '/master-setting'
+      return
+    }
     setIsModalVisibleOfBtnCancel(true)
   }
 

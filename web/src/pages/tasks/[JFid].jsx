@@ -151,7 +151,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const saveEditNotification = () => {
@@ -159,7 +159,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '変更は正常に保存されました。',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const deletetpl = async (id) => {
@@ -184,7 +184,7 @@ function TaskList() {
       onOk: async () => {
         deletetpl(id)
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -202,7 +202,7 @@ function TaskList() {
       (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
@@ -219,7 +219,7 @@ function TaskList() {
       (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
@@ -323,10 +323,10 @@ function TaskList() {
                   <Button onClick={() => { setEdit(false); handleSave(memberAS, record, userAS); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary"><span> 保存 </span></Button>
                   {' '}
                 </div>
-              ) : null }
+              ) : null}
             </>
           )
-          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</> }
+          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</>}
       </div>
     )
   }
@@ -485,10 +485,9 @@ function TaskList() {
       },
     ]
   const fetchCTGR = async () => {
-    await getCategorys(router.query.JFid)
-      .then((response) => {
-        setDataCategory(response.data)
-      })
+    await getCategorys().then((response) => {
+      setDataCategory(response.data)
+    })
   }
   useEffect(async () => {
     setLoading(true)
@@ -517,7 +516,7 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value
         ? task.taskName.toLowerCase().includes(value)
-            || task.managers.some((manager) => manager.toLowerCase().includes(value))
+        || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
@@ -537,7 +536,7 @@ function TaskList() {
       (task) => (value ? !task.status.localeCompare(value) : task.status)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
