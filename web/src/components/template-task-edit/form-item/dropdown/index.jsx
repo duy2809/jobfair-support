@@ -6,9 +6,10 @@ import PropTypes from 'prop-types'
 const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
-const ItemDropdow = ({ form, display, name, setCheckSpace, data, setInput, setId }) => {
+const ItemDropdow = ({ form, setConfilm, display, name, setCheckSpace, data, setInput, setId }) => {
   const [fieldName, setFieldName] = useState('')
   const onValueNameChange = (value) => {
+    setConfilm(true)
     setCheckSpace(false)
     setInput(value)
     const temp = {}
@@ -71,4 +72,5 @@ ItemDropdow.propTypes = {
   data: PropTypes.array.isRequired,
   setInput: PropTypes.func.isRequired,
   setId: PropTypes.func.isRequired,
+  setConfilm: PropTypes.func.isRequired,
 }
