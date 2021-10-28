@@ -10,7 +10,6 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
-use App\Notifications\TestNotification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -177,8 +176,3 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 // comment
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
-
-Route::get('test', function () {
-    auth()->user()->notify(new TestNotification());
-    return 'dispatched';
-});

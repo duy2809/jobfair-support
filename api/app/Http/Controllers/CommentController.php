@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\TaskCreated;
 use App\Notifications\TaskEdited;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -73,6 +75,15 @@ class CommentController extends Controller
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
                 $isUpdatedTask = true;
+
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
             }
         }
 

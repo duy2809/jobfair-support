@@ -187,6 +187,30 @@ class TaskController extends Controller
         ]);
         $task->update($request->all());
 
+        if ($request->has('assignee')) {
+            $listMember = $request->assignee;
+            $listOldMember = $task->users->pluck('id')->toArray();
+            if (
+                !(
+                    is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                )
+            ) {
+                $task->users()->syncWithPivotValues($listMember, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
+            }
+        }
         //notification
         $editedUser = auth()->user();
         $jobfairAdmin = $task->schedule->jobfair->user;
@@ -247,13 +271,35 @@ class TaskController extends Controller
             'user_id' => 'exists:users,id',
             'description_of_detail' => 'string|nullable',
             'template_task_id' => 'exists:template_tasks,id',
-            'admin' => 'required',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date',
+            'start_time' => 'date',
+            'end_time' => 'date',
             'name' => [
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
         ]);
+
+        if ($request->has('admin')) {
+            $listMember = $request->admin;
+            $listOldMember = $task->users->pluck('id')->toArray();
+            if (
+                !(
+                    is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                )
+            ) {
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
+            }
+        }
+
         if ($request->input('reviewers') === []) {
             $task->update($request->all());
             if (!empty($request->beforeTasks)) {
@@ -318,7 +364,6 @@ class TaskController extends Controller
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
             }
-
             $task->reviewers()->sync($request->input('reviewers'));
             $task->save();
 
@@ -415,7 +460,6 @@ class TaskController extends Controller
         if ($request->has('assignee')) {
             $listMember = $request->assignee;
             $listOldMember = $task->users->pluck('id')->toArray();
-
             if (
                 !(
                     is_array($listMember)
@@ -428,7 +472,7 @@ class TaskController extends Controller
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
 
-                //notification
+                // notification edited
                 $editedUser = auth()->user();
                 $jobfairAdmin = $task->schedule->jobfair->user;
                 Notification::send($task->users()
@@ -440,6 +484,16 @@ class TaskController extends Controller
                 if ($editedUser->id != $jobfairAdmin->id) {
                     $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
                 }
+
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
+
             }
         }
 
