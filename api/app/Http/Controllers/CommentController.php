@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Task;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -25,10 +26,11 @@ class CommentController extends Controller
     {
         // $status = ['未着手', '進行中'];
         // validate request: add 'Accept: application/json' to request headers to get error message
+        $assignee = [];
+        $status = '';
         $request->validate([
-            'task_id'     => 'required|exists:tasks,id',
+            'task_id'     => 'required|numeric|exists:tasks,id',
             'body'        => 'string',
-            'assignee'    => 'string',
             'status'      => 'string',
             'description' => 'string',
         ]);
@@ -40,6 +42,7 @@ class CommentController extends Controller
         ];
         $task = Task::find($request->task_id);
         if ($request->has('status')) {
+            $status = $request->status;
             if ($task->status !== $request->status) {
                 $input['old_status'] = $task->status;
                 $input['new_status'] = $request->status;
@@ -51,6 +54,12 @@ class CommentController extends Controller
         if ($request->has('assignee')) {
             $listMember = json_decode($request->assignee, true);
             $listOldMember = $task->users->pluck('id')->toArray();
+            $assignee = collect($listMember)->map(function ($id) {
+                return [
+                    'id'   => $id,
+                    'name' => User::find($id)->name,
+                ];
+            });
             // if old assignees equal to request's assignees (in any order) then don't update anything
             if (
                 !(
@@ -80,7 +89,22 @@ class CommentController extends Controller
         }
 
         // return new comment
-        return Comment::create($input);
+        $comment = Comment::create($input);
+
+        return [
+            'id'        => $comment->id,
+            'author'    => [
+                'id'     => $comment->user->id,
+                'name'   => $comment->user->name,
+                'avatar' => $comment->user->avatar,
+            ],
+            'created'   => $comment->created_at,
+            'content'   => $comment->body,
+            'edited'    => $comment->updated_at > $comment->created_at,
+            'last_edit' => $comment->updated_at,
+            'assignee'  => $assignee,
+            'status'    => $status,
+        ];
     }
 
     /**
@@ -105,18 +129,18 @@ class CommentController extends Controller
             },
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
-        $result = $data->comments->map(function ($element) {
+        $result = $data->comments->map(function ($comment) {
             return [
-                'id'        => $element->id,
+                'id'        => $comment->id,
                 'author'    => [
-                    'id'     => $element->user->id,
-                    'name'   => $element->user->name,
-                    'avatar' => $element->user->avatar,
+                    'id'     => $comment->user->id,
+                    'name'   => $comment->user->name,
+                    'avatar' => $comment->user->avatar,
                 ],
-                'created'   => $element->created_at,
-                'content'   => $element->body,
-                'edited'    => $element->updated_at > $element->created_at,
-                'last_edit' => $element->updated_at,
+                'created'   => $comment->created_at,
+                'content'   => $comment->body,
+                'edited'    => $comment->updated_at > $comment->created_at,
+                'last_edit' => $comment->updated_at,
             ];
         });
 
@@ -133,17 +157,33 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'body' => 'string',
+            'content' => 'string',
         ]);
         if (
             !Comment::findOrFail($id)->update([
-                'body' => $request->body,
+                'body' => $request->content,
             ])
         ) {
             return response()->json(['message' => 'Fail to update'], 500);
         }
 
-        return response()->json(Comment::find($id), 200);
+        $comment = Comment::find($id);
+        $data = [
+            'id'        => $comment->id,
+            'author'    => [
+                'id'     => $comment->user->id,
+                'name'   => $comment->user->name,
+                'avatar' => $comment->user->avatar,
+            ],
+            'created'   => $comment->created_at,
+            'content'   => $comment->body,
+            'edited'    => $comment->updated_at > $comment->created_at,
+            'last_edit' => $comment->updated_at,
+            'assignee'  => [],
+            'status'    => 'status',
+        ];
+
+        return response()->json($data, 200);
     }
 
     /**
