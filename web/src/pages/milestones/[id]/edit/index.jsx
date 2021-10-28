@@ -5,7 +5,11 @@ import { Form, Input, Button, Select, Modal, notification } from 'antd'
 import { useRouter } from 'next/router'
 import CancelEditMilestone from '~/components/CancelEditMilestone'
 import OtherLayout from '~/layouts/OtherLayout'
-import { updateMilestone, getMilestone, getNameExitEdit } from '~/api/milestone'
+import {
+  updateMilestone,
+  getMilestone,
+  getNameExitEdit,
+} from '~/api/milestone'
 import Loading from '~/components/loading'
 import './styles.scss'
 
@@ -153,6 +157,9 @@ const EditMilestonePage = () => {
         setTypePeriodInput(parseInt(value, 10))
       }}
       value={typePeriodInput.toString()}
+      style={{
+        width: 90,
+      }}
     >
       <Option value="0">日後</Option>
       <Option value="1">週間後</Option>
@@ -193,7 +200,9 @@ const EditMilestonePage = () => {
                       if (specialCharRegex.test(value)) {
                         setcheckSpace(true)
                         return Promise.reject(
-                          new Error('マイルストーン名はスペースが含まれていません。'),
+                          new Error(
+                            'マイルストーン名はスペースが含まれていません。',
+                          ),
                         )
                       }
                       return Promise.resolve()

@@ -114,6 +114,24 @@ services:
     volumes:
       - *jobfair-uploads
 
+  echo-server:
+    image: sunasteriskrnd/laravel-echo-server:1.6
+    environment:
+      REDIS_KEY_PREFIX: sun_jobfair_database_
+      REDIS_HOST: redis
+      AUTH_HOST: http://{{ domain }}
+      AUTH_ENDPOINT: /broadcasting/auth
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.ws.rule=Host(`{{ domain }}`) && PathPrefix(`/socket.io`)
+        - traefik.http.routers.ws.entrypoints={{ traefik_entrypoint }}
+        - traefik.http.services.ws.loadbalancer.server.port=6001
+        - traefik.http.routers.ws.middlewares=web-auth
+    networks:
+      - default
+      - traefik
+
   redis:
     image: redis:alpine
     volumes:

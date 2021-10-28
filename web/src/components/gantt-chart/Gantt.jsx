@@ -106,6 +106,10 @@ export default class Gantt extends Component {
           return 'week_scale'
       }
     }
+    /* remove timeline text */
+    gantt.templates.task_text = function () {
+      return ''
+    }
     gantt.config.scales = [
       { unit: 'month', step: 1, format: '%F' },
       { unit: 'week', step: 1, format: '%W', css: '' },
@@ -132,10 +136,16 @@ export default class Gantt extends Component {
         name: 'task',
         label: 'タスクリスト',
         // resize: true,
-        width: 180,
+        width: 200,
         align: 'center',
         template(item) {
-          return `<p class="task-column" style="border:1px solid #e3e3e3; " > ${item.text}</p>`
+          return `
+           <span
+               class="task-column"
+              >
+               <p class="task-detail" > ${item.text}</p>
+              </span>
+          `
         },
       },
     ]
