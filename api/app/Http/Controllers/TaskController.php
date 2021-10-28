@@ -388,7 +388,6 @@ class TaskController extends Controller
         if ($request->has('assignee')) {
             $listMember = $request->assignee;
             $listOldMember = $task->users->pluck('id')->toArray();
-
             if (
                 !(
                     is_array($listMember)
