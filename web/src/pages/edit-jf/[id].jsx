@@ -63,9 +63,11 @@ const index = () => {
     }
   }
   const getTask = async (id) => {
-    const tasks = await editApi.getTaskList(id)
-    if (tasks.data.template_tasks) {
-      setlistTask(Array.from(tasks.data.template_tasks))
+    const jobfair = await editApi.getTaskList(id)
+    const taskList = jobfair.data.schedule.tasks.map((task) => task.name)
+    console.log(taskList)
+    if (taskList) {
+      setlistTask(Array.from(taskList))
     }
   }
 
@@ -78,7 +80,8 @@ const index = () => {
         const jfSchedules = await editApi.ifSchedule(idJf)
         if (jfSchedules.data.data[0].id) {
           getMilestone(jfSchedules.data.data[0].id)
-          getTask(jfSchedules.data.data[0].id)
+          // getTask(jfSchedules.data.data[0].id)
+          getTask(idJf)
         }
         setlistAdminJF(Array.from(admins.data))
         setlistSchedule(Array.from(schedules.data))
@@ -469,7 +472,7 @@ const index = () => {
                       dataSource={listTask}
                       renderItem={(item) => (
                         <List.Item className="list-items" key={item.id}>
-                          {item.name}
+                          {item}
                         </List.Item>
                       )}
                     />

@@ -19,7 +19,9 @@ const editApi = {
   },
 
   getTaskList: (id) => {
-    const url = `/schedules/${id}/template-tasks`
+    // const url = `/schedules/${id}/template-tasks`
+    const url = `/jobfair/${id}/tasks`
+
     return instance.get(url)
   },
   getMilestone: (id) => {
