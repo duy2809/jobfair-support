@@ -1,12 +1,17 @@
 import { Modal, Button } from 'antd'
 import React from 'react'
+import PropTypes from 'prop-types'
 
 class CancelEditMilestone extends React.Component {
   state = {
     visible: false,
   };
 
-  showModal = () => {
+  showModal = (curNameInput, curTimeInput, prevNameInput, prevTimeInput) => {
+    if (curNameInput === prevNameInput && curTimeInput === prevTimeInput) {
+      window.location.href = '/milestones'
+      return
+    }
     this.setState({
       visible: true,
     })
@@ -25,7 +30,7 @@ class CancelEditMilestone extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal}>
+        <Button onClick={() => this.showModal(this.props.curNameInput, this.props.curTimeInput, this.props.prevNameInput, this.props.prevTimeInput)}>
           キャンセル
         </Button>
         <Modal
@@ -51,3 +56,10 @@ class CancelEditMilestone extends React.Component {
   }
 }
 export default CancelEditMilestone
+
+CancelEditMilestone.propTypes = {
+  curNameInput: PropTypes.string.isRequired,
+  curTimeInput: PropTypes.string.isRequired,
+  prevNameInput: PropTypes.string.isRequired,
+  prevTimeInput: PropTypes.string.isRequired,
+}

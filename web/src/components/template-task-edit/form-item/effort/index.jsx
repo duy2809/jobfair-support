@@ -6,7 +6,7 @@ const { Option } = Select
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
-const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, setUnit, setIsDay }) => {
+const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, setUnit, setIsDay, setConfilm }) => {
   const numberInputValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -22,6 +22,7 @@ const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, s
   }
 
   const onValueNameChange = (e) => {
+    setConfilm(true)
     setCheckSpace(false)
     setInput(e.target.value)
     form.setFieldsValue({
@@ -29,6 +30,7 @@ const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, s
     })
   }
   const onValueIsDayChange = (value) => {
+    setConfilm(true)
     setCheckSpace(false)
     setIsDay(isDayData.find((o) => o.name === value).id)
     form.setFieldsValue({
@@ -36,6 +38,7 @@ const Effort = ({ form, display, unitData, isDayData, setCheckSpace, setInput, s
     })
   }
   const onValueUnitChange = (value) => {
+    setConfilm(true)
     setCheckSpace(false)
     setUnit(unitData.find((o) => o.name === value).name)
     form.setFieldsValue({
@@ -127,4 +130,5 @@ Effort.propTypes = {
   setInput: PropTypes.func.isRequired,
   setUnit: PropTypes.func.isRequired,
   setIsDay: PropTypes.func.isRequired,
+  setConfilm: PropTypes.func.isRequired,
 }

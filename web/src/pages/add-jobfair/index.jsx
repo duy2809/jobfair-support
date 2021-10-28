@@ -35,25 +35,9 @@ const index = () => {
   const [listTask, setlistTask] = useState([])
   const [disableBtn, setdisableBtn] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [confilm, setConfilm] = useState(false)
   const [form] = Form.useForm()
   const router = useRouter()
-
-  // check if all input is empty.
-  const checkIsFormInputEmpty = () => {
-    // get all input values .
-    const inputValues = form.getFieldsValue()
-    //  return type :[]
-    const inputs = Object.values(inputValues)
-
-    for (let i = 0; i < inputs.length; i += 1) {
-      const element = inputs[i]
-      if (element) {
-        return false
-      }
-    }
-    return true
-  }
-
   useEffect(() => {
     // Extensions.unSaveChangeConfirm(true)
 
@@ -103,7 +87,7 @@ const index = () => {
 
   //  open prompt after cancel button clicked .
   const cancelConfirmModle = () => {
-    if (checkIsFormInputEmpty()) {
+    if (!confilm) {
       routeTo('/jobfairs')
     } else {
       Modal.confirm({
@@ -337,7 +321,10 @@ const index = () => {
                     <div className="flex justify-center">
                       <div className="left-side w-1/2">
                         {/* jobfair name */}
-                        <Form.Item label={<p className="font-bold text-right">JF名</p>} required>
+                        <Form.Item
+                          label={<p className="font-bold text-right">JF名</p>}
+                          required
+                        >
                           <Form.Item
                             name="name"
                             noStyle
@@ -353,8 +340,13 @@ const index = () => {
                               id="validate_name"
                               onBlur={checkIsJFNameExisted}
                               onChange={() => {
-                                document.getElementById('error-msg').setAttribute('hidden', 'true')
-                                document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                                setConfilm(true)
+                                document
+                                  .getElementById('error-msg')
+                                  .setAttribute('hidden', 'true')
+                                document.getElementById(
+                                  'validate_name',
+                                ).style.border = '1px solid #e5e7eb'
                               }}
                               placeholder="JF名を入力する"
                               maxLength={200}
@@ -386,6 +378,7 @@ const index = () => {
                             size="large"
                             min={1}
                             onChange={(e) => {
+                              setConfilm(true)
                               autoConvertHalfwidth(e)
                             }}
                             placeholder="参加企業社数"
@@ -407,9 +400,15 @@ const index = () => {
                             size="large"
                             className="addJF-selector"
                             placeholder="管理者を選択"
+                            onChange={(e) => {
+                              setConfilm(true)
+                            }}
                           >
                             {listAdminJF.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
+                              <Select.Option
+                                key={element.id}
+                                value={element.id}
+                              >
                                 {element.name}
                               </Select.Option>
                             ))}
@@ -417,7 +416,9 @@ const index = () => {
                         </Form.Item>
                         {/* list milestones */}
                         <Form.Item label=" ">
-                          <span className="label font-bold">マイルストーン一覧</span>
+                          <span className="label font-bold">
+                            マイルストーン一覧
+                          </span>
                           <List
                             className="demo-infinite-container"
                             bordered
@@ -454,6 +455,9 @@ const index = () => {
                           ]}
                         >
                           <DatePicker
+                            onChange={(e) => {
+                              setConfilm(true)
+                            }}
                             help="Please select the correct date"
                             className="py-2"
                             format={Extensions.dateFormat}
@@ -478,6 +482,7 @@ const index = () => {
                             min={1}
                             onChange={(e) => {
                               autoConvertHalfwidth(e)
+                              setConfilm(true)
                             }}
                             placeholder="推定参加学生数"
                           />
@@ -485,7 +490,11 @@ const index = () => {
                         {/* jobfair schedule */}
                         <Form.Item
                           required
-                          label={<p className="font-bold text-right">JFスケジュール</p>}
+                          label={(
+                            <p className="font-bold text-right">
+                              JFスケジュール
+                            </p>
+                          )}
                           name="schedule_id"
                           // label="JFスケジュール"
                           rules={[
@@ -498,10 +507,16 @@ const index = () => {
                             size="large"
                             className="addJF-selector"
                             placeholder="JF-スケジュールを選択"
-                            onSelect={onScheduleSelect}
+                            onSelect={() => {
+                              setConfilm(true)
+                              onScheduleSelect()
+                            }}
                           >
                             {listSchedule.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
+                              <Select.Option
+                                key={element.id}
+                                value={element.id}
+                              >
                                 {element.name}
                               </Select.Option>
                             ))}
