@@ -17,6 +17,7 @@ import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
 import { reviewers } from '../../api/edit-task'
 import Loading from '~/components/loading'
 import Comment from '~/components/comment/index'
+import MarkDownView from '../../components/markDownView'
 
 function TaskDetail() {
   const router = useRouter()
@@ -427,7 +428,7 @@ function TaskDetail() {
               </div>
               <div className="mx-5 mt-5">
                 <div className=" mx-7 des demo-infinite-container">
-                  {infoTask.description_of_detail}
+                  <MarkDownView source={infoTask.description_of_detail} />
                 </div>
                 <div className="mx-7" />
               </div>
