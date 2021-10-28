@@ -106,9 +106,9 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex px-12 items-center">
         <Notification />
-        <div className="pl-4">
+        <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
             <div className="border-2 border-black user-icon-container">
               <UserOutlined style={{ fontSize: '1.5rem' }} className="user-icon" />

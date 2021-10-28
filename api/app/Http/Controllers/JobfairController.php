@@ -6,7 +6,11 @@ use App\Http\Requests\JobfairRequest;
 use App\Models\Jobfair;
 use App\Models\Schedule;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\JobfairCreated;
+use App\Notifications\JobfairEdited;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
@@ -19,7 +23,7 @@ class JobfairController extends Controller
     {
         foreach ($templateSchedule->templateTasks as $templateTask) {
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -32,7 +36,7 @@ class JobfairController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
             $input['schedule_id'] = $newSchedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -66,6 +70,8 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
+        $jobfair->user->notify(new JobfairCreated($jobfair));
+
         return $jobfair;
     }
 
@@ -98,6 +104,16 @@ class JobfairController extends Controller
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
 
+        $editedUser = auth()->user();
+
+        // notify user
+        if ($editedUser->role == 1) {
+            $jobfair->user->notify(new JobfairEdited($jobfair, $editedUser));
+        } else {
+            Notification::send(User::where('role', 1)
+                    ->get(),
+                new JobfairEdited($jobfair, $editedUser));
+        }
         return response()->json('success');
     }
 
@@ -163,7 +179,7 @@ class JobfairController extends Controller
     {
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
-                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%' . $request->name . '%');
             },
         ])->find($id, ['id']);
 

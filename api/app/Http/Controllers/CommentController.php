@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskCreated;
+use App\Notifications\TaskEdited;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -29,18 +32,20 @@ class CommentController extends Controller
         $assignee = [];
         $status = '';
         $request->validate([
-            'task_id'     => 'required|numeric|exists:tasks,id',
-            'body'        => 'string',
-            'status'      => 'string',
+            'task_id' => 'required|numeric|exists:tasks,id',
+            'body' => 'string',
+            'status' => 'string',
             'description' => 'string',
         ]);
         // $input is attributes for new comment
         $input = [
             'user_id' => auth()->user()->id,
             'task_id' => $request->task_id,
-            'body'    => $request->body,
+            'body' => $request->body,
         ];
         $task = Task::find($request->task_id);
+
+        $isUpdatedTask = false;
         if ($request->has('status')) {
             $status = $request->status;
             if ($task->status !== $request->status) {
@@ -48,15 +53,39 @@ class CommentController extends Controller
                 $input['new_status'] = $request->status;
                 // store task-updating history in comment and update task
                 $task->update(['status' => $request->status]);
+                $isUpdatedTask = true;
             }
         }
+        if ($request->has('description')) {
+            if ($request->description !== $task->description_of_detail) {
+                $input['old_description'] = $task->description_of_detail;
+                $input['new_description'] = $request->description;
+            }
 
+            $task->update(['description_of_detail' => $request->description]);
+            $isUpdatedTask = true;
+        }
+
+        //notification
+        if ($isUpdatedTask) {
+            $editedUser = auth()->user();
+            $jobfairAdmin = $task->schedule->jobfair->user;
+            Notification::send($task->users()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task));
+            Notification::send($task->reviewers()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task));
+            if ($editedUser->id != $jobfairAdmin->id) {
+                $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+            }
+        }
         if ($request->has('assignee')) {
             $listMember = json_decode($request->assignee, true);
             $listOldMember = $task->users->pluck('id')->toArray();
             $assignee = collect($listMember)->map(function ($id) {
                 return [
-                    'id'   => $id,
+                    'id' => $id,
                     'name' => User::find($id)->name,
                 ];
             });
@@ -76,34 +105,35 @@ class CommentController extends Controller
                 $task->users()->syncWithPivotValues($listMember, [
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
-            }
-        }
+                $isUpdatedTask = true;
 
-        if ($request->has('description')) {
-            if ($request->description !== $task->description_of_detail) {
-                $input['old_description'] = $task->description_of_detail;
-                $input['new_description'] = $request->description;
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
             }
-
-            $task->update(['description_of_detail' => $request->description]);
         }
 
         // return new comment
         $comment = Comment::create($input);
 
         return [
-            'id'        => $comment->id,
-            'author'    => [
-                'id'     => $comment->user->id,
-                'name'   => $comment->user->name,
+            'id' => $comment->id,
+            'author' => [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
                 'avatar' => $comment->user->avatar,
             ],
-            'created'   => $comment->created_at,
-            'content'   => $comment->body,
-            'edited'    => $comment->updated_at > $comment->created_at,
+            'created' => $comment->created_at,
+            'content' => $comment->body,
+            'edited' => $comment->updated_at > $comment->created_at,
             'last_edit' => $comment->updated_at,
-            'assignee'  => $assignee,
-            'status'    => $status,
+            'assignee' => $assignee,
+            'status' => $status,
         ];
     }
 
@@ -131,15 +161,15 @@ class CommentController extends Controller
         ])->find($id, ['id', 'name']);
         $result = $data->comments->map(function ($comment) {
             return [
-                'id'        => $comment->id,
-                'author'    => [
-                    'id'     => $comment->user->id,
-                    'name'   => $comment->user->name,
+                'id' => $comment->id,
+                'author' => [
+                    'id' => $comment->user->id,
+                    'name' => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                 ],
-                'created'   => $comment->created_at,
-                'content'   => $comment->body,
-                'edited'    => $comment->updated_at > $comment->created_at,
+                'created' => $comment->created_at,
+                'content' => $comment->body,
+                'edited' => $comment->updated_at > $comment->created_at,
                 'last_edit' => $comment->updated_at,
             ];
         });
@@ -169,18 +199,18 @@ class CommentController extends Controller
 
         $comment = Comment::find($id);
         $data = [
-            'id'        => $comment->id,
-            'author'    => [
-                'id'     => $comment->user->id,
-                'name'   => $comment->user->name,
+            'id' => $comment->id,
+            'author' => [
+                'id' => $comment->user->id,
+                'name' => $comment->user->name,
                 'avatar' => $comment->user->avatar,
             ],
-            'created'   => $comment->created_at,
-            'content'   => $comment->body,
-            'edited'    => $comment->updated_at > $comment->created_at,
+            'created' => $comment->created_at,
+            'content' => $comment->body,
+            'edited' => $comment->updated_at > $comment->created_at,
             'last_edit' => $comment->updated_at,
-            'assignee'  => [],
-            'status'    => 'status',
+            'assignee' => [],
+            'status' => 'status',
         ];
 
         return response()->json($data, 200);

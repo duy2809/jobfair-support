@@ -7,10 +7,13 @@ use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
 use App\Models\User;
+use App\Notifications\TaskCreated;
+use App\Notifications\TaskEdited;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
@@ -64,24 +67,24 @@ class TaskController extends Controller
         $jobfair = Jobfair::find($id);
         $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
             return [
-                'jobfairName'           => $jobfair->name,
+                'jobfairName' => $jobfair->name,
 
-                'id'                    => $item->id,
-                'name'                  => $item->name,
-                'start_time'            => $item->start_time,
-                'end_time'              => $item->end_time,
-                'status'                => $item->status,
-                'remind_member'         => $item->remind_member,
+                'id' => $item->id,
+                'name' => $item->name,
+                'start_time' => $item->start_time,
+                'end_time' => $item->end_time,
+                'status' => $item->status,
+                'remind_member' => $item->remind_member,
                 'description_of_detail' => $item->description_of_detail,
-                'relation_task_id'      => null,
-                'milestone_id'          => $item->milestone,
-                'user_id'               => $item->user_id,
-                'created_at'            => $item->created_at,
-                'updated_at'            => $item->updated_at,
-                'schedule_id'           => $item->schedule_d,
-                'memo'                  => $item->memo,
-                'template_task_id'      => $item->template_task_id,
-                'taskName'              => $item->name,
+                'relation_task_id' => null,
+                'milestone_id' => $item->milestone,
+                'user_id' => $item->user_id,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'schedule_id' => $item->schedule_d,
+                'memo' => $item->memo,
+                'template_task_id' => $item->template_task_id,
+                'taskName' => $item->name,
             ];
         });
 
@@ -126,7 +129,7 @@ class TaskController extends Controller
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
             $templateTask = TemplateTask::find($idTemplateTask[$i]);
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -139,12 +142,17 @@ class TaskController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
             $newTask = Task::create($input);
             $newTask->categories()->attach($templateTask->categories);
+
+            //notification
+            Notification::send($newTask->users,
+                new TaskCreated($newTask));
+
         }
 
         return response()->json('added task successfully');
@@ -161,23 +169,66 @@ class TaskController extends Controller
             '未完了',
         ];
         $request->validate([
-            'name'                  => [
+            'name' => [
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
-            'start_time'            => 'date',
-            'end_time'              => 'date',
-            'status'                => [
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'status' => [
                 Rule::in($status),
             ],
-            'remind_member'         => 'boolean',
-            'milestone_id'          => 'exists:milestones,id',
-            'schedule_id'           => 'exists:schedules,id',
-            'user_id'               => 'exists:users,id',
-            'memo'                  => 'string|nullable',
+            'remind_member' => 'boolean',
+            'milestone_id' => 'exists:milestones,id',
+            'schedule_id' => 'exists:schedules,id',
+            'user_id' => 'exists:users,id',
+            'memo' => 'string|nullable',
             'description_of_detail' => 'string|nullable',
-            'template_task_id'      => 'exists:template_tasks,id',
+            'template_task_id' => 'exists:template_tasks,id',
         ]);
         $task->update($request->all());
+        //notification TaskEdited
+        $editedUser = auth()->user();
+        $jobfairAdmin = $task->schedule->jobfair->user;
+        Notification::send($task->users()
+                ->where('users.id', '<>', $editedUser->id)->get(),
+            new TaskEdited($editedUser, $task));
+        Notification::send($task->reviewers()
+                ->where('users.id', '<>', $editedUser->id)->get(),
+            new TaskEdited($editedUser, $task));
+        if ($editedUser->id != $jobfairAdmin->id) {
+            $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+        }
+        if ($request->has('assignee')) {
+            $listMember = $request->assignee;
+            $listOldMember = $task->users->pluck('id')->toArray();
+            if (
+                !(
+                    is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                )
+            ) {
+                $task->users()->syncWithPivotValues($listMember, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
+            }
+        }
+        if (!empty($request->beforeTasks)) {
+            $task->beforeTasks()->sync($request->beforeTasks);
+        }
+
+        if (!empty($request->afterTasks)) {
+            $task->afterTasks()->sync($request->afterTasks);
+        }
 
         return $task;
     }
@@ -224,18 +275,41 @@ class TaskController extends Controller
         $task = Task::find($id);
         $ad = $task->schedule->jobfair->user->id;
         $request->validate([
-            'user_id'               => 'exists:users,id',
+            'user_id' => 'exists:users,id',
             'description_of_detail' => 'string|nullable',
-            'template_task_id'      => 'exists:template_tasks,id',
-            'admin'                 => 'required',
-            'start_time'            => 'required|date',
-            'end_time'              => 'required|date',
-            'name'                  => [
+            'template_task_id' => 'exists:template_tasks,id',
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'name' => [
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
         ]);
+
         if ($request->has('reviewers')) {
+
             if ($request->input('reviewers') === [] || $request->input('reviewers') === [null]) {
+                if ($request->has('admin')) {
+                    $listMember = $request->admin;
+                    $listOldMember = $task->users->pluck('id')->toArray();
+                    if (
+                        !(
+                            is_array($listMember)
+                            && is_array($listOldMember)
+                            && count($listMember) === count($listOldMember)
+                            && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                        )
+                    ) {
+                        ;
+                        // notification for new assignees
+                        $newAssignees = array_diff($listMember, $listOldMember);
+                        $listId = [];
+                        foreach ($newAssignees as $newAssignee) {
+                            $listId[] = $newAssignee;
+                        }
+                        Notification::send(User::whereIn('id', $listId)->get(),
+                            new TaskCreated($task));
+                    }
+                }
                 $task->update($request->all());
                 if (!empty($request->beforeTasks)) {
                     $task->beforeTasks()->sync($request->beforeTasks);
@@ -244,17 +318,27 @@ class TaskController extends Controller
                 if (!empty($request->afterTasks)) {
                     $task->afterTasks()->sync($request->afterTasks);
                 }
-
+                // notification edited
+                $editedUser = auth()->user();
+                $jobfairAdmin = $task->schedule->jobfair->user;
+                Notification::send($task->users()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                Notification::send($task->reviewers()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                if ($editedUser->id != $jobfairAdmin->id) {
+                    $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+                }
                 if (!empty($request->admin)) {
                     $task->users()->syncWithPivotValues($request->admin, [
                         'join_date' => Carbon::now()->toDateTimeString(),
                     ]);
                 }
-
                 $task->reviewers()->sync([]);
                 $task->save();
 
-                // return response()->json(['message' => 'Edit Successfully'], 200);
+                return response()->json(['message' => 'Edit Successfully'], 200);
             }
 
             $checkKey = 1;
@@ -274,6 +358,28 @@ class TaskController extends Controller
             }
 
             if ($checkKey === 1) {
+                if ($request->has('admin')) {
+                    $listMember = $request->admin;
+                    $listOldMember = $task->users->pluck('id')->toArray();
+                    if (
+                        !(
+                            is_array($listMember)
+                            && is_array($listOldMember)
+                            && count($listMember) === count($listOldMember)
+                            && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                        )
+                    ) {
+                        ;
+                        // notification for new assignees
+                        $newAssignees = array_diff($listMember, $listOldMember);
+                        $listId = [];
+                        foreach ($newAssignees as $newAssignee) {
+                            $listId[] = $newAssignee;
+                        }
+                        Notification::send(User::whereIn('id', $listId)->get(),
+                            new TaskCreated($task));
+                    }
+                }
                 $task->update($request->all());
                 if (!empty($request->beforeTasks)) {
                     $task->beforeTasks()->sync($request->beforeTasks);
@@ -282,20 +388,82 @@ class TaskController extends Controller
                 if (!empty($request->afterTasks)) {
                     $task->afterTasks()->sync($request->afterTasks);
                 }
-
+                // notification edited
+                $editedUser = auth()->user();
+                $jobfairAdmin = $task->schedule->jobfair->user;
+                Notification::send($task->users()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                Notification::send($task->reviewers()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                if ($editedUser->id != $jobfairAdmin->id) {
+                    $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+                }
                 if (!empty($request->admin)) {
                     $task->users()->syncWithPivotValues($request->admin, [
                         'join_date' => Carbon::now()->toDateTimeString(),
                     ]);
                 }
-
                 $task->reviewers()->sync($request->input('reviewers'));
                 $task->save();
+                return response()->json(['message' => 'Edit Successfully'], 200);
+
+            } else {
+                return response()->json(['message' => 'list reviewers invalid'], 400);
             }
+        } else {
+            if ($request->has('admin')) {
+                $listMember = $request->admin;
+                $listOldMember = $task->users->pluck('id')->toArray();
+                if (
+                    !(
+                        is_array($listMember)
+                        && is_array($listOldMember)
+                        && count($listMember) === count($listOldMember)
+                        && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                    )
+                ) {
+                    ;
+                    // notification for new assignees
+                    $newAssignees = array_diff($listMember, $listOldMember);
+                    $listId = [];
+                    foreach ($newAssignees as $newAssignee) {
+                        $listId[] = $newAssignee;
+                    }
+                    Notification::send(User::whereIn('id', $listId)->get(),
+                        new TaskCreated($task));
+                }
+            }
+            $task->update($request->all());
+            if (!empty($request->beforeTasks)) {
+                $task->beforeTasks()->sync($request->beforeTasks);
+            }
+
+            if (!empty($request->afterTasks)) {
+                $task->afterTasks()->sync($request->afterTasks);
+            }
+            // notification edited
+            $editedUser = auth()->user();
+            $jobfairAdmin = $task->schedule->jobfair->user;
+            Notification::send($task->users()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task));
+            Notification::send($task->reviewers()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task));
+            if ($editedUser->id != $jobfairAdmin->id) {
+                $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+            }
+            if (!empty($request->admin)) {
+                $task->users()->syncWithPivotValues($request->admin, [
+                    'join_date' => Carbon::now()->toDateTimeString(),
+                ]);
+            }
+            return response()->json(['message' => 'Edit Successfully'], 200);
         }
 
-        return response()->json(['message' => 'Edit Successfully'], 200);
-        // return response()->json(['message' => 'Error'], 403);
+        return response()->json(['message' => 'Error'], 400);
     }
 
     /**
@@ -388,7 +556,6 @@ class TaskController extends Controller
         if ($request->has('assignee')) {
             $listMember = $request->assignee;
             $listOldMember = $task->users->pluck('id')->toArray();
-
             if (
                 !(
                     is_array($listMember)
@@ -397,9 +564,32 @@ class TaskController extends Controller
                     && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
                 )
             ) {
+                // notification edited
+                $editedUser = auth()->user();
+                $jobfairAdmin = $task->schedule->jobfair->user;
+                Notification::send($task->users()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                Notification::send($task->reviewers()
+                        ->where('users.id', '<>', $editedUser->id)->get(),
+                    new TaskEdited($editedUser, $task));
+                if ($editedUser->id != $jobfairAdmin->id) {
+                    $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+                }
+
                 $task->users()->syncWithPivotValues($listMember, [
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
+
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+                Notification::send(User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task));
+
             }
         }
 
