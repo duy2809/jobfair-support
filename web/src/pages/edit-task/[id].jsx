@@ -27,7 +27,7 @@ import {
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers } from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function TaskList() {
@@ -64,6 +64,7 @@ function TaskList() {
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
+  const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const fetchTaskData = async () => {
     await reviewers(idTask).then((response) => {
       if (response.status === 200) {
@@ -72,6 +73,16 @@ function TaskList() {
     }).catch((err) => {
       console.log(err)
     })
+
+    await listReviewersSelectTag(idTask).then((response) => {
+      if (response.status === 200) {
+        console.log(response.data)
+        setReviewersSelectTag(response.data)
+      }
+    }).catch((err) => {
+      console.log(err)
+    })
+
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
@@ -467,6 +478,7 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
+
                   >
                     <Input
                       id="validate_name"
@@ -536,7 +548,15 @@ function TaskList() {
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
                     >
-                      {listUser.map((element) => (
+                      <Select.Option
+                        className="validate-user"
+                        key={undefined}
+                        value={undefined}
+                      >
+                        None
+                      </Select.Option>
+
+                      {reviewersSelectTag.map((element) => (
                         <Select.Option
                           className="validate-user"
                           key={element.id}
@@ -558,6 +578,7 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
+
                   >
                     <Select
                       size="large"
@@ -584,6 +605,7 @@ function TaskList() {
                         validator: startDayValidator,
                       },
                     ]}
+
                   >
                     <DatePicker
                       size="large"
@@ -607,6 +629,7 @@ function TaskList() {
                         validator: EndDayValidator,
                       },
                     ]}
+
                   >
                     <DatePicker
                       size="large"
@@ -624,6 +647,7 @@ function TaskList() {
                     label="前のタスク"
                     name="taskBefore"
                     className="tag_a"
+
                   >
                     <Select
                       mode="multiple"
@@ -645,6 +669,7 @@ function TaskList() {
                     label="次のタスク"
                     name="afterTask"
                     className="tag_a"
+
                   >
                     <Select
                       mode="multiple"
@@ -667,6 +692,7 @@ function TaskList() {
                     name="assignee"
                     required
                     className="multiples"
+
                   >
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>

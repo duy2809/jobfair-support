@@ -18,6 +18,7 @@ import { LOAD as INIT_AUTH_USER } from '~/store/modules/auth'
 
 import 'antd/dist/antd.css'
 import './global.scss'
+import 'tailwindcss/tailwind.css'
 
 Sentry.init({ dsn: `${process.env.SENTRY_DSN}` })
 

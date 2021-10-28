@@ -70,8 +70,8 @@ export default function Navbar() {
 
   return (
     <div
-      className="flex justify-between items-center border-2 navbar select-none shadow-md relative"
-      style={{ zIndex: '1000' }}
+      className="flex items-center justify-between border-2 navbar select-none shadow-md relative"
+      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '90px' }}
     >
       <div className="flex">
         <div style={{ width: '13.5rem', paddingLeft: '3px' }}>
@@ -110,8 +110,8 @@ export default function Navbar() {
         <Notification />
         <div className="px-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            <div className="px-2 border-2 border-black user-icon-container py-1 mb-1 cursor-pointer">
-              <UserOutlined className="text-xl user-icon" />
+            <div className="border-2 border-black user-icon-container">
+              <UserOutlined style={{ fontSize: '1.5rem' }} className="user-icon" />
             </div>
           </Dropdown>
         </div>

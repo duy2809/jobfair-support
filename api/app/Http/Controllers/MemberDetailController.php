@@ -46,10 +46,17 @@ class MemberDetailController extends Controller
 
     public function deleteMember($id)
     {
-        DB::table('list_members')->where('user_id', $id)->delete();
-        DB::table('tasks')->where('user_id', $id)->update(['user_id' => null]);
-        DB::table('assignments')->where('user_id', $id)->delete();
-        DB::table('jobfairs')->where('jobfair_admin_id', $id)->delete();
-        User::findOrFail($id)->delete();
+        $user = User::find($id);
+        if ($user->role !== 1) {
+            DB::table('list_members')->where('user_id', $id)->delete();
+            DB::table('tasks')->where('user_id', $id)->update(['user_id' => null]);
+            DB::table('assignments')->where('user_id', $id)->delete();
+            DB::table('jobfairs')->where('jobfair_admin_id', $id)->delete();
+            User::findOrFail($id)->delete();
+
+            return response()->json('Delete Success');
+        }
+
+        return response()->json('Error', 403);
     }
 }
