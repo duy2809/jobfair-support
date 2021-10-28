@@ -1,10 +1,17 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
 import { Dropdown, List, Avatar, Checkbox } from 'antd'
 import { BellOutlined, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
-import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
+import {
+  getNotification,
+  update,
+  updateAllRead,
+  getUnreadNotification,
+  deleteNotification,
+} from '../../api/notification'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -32,20 +39,29 @@ export default function Notification() {
           if (!res.data) {
             setLoading(false)
             return
-          } data = res.data
+          }
+          data = res.data
         } else {
           const res = await getNotification(id)
           if (!res.data) {
             setLoading(false)
             return
-          } data = res.data
+          }
+          data = res.data
         }
         // const length = data.noti.length
         // setLengthNoti(length)
-        const newNoti = data.noti.map((item, idx) => {
-          const newItem = { ...item, ...data.userName[idx], taskName: `${data.taskName[idx].name}`, avatar: `/api/avatar/${item.user_id}` }
-          return newItem
-        }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        const newNoti = data.noti
+          .map((item, idx) => {
+            const newItem = {
+              ...item,
+              ...data.userName[idx],
+              taskName: `${data.taskName[idx].name}`,
+              avatar: `/api/avatar/${item.user_id}`,
+            }
+            return newItem
+          })
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
         setDataNoti(newNoti)
         setLoading(false)
@@ -140,9 +156,13 @@ export default function Notification() {
     const currentdate = new Date(date)
     const hours = currentdate.getUTCHours()
     const datetime = `${currentdate.getFullYear()}-${
-      currentdate.getMonth() + 1}-${
-      currentdate.getDate()} `
-                + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
+      currentdate.getMonth() + 1
+    }-${currentdate.getDate()} `
+      + `${
+        hours > 12
+          ? `${hours - 12}:${currentdate.getMinutes()}PM`
+          : `${hours}:${currentdate.getMinutes()}AM`
+      }`
     return datetime
   }
 
@@ -157,76 +177,57 @@ export default function Notification() {
             <div className="noti-checked">
               <Checkbox onChange={onChangeUnread}>未読のみ表示</Checkbox>
             </div>
-
           </div>
         )}
         footer={(
           <div className="noti-footer">
-            <Checkbox
-              className=""
-              onChange={onChange}
-            >
+            <Checkbox className="" onChange={onChange}>
               すべて既読にする
             </Checkbox>
           </div>
         )}
         dataSource={dataNoti}
         loading={loading}
-        locale={{ emptyText: `${unread ? '未読の通知はありません' : '通知なし'}` }}
+        locale={{
+          emptyText: `${unread ? '未読の通知はありません' : '通知なし'}`,
+        }}
         renderItem={(item) => (
-          <List.Item
-            className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
-          >
-            {
-              !loading && (
-                <div
-                  className="flex flex-cols"
-                >
-                  <div
-                    className="noti-list-item"
-                  >
-                    <List.Item.Meta
-                      onClick={() => {
-                        if (!item.read_at) {
-                          updateReadAt(item.id)
-                        }
-                        handlerClick(item.type, item.subjectable_id)
-                      }}
-                      avatar={<Avatar src={item.avatar} />}
-                      title={(
-                        <div>
-                          {item.name}
-                          さんが
-                          {item.taskName}
-                          {item.type}
-                          を
-                          {item.data}
-                          しました
-                        </div>
-                      )}
-                      description={convertDate(item.created_at)}
-                    />
-                    {/* <div className="noti-time">
+          <List.Item className={!item.read_at ? 'bg-gray-300' : 'bg-white'}>
+            {!loading && (
+              <div className="flex flex-cols">
+                <div className="noti-list-item">
+                  <List.Item.Meta
+                    onClick={() => {
+                      if (!item.read_at) {
+                        updateReadAt(item.id)
+                      }
+                      handlerClick(item.type, item.subjectable_id)
+                    }}
+                    avatar={<Avatar src={item.avatar} />}
+                    title={(
+                      <div>
+                        {item.name}
+                        さんが
+                        {item.taskName}
+                        {item.type}
+                        を
+                        {item.data}
+                        しました
+                      </div>
+                    )}
+                    description={convertDate(item.created_at)}
+                  />
+                  {/* <div className="noti-time">
                       {convertDate(item.created_at)}
                     </div> */}
-
-                  </div>
-                  <div
-                    className="delete-btn"
-                    style={{ marginLeft: '10px' }}
-                  >
-                    <DeleteTwoTone
-                      onClick={() => deleteNoti(item.id)}
-                    />
-                  </div>
                 </div>
-
-              )
-            }
-
+                <div className="delete-btn" style={{ marginLeft: '10px' }}>
+                  <DeleteTwoTone onClick={() => deleteNoti(item.id)} />
+                </div>
+              </div>
+            )}
           </List.Item>
         )}
-
       />
     </div>
   )
@@ -239,13 +240,11 @@ export default function Notification() {
       visible={visible}
       placement="bottomCenter"
     >
-      <div style={{ position: 'relative' }}>
-        <BellOutlined style={{ fontSize: '1.625rem', position: 'relative' }} className="bell-icon relative" />
-        <span style={{ position: 'absolute', top: '0', left: '70%', padding: '1px 3px', borderRadius: '100%' }} className="number-notifications">
-          {unreadLength}
-        </span>
+      <div className="bell-icon-container">
+        <BellOutlined className="bell-icon" />
+        {/* <span className="number-notifications">{unreadLength}</span> */}
+        <span className="number-notifications">100</span>
       </div>
-
     </Dropdown>
   )
 }
