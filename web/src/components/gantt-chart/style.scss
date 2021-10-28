@@ -10,6 +10,7 @@
   }
   .task-column {
     width: 100%;
+
     // border: 1px solid rgb(53, 53, 53);
   }
 
@@ -69,5 +70,16 @@
   }
   .gantt_grid_data .gantt_cell {
     padding: 0;
+  }
+  .task-detail {
+    padding: 0 5px;
+    overflow: hidden;
+    width: 26ch;
+    text-overflow: ellipsis;
+    text-align: center;
+    border-top: 1px solid #e3e3e3;
+    border-bottom: 1px solid #e3e3e3;
+    border-right: none;
+    border-left: none;
   }
 }

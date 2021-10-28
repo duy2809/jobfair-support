@@ -102,7 +102,7 @@ Route::apiResource('/category', CategoryController::class);
 Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
-Route::get('jobfair/{JFid}/category', [App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
+Route::get('/category-jobfair', [App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
 
 Route::prefix('categories')->group(function () {
     Route::get('/', 'CategoryController@getCatgories');
@@ -156,6 +156,7 @@ Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
+Route::get('/task/{id}/list-reviewers', 'TaskController@getListReviewers');
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
@@ -176,3 +177,5 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 // comment
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
+Route::delete('/comment/{id}', 'CommentController@destroy');
+Route::post('/comment/{id}', 'CommentController@update');

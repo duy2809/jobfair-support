@@ -16,8 +16,7 @@ import JfLayout from '~/layouts/layout-task'
 import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
 import { reviewers } from '../../api/edit-task'
 import Loading from '~/components/loading'
-import BoxComment from '~/components/box-comment'
-import CommentHistory from '~/components/comment/CommentHistory'
+import Comment from '~/components/comment/index'
 
 function TaskDetail() {
   const router = useRouter()
@@ -50,7 +49,7 @@ function TaskDetail() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
@@ -66,6 +65,7 @@ function TaskDetail() {
         setLoading(false)
       })
   }
+
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
     await taskData(idTask).then((response) => {
@@ -116,7 +116,7 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -141,6 +141,7 @@ function TaskDetail() {
     fetchReviewersList()
     setLoading(false)
   }, [user])
+  const assigneeNames = listMemberAssignee.map((assignee) => assignee.name)
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
@@ -428,13 +429,16 @@ function TaskDetail() {
                 <div className=" mx-7 des demo-infinite-container">
                   {infoTask.description_of_detail}
                 </div>
-                <div className="mx-7">
-                  <BoxComment id={idTask} />
-                </div>
+                <div className="mx-7" />
               </div>
             </div>
-            <CommentHistory id={idTask} />
-            <BoxComment id={2} />
+            <Comment
+              id={idTask}
+              statusProp={infoTask.status}
+              assigneeProp={assigneeNames}
+              taskInfo={infoTask}
+            />
+            {/* <Comment id={idTask} /> */}
           </div>
         </JfLayout.Main>
       </JfLayout>

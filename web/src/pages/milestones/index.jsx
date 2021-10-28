@@ -5,6 +5,7 @@ import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
 import { webInit } from '../../api/web-init'
 import './styles.scss'
+import { loadingIcon } from '../../components/loading'
 
 const MilestonePage = () => {
   const [isRenderFirstly, setIsRenderFirstly] = useState(true)
@@ -300,7 +301,7 @@ const MilestonePage = () => {
                 rowKey={(record) => record.id}
                 dataSource={data}
                 pagination={pagination}
-                loading={loading}
+                loading={{ spinning: loading, indicator: loadingIcon }}
                 onChange={(e) => tableChangeHandler(e)}
               />
             </div>

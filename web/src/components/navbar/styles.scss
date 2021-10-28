@@ -7,6 +7,7 @@
 .cursor-pointer{
     .bell-icon{
        fill: #ffd803;
+       position: relative;
     }
     span > svg {
         margin-top: -0.5rem;
@@ -21,13 +22,12 @@
     background-color: red;
 }
 .user-icon-container {
+    padding: 10px;
     border-radius: 50%;
     background-color: #ffd803;
 } 
-
 .notification {
     width: 500px;
-    
     .noti-header{
         display: flex;
         justify-content: space-between;

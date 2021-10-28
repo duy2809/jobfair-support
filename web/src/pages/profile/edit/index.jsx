@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 // import { useRouter } from 'next/router'
-import { Form, Input, Button, notification } from 'antd'
+import { Form, Input, Button, notification, Space } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
 // import Avatar from '../UI/avatar/Avatar'
@@ -25,7 +25,6 @@ const EditProfilePage = () => {
   const [image, setImage] = useState()
   const [avatarUser, setAvatarUser] = useState()
   const [preview, setPreview] = useState()
-  const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
   const [loading, setLoading] = useState(false)
   // const router = useRouter()
@@ -97,7 +96,6 @@ const EditProfilePage = () => {
     const data = res.data.map((item) => item.email)
     const email = data.find((item) => item === term)
     if (email && email !== emailCur) {
-      setIsDisable(true)
       form.setFields([
         {
           name: 'email',
@@ -129,27 +127,22 @@ const EditProfilePage = () => {
     }, 2500)
   }
 
-  const handleOk = async () => {
+  const onFinish = async () => {
     setLoading(true)
-    if (nameInput === '' || emailInput === '' || idChatWorkInput === '' || isDisable === true) {
-      setIsDisable(true)
-      setLoading(false)
-    } else {
-      let avtPath = pathName
-      if (image) {
-        avtPath = await updateAvt()
-      }
-      const data = await webInit()
-      const id = data.data.auth.user.id
-      updateInfo(id, {
-        name: nameInput,
-        email: emailInput,
-        chatwork_id: idChatWorkInput,
-        avatar: avtPath,
-      })
-      openNotificationSuccess()
-      setLoading(false)
+    let avtPath = pathName
+    if (image) {
+      avtPath = await updateAvt()
     }
+    const data = await webInit()
+    const id = data.data.auth.user.id
+    updateInfo(id, {
+      name: nameInput,
+      email: emailInput,
+      chatwork_id: idChatWorkInput,
+      avatar: avtPath,
+    })
+    openNotificationSuccess()
+    setLoading(false)
   }
 
   const fileInputRef = useRef()
@@ -166,7 +159,6 @@ const EditProfilePage = () => {
         setImage(null)
       } else {
         setImage(file)
-        setIsDisable(false)
       }
     }
   }
@@ -182,17 +174,14 @@ const EditProfilePage = () => {
   }
 
   const onNameChange = (e) => {
-    setIsDisable(false)
     setNameInput(e.target.value)
   }
 
   const onChatworkIdChange = (e) => {
-    setIsDisable(false)
     setIdChatWordInput(e.target.value)
   }
 
   const onEmailChange = (e) => {
-    setIsDisable(false)
     setEmailInput(e.target.value)
   }
 
@@ -245,6 +234,7 @@ const EditProfilePage = () => {
                     }}
                     className="w-3/4"
                     colon={false}
+                    onFinish={onFinish}
                   >
                     <Form.Item
                       label={<p className="font-bold">ユーザー名</p>}
@@ -257,7 +247,6 @@ const EditProfilePage = () => {
                         () => ({
                           validator(_, value) {
                             if (/[0-9]/.test(value)) {
-                              setIsDisable(true)
                               return Promise.reject(
                                 new Error('数字を入力しないでください。'),
                               )
@@ -265,9 +254,8 @@ const EditProfilePage = () => {
                             if (
                               /[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)
                             ) {
-                              setIsDisable(true)
                               return Promise.reject(
-                                new Error('特殊文字を入力しないでください。'),
+                                new Error('使用できない文字が含まれています'),
                               )
                             }
 
@@ -295,7 +283,6 @@ const EditProfilePage = () => {
                         () => ({
                           validator(_, value) {
                             if (specialCharRegex.test(value)) {
-                              setIsDisable(true)
                               return Promise.reject(
                                 new Error('スペースを入力しないでください。'),
                               )
@@ -303,7 +290,6 @@ const EditProfilePage = () => {
                             if (
                               /[?!@#$%^&*()_+\-=[\]{};':"\\/|,.<>]/.test(value)
                             ) {
-                              setIsDisable(true)
                               return Promise.reject(
                                 new Error('特殊文字を入力しないでください。'),
                               )
@@ -337,7 +323,6 @@ const EditProfilePage = () => {
                               )
                               && value !== ''
                             ) {
-                              setIsDisable(true)
                               return Promise.reject(
                                 new Error(
                                   'メールアドレスの形式が正しくありません。',
@@ -356,19 +341,20 @@ const EditProfilePage = () => {
                         placeholder="メール"
                       />
                     </Form.Item>
+                    <Form.Item className="container-btn justify-end gap-1 w-full">
+                      <Space size={20} className="flex place-content-end">
+                        <CancelEditProfile />
+                        <Button
+                          htmlType="submit"
+                          size="large"
+                          type="primary"
+                          style={{ letterSpacing: '-1px' }}
+                        >
+                          保存
+                        </Button>
+                      </Space>
+                    </Form.Item>
                   </Form>
-                </div>
-                <div className="container-btn justify-end gap-1 w-full">
-                  <CancelEditProfile />
-                  <Button
-                    size="large"
-                    type="primary"
-                    className="text-base px-9"
-                    htmlType="submit"
-                    onClick={handleOk}
-                  >
-                    保存
-                  </Button>
                 </div>
               </div>
 
