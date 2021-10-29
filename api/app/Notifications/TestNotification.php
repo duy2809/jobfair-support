@@ -55,7 +55,6 @@ class TestNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-
         ];
     }
     public function toBroadcast($notifiable)
