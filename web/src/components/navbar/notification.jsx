@@ -26,6 +26,14 @@ export default function Notification() {
   const [dataNoti, setDataNoti] = useState([])
   const formatter = buildFormatter(frenchStrings)
 
+  useEffect(() => {
+    new NotificationChannel(store.getState().get('auth').get('user').get('id'))
+      .onOutput((data) => {
+        console.log(data)
+      })
+      .listen()
+  }, [])
+
   const fetchData = async () => {
     setLoading(true)
     try {
