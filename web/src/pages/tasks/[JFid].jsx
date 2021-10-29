@@ -379,7 +379,6 @@ function TaskList() {
                       centered: true,
                       onOk: () => {
                         setEdit(false)
-                        handleSave(managers, record, userAS)
                         setIsEdit(false)
                       },
 
