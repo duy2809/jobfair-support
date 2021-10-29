@@ -15,7 +15,6 @@ class TaskEdited extends Notification
 
     protected $task;
     protected $user;
-
     /**
      * Create a new notification instance.
      *
@@ -61,7 +60,6 @@ class TaskEdited extends Notification
     public function toArray($notifiable)
     {
         $jobfair = $this->task->schedule->jobfair;
-
         return [
             'jobfair' => [
                 'id' => $jobfair->id,
