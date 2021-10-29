@@ -7,7 +7,7 @@ import { tasks, members, jobfairs } from '../../api/top-page'
 import { getTaskList as getTemplateTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
-import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
+// import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 
 const { getListSchedule } = ListScheduleApi
 
@@ -230,7 +230,20 @@ const Top = () => {
                 routeToAdd="/member/invite"
                 isLoading={isLoadingMember}
               />
-              <TemplateTaskSubTable
+              <List
+                key={3}
+                dataColumn={jfScheduleDataColumn}
+                dataSource={scheduleData}
+                text="JFスケジュール一覧"
+                searchIcon
+                showTimeInput={false}
+                showCategoryInput={false}
+                showMilestoneInput={false}
+                route="/schedule"
+                routeToAdd="/jf-schedule/add"
+                isLoading={isLoadingSchedule}
+              />
+              <List
                 key={4}
                 dataColumn={templateTaskDataColumn}
                 dataSource={templateData}
