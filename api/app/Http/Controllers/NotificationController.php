@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
-use App\Models\Task;
 use App\Models\User;
 
 class NotificationController extends Controller
@@ -25,8 +24,8 @@ class NotificationController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+
         return $user->notifications;
-        
     }
 
     /**
@@ -51,7 +50,6 @@ class NotificationController extends Controller
         $date = Notification::find($id);
         $date->read_at = \Carbon\Carbon::now();
         $date->save();
-
     }
 
     /**
@@ -78,6 +76,7 @@ class NotificationController extends Controller
     public function showUnread($id)
     {
         $user = User::find($id);
+
         return $user->unreadNotifications;
     }
 
@@ -88,6 +87,5 @@ class NotificationController extends Controller
         foreach ($user->unreadNotifications as $notification) {
             $notification->markAsRead();
         }
-        
     }
 }

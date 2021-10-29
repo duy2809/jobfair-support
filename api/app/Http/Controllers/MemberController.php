@@ -62,6 +62,7 @@ class MemberController extends Controller
         $user->save();
 
         $user->notify(new MemberEdited(auth()->user()));
+
         return $user->categories;
     }
 

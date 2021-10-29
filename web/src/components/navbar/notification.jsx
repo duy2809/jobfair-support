@@ -4,8 +4,11 @@ import { Dropdown, List, Avatar, Checkbox } from 'antd'
 import { BellOutlined, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
-import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
+import TimeAgo from 'react-timeago'
+import frenchStrings from 'react-timeago/lib/language-strings/ja'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import NotificationChannel from '../../libs/echo/channels/notification-channel'
+import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -19,14 +22,7 @@ export default function Notification() {
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
   const [checkUpdate, setCheckUpdate] = useState(0)
   const [dataNoti, setDataNoti] = useState([])
-
-  useEffect(() => {
-    new NotificationChannel(store.getState().get('auth').get('user').get('id'))
-      .onOutput((data) => {
-        console.log(data)
-      })
-      .listen()
-  }, [])
+  const formatter = buildFormatter(frenchStrings)
 
   const fetchData = async () => {
     setLoading(true)
@@ -50,7 +46,6 @@ export default function Notification() {
             return
           } data = res.data
         }
-
         const newNoti = data.map((item) => {
           let action
           let userid
@@ -64,7 +59,7 @@ export default function Notification() {
             userid = item.data.user.id
             url = `/jf-toppage/${item.data.jobfair.id}`
           } else if (item.type === 'App\\Notifications\\MemberEdited') {
-            action = `${item.data.user.name}さんが${user.get('name')}メンバを編集しました。`
+            action = `${item.data.edited_user.name}さんが${user.get('name')}メンバを編集しました。`
             userid = item.data.edited_user.id
             url = `/member/${id}`
           } else if (item.type === 'App\\Notifications\\TaskCreated') {
@@ -80,7 +75,9 @@ export default function Notification() {
             userid = item.data.user.id
             url = `/task-detail/${item.data.task.id}`
           }
-          const newItem = { ...item, action, avatar: `/api/avatar/${userid}`, url }
+          const newItem = {
+            ...item, action, avatar: `/api/avatar/${userid}`, url,
+          }
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -91,6 +88,16 @@ export default function Notification() {
       console.error(err)
     }
   }
+
+  useEffect(() => {
+    new NotificationChannel(store.getState().get('auth').get('user').get('id'))
+      .onOutput((data) => {
+        // TODO: only add new notification to state
+        console.log(data)
+        fetchData()
+      })
+      .listen()
+  }, [])
 
   if (user) {
     const id = user.get('id')
@@ -151,13 +158,13 @@ export default function Notification() {
     window.location.href = url
   }
 
-  const convertDate = (date) => {
-    const currentdate = new Date(date)
-    const hours = currentdate.getUTCHours()
-    const datetime = `${currentdate.getFullYear()}-${currentdate.getMonth() + 1}-${currentdate.getDate()} `
-      + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
-    return datetime
-  }
+  // const convertDate = (date) => {
+  //   const currentdate = new Date(date)
+  //   const hours = currentdate.getUTCHours()
+  //   const datetime = `${currentdate.getFullYear()}-${currentdate.getMonth() + 1}-${currentdate.getDate()} `
+  //     + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
+  //   return datetime
+  // }
 
   const notifications = (
     <div className="notification border-2 rounded-2xl bg-white">
@@ -213,7 +220,7 @@ export default function Notification() {
 
                         </div>
                       )}
-                      description={convertDate(item.created_at)}
+                      description={<TimeAgo date={item.created_at} formatter={formatter} />}
                     />
                     {/* <div className="noti-time">
                       {convertDate(item.created_at)}

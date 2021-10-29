@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\Jobfair;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -16,6 +15,7 @@ class TaskEdited extends Notification
 
     protected $task;
     protected $user;
+
     /**
      * Create a new notification instance.
      *
@@ -46,7 +46,7 @@ class TaskEdited extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->line('The introduction to the notification.')
             ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
@@ -61,6 +61,7 @@ class TaskEdited extends Notification
     public function toArray($notifiable)
     {
         $jobfair = $this->task->schedule->jobfair;
+
         return [
             'jobfair' => [
                 'id' => $jobfair->id,
@@ -76,9 +77,11 @@ class TaskEdited extends Notification
             ],
         ];
     }
+
     public function toBroadcast($notifiable)
     {
         $jobfair = $this->task->schedule->jobfair;
+
         return new BroadcastMessage([
             'jobfair' => [
                 'id' => $jobfair->id,
