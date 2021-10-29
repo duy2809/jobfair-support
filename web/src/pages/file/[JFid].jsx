@@ -54,8 +54,6 @@ export default function File() {
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
 
-
-
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')
     const link = formEditFile.getFieldValue('link')
@@ -647,7 +645,7 @@ export default function File() {
                       <>
                         <div
                           className={`my-2 px-6 ${index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
-                            }`}
+                          }`}
                         >
                           <div className="flex flex-row items-center">
                             <FileFilled className="mr-2 " />
