@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,15 +13,16 @@ class TaskExpired extends Notification
 {
     use Queueable;
 
-    protected $task;
+    protected $task, $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Task $task)
+    public function __construct(Task $task, User $user)
     {
         $this->task = $task;
+        $this->user = $user;
     }
 
     /**
@@ -61,6 +63,10 @@ class TaskExpired extends Notification
                 'id' => $this->task->id,
                 'name' => $this->task->name,
             ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+            ],
         ];
     }
     public function toBroadcast($notifiable)
@@ -69,6 +75,10 @@ class TaskExpired extends Notification
             'task' => [
                 'id' => $this->task->id,
                 'name' => $this->task->name,
+            ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
             ],
         ]);
     }

@@ -5,6 +5,7 @@ import { BellOutlined, DeleteTwoTone } from '@ant-design/icons'
 import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
 import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
+import NotificationChannel from '../../libs/echo/channels/notification-channel'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -18,6 +19,14 @@ export default function Notification() {
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
   const [checkUpdate, setCheckUpdate] = useState(0)
   const [dataNoti, setDataNoti] = useState([])
+
+  useEffect(() => {
+    new NotificationChannel(store.getState().get('auth').get('user').get('id'))
+      .onOutput((data) => {
+        console.log(data)
+      })
+      .listen()
+  }, [])
 
   const fetchData = async () => {
     setLoading(true)
@@ -54,25 +63,26 @@ export default function Notification() {
             url = `/jf-toppage/${item.data.jobfair.id}`
           } else if (item.type === 'App\\Notifications\\JobfairCreated') {
             action = `${item.data.jobfair.name}JFの管理者に選ばれました。`
-            userid = item.data.notifiable_id
+            userid = item.data.user.id
             url = `/jf-toppage/${item.data.jobfair.id}`
           } else if (item.type === 'App\\Notifications\\MemberEdited') {
-            action = `${item.data.edited_user.name}メンバを編集しました。`
+            action = `${user.get('name')}メンバを編集しました。`
             userid = item.data.edited_user.id
             username = item.data.edited_user.name
             url = `/member/${id}`
           } else if (item.type === 'App\\Notifications\\TaskCreated') {
             action = `${item.data.task.name}タスクの責任者に選ばれました。`
-            userid = item.data.notifiable_id
+            userid = item.data.user.id
+            username = item.data.user.name
             url = `/task-detail/${item.data.task.id}`
           } else if (item.type === 'App\\Notifications\\TaskEdited') {
             action = `${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
-            userid = item.data[0].user.id
-            username = item.data[0].user.name
+            userid = item.data.user.id
+            username = item.data.user.name
             url = `/task-detail/${item.data.task.id}`
           } else if (item.type === 'App\\Notifications\\TaskExpired') {
-            action = 'タスクが完了期限を過ぎました'
-            userid = item.data.notifiable_id
+            action = `タスク${item.task.name}が完了期限を過ぎました。`
+            userid = item.data.user.id
             url = `/task-detail/${item.data.task.id}`
           }
           const newItem = { ...item, action, username, avatar: `/api/avatar/${userid}`, url }
@@ -149,10 +159,8 @@ export default function Notification() {
   const convertDate = (date) => {
     const currentdate = new Date(date)
     const hours = currentdate.getUTCHours()
-    const datetime = `${currentdate.getFullYear()}-${
-      currentdate.getMonth() + 1}-${
-      currentdate.getDate()} `
-                + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
+    const datetime = `${currentdate.getFullYear()}-${currentdate.getMonth() + 1}-${currentdate.getDate()} `
+      + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
     return datetime
   }
 

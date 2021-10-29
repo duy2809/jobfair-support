@@ -151,7 +151,7 @@ class TaskController extends Controller
 
             //notification
             Notification::send($newTask->users,
-                new TaskCreated($newTask));
+                new TaskCreated($newTask, auth()->user()));
 
         }
 
@@ -219,7 +219,7 @@ class TaskController extends Controller
                     $listId[] = $newAssignee;
                 }
                 Notification::send(User::whereIn('id', $listId)->get(),
-                    new TaskCreated($task));
+                    new TaskCreated($task, auth()->user()));
             }
         }
         if (!empty($request->beforeTasks)) {
@@ -307,7 +307,7 @@ class TaskController extends Controller
                             $listId[] = $newAssignee;
                         }
                         Notification::send(User::whereIn('id', $listId)->get(),
-                            new TaskCreated($task));
+                            new TaskCreated($task, auth()->user()));
                     }
                 }
                 $task->update($request->all());
@@ -377,7 +377,7 @@ class TaskController extends Controller
                             $listId[] = $newAssignee;
                         }
                         Notification::send(User::whereIn('id', $listId)->get(),
-                            new TaskCreated($task));
+                            new TaskCreated($task, auth()->user()));
                     }
                 }
                 $task->update($request->all());
@@ -432,7 +432,7 @@ class TaskController extends Controller
                         $listId[] = $newAssignee;
                     }
                     Notification::send(User::whereIn('id', $listId)->get(),
-                        new TaskCreated($task));
+                        new TaskCreated($task, auth()->user()));
                 }
             }
             $task->update($request->all());
@@ -588,7 +588,7 @@ class TaskController extends Controller
                     $listId[] = $newAssignee;
                 }
                 Notification::send(User::whereIn('id', $listId)->get(),
-                    new TaskCreated($task));
+                    new TaskCreated($task, auth()->user()));
 
             }
         }

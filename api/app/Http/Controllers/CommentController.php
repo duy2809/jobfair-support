@@ -114,7 +114,7 @@ class CommentController extends Controller
                     $listId[] = $newAssignee;
                 }
                 Notification::send(User::whereIn('id', $listId)->get(),
-                    new TaskCreated($task));
+                    new TaskCreated($task, auth()->user()));
             }
         }
 

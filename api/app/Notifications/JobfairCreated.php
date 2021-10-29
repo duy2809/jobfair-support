@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Jobfair;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,15 +13,16 @@ class JobfairCreated extends Notification
 {
     use Queueable;
 
-    protected $jobfair;
+    protected $jobfair, $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Jobfair $jobfair)
+    public function __construct(Jobfair $jobfair, User $user)
     {
         $this->jobfair = $jobfair;
+        $this->user = $user;
     }
 
     /**
@@ -61,6 +63,10 @@ class JobfairCreated extends Notification
                 'id' => $this->jobfair->id,
                 'name' => $this->jobfair->name,
             ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+            ],
         ];
     }
 
@@ -70,6 +76,10 @@ class JobfairCreated extends Notification
             'jobfair' => [
                 'id' => $this->jobfair->id,
                 'name' => $this->jobfair->name,
+            ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
             ],
         ]);
     }

@@ -70,7 +70,7 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
-        $jobfair->user->notify(new JobfairCreated($jobfair));
+        $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
 
         return $jobfair;
     }

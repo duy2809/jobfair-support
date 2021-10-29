@@ -70,11 +70,9 @@ class TaskEdited extends Notification
                 'id' => $this->task->id,
                 'name' => $this->task->name,
             ],
-            [
-                'user' => [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
             ],
         ];
     }
@@ -90,11 +88,9 @@ class TaskEdited extends Notification
                 'id' => $this->task->id,
                 'name' => $this->task->name,
             ],
-            [
-                'user' => [
-                    'id' => $this->user->id,
-                    'name' => $this->user->name,
-                ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
             ],
         ]);
     }
