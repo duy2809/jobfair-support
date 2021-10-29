@@ -637,7 +637,7 @@ export default function File() {
                       <>
                         <div
                           className={`my-2 px-6 ${index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
-                            }`}
+                          }`}
                         >
                           <div className="flex flex-row items-center">
                             <FileFilled className="mr-2 " />

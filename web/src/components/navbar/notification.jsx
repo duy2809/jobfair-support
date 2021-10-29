@@ -10,6 +10,7 @@ export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
   const [user, setUser] = useState(null)
+  const [userId, setUserId] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
   const { store } = useContext(ReactReduxContext)
@@ -21,11 +22,11 @@ export default function Notification() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      // setUserName([])
       setDataNoti([])
       setUser(store.getState().get('auth').get('user'))
       if (user) {
         const id = user.get('id')
+        setUserId(id)
         let data
         if (unread) {
           const res = await getUnreadNotification(id)
@@ -40,10 +41,41 @@ export default function Notification() {
             return
           } data = res.data
         }
-        // const length = data.noti.length
-        // setLengthNoti(length)
-        const newNoti = data.noti.map((item, idx) => {
-          const newItem = { ...item, ...data.userName[idx], taskName: `${data.taskName[idx].name}`, avatar: `/api/avatar/${item.user_id}` }
+
+        const newNoti = data.map((item) => {
+          let action
+          let userid
+          let username
+          let url
+          if (item.type === 'App\\Notifications\\JobfairEdited') {
+            action = `${item.data.jobfair.name}JFを編集しました。`
+            userid = item.data.user.id
+            username = item.data.user.name
+            url = `/jf-toppage/${item.data.jobfair.id}`
+          } else if (item.type === 'App\\Notifications\\JobfairCreated') {
+            action = `${item.data.jobfair.name}JFの管理者に選ばれました。`
+            userid = item.data.notifiable_id
+            url = `/jf-toppage/${item.data.jobfair.id}`
+          } else if (item.type === 'App\\Notifications\\MemberEdited') {
+            action = `${item.data.edited_user.name}メンバを編集しました。`
+            userid = item.data.edited_user.id
+            username = item.data.edited_user.name
+            url = `/member/${id}`
+          } else if (item.type === 'App\\Notifications\\TaskCreated') {
+            action = `${item.data.task.name}タスクの責任者に選ばれました。`
+            userid = item.data.notifiable_id
+            url = `/task-detail/${item.data.task.id}`
+          } else if (item.type === 'App\\Notifications\\TaskEdited') {
+            action = `${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
+            userid = item.data[0].user.id
+            username = item.data[0].user.name
+            url = `/task-detail/${item.data.task.id}`
+          } else if (item.type === 'App\\Notifications\\TaskExpired') {
+            action = 'タスクが完了期限を過ぎました'
+            userid = item.data.notifiable_id
+            url = `/task-detail/${item.data.task.id}`
+          }
+          const newItem = { ...item, action, username, avatar: `/api/avatar/${userid}`, url }
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -61,7 +93,7 @@ export default function Notification() {
       if (!res.data) {
         setUnReadLength(0)
       } else {
-        setUnReadLength(res.data.noti.length)
+        setUnReadLength(res.data.length)
       }
     })
   }
@@ -78,26 +110,12 @@ export default function Notification() {
     }
   }
 
-  // const getNoti = (value) => {
-  //   console.log(value)
-  // }
-
-  // change ...
-  // function handleChange(value) {
-  //   console.log(`Selected: ${value}`)
-  //   getNoti(value)
-  // }
-
-  // show noti
   const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = () => {
     setVisible(!visible)
   }
   const deleteNoti = (notiId) => {
-    // console.log(noti_id)
-    // setDeleteNoti(noti_id)
-    // console.log(deleteNotiID)
     deleteNotification(notiId).then((res) => {
       if (res.data == null) {
         return
@@ -116,7 +134,7 @@ export default function Notification() {
   }
 
   const onChange = () => {
-    updateAllRead().then((res) => {
+    updateAllRead(userId).then((res) => {
       if (res.data == null) {
         return
       }
@@ -124,16 +142,8 @@ export default function Notification() {
     })
   }
 
-  const handlerClick = (type, id) => {
-    if (type === 'タスク') {
-      window.location.href = `/task-detail/${id}`
-    }
-    if (type === 'メンバ') {
-      window.location.href = `/member/${id}`
-    }
-    if (type === 'JF') {
-      window.location.href = `/jf-toppage/${id}`
-    }
+  const handlerClick = (url) => {
+    window.location.href = url
   }
 
   const convertDate = (date) => {
@@ -190,18 +200,15 @@ export default function Notification() {
                         if (!item.read_at) {
                           updateReadAt(item.id)
                         }
-                        handlerClick(item.type, item.subjectable_id)
+                        handlerClick(item.url)
                       }}
                       avatar={<Avatar src={item.avatar} />}
                       title={(
                         <div>
-                          {item.name}
+                          {item.username}
                           さんが
-                          {item.taskName}
-                          {item.type}
-                          を
-                          {item.data}
-                          しました
+                          {item.action}
+
                         </div>
                       )}
                       description={convertDate(item.created_at)}
