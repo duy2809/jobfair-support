@@ -58,12 +58,7 @@ function TaskList() {
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
-  const [confirmSave, setConfirmSave] = useState(false)
-  let dataSave = {
-    memberAS: null,
-    record: null,
-    userAS: null,
-  }
+  const [isEdit, setIsEdit] = useState(false)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -92,6 +87,7 @@ function TaskList() {
       setItemCount(paginationData.pageSize)
     }
   }
+
   // add data of table
   const loadTableData = (response) => {
     const dataResponse = response ? response.data.schedule.tasks : null
@@ -324,27 +320,12 @@ function TaskList() {
     setTemperaryData(newList)
     // record.managers = data
     await updateManagerTask(record.idtask, data).then(() => {
-      saveEditNotification()
+      if (value !== record.managers) {
+        saveEditNotification()
+      }
     })
   }
-  const modalConfilm = (memberAS, record, userAS) => {
-    Modal.confirm({
-      title: 'このまま保存してもいいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      onOk: async () => {
-        setConfirmSave(false)
-        handleSave(memberAS, record, userAS)
-        router.reload()
-      },
-      onCancel: () => {
-        setConfirmSave(true)
-      },
-      centered: true,
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
-  }
+
   const member = (managers, record) => {
     const [edit, setEdit] = useState(false)
     const [memberAS, setMemberAS] = useState(managers)
@@ -357,13 +338,6 @@ function TaskList() {
         }
       })
     }
-    if (edit) {
-      dataSave = {
-        memberAS,
-        record,
-        userAS,
-      }
-    }
     return (
       <div className="listMember">
         {edit ? (
@@ -372,6 +346,7 @@ function TaskList() {
               mode="multiple"
               onChange={(value) => {
                 setMemberAS(value)
+                setIsEdit(true)
               }}
               style={{ width: '100%' }}
               defaultValue={managers}
@@ -392,7 +367,33 @@ function TaskList() {
             <div className="save">
               <Button
                 onClick={() => {
-                  setConfirmSave(false)
+                  if (!isEdit) {
+                    setEdit(false)
+                  } else {
+                    Modal.confirm({
+                      title: '変更内容が保存されません。よろしいですか？',
+                      icon: <ExclamationCircleOutlined />,
+                      content: '',
+                      centered: true,
+                      onOk: () => {
+                        setEdit(false)
+                        handleSave(managers, record, userAS)
+                      },
+
+                      onCancel: () => {},
+                      okText: 'はい',
+                      cancelText: 'いいえ',
+                    })
+                  }
+                }}
+                style={{ marginRight: '10px', background: 'white', height: '30px', padding: '0 15px' }}
+                size="small"
+                type="primary"
+              >
+                <span> キャンセル </span>
+              </Button>
+              <Button
+                onClick={() => {
                   setEdit(false)
                   handleSave(memberAS, record, userAS)
                 }}
@@ -410,17 +411,7 @@ function TaskList() {
             {managers.length > 0 ? (
               <div
                 onClick={() => {
-                  setConfirmSave(true)
                   setEdit(true)
-                  if (confirmSave) {
-                    if (dataSave.memberAS !== null) {
-                      setEdit(false)
-                      modalConfilm(dataSave.memberAS, dataSave.record, dataSave.userAS)
-                    } else {
-                      setEdit(false)
-                      modalConfilm(record.managers, dataSave.record, dataSave.userAS)
-                    }
-                  }
                 }}
               >
                 {managers.join(', ')}
@@ -428,17 +419,7 @@ function TaskList() {
             ) : (
               <div
                 onClick={() => {
-                  setConfirmSave(true)
                   setEdit(true)
-                  if (confirmSave) {
-                    if (dataSave.memberAS) {
-                      setEdit(false)
-                      modalConfilm(dataSave.memberAS, dataSave.record, dataSave.userAS)
-                    } else {
-                      setEdit(false)
-                      modalConfilm(record.managers, dataSave.record, dataSave.userAS)
-                    }
-                  }
                 }}
                 style={{ width: '100%', height: '100%', opacity: '0' }}
               >
