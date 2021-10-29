@@ -17,8 +17,9 @@ import Middleware from '~/modules/middleware'
 import { LOAD as INIT_AUTH_USER } from '~/store/modules/auth'
 
 import 'antd/dist/antd.css'
-import './global.scss'
 import 'tailwindcss/tailwind.css'
+import 'nprogress/nprogress.css'
+import './global.scss'
 
 Sentry.init({ dsn: `${process.env.SENTRY_DSN}` })
 
@@ -86,5 +87,5 @@ export default withRouter(
   withRedux(createStore, {
     serializeState: (state) => state,
     deserializeState: (state) => fromJS(state),
-  })(withReduxSaga(Jobfair)),
+  })(withReduxSaga(Jobfair))
 )
