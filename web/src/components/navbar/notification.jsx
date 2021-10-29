@@ -32,6 +32,7 @@ export default function Notification() {
       setUser(store.getState().get('auth').get('user'))
       if (user) {
         const id = user.get('id')
+        setUserId(id)
         let data
         if (unread) {
           const res = await getUnreadNotification(id)
@@ -167,26 +168,12 @@ export default function Notification() {
     }
   }
 
-  // const getNoti = (value) => {
-  //   console.log(value)
-  // }
-
-  // change ...
-  // function handleChange(value) {
-  //   console.log(`Selected: ${value}`)
-  //   getNoti(value)
-  // }
-
-  // show noti
   const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = () => {
     setVisible(!visible)
   }
   const deleteNoti = (notiId) => {
-    // console.log(noti_id)
-    // setDeleteNoti(noti_id)
-    // console.log(deleteNotiID)
     deleteNotification(notiId).then((res) => {
       if (res.data == null) {
         return
@@ -214,16 +201,8 @@ export default function Notification() {
     })
   }
 
-  const handlerClick = (type, id) => {
-    if (type === 'タスク') {
-      window.location.href = `/task-detail/${id}`
-    }
-    if (type === 'メンバ') {
-      window.location.href = `/member/${id}`
-    }
-    if (type === 'JF') {
-      window.location.href = `/jf-toppage/${id}`
-    }
+  const handlerClick = (url) => {
+    window.location.href = url
   }
 
   // const convertDate = (date) => {
