@@ -54,38 +54,33 @@ export default function Notification() {
         const newNoti = data.map((item) => {
           let action
           let userid
-          let username
           let url
           if (item.type === 'App\\Notifications\\JobfairEdited') {
-            action = `${item.data.jobfair.name}JFを編集しました。`
+            action = `${item.data.user.name}さんが${item.data.jobfair.name}JFを編集しました。`
             userid = item.data.user.id
-            username = item.data.user.name
             url = `/jf-toppage/${item.data.jobfair.id}`
           } else if (item.type === 'App\\Notifications\\JobfairCreated') {
             action = `${item.data.jobfair.name}JFの管理者に選ばれました。`
             userid = item.data.user.id
             url = `/jf-toppage/${item.data.jobfair.id}`
           } else if (item.type === 'App\\Notifications\\MemberEdited') {
-            action = `${user.get('name')}メンバを編集しました。`
+            action = `${item.data.user.name}さんが${user.get('name')}メンバを編集しました。`
             userid = item.data.edited_user.id
-            username = item.data.edited_user.name
             url = `/member/${id}`
           } else if (item.type === 'App\\Notifications\\TaskCreated') {
             action = `${item.data.task.name}タスクの責任者に選ばれました。`
             userid = item.data.user.id
-            username = item.data.user.name
             url = `/task-detail/${item.data.task.id}`
           } else if (item.type === 'App\\Notifications\\TaskEdited') {
-            action = `${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
+            action = `${item.data.user.name}さんが${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
             userid = item.data.user.id
-            username = item.data.user.name
             url = `/task-detail/${item.data.task.id}`
           } else if (item.type === 'App\\Notifications\\TaskExpired') {
             action = `タスク${item.task.name}が完了期限を過ぎました。`
             userid = item.data.user.id
             url = `/task-detail/${item.data.task.id}`
           }
-          const newItem = { ...item, action, username, avatar: `/api/avatar/${userid}`, url }
+          const newItem = { ...item, action, avatar: `/api/avatar/${userid}`, url }
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -213,8 +208,7 @@ export default function Notification() {
                       avatar={<Avatar src={item.avatar} />}
                       title={(
                         <div>
-                          {item.username}
-                          さんが
+
                           {item.action}
 
                         </div>
