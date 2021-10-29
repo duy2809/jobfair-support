@@ -59,6 +59,7 @@ function TaskList() {
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
   const [isEdit, setIsEdit] = useState(false)
+  const [confirmSave, setConfirmSave] = useState(false)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -87,7 +88,6 @@ function TaskList() {
       setItemCount(paginationData.pageSize)
     }
   }
-
   // add data of table
   const loadTableData = (response) => {
     const dataResponse = response ? response.data.schedule.tasks : null
@@ -345,8 +345,8 @@ function TaskList() {
             <Select
               mode="multiple"
               onChange={(value) => {
-                setMemberAS(value)
                 setIsEdit(true)
+                setMemberAS(value)
               }}
               style={{ width: '100%' }}
               defaultValue={managers}
@@ -367,6 +367,8 @@ function TaskList() {
             <div className="save">
               <Button
                 onClick={() => {
+                  setConfirmSave(false)
+
                   if (!isEdit) {
                     setEdit(false)
                   } else {
@@ -378,9 +380,10 @@ function TaskList() {
                       onOk: () => {
                         setEdit(false)
                         handleSave(managers, record, userAS)
+                        setIsEdit(false)
                       },
 
-                      onCancel: () => {},
+                      onCancel: () => { setIsEdit(false) },
                       okText: 'はい',
                       cancelText: 'いいえ',
                     })
@@ -395,6 +398,7 @@ function TaskList() {
               <Button
                 onClick={() => {
                   setEdit(false)
+                  setConfirmSave(false)
                   handleSave(memberAS, record, userAS)
                 }}
                 style={{ height: '30px', padding: '0 15px' }}
@@ -411,19 +415,34 @@ function TaskList() {
             {managers.length > 0 ? (
               <div
                 onClick={() => {
+                  setConfirmSave(true)
                   setEdit(true)
+                  if (confirmSave) {
+                    setEdit(false)
+                  }
                 }}
               >
-                {managers.join(', ')}
+                {' '}
+                <div className="flex items-center">
+                  {managers.join(', ')}
+                  <EditTwoTone className="ml-1" />
+                </div>
               </div>
             ) : (
               <div
                 onClick={() => {
                   setEdit(true)
+                  setConfirmSave(true)
+                  if (confirmSave) {
+                    setEdit(false)
+                  }
                 }}
-                style={{ width: '100%', height: '100%', opacity: '0' }}
+                style={{ width: '100%', height: '100%' }}
               >
-                {['n']}
+                <div className="flex items-center">
+                  <EditTwoTone />
+                  <span style={{ color: '#999' }} className="ml-1">担当者を選択してください</span>
+                </div>
               </div>
             )}
           </>
