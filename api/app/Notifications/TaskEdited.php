@@ -2,23 +2,29 @@
 
 namespace App\Notifications;
 
+use App\Models\Jobfair;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TestNotification extends Notification
+class TaskEdited extends Notification
 {
     use Queueable;
 
+    protected $task;
+    protected $user;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(User $user, Task $task)
     {
-        //
+        $this->task = $task;
+        $this->user = $user;
     }
 
     /**
@@ -29,7 +35,7 @@ class TestNotification extends Notification
      */
     public function via($notifiable)
     {
-        return ['broadcast'];
+        return ['broadcast', 'database'];
     }
 
     /**
@@ -54,14 +60,38 @@ class TestNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        $jobfair = $this->task->schedule->jobfair;
         return [
+            'jobfair' => [
+                'id' => $jobfair->id,
+                'name' => $jobfair->name,
+            ],
+            'task' => [
+                'id' => $this->task->id,
+                'name' => $this->task->name,
+            ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+            ],
         ];
     }
     public function toBroadcast($notifiable)
     {
+        $jobfair = $this->task->schedule->jobfair;
         return new BroadcastMessage([
-            'invoice_id' => '1',
-            'amount' => '1000',
+            'jobfair' => [
+                'id' => $jobfair->id,
+                'name' => $jobfair->name,
+            ],
+            'task' => [
+                'id' => $this->task->id,
+                'name' => $this->task->name,
+            ],
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+            ],
         ]);
     }
 }
