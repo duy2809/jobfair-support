@@ -5,6 +5,7 @@ const STORE_COMMENTS = 'comment/STORE_COMMENTS'
 const ADD_COMMENT = 'comment/ADD_COMMENT'
 const DELETE_COMMENT = 'comment/DELETE_COMMENT'
 const EDIT_COMMENT = 'comment/EDIT_COMMENT'
+const CLEAR_STORE = 'comment/CLEAR_STORE'
 export default {
   LOAD_COMMENT,
   LOAD_COMMENT_SUCCESS,
@@ -13,4 +14,5 @@ export default {
   DELETE_COMMENT,
   EDIT_COMMENT,
   STORE_COMMENTS,
+  CLEAR_STORE,
 }

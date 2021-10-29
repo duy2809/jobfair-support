@@ -11,6 +11,15 @@ import actions from '../../store/modules/comment/types'
 import { editTask } from '../../api/edit-task'
 import Comment from './Comment'
 
+import dynamic from 'next/dynamic'
+
+// const CKeditor = dynamic(
+//   // eslint-disable-next-line import/no-unresolved
+//   () => import('~/components/comment/CKeditor'),
+//   // eslint-disable-next-line comma-dangle
+//   { ssr: false }
+// )
+
 function index({ id, statusProp, assigneeProp, taskInfo }) {
   const [visible, setVisible] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -84,6 +93,9 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
     fetchListMember()
     fetchTaskData()
     getMoreComments(0, INIT_COMMENTS_NUM)
+    return () => {
+      store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
+    }
   }, [])
 
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
@@ -144,7 +156,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       if (newComment) {
         store.dispatch({
           type: actions.ADD_COMMENT,
-          payload: [newComment, ...commentArray],
+          payload: [...commentArray, newComment],
         })
         form.resetFields()
         setValue('')
@@ -222,7 +234,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   }
 
   return (
-    <div>
+    <div className="my-10 px-10">
       <span className="comment__count block">{`コメント(${commentArray.length})`}</span>
       <Typography.Link
         className="see-more block text-center"
@@ -276,6 +288,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                     onChange={typing}
                   >
                     <Editor value={value} />
+                    {/* <CKeditor /> */}
                   </Form.Item>
                 </div>
                 <div className="pos-right">

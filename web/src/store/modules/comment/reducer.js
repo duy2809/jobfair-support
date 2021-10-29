@@ -22,7 +22,8 @@ const initState = fromJS({
 
 const loading = (state) => state.set('loadStatus', enumsStatus.LOADING)
 
-const loadSuccess = (state, action) => state.set('loadStatus', enumsStatus.SUCCESS).set('comments', fromJS(action.payload))
+const loadSuccess = (state, action) =>
+  state.set('loadStatus', enumsStatus.SUCCESS).set('comments', fromJS(action.payload))
 const loadFail = (state) => state.set('loadStatus', enumsStatus.FAIL)
 
 const storeData = (state, action) => state.set('comments', fromJS(action.payload))
@@ -36,8 +37,9 @@ const reducer = handleActions(
     [types.ADD_COMMENT]: storeData,
     [types.DELETE_COMMENT]: storeData,
     [types.EDIT_COMMENT]: storeData,
+    [types.CLEAR_STORE]: storeData,
   },
-  initState,
+  initState
 )
 
 export default reducer

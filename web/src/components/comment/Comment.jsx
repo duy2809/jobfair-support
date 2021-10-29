@@ -36,6 +36,7 @@ function Comment(props) {
   }, [])
 
   const editComment = () => {
+    console.log(document)
     props.parentCallBack(props)
   }
 
@@ -108,30 +109,39 @@ function Comment(props) {
               />
             </div>
           </div>
-          <div className={classNames('flex flex-1 gap-4', expanded ? 'flex-col' : 'flex-row')}>
-            {/* <span
-              className={classNames(
-                'comment__content',
-                expanded ? 'expanded' : 'collapse',
-                commentOverflow ? 'comment__overflow' : ''
+          <div className="flex">
+            {/* comment content */}
+            <div className="">
+              {props.content.length > MAX_CHAR_PER_LINE && !expanded ? (
+                <MarkDownView
+                  id="editor"
+                  source={props.content.slice(0, MAX_CHAR_PER_LINE)}
+                  className={classNames(
+                    'comment__content',
+                    expanded ? 'expanded' : 'collapse',
+                    commentOverflow ? 'comment__overflow' : ''
+                  )}
+                />
+              ) : (
+                <MarkDownView
+                  id="editor"
+                  source={props.content}
+                  className={classNames(
+                    'comment__content',
+                    expanded ? 'expanded' : 'collapse',
+                    commentOverflow ? 'comment__overflow' : ''
+                  )}
+                />
               )}
-            >
-              {props.content}
-            </span> */}
-            <MarkDownView
-              source={props.content}
-              className={classNames(
-                'comment__content',
-                expanded ? 'expanded' : 'collapse',
-                commentOverflow ? 'comment__overflow' : '',
-              )}
-            />
+            </div>
+
+            {/*   display more button */}
+            <Typography.Link className="mr-4 see-more float-right" onClick={toggleExpanded}>
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
+            </Typography.Link>
 
             <div>
-              <Typography.Link className="mr-4 see-more" onClick={toggleExpanded}>
-                {/* eslint-disable-next-line no-nested-ternary */}
-                {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
-              </Typography.Link>
               <Popover
                 content={moment(props.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
                 trigger="hover"
