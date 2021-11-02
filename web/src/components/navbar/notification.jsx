@@ -15,7 +15,6 @@ export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
 
-  // const [isCreatedChannel, setIsCreatedChannel] = useState(false)
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
@@ -100,12 +99,10 @@ export default function Notification() {
     }
   }
 
+  // TODO: fix bug crash browser
   useEffect(() => {
-    // if (!isCreatedChannel) {
     new NotificationChannel(store.getState().get('auth').get('user').get('id'))
       .onOutput((data) => {
-        // TODO: only add new notification to state
-        console.log(dataNoti)
         let action
         let userid
         let url
@@ -146,7 +143,6 @@ export default function Notification() {
         setDataNoti([newItem, ...dataNoti])
       })
       .listen()
-    // }
   }, [dataNoti])
 
   // if (user) {
