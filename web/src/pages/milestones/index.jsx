@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip } from 'antd'
+import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip, Empty } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
@@ -302,6 +302,14 @@ const MilestonePage = () => {
                 pagination={pagination}
                 loading={loading}
                 onChange={(e) => tableChangeHandler(e)}
+                locale={{
+                  emptyText: (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description="該当結果が見つかりませんでした"
+                    />
+                  ),
+                }}
               />
             </div>
           </div>

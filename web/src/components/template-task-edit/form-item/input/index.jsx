@@ -6,8 +6,9 @@ import * as Extensions from '../../../../utils/extensions'
 
 const toHalfWidth = (v) => v.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
 
-const ItemInput = ({ display, form, name, setCheckSpace, setInput }) => {
+const ItemInput = ({ display, form, name, setCheckSpace, setInput, setConfilm }) => {
   const onValueNameChange = (e) => {
+    setConfilm(true)
     setCheckSpace(false)
     setInput(e.target.value)
     const temp = {}
@@ -61,4 +62,5 @@ ItemInput.propTypes = {
   name: PropTypes.string.isRequired,
   setCheckSpace: PropTypes.func.isRequired,
   setInput: PropTypes.func.isRequired,
+  setConfilm: PropTypes.func.isRequired,
 }

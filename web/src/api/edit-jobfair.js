@@ -20,6 +20,8 @@ const editApi = {
 
   getTaskList: (id) => {
     const url = `/schedules/${id}/template-tasks`
+    // const url = `/jobfair/${id}/tasks`
+
     return instance.get(url)
   },
   getMilestone: (id) => {
@@ -31,5 +33,9 @@ const editApi = {
     return instance.get(url)
   },
   getAll: (requests) => instance.all(requests),
+  getSchedulesTaskByName: (name) => {
+    const url = `/schedule/search?name=${name}`
+    return instance.get(url)
+  },
 }
 export default editApi
