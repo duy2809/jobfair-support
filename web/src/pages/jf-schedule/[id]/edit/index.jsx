@@ -156,7 +156,6 @@ function editJobfairSchedule() {
     }
   }
 
-
   const onDeleteTemplateTask = (id) => {
     const newState = _.filter(addedTemplateTaskList, (item) => item !== id)
     setAddedTemplateTaskList(newState)
