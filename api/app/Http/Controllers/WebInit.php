@@ -33,14 +33,18 @@ class WebInit extends Controller
         switch ($role) {
             case 1:
                 $roleStr = Role::SUPER_ADMIN;
+
                 break;
             case 2:
                 $roleStr = Role::MEMBER;
+
                 break;
             default:
                 break;
         }
-        $manage_jf_ids = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
+
+        $manageIds = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
+
         return [
             'user' => [
                 'id'            => $user->id,
@@ -48,7 +52,7 @@ class WebInit extends Controller
                 'email'         => $user->email,
                 'avatar'        => $user->avatar,
                 'role'          => $roleStr,
-                'manage_jf_ids' => $manage_jf_ids,
+                'manage_jf_ids' => $manageIds,
                 'chatwork_id'   => $user->chatwork_id,
                 'created_at'    => $user->created_at,
                 'updated_at'    => $user->updated_at,
