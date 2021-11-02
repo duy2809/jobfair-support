@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             'email'          => 'AMember@sun-asterisk.com',
             'password'       => Hash::make('12345678'),
             'avatar'         => 'images/avatars/default.jpg',
-            'role'           => 3,
+            'role'           => 2,
             'chatwork_id'    => Str::random(10),
             'remember_token' => null,
             'updated_at'     => now(),

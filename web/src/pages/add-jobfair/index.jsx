@@ -198,6 +198,7 @@ const index = () => {
   }
 
   // handle when ever selector change.
+  // FIXME: error: event is undefined
   const onScheduleSelect = (_, event) => {
     const scheduleId = event.key
 
