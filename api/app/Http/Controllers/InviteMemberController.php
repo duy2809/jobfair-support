@@ -22,7 +22,7 @@ class InviteMemberController extends Controller
                 'email' => $request->email,
                 'name' => Str::random(15),
                 'password' => Hash::make('12345678'),
-                'role' => 3,
+                'role' => 2,
                 'chatwork_id' => null,
                 'avatar' => 'images/avatars/default.jpg',
                 'created_at' => now(),
