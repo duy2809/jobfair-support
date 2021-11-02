@@ -14,6 +14,8 @@ import { getNotification, update, updateAllRead, getUnreadNotification, deleteNo
 export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
+
+  // const [isCreatedChannel, setIsCreatedChannel] = useState(false)
   const [user, setUser] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
@@ -49,7 +51,12 @@ export default function Notification() {
         }
         // const length = data.noti.length
         // setLengthNoti(length)
+        let countUnreadNoti = 0
         const newNoti = data.map((item) => {
+          if (!item.read_at) {
+            countUnreadNoti += 1
+          }
+
           let action
           let userid
           let url
@@ -81,9 +88,10 @@ export default function Notification() {
           const newItem = {
             ...item, action, avatar: `/api/avatar/${userid}`, url,
           }
+
           return newItem
         }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-
+        setUnReadLength(countUnreadNoti)
         setDataNoti(newNoti)
         setLoading(false)
       }
@@ -93,14 +101,53 @@ export default function Notification() {
   }
 
   useEffect(() => {
+    // if (!isCreatedChannel) {
     new NotificationChannel(store.getState().get('auth').get('user').get('id'))
       .onOutput((data) => {
         // TODO: only add new notification to state
-        console.log(data)
-        fetchData()
+        console.log(dataNoti)
+        let action
+        let userid
+        let url
+        if (data.type === 'App\\Notifications\\JobfairEdited') {
+          action = `${data.user.name}さんが${data.jobfair.name}JFを編集しました。`
+          userid = data.user.id
+          url = `/jf-toppage/${data.jobfair.id}`
+        } else if (data.type === 'App\\Notifications\\JobfairCreated') {
+          action = `${data.jobfair.name}JFの管理者に選ばれました。`
+          userid = data.user.id
+          url = `/jf-toppage/${data.jobfair.id}`
+        } else if (data.type === 'App\\Notifications\\MemberEdited') {
+          action = `${data.edited_user.name}さんが${user.get('name')}メンバを編集しました。`
+          userid = data.edited_user.id
+          url = `/member/${user.get('id')}`
+        } else if (data.type === 'App\\Notifications\\TaskCreated') {
+          action = `${data.task.name}タスクの責任者に選ばれました。`
+          userid = data.user.id
+          url = `/task-detail/${data.task.id}`
+        } else if (data.type === 'App\\Notifications\\TaskEdited') {
+          action = `${data.user.name}さんが${data.jobfair.name}JFに${data.task.name}タスクを編集しました。`
+          userid = data.user.id
+          url = `/task-detail/${data.task.id}`
+        } else if (data.type === 'App\\Notifications\\TaskExpired') {
+          action = `タスク${data.task.name}が完了期限を過ぎました。`
+          userid = data.user.id
+          url = `/task-detail/${data.task.id}`
+        }
+
+        const date = new Date()
+        const isoDateTime = new Date(date.getTime()).toISOString()
+
+        const newItem = {
+          action, avatar: `/api/avatar/${userid}`, url, created_at: isoDateTime, read_at: null,
+        }
+        setUnReadLength(unreadLength + 1)
+
+        setDataNoti([newItem, ...dataNoti])
       })
       .listen()
-  }, [])
+    // }
+  }, [dataNoti])
 
   // if (user) {
   //   const id = user.get('id')
@@ -168,6 +215,7 @@ export default function Notification() {
         return
       }
       setCheckUpdate(checkUpdate + 1)
+      setUnReadLength(0)
     })
   }
 

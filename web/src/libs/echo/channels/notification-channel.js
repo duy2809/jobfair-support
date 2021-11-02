@@ -3,7 +3,9 @@ import echo from '../connection'
 export default class NotificationChannel {
   constructor(userId) {
     this.userId = userId
-    this.channel = echo.private(`App.Models.User.${userId}`)
+    if (!this.channel) {
+      this.channel = echo.private(`App.Models.User.${userId}`)
+    }
     this.onOutputCb = null
   }
 
