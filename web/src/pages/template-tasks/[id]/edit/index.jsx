@@ -55,6 +55,7 @@ const EditTemplateTaskPage = () => {
   const [allTask, setAllTask] = useState([])
   const [beforeTasksNew, setBeforeTaskNew] = useState([])
   const [afterTasksNew, setafterTaskNew] = useState([])
+  const [confilm, setConfilm] = useState(false)
   // eslint-disable-next-line no-unused-vars
   let tasksList = []
 
@@ -251,6 +252,7 @@ const EditTemplateTaskPage = () => {
     )
   }
   const filtedArr = () => {
+    setConfilm(true)
     const before = form.getFieldsValue().taskBefore
     const after = form.getFieldsValue().afterTask
     let selectedItems = []
@@ -331,6 +333,7 @@ const EditTemplateTaskPage = () => {
                       <ItemInput
                         form={form}
                         name="templateTaskName"
+                        setConfilm={setConfilm}
                         setCheckSpace={setCheckSpace}
                         setInput={setTemplateTaskNameInput}
                         display={isPreview}
@@ -343,6 +346,7 @@ const EditTemplateTaskPage = () => {
                       <ItemDropdow
                         form={form}
                         name="category"
+                        setConfilm={setConfilm}
                         setCheckSpace={setCheckSpace}
                         data={categoryData}
                         setInput={setCategoryInput}
@@ -355,6 +359,7 @@ const EditTemplateTaskPage = () => {
                   <div className="col-span-1 ml-8">
                     <Form.Item label="マイルストーン" required={!isPreview}>
                       <ItemDropdow
+                        setConfilm={setConfilm}
                         form={form}
                         name="milestone"
                         setCheckSpace={setCheckSpace}
@@ -369,6 +374,7 @@ const EditTemplateTaskPage = () => {
                   <div className="col-span-1 ml-8">
                     <Form.Item label="工数" required={!isPreview}>
                       <Effort
+                        setConfilm={setConfilm}
                         form={form}
                         unitData={unitData}
                         isDayData={isDayData}
@@ -442,7 +448,7 @@ const EditTemplateTaskPage = () => {
                 </div>
                 <Form.Item className="justify-end">
                   <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
-                    <CancelEditTemplateTask id={pathId} />
+                    <CancelEditTemplateTask confilm={confilm} id={pathId} />
                     <Button
                       className="preview_btn"
                       htmlType="submit"

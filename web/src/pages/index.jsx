@@ -112,7 +112,7 @@ const LoginPage = () => {
       <Layout>
         <Layout.Main>
           <div className="h-screen flex flex-col items-center bg-white pt-32">
-            <img src="/images/logo.png" alt="logo" className="w-48 mb-10" />
+            <img src="/images/logo.svg" alt="logo" className="w-48 mb-10" />
             <Form
               form={form}
               name="login"

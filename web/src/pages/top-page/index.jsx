@@ -7,6 +7,7 @@ import { tasks, members, jobfairs } from '../../api/top-page'
 import { getTaskList as getTemplateTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
+import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 
 const { getListSchedule } = ListScheduleApi
 
@@ -36,6 +37,7 @@ const jfScheduleDataColumn = [
     title: '名前',
     dataIndex: 'name',
     key: 'name',
+    render: (text) => <a>{text}</a>,
   },
 ]
 
@@ -130,6 +132,7 @@ const Top = () => {
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
+          // console.log(data);
           const categoriesName = data.categories.map(
             (category) => category.category_name,
           )
@@ -227,24 +230,11 @@ const Top = () => {
                 routeToAdd="/member/invite"
                 isLoading={isLoadingMember}
               />
-              <List
-                key={3}
-                dataColumn={jfScheduleDataColumn}
-                dataSource={scheduleData}
-                text="JFスケジュール一覧"
-                searchIcon
-                showTimeInput={false}
-                showCategoryInput={false}
-                showMilestoneInput={false}
-                route="/schedule"
-                routeToAdd="/jf-schedule/add"
-                isLoading={isLoadingSchedule}
-              />
-              <List
+              <TemplateTaskSubTable
                 key={4}
                 dataColumn={templateTaskDataColumn}
-                text="テンプレートタスク詳細"
                 dataSource={templateData}
+                text="テンプレートタスク詳細"
                 searchIcon
                 showTimeInput={false}
                 showCategoryInput

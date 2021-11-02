@@ -254,7 +254,7 @@ class TaskController extends Controller
                 $task->reviewers()->sync([]);
                 $task->save();
 
-                // return response()->json(['message' => 'Edit Successfully'], 200);
+                return response()->json(['message' => 'Edit Successfully'], 200);
             }
 
             $checkKey = 1;
