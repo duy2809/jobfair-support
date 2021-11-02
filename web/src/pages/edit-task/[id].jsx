@@ -27,7 +27,11 @@ import {
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
+import {
+  editTask,
+  reviewers,
+  listReviewersSelectTag,
+} from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function TaskList() {
@@ -66,66 +70,66 @@ function TaskList() {
   const [reviewersData, setReviewersData] = useState([])
   const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const fetchTaskData = async () => {
-    await reviewers(idTask).then((response) => {
-      if (response.status === 200) {
-        setReviewersData(response.data)
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
-
-    await listReviewersSelectTag(idTask).then((response) => {
-      if (response.status === 200) {
-        console.log(response.data)
-        setReviewersSelectTag(response.data)
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
-
-    await taskData(idTask)
+    await reviewers(idTask)
       .then((response) => {
         if (response.status === 200) {
-          const data = response.data
-          setInfoTask({
-            name: data.name,
-            categories: data.categories[0].category_name,
-            milestone: data.milestone.name,
-            status: data.status,
-            start_time: data.start_time,
-            end_time: data.end_time,
-            effort: data.template_task.effort,
-            is_day: data.template_task.is_day,
-            unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
-          })
-          setIdJF(data.schedule.jobfair.id)
-          // eslint-disable-next-line no-use-before-define
-          fetchListTask()
-          const listmember = []
-          data.users.forEach((element) => {
-            listmember.push(element.name)
-          })
-          const listReviewers = []
-          reviewersData.forEach((element) => {
-            listReviewers.push(element.name)
-          })
-          form.setFieldsValue({
-            name: data.name,
-            category: data.categories[0].category_name,
-            milestone: data.milestone.name,
-            assignee: listmember,
-            status: data.status,
-            start_time: moment(
-              data.start_time.split('-').join('/'),
-              dateFormat,
-            ),
-            end_time: moment(data.end_time.split('-').join('/'), dateFormat),
-            detail: data.description_of_detail,
-            reviewers: listReviewers,
-          })
+          setReviewersData(response.data)
         }
       })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    await listReviewersSelectTag(idTask)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data)
+          setReviewersSelectTag(response.data)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    await taskData(idTask).then((response) => {
+      if (response.status === 200) {
+        const data = response.data
+        setInfoTask({
+          name: data.name,
+          categories: data.categories[0].category_name,
+          milestone: data.milestone.name,
+          status: data.status,
+          start_time: data.start_time,
+          end_time: data.end_time,
+          effort: data.template_task.effort,
+          is_day: data.template_task.is_day,
+          unit: data.template_task.unit,
+          description_of_detail: data.description_of_detail,
+        })
+        setIdJF(data.schedule.jobfair.id)
+        // eslint-disable-next-line no-use-before-define
+        fetchListTask()
+        const listmember = []
+        data.users.forEach((element) => {
+          listmember.push(element.name)
+        })
+        const listReviewers = []
+        reviewersData.forEach((element) => {
+          listReviewers.push(element.name)
+        })
+        form.setFieldsValue({
+          name: data.name,
+          category: data.categories[0].category_name,
+          milestone: data.milestone.name,
+          assignee: listmember,
+          status: data.status,
+          start_time: moment(data.start_time.split('-').join('/'), dateFormat),
+          end_time: moment(data.end_time.split('-').join('/'), dateFormat),
+          detail: data.description_of_detail,
+          reviewers: listReviewers,
+        })
+      }
+    })
   }
   const startDayValidator = (_, value) => {
     if (!value) {
@@ -280,14 +284,13 @@ function TaskList() {
   }
 
   const getDataUser = async () => {
-    await webInit()
-      .then((response) => {
-        setUsers({
-          id: response.data.auth.user.id,
-          name: response.data.auth.user.name,
-          role: response.data.auth.user.role,
-        })
+    await webInit().then((response) => {
+      setUsers({
+        id: response.data.auth.user.id,
+        name: response.data.auth.user.name,
+        role: response.data.auth.user.role,
       })
+    })
   }
   const saveNotification = () => {
     notification.open({
@@ -395,28 +398,26 @@ function TaskList() {
     }
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask)
-      .then((response) => {
-        const listbfTask = []
-        response.data.before_tasks.forEach((element) => {
-          listbfTask.push(element.name)
-        })
-        form.setFieldsValue({
-          taskBefore: listbfTask,
-        })
+    await beforeTask(idTask).then((response) => {
+      const listbfTask = []
+      response.data.before_tasks.forEach((element) => {
+        listbfTask.push(element.name)
       })
+      form.setFieldsValue({
+        taskBefore: listbfTask,
+      })
+    })
   }
   const fetchafterTask = async () => {
-    await afterTask(idTask)
-      .then((response) => {
-        const listatTask = []
-        response.data.after_tasks.forEach((element) => {
-          listatTask.push(element.name)
-        })
-        form.setFieldsValue({
-          afterTask: listatTask,
-        })
+    await afterTask(idTask).then((response) => {
+      const listatTask = []
+      response.data.after_tasks.forEach((element) => {
+        listatTask.push(element.name)
       })
+      form.setFieldsValue({
+        afterTask: listatTask,
+      })
+    })
   }
   const fetchListTask = async () => {
     await jftask(idJF)
@@ -430,10 +431,9 @@ function TaskList() {
       })
   }
   const fetchListMember = async () => {
-    await getUser()
-      .then((response) => {
-        setListUser(response.data)
-      })
+    await getUser().then((response) => {
+      setListUser(response.data)
+    })
   }
   useEffect(() => {
     fetchTaskData()
@@ -449,7 +449,7 @@ function TaskList() {
   return (
     <div>
       <Loading loading={loading} overlay={loading} />
-      <JfLayout id={idJF}>
+      <JfLayout id={idJF} bgr={2}>
         <JfLayout.Main>
           <h1>タスク編集 </h1>
           <div className="edit-task">
@@ -478,7 +478,6 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
-
                   >
                     <Input
                       id="validate_name"
@@ -541,7 +540,11 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
+                  <Form.Item
+                    label="レビュアー"
+                    name="reviewers"
+                    className="tag_a"
+                  >
                     <Select
                       showArrow
                       tagRender={tagRender}
@@ -578,7 +581,6 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
-
                   >
                     <Select
                       size="large"
@@ -605,7 +607,6 @@ function TaskList() {
                         validator: startDayValidator,
                       },
                     ]}
-
                   >
                     <DatePicker
                       size="large"
@@ -629,7 +630,6 @@ function TaskList() {
                         validator: EndDayValidator,
                       },
                     ]}
-
                   >
                     <DatePicker
                       size="large"
@@ -647,7 +647,6 @@ function TaskList() {
                     label="前のタスク"
                     name="taskBefore"
                     className="tag_a"
-
                   >
                     <Select
                       mode="multiple"
@@ -669,7 +668,6 @@ function TaskList() {
                     label="次のタスク"
                     name="afterTask"
                     className="tag_a"
-
                   >
                     <Select
                       mode="multiple"
@@ -692,7 +690,6 @@ function TaskList() {
                     name="assignee"
                     required
                     className="multiples"
-
                   >
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
