@@ -2,7 +2,6 @@ import React from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown } from 'antd'
 import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
-import Link from 'next/link'
 import './styles.scss'
 import { logout } from '../../api/authenticate'
 import Notification from './notification'
@@ -23,47 +22,30 @@ export default function Navbar() {
   const moreNavbarOptions = (
     <Menu className="border-2 rounded-2xl py-2 top-5 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
-        <Link href="/template-tasks">
-          <a className="text-base">テンプレートタスク</a>
-        </Link>
+        <a href="/template-tasks" className="text-base">
+          テンプレートタスク
+        </a>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="/schedule">
-          <a className="text-base">スケジュール</a>
-        </Link>
+        <a href="/schedule" className="text-base">
+          スケジュール
+        </a>
       </Menu.Item>
       <Menu.Item key="2">
-        <Link href="/master-setting">
-          <a className="text-base">マスター設定</a>
-        </Link>
+        <a href="/master-setting" className="text-base">
+          マスター設定
+        </a>
       </Menu.Item>
     </Menu>
   )
-  // const notifications = (
-  //   <Menu className="border-2 rounded-2xl py-2 top-4 absolute transform -translate-x-1/2 left-1/2">
-  //     <Menu.Item key="0">
-  //       <Link href="/">
-  //         <a>通知 1</a>
-  //       </Link>
-  //     </Menu.Item>
-  //     <Menu.Item key="1">
-  //       <Link href="/">
-  //         <a>通知 2</a>
-  //       </Link>
-  //     </Menu.Item>
-  //   </Menu>
-  // )
+
   const userInformations = (
     <Menu className="border-2 rounded-2xl py-2 top-3 absolute transform -translate-x-1/2 left-1/2">
       <Menu.Item key="0">
-        <Link href="/profile">
-          <a>プロフィール表示</a>
-        </Link>
+        <a href="/profile">プロフィール表示</a>
       </Menu.Item>
       <Menu.Item key="1">
-        <Link href="">
-          <a onClick={handleLogout}>ログアウト</a>
-        </Link>
+        <a onClick={handleLogout}>ログアウト</a>
       </Menu.Item>
     </Menu>
   )
@@ -71,28 +53,27 @@ export default function Navbar() {
   return (
     <div
       className="flex items-center justify-between border-2 navbar select-none shadow-md relative"
-      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '90px' }}
+      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '70px' }}
     >
       <div className="flex">
         <div style={{ width: '13.5rem', paddingLeft: '3px' }}>
-          <Link href="/top-page">
-            <a>
-              <img src="/images/5.svg" alt="logo" />
-            </a>
-          </Link>
+          <a href="/top-page">
+            <img src="/images/5.svg" alt="logo" />
+          </a>
         </div>
         <div className="flex items-center" style={{ marginLeft: '51px' }}>
           <div className="px-8" style={{ minWidth: '140px' }}>
-            <Link href="/jobfairs">
-              <a className="font-bold text-xl rounded-md py-2 px-5">JF</a>
-            </Link>
+            <a
+              href="/jobfairs"
+              className="font-bold text-xl rounded-md py-2 px-5"
+            >
+              JF
+            </a>
           </div>
           <div className="px-8" style={{ minWidth: '140px' }}>
-            <Link href="/member">
-              <a href="" className="font-bold text-xl">
-                メンバ
-              </a>
-            </Link>
+            <a href="/member" className="font-bold text-xl">
+              メンバ
+            </a>
           </div>
           <div className="px-8 ml-2" style={{ minWidth: '140px' }}>
             <Dropdown overlay={moreNavbarOptions} trigger={['click']}>
@@ -106,12 +87,12 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex px-12 items-center">
+      <div className="flex items-center">
         <Notification />
-        <div className="px-4">
+        <div className="pl-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            <div className="border-2 border-black user-icon-container">
-              <UserOutlined style={{ fontSize: '1.5rem' }} className="user-icon" />
+            <div className="user-icon-container">
+              <UserOutlined className="user-icon" />
             </div>
           </Dropdown>
         </div>

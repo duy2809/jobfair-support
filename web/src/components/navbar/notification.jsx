@@ -14,7 +14,6 @@ export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
   const [user, setUser] = useState(null)
-  const [userId, setUserId] = useState(null)
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
   const { store } = useContext(ReactReduxContext)
@@ -27,25 +26,28 @@ export default function Notification() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      setDataNoti([])
+      // setUserName([])
       setUser(store.getState().get('auth').get('user'))
       if (user) {
         const id = user.get('id')
-        setUserId(id)
         let data
         if (unread) {
           const res = await getUnreadNotification(id)
           if (!res.data) {
             setLoading(false)
             return
-          } data = res.data
+          }
+          data = res.data
         } else {
           const res = await getNotification(id)
           if (!res.data) {
             setLoading(false)
             return
-          } data = res.data
+          }
+          data = res.data
         }
+        // const length = data.noti.length
+        // setLengthNoti(length)
         const newNoti = data.map((item) => {
           let action
           let userid
@@ -99,16 +101,16 @@ export default function Notification() {
       .listen()
   }, [])
 
-  if (user) {
-    const id = user.get('id')
-    getUnreadNotification(id).then((res) => {
-      if (!res.data) {
-        setUnReadLength(0)
-      } else {
-        setUnReadLength(res.data.length)
-      }
-    })
-  }
+  // if (user) {
+  //   const id = user.get('id')
+  //   getUnreadNotification(id).then((res) => {
+  //     if (!res.data) {
+  //       setUnReadLength(0)
+  //     } else {
+  //       setUnReadLength(res.data.noti.length)
+  //     }
+  //   })
+  // }
 
   useEffect(() => {
     fetchData()
@@ -122,12 +124,26 @@ export default function Notification() {
     }
   }
 
+  // const getNoti = (value) => {
+  //   console.log(value)
+  // }
+
+  // change ...
+  // function handleChange(value) {
+  //   console.log(`Selected: ${value}`)
+  //   getNoti(value)
+  // }
+
+  // show noti
   const [visible, setVisible] = useState(false)
 
   const handleVisibleChange = () => {
     setVisible(!visible)
   }
   const deleteNoti = (notiId) => {
+    // console.log(noti_id)
+    // setDeleteNoti(noti_id)
+    // console.log(deleteNotiID)
     deleteNotification(notiId).then((res) => {
       if (res.data == null) {
         return
@@ -146,7 +162,7 @@ export default function Notification() {
   }
 
   const onChange = () => {
-    updateAllRead(userId).then((res) => {
+    updateAllRead(user.get('id')).then((res) => {
       if (res.data == null) {
         return
       }
@@ -161,8 +177,12 @@ export default function Notification() {
   // const convertDate = (date) => {
   //   const currentdate = new Date(date)
   //   const hours = currentdate.getUTCHours()
-  //   const datetime = `${currentdate.getFullYear()}-${currentdate.getMonth() + 1}-${currentdate.getDate()} `
-  //     + `${hours > 12 ? `${hours - 12}:${currentdate.getMinutes()}PM` : `${hours}:${currentdate.getMinutes()}AM`}`
+  //   const datetime = `${currentdate.getFullYear()}-${currentdate.getMonth() + 1
+  //     }-${currentdate.getDate()} `
+  //     + `${hours > 12
+  //       ? `${hours - 12}:${currentdate.getMinutes()}PM`
+  //       : `${hours}:${currentdate.getMinutes()}AM`
+  //     }`
   //   return datetime
   // }
 
@@ -177,72 +197,53 @@ export default function Notification() {
             <div className="noti-checked">
               <Checkbox onChange={onChangeUnread}>未読のみ表示</Checkbox>
             </div>
-
           </div>
         )}
         footer={(
           <div className="noti-footer">
-            <Checkbox
-              className=""
-              onChange={onChange}
-            >
+            <Checkbox className="" onChange={onChange}>
               すべて既読にする
             </Checkbox>
           </div>
         )}
         dataSource={dataNoti}
         loading={loading}
-        locale={{ emptyText: `${unread ? '未読の通知はありません' : '通知なし'}` }}
+        locale={{
+          emptyText: `${unread ? '未読の通知はありません' : '通知なし'}`,
+        }}
         renderItem={(item) => (
-          <List.Item
-            className={!item.read_at ? 'bg-gray-300' : 'bg-white'}
-          >
-            {
-              !loading && (
-                <div
-                  className="flex flex-cols"
-                >
-                  <div
-                    className="noti-list-item"
-                  >
-                    <List.Item.Meta
-                      onClick={() => {
-                        if (!item.read_at) {
-                          updateReadAt(item.id)
-                        }
-                        handlerClick(item.url)
-                      }}
-                      avatar={<Avatar src={item.avatar} />}
-                      title={(
-                        <div>
+          <List.Item className={!item.read_at ? 'bg-gray-300' : 'bg-white'}>
+            {!loading && (
+              <div className="flex flex-cols">
+                <div className="noti-list-item">
+                  <List.Item.Meta
+                    onClick={() => {
+                      if (!item.read_at) {
+                        updateReadAt(item.id)
+                      }
+                      handlerClick(item.url)
+                    }}
+                    avatar={<Avatar src={item.avatar} />}
+                    title={(
+                      <div>
 
-                          {item.action}
+                        {item.action}
 
-                        </div>
-                      )}
-                      description={<TimeAgo date={item.created_at} formatter={formatter} />}
-                    />
-                    {/* <div className="noti-time">
+                      </div>
+                    )}
+                    description={<TimeAgo date={item.created_at} formatter={formatter} />}
+                  />
+                  {/* <div className="noti-time">
                       {convertDate(item.created_at)}
                     </div> */}
-
-                  </div>
-                  <div
-                    className="delete-btn"
-                    style={{ marginLeft: '10px' }}
-                  >
-                    <DeleteTwoTone
-                      onClick={() => deleteNoti(item.id)}
-                    />
-                  </div>
                 </div>
-
-              )
-            }
-
+                <div className="delete-btn" style={{ marginLeft: '10px' }}>
+                  <DeleteTwoTone onClick={() => deleteNoti(item.id)} />
+                </div>
+              </div>
+            )}
           </List.Item>
         )}
-
       />
     </div>
   )
@@ -255,13 +256,11 @@ export default function Notification() {
       visible={visible}
       placement="bottomCenter"
     >
-      <div className="mt-5 px-4 cursor-pointer">
-        <BellOutlined className="text-3xl bell-icon relative bottom-0.25" />
-        <span className="relative w-5 h-5 rounded-full -top-9 -right-4 flex number-notifications justify-center items-center text-center">
-          {unreadLength}
-        </span>
+      <div className="bell-icon-container">
+        <BellOutlined className="bell-icon" />
+        {/* <span className="number-notifications">{unreadLength}</span> */}
+        <span className="number-notifications">{unreadLength}</span>
       </div>
-
     </Dropdown>
   )
 }

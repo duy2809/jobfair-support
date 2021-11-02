@@ -5,30 +5,51 @@
 }
 
 .cursor-pointer {
-  .bell-icon {
-    fill: #ffd803;
-  }
   span > svg {
     margin-top: -0.5rem;
   }
 }
 
+.bell-icon-container {
+  position: relative;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.bell-icon {
+  font-size: 1.75rem;
+}
+
 .background {
   background-color: #197278;
 }
+
 .number-notifications {
-  color: white;
-  background-color: red;
-}
-.user-icon-container {
-  padding: 10px;
+  position: absolute;
+  padding: 5px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  font-size: 0.9rem;
   border-radius: 50%;
+  background-color: red;
+  color: white;
+  top: -20%;
+  left: 60%;
+}
+
+.user-icon-container {
+  border: 2px solid black;
+  border-radius: 100%;
   background-color: #ffd803;
+  cursor: pointer;
+  .user-icon {
+    font-size: 1.25rem;
+    padding: 10px;
+  }
 }
 
 .notification {
   width: 500px;
-
   .noti-header {
     display: flex;
     justify-content: space-between;
