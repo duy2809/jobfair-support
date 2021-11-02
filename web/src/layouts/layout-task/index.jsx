@@ -154,18 +154,18 @@ const JfLayout = ({ children, id, bgr }) => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <div className="Jf__header px-11">
+          <div className="Jf__header px-5">
             <h1>{name}</h1>
             <div className="admin__jf px-5">
-              <span className="text-lg">{startDate ?? 'N/A'}</span>
-              <span className="text-lg px-2 ">{`企業: ${numberOfStudents ?? 'N/A'}`}</span>
-              <span className="text-lg px-2 ">{`学生: ${numberOfCompanies ?? 'N/A'}`}</span>
-              <div className="avatar pl-3 pr-2">
+              <p className="text-lg  py-6">{startDate ?? 'N/A'}</p>
+              <p className="text-lg px-2 py-6">{`企業: ${numberOfStudents ?? 'N/A'}`}</p>
+              <p className="text-lg px-2 py-6">{`学生: ${numberOfCompanies ?? 'N/A'}`}</p>
+              <div className="avatar pl-3 pr-5 py-5">
                 {avt ? (
                   <img className="avt" src={avt} alt="avatar" />
                 ) : (
-                  <div className="icon-admin">
-                    <UserOutlined className="user-icon" />
+                  <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
+                    <UserOutlined className="text-xl user-icon" />
                   </div>
                 )}
               </div>

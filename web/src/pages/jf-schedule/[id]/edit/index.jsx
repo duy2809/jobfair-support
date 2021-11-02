@@ -156,6 +156,7 @@ function editJobfairSchedule() {
     }
   }
 
+
   const onDeleteTemplateTask = (id) => {
     const newState = _.filter(addedTemplateTaskList, (item) => item !== id)
     setAddedTemplateTaskList(newState)
@@ -210,7 +211,6 @@ function editJobfairSchedule() {
         .catch()
     }
   }
-
   // const showModal = () => {
   //   if (
   //     !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
