@@ -7,7 +7,7 @@ import {
   TableOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Avatar } from 'antd'
 import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -17,6 +17,7 @@ import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
 import { findSlot } from '../../utils/pages'
 import './style.scss'
+import { getAvatar } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
@@ -26,12 +27,13 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   const main = findSlot(JfLayout.Main, children)
   const [startDate, setStartDate] = useState()
-  const [avt, setAvt] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
+  const [AdminId, setAdminId] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(true)
+  const [avatarAdmin, setAvatarAdmin] = useState('')
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
@@ -40,13 +42,15 @@ const JfLayout = ({ children, id, bgr }) => {
       await jfdata(id).then((response) => {
         setName(response.data.name)
         setStartDate(response.data.start_date.split('-').join('/'))
-        setAvt(response.data.user.avatar)
         setNumberOfStudents(response.data.number_of_students)
         setNumberOfCompanies(response.data.number_of_companies)
+        setAdminId(response.data.jobfair_admin_id)
+        console.log(AdminId)
       })
-      // .catch((error) => {
-      //   console.log(error)
-      // })
+      await getAvatar(AdminId).then(() => {
+        const link = `../../api/avatar/${AdminId}`
+        setAvatarAdmin(link)
+      }).catch(() => setAvatarAdmin(''))
     }
   }
   useEffect(() => {
@@ -156,13 +160,20 @@ const JfLayout = ({ children, id, bgr }) => {
         <Layout className="site-layout">
           <div className="Jf__header px-5">
             <h1>{name}</h1>
-            <div className="admin__jf px-5">
-              <p className="text-lg  py-6">{startDate ?? 'N/A'}</p>
-              <p className="text-lg px-2 py-6">{`企業: ${numberOfStudents ?? 'N/A'}`}</p>
-              <p className="text-lg px-2 py-6">{`学生: ${numberOfCompanies ?? 'N/A'}`}</p>
-              <div className="avatar pl-3 pr-5 py-5">
-                {avt ? (
-                  <img className="avt" src={avt} alt="avatar" />
+            <div className="admin__jf">
+              <span className="text-lg">{startDate ?? 'N/A'}</span>
+              <span className="text-lg px-2 ">{`企業: ${numberOfStudents ?? 'N/A'}`}</span>
+              <span className="text-lg px-2 ">{`学生: ${numberOfCompanies ?? 'N/A'}`}</span>
+              <div className="avatar pl-3 pr-2">
+                {avatarAdmin ? (
+                  <Avatar
+                    size={45}
+                    style={{
+                      backgroundColor: '#FFD802',
+                      cursor: 'pointer',
+                    }}
+                    src={avatarAdmin}
+                  />
                 ) : (
                   <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
                     <UserOutlined className="text-xl user-icon" />
