@@ -5,11 +5,7 @@ import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification, Input } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
-import {
-  updateCategory,
-  getCategories,
-  checkUniqueEdit,
-} from '../../api/category'
+import { updateCategory, getCategories, checkUniqueEdit } from '../../api/category'
 import Loading from '../loading'
 
 const EditCategory = (props) => {
@@ -89,10 +85,10 @@ const EditCategory = (props) => {
           openNotificationSuccess()
         })
         .catch((error) => {
-          // notification.error({
-          //   message: 'このカテゴリ名は存在しています',
-          //   duration: 3,
-          // })
+          notification.error({
+            message: 'このカテゴリ名は存在しています',
+            duration: 3,
+          })
         })
       setLoading(false)
     }
@@ -140,9 +136,7 @@ const EditCategory = (props) => {
                   validator(_, value) {
                     if (specialCharRegex.test(value)) {
                       setCheckSpace(true)
-                      return Promise.reject(
-                        new Error('カテゴリ名はスペースが含まれていません。'),
-                      )
+                      return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                     }
                     return Promise.resolve()
                   },

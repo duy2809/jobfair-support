@@ -6,7 +6,11 @@ use App\Http\Requests\JobfairRequest;
 use App\Models\Jobfair;
 use App\Models\Schedule;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\JobfairCreated;
+use App\Notifications\JobfairEdited;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
@@ -66,6 +70,8 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
+        $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
+
         return $jobfair;
     }
 
@@ -97,6 +103,19 @@ class JobfairController extends Controller
         $schedule->milestones()->sync($templateSchedule->milestones);
         $schedule->tasks()->delete();
         $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+
+        $editedUser = auth()->user();
+
+        // notify user
+        if ($editedUser->role === 1) {
+            $jobfair->user->notify(new JobfairEdited($jobfair, $editedUser));
+        } else {
+            Notification::send(
+                User::where('role', 1)
+                    ->get(),
+                new JobfairEdited($jobfair, $editedUser)
+            );
+        }
 
         return response()->json('success');
     }
