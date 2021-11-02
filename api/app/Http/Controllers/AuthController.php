@@ -24,8 +24,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             $user = auth()->user();
-            $manage_jf_ids = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
-            $user->setAttribute('manage_jf_ids', $manage_jf_ids);
+            $manageIds = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
+            $user->setAttribute('manage_jf_ids', $manageIds);
+
             return response()->json(['message' => 'Login successfully', 'auth' => $user], 200);
         }
 
