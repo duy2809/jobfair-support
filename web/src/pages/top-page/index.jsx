@@ -3,25 +3,14 @@ import React, { useEffect, useState, useContext } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import { notification } from 'antd'
 import List from '../../components/list'
+import ListJfToppage from '../../components/toppage-list-jf'
 import { tasks, members, jobfairs } from '../../api/top-page'
 import { getTaskList as getTemplateTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
+// import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 
 const { getListSchedule } = ListScheduleApi
-
-const jfListDataColumn = [
-  {
-    title: '名前',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'タイム',
-    dataIndex: 'time',
-    key: 'time',
-  },
-]
 
 const memListDataColumn = [
   {
@@ -36,6 +25,7 @@ const jfScheduleDataColumn = [
     title: '名前',
     dataIndex: 'name',
     key: 'name',
+    render: (text) => <a>{text}</a>,
   },
 ]
 
@@ -76,6 +66,19 @@ const taskListDataColumn = [
 ]
 
 const Top = () => {
+  const jfListDataColumn = [
+    {
+      title: '名前',
+      dataIndex: 'name',
+      key: 'key',
+    },
+    {
+      title: 'タイム',
+      dataIndex: 'time',
+      key: 'key',
+    },
+  ]
+
   const [taskData, setTaskData] = useState([])
   const taskDataItem = []
 
@@ -130,6 +133,7 @@ const Top = () => {
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
+          // console.log(data);
           const categoriesName = data.categories.map(
             (category) => category.category_name,
           )
@@ -201,15 +205,13 @@ const Top = () => {
                 width: '100%',
               }}
             >
-              <List
+              <ListJfToppage
                 key={1}
                 dataColumn={jfListDataColumn}
                 dataSource={jobfairDataItem}
                 text="JF一覧"
                 searchIcon
                 showTimeInput
-                showCategoryInput={false}
-                showMilestoneInput={false}
                 route="/jobfairs"
                 routeToAdd="/add-jobfair"
                 isLoading={isLoadingJobfair}
@@ -243,8 +245,8 @@ const Top = () => {
               <List
                 key={4}
                 dataColumn={templateTaskDataColumn}
-                text="テンプレートタスク詳細"
                 dataSource={templateData}
+                text="テンプレートタスク詳細"
                 searchIcon
                 showTimeInput={false}
                 showCategoryInput

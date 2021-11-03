@@ -26,7 +26,7 @@ class CancelEditTemplateTask extends React.Component {
     const { visible } = this.state
     return (
       <>
-        <Button onClick={this.showModal} className="text-base">
+        <Button onClick={this.props.confilm ? this.showModal : this.handleOk} className="text-base">
           キャンセル
         </Button>
         <Modal
@@ -54,4 +54,5 @@ export default CancelEditTemplateTask
 
 CancelEditTemplateTask.propTypes = {
   id: PropTypes.string.isRequired,
+  confilm: PropTypes.bool.isRequired,
 }

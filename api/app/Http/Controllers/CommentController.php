@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Task;
 use App\Models\User;
+use App\Notifications\TaskCreated;
+use App\Notifications\TaskEdited;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
@@ -30,7 +33,7 @@ class CommentController extends Controller
         $status = '';
         $request->validate([
             'task_id'     => 'required|numeric|exists:tasks,id',
-            'body'        => 'string' | '',
+            'body'        => 'string',
             'status'      => 'string',
             'description' => 'string',
         ]);
@@ -41,6 +44,8 @@ class CommentController extends Controller
             'body'    => $request->body,
         ];
         $task = Task::find($request->task_id);
+
+        $isUpdatedTask = false;
         if ($request->has('status')) {
             $status = $request->status;
             if ($task->status !== $request->status) {
@@ -48,6 +53,36 @@ class CommentController extends Controller
                 $input['new_status'] = $request->status;
                 // store task-updating history in comment and update task
                 $task->update(['status' => $request->status]);
+                $isUpdatedTask = true;
+            }
+        }
+
+        if ($request->has('description')) {
+            if ($request->description !== $task->description_of_detail) {
+                $input['old_description'] = $task->description_of_detail;
+                $input['new_description'] = $request->description;
+            }
+
+            $task->update(['description_of_detail' => $request->description]);
+            $isUpdatedTask = true;
+        }
+
+        //notification
+        if ($isUpdatedTask) {
+            $editedUser = auth()->user();
+            $jobfairAdmin = $task->schedule->jobfair->user;
+            Notification::send(
+                $task->users()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task)
+            );
+            Notification::send(
+                $task->reviewers()
+                    ->where('users.id', '<>', $editedUser->id)->get(),
+                new TaskEdited($editedUser, $task)
+            );
+            if ($editedUser->id !== $jobfairAdmin->id) {
+                $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
             }
         }
 
@@ -76,16 +111,36 @@ class CommentController extends Controller
                 $task->users()->syncWithPivotValues($listMember, [
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
-            }
-        }
 
-        if ($request->has('description')) {
-            if ($request->description !== $task->description_of_detail) {
-                $input['old_description'] = $task->description_of_detail;
-                $input['new_description'] = $request->description;
-            }
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
 
-            $task->update(['description_of_detail' => $request->description]);
+                Notification::send(
+                    User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task, auth()->user())
+                );
+                if (!$isUpdatedTask) {
+                    $editedUser = auth()->user();
+                    $jobfairAdmin = $task->schedule->jobfair->user;
+                    Notification::send(
+                        $task->users()
+                            ->where('users.id', '<>', $editedUser->id)->get(),
+                        new TaskEdited($editedUser, $task)
+                    );
+                    Notification::send(
+                        $task->reviewers()
+                            ->where('users.id', '<>', $editedUser->id)->get(),
+                        new TaskEdited($editedUser, $task)
+                    );
+                    if ($editedUser->id !== $jobfairAdmin->id) {
+                        $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+                    }
+                }
+            }
         }
 
         // return new comment
@@ -99,7 +154,6 @@ class CommentController extends Controller
                 'avatar' => $comment->user->avatar,
 
             ],
-
             'created'   => $comment->created_at,
             'content'   => $comment->body,
             'edited'    => $comment->updated_at > $comment->created_at,

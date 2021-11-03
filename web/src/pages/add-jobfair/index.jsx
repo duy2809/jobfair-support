@@ -1,7 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
 import {
   CheckCircleTwoTone,
   ExclamationCircleOutlined,
@@ -22,9 +18,9 @@ import {
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import addJFAPI from '~/api/add-jobfair'
-import OtherLayout from '~/layouts/OtherLayout'
-import * as Extensions from '~/utils/extensions'
-import Loading from '~/components/loading'
+import OtherLayout from '../../layouts/OtherLayout'
+import * as Extensions from '../../utils/extensions'
+import Loading from '../../components/loading'
 import './style.scss'
 
 const index = () => {
@@ -34,6 +30,7 @@ const index = () => {
   const [listMilestone, setlistMilestone] = useState([])
   const [listTask, setlistTask] = useState([])
   const [disableBtn, setdisableBtn] = useState(false)
+  const [isFormChange, setIsFormChange] = useState(false)
   const [loading, setLoading] = useState(true)
   const [form] = Form.useForm()
   const router = useRouter()
@@ -52,6 +49,10 @@ const index = () => {
       }
     }
     return true
+  }
+
+  const onChangeForm = () => {
+    setIsFormChange(true)
   }
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const index = () => {
 
   //  open prompt after cancel button clicked .
   const cancelConfirmModle = () => {
-    if (checkIsFormInputEmpty()) {
+    if (checkIsFormInputEmpty() && !isFormChange) {
       routeTo('/jobfairs')
     } else {
       Modal.confirm({
@@ -220,18 +221,8 @@ const index = () => {
     }
   }
 
-  const handleInputEmpty = () => {
-    form.setFieldsValue({
-      name: '*',
-      number_of_companies: '*',
-      jobfair_admin_id: '*',
-      number_of_students: '*',
-      schedule_id: '*',
-    })
-  }
-
   /* Validator of all input. */
-  const JFNameValidator = (_, value, name) => {
+  const JFNameValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -272,7 +263,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const studentsJoinValidator = (_, value, name) => {
+  const studentsJoinValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -290,7 +281,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const JFAdminValidator = (_, value, name) => {
+  const JFAdminValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -298,7 +289,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const JFScheduleValidator = (_, value, name) => {
+  const JFScheduleValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -332,6 +323,7 @@ const index = () => {
                     initialValues={{ defaultInputValue: 0 }}
                     onFinish={onFinishSuccess}
                     onFinishFailed={onFinishFailed}
+                    onValuesChange={onChangeForm}
                     labelAlign="right"
                   >
                     <div className="flex justify-center">
