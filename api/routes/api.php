@@ -44,12 +44,10 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
-Route::resource('/jobfair', 'JobfairController');
 
 // schedule
 
 Route::resource('/schedules', 'ScheduleController');
-Route::get('/schedules', 'ScheduleController@getAll');
 Route::get('jf-schedules/all-milestones', 'ScheduleController@getAllMilestones');
 Route::get('jf-schedules/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
 Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
