@@ -6,59 +6,59 @@ import {
   MenuOutlined,
   TableOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { Layout, Menu, Avatar } from "antd";
-import _get from "lodash/get";
-import Link from "next/link";
-import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
-import { jfdata } from "../../api/jf-toppage";
-import Navbar from "../../components/navbar";
-import "../../pages/global.scss";
-import { findSlot } from "../../utils/pages";
-import "./style.scss";
-import { getAvatar } from "../../api/profile";
+} from '@ant-design/icons'
+import { Layout, Menu, Avatar } from 'antd'
+import _get from 'lodash/get'
+import Link from 'next/link'
+import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
+import { jfdata } from '../../api/jf-toppage'
+import Navbar from '../../components/navbar'
+import '../../pages/global.scss'
+import { findSlot } from '../../utils/pages'
+import './style.scss'
+import { getAvatar } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
-    background: "white",
-    borderLeft: "3px solid #ffd803",
-    marginBottom: "0px",
-  };
-  const main = findSlot(JfLayout.Main, children);
-  const [startDate, setStartDate] = useState();
-  const [numberOfStudents, setNumberOfStudents] = useState();
-  const [numberOfCompanies, setNumberOfCompanies] = useState();
-  const [AdminId, setAdminId] = useState();
-  const [name, setName] = useState("");
-  const { Sider, Content } = Layout;
-  const [collapsed, Setcollapsed] = useState(true);
-  const [avatarAdmin, setAvatarAdmin] = useState(null);
+    background: 'white',
+    borderLeft: '3px solid #ffd803',
+    marginBottom: '0px',
+  }
+  const main = findSlot(JfLayout.Main, children)
+  const [startDate, setStartDate] = useState()
+  const [numberOfStudents, setNumberOfStudents] = useState()
+  const [numberOfCompanies, setNumberOfCompanies] = useState()
+  const [AdminId, setAdminId] = useState()
+  const [name, setName] = useState('')
+  const { Sider, Content } = Layout
+  const [collapsed, Setcollapsed] = useState(true)
+  const [avatarAdmin, setAvatarAdmin] = useState(null)
   const toggleCollapsed = () => {
-    Setcollapsed(!collapsed);
-  };
+    Setcollapsed(!collapsed)
+  }
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
-        setName(response.data.name);
-        setStartDate(response.data.start_date.split("-").join("/"));
-        setNumberOfStudents(response.data.number_of_students);
-        setNumberOfCompanies(response.data.number_of_companies);
-        setAdminId(response.data.jobfair_admin_id);
-      });
+        setName(response.data.name)
+        setStartDate(response.data.start_date.split('-').join('/'))
+        setNumberOfStudents(response.data.number_of_students)
+        setNumberOfCompanies(response.data.number_of_companies)
+        setAdminId(response.data.jobfair_admin_id)
+      })
       if (AdminId) {
         await getAvatar(AdminId)
           .then(() => {
-            const link = `../../api/avatar/${AdminId}`;
-            setAvatarAdmin(link);
+            const link = `../../api/avatar/${AdminId}`
+            setAvatarAdmin(link)
           })
-          .catch(() => setAvatarAdmin(null));
+          .catch(() => setAvatarAdmin(null))
       }
     }
-  };
+  }
   useEffect(() => {
-    fetchJF();
-  }, [children]);
+    fetchJF()
+  }, [children])
 
   return (
     <div className="layout-task">
@@ -75,8 +75,8 @@ const JfLayout = ({ children, id, bgr }) => {
           collapsed={collapsed}
         >
           <Menu
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
             mode="inline"
             theme="dark"
             inlineCollapsed={collapsed}
@@ -84,7 +84,7 @@ const JfLayout = ({ children, id, bgr }) => {
             <div
               className="relative h-20 cursor-pointer"
               style={{
-                transform: collapsed ? "translate(-20.5%)" : "translate(0%)",
+                transform: collapsed ? 'translate(-20.5%)' : 'translate(0%)',
               }}
             >
               <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
@@ -113,7 +113,7 @@ const JfLayout = ({ children, id, bgr }) => {
               <Menu.Item
                 key="1"
                 icon={<HomeOutlined className="sidebar-icons" />}
-                style={{ background: "#e3f6f5" }}
+                style={{ background: '#e3f6f5' }}
               >
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
@@ -192,20 +192,24 @@ const JfLayout = ({ children, id, bgr }) => {
           <div className="Jf__header px-5">
             <h1>{name}</h1>
             <div className="admin__jf">
-              <span className="text-lg">{startDate ?? "N/A"}</span>
-              <span className="text-lg px-2 ">{`企業: ${
-                numberOfStudents ?? "N/A"
-              }`}</span>
-              <span className="text-lg px-2 ">{`学生: ${
-                numberOfCompanies ?? "N/A"
-              }`}</span>
+              <span className="text-lg">{startDate ?? 'N/A'}</span>
+              <span className="text-lg px-2 ">
+                {`企業: ${
+                  numberOfStudents ?? 'N/A'
+                }`}
+              </span>
+              <span className="text-lg px-2 ">
+                {`学生: ${
+                  numberOfCompanies ?? 'N/A'
+                }`}
+              </span>
               <div className="avatar pl-3 pr-2">
                 {avatarAdmin ? (
                   <Avatar
                     size={45}
                     style={{
-                      backgroundColor: "#FFD802",
-                      cursor: "pointer",
+                      backgroundColor: '#FFD802',
+                      cursor: 'pointer',
                     }}
                     src={avatarAdmin}
                   />
@@ -218,25 +222,25 @@ const JfLayout = ({ children, id, bgr }) => {
             </div>
           </div>
           <Content className="site-layout-background">
-            {_get(main, "props.children")}
+            {_get(main, 'props.children')}
           </Content>
         </Layout>
       </Layout>
     </div>
-  );
-};
-JfLayout.Main = () => null;
+  )
+}
+JfLayout.Main = () => null
 JfLayout.propTypes = {
   id: PropTypes.number.isRequired,
   bgr: PropTypes.number.isRequired,
-};
+}
 JfLayout.defaultProps = {
   children: [],
-};
+}
 JfLayout.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.node,
     PropTypes.arrayOf(PropTypes.node),
   ]),
-};
-export default JfLayout;
+}
+export default JfLayout
