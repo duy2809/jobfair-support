@@ -446,6 +446,7 @@ const index = () => {
                           ]}
                         >
                           <DatePicker
+                            size="large"
                             help="Please select the correct date"
                             className="py-2"
                             format={Extensions.dateFormat}
@@ -526,32 +527,34 @@ const index = () => {
                       </div>
                     </div>
                     {/* 2 button */}
-                    <Form.Item label=" " className="my-10">
-                      <Space size={20} className="flex justify-end">
-                        <Button
-                          size="large"
-                          htmlType="button"
-                          className="ant-btn"
-                          onClick={cancelConfirmModle}
-                          disabled={disableBtn}
-                          loading={loading}
-                        >
-                          キャンセル
-                        </Button>
-                        {/* --------------------------- */}
-                        <Button
-                          size="large"
-                          type="primary"
-                          htmlType="submit"
-                          disabled={disableBtn}
-                          loading={loading}
-                          style={{ letterSpacing: '-1px' }}
-                        >
-                          登録
-                        </Button>
-                      </Space>
-                    </Form.Item>
+                    <div className="flex justify-end -mr-16">
+                      <Form.Item label="">
+                        <Space size={20}>
+                          <Button
+                            size="large"
+                            htmlType="button"
+                            className="ant-btn"
+                            onClick={cancelConfirmModle}
+                            disabled={disableBtn}
+                            loading={loading}
+                          >
+                            キャンセル
+                          </Button>
+                          {/* --------------------------- */}
+                          <Button
+                            size="large"
+                            type="primary"
+                            htmlType="submit"
+                            disabled={disableBtn}
+                            loading={loading}
+                            style={{ letterSpacing: '-1px' }}
+                          >
+                            登録
+                          </Button>
+                        </Space>
+                      </Form.Item>
                     {/* end form */}
+                  </div>
                   </Form>
                 </div>
               </div>

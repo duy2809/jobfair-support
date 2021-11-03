@@ -485,6 +485,7 @@ function TaskList() {
                       type="text"
                       placeholder="タスク名を入力する"
                       maxLength={20}
+                      size="large"
                       onChange={onValueNameChange}
                     />
                   </Form.Item>
@@ -547,6 +548,7 @@ function TaskList() {
                   >
                     <Select
                       showArrow
+                      size="large"
                       tagRender={tagRender}
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
@@ -753,7 +755,7 @@ function TaskList() {
                   </Form.Item>
                 </div>
               </div>
-              <div className="flex justify-end mr-11">
+              <div className="flex justify-end mr-2">
                 <Form.Item label=" " className=" ">
                   <div className="flex ">
                     <Button

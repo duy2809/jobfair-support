@@ -325,7 +325,7 @@ const EditTemplateTaskPage = () => {
                 onFinishFailed={onFinishFail}
               >
                 <div className="grid grid-cols-2">
-                  <div className="col-span-1 ml-5 2xl:ml-8">
+                  <div className="col-span-1 ml-8">
                     <Form.Item
                       label="テンプレートタスク名"
                       required={!isPreview}
@@ -357,7 +357,7 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item label="マイルストーン" required={!isPreview}>
+                    <Form.Item label="マイルストーン" required={!isPreview} >
                       <ItemDropdow
                         setConfilm={setConfilm}
                         form={form}
@@ -446,46 +446,50 @@ const EditTemplateTaskPage = () => {
                 <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
                   <MarkDownView source={description} />
                 </div>
-                <Form.Item className="justify-end">
-                  <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
-                    <CancelEditTemplateTask confilm={confilm} id={pathId} />
-                    <Button
-                      className="preview_btn"
-                      htmlType="submit"
-                      onClick={() => {
-                        setChosePreview(!chosePreview)
-                      }}
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      プレビュー
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base mr-5 2xl:mr-10"
-                    >
-                      <span> 保存 </span>
-                    </Button>
-                  </Space>
-                  <Space style={{ display: isPreview ? '' : 'none' }} size={20} className="flex place-content-end mr-8">
-                    <Button
-                      htmlType="button"
-                      onClick={() => {
-                        setIsPreview(false)
-                      }}
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      編集
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base "
-                    >
-                      <span> 保存 </span>
-                    </Button>
-                  </Space>
+                <div className="flex justify-end -mr-32">
+                <Form.Item >
+                    <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
+                      <CancelEditTemplateTask confilm={confilm} id={pathId} />
+                      <Button
+                        className="preview_btn"
+                        htmlType="submit"
+                        onClick={() => {
+                          setChosePreview(!chosePreview)
+                        }}
+                        style={{ letterSpacing: '-1px' }}
+                      >
+                        プレビュー
+                      </Button>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="text-base mr-5 2xl:mr-10"
+                      >
+                        <span> 保存 </span>
+                      </Button>
+                    </Space>
+                    <div style={{ display: isPreview ? '' : 'none' }} className="mr-40">
+                      <Space size={20}>
+                        <Button
+                          htmlType="button"
+                          onClick={() => {
+                            setIsPreview(false)
+                          }}
+                          style={{ letterSpacing: '-1px' }}
+                        >
+                          編集
+                        </Button>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          className="text-base "
+                        >
+                          <span> 保存 </span>
+                        </Button>
+                      </Space>
+                    </div>
                 </Form.Item>
+                </div>
               </Form>
             </div>
           </div>

@@ -257,8 +257,8 @@ function index() {
                   />
                 </div>
                 {/* 2 button */}
-                <div className="data-controller">
-                  <Space size={20} className="flex justify-end">
+                <div className="flex justify-end">
+                  <Space size={20}>
                     <Button
                       size="large"
                       htmlType="button"
