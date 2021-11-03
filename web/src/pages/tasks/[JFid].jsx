@@ -59,7 +59,8 @@ function TaskList() {
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
-  const [editOrDL, setEditOrDL] = useState(true)
+  const [isEdit, setIsEdit] = useState(false)
+  const [confirmSave, setConfirmSave] = useState(false)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -67,7 +68,10 @@ function TaskList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
+    localStorage.setItem(
+      'pagination',
+      JSON.stringify({ ...pagination, pageSize: value }),
+    )
   }
   const handleVisibleChange = () => {
     setVisible(!visible)
@@ -94,7 +98,10 @@ function TaskList() {
       const mem = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
-        mem.push({ id: dataResponse[i].users[j].id, name: dataResponse[i].users[j].name })
+        mem.push({
+          id: dataResponse[i].users[j].id,
+          name: dataResponse[i].users[j].name,
+        })
       }
       data.push({
         id: i + 1,
@@ -119,12 +126,21 @@ function TaskList() {
       setTemperaryData(filteredData)
     }
     if (status) {
-      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
+      const arrayStatus = [
+        '全て',
+        '未着手',
+        '進行中',
+        '完了',
+        '中断',
+        '未完了',
+      ]
       const index = arrayStatus.indexOf(router.query.status)
       const arr = [0, 0, 0, 0, 0, 0]
       arr[index] = 1
       setActive(arr)
-      const filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
+      const filteredData = data.filter(
+        (task) => !task.status.localeCompare(router.query.status),
+      )
       setTemperaryData(filteredData)
     }
   }
@@ -133,7 +149,9 @@ function TaskList() {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
+        <Option key={response.data[i].category_name}>
+          {response.data[i].category_name}
+        </Option>,
       )
     }
     setOptionCategory(option)
@@ -142,7 +160,9 @@ function TaskList() {
   const loadMilestoneOptions = (response) => {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
-      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
+      option.push(
+        <Option key={response.data[i].name}>{response.data[i].name}</Option>,
+      )
     }
     setOptionMileStone(option)
   }
@@ -152,7 +172,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const saveEditNotification = () => {
@@ -160,7 +180,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '変更は正常に保存されました。',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const deletetpl = async (id) => {
@@ -185,12 +205,13 @@ function TaskList() {
       onOk: async () => {
         deletetpl(id)
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
     })
   }
+
   const handleEdit = (id) => {
     router.push(`/edit-task/${id}`)
   }
@@ -200,12 +221,16 @@ function TaskList() {
     } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
+      (task) => (value
+        ? !task.category_name.localeCompare(value)
+        : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+        && (milestone
+          ? !task.milestone_name.localeCompare(milestone)
+          : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -217,12 +242,16 @@ function TaskList() {
     } else setIsFilterMI(false)
     setMilestone(value)
     const filteredData = originalData.filter(
-      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
+      (task) => (value
+        ? !task.milestone_name.localeCompare(value)
+        : task.milestone_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (category
+          ? !task.category_name.localeCompare(category)
+          : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -246,32 +275,38 @@ function TaskList() {
         closable={closable}
         onClose={onClose}
       >
-        <span className="text-blue-600 icon-tag">
-          {label}
-        </span>
+        <span className="text-blue-600 icon-tag">{label}</span>
       </Tag>
     )
   }
   const handleSave = async (value, record, userAS) => {
-    const defaultText = value ? value.filter((item) => typeof (item) === 'string') : null
-    const defaultNumber = value ? value.filter((item) => typeof (item) === 'number') : null
+    const defaultText = value
+      ? value.filter((item) => typeof item === 'string')
+      : null
+    const defaultNumber = value
+      ? value.filter((item) => typeof item === 'number')
+      : null
 
     const allIdMember = []
-    // eslint-disable-next-line array-callback-return
-    record.mems.map((item) => {
-      if (defaultText.includes(item.name)) {
-        allIdMember.push(item.id)
-      }
-    })
+    if (defaultText) {
+      // eslint-disable-next-line array-callback-return
+      record.mems.map((item) => {
+        if (defaultText.includes(item.name)) {
+          allIdMember.push(item.id)
+        }
+      })
+    }
 
-    const newData = defaultNumber.concat(allIdMember)
+    const newData = defaultNumber ? defaultNumber.concat(allIdMember) : null
     const allNameMember = []
-    // eslint-disable-next-line array-callback-return
-    userAS.map((item) => {
-      if (newData.includes(item.id)) {
-        allNameMember.push(item.name)
-      }
-    })
+    if (newData) {
+      // eslint-disable-next-line array-callback-return
+      userAS.map((item) => {
+        if (newData.includes(item.id)) {
+          allNameMember.push(item.name)
+        }
+      })
+    }
     const data = {
       assignee: newData,
     }
@@ -285,15 +320,16 @@ function TaskList() {
     })
     setTemperaryData(newList)
     // record.managers = data
-    await updateManagerTask(record.idtask, data)
-      .then(() => {
+    await updateManagerTask(record.idtask, data).then(() => {
+      if (value !== record.managers) {
         saveEditNotification()
-      })
+      }
+    })
   }
+
   const member = (managers, record) => {
-    const [show, setShow] = useState(false)
     const [edit, setEdit] = useState(false)
-    const [memberAS, setMemberAS] = useState(null)
+    const [memberAS, setMemberAS] = useState(managers)
     let userAS = []
     if (dataCategory) {
       // eslint-disable-next-line array-callback-return
@@ -305,29 +341,112 @@ function TaskList() {
     }
     return (
       <div className="listMember">
-        {edit && editOrDL
-          ? (
-            <>
-              <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
-                {userAS.map((item) => (
-                  <Select.Option
-                    className="validate-user"
-                    key={item.name}
-                    value={item.id}
-                  >
-                    {item.name}
-                  </Select.Option>
-                ))}
-              </Select>
-              {show ? (
-                <div className="save">
-                  <Button onClick={() => { setEdit(false); handleSave(memberAS, record, userAS); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary"><span> 保存 </span></Button>
-                  {' '}
+        {edit ? (
+          <>
+            <Select
+              mode="multiple"
+              onChange={(value) => {
+                setIsEdit(true)
+                setMemberAS(value)
+              }}
+              style={{ width: '100%' }}
+              defaultValue={managers}
+              showArrow
+              tagRender={tagRender}
+            >
+              {userAS.map((item) => (
+                <Select.Option
+                  className="validate-user"
+                  key={item.name}
+                  value={item.id}
+                >
+                  {item.name}
+                </Select.Option>
+              ))}
+            </Select>
+
+            <div className="save">
+              <Button
+                onClick={() => {
+                  setConfirmSave(false)
+
+                  if (!isEdit) {
+                    setEdit(false)
+                  } else {
+                    Modal.confirm({
+                      title: '変更内容が保存されません。よろしいですか？',
+                      icon: <ExclamationCircleOutlined />,
+                      content: '',
+                      centered: true,
+                      onOk: () => {
+                        setEdit(false)
+                        setIsEdit(false)
+                      },
+
+                      onCancel: () => { setIsEdit(false) },
+                      okText: 'はい',
+                      cancelText: 'いいえ',
+                    })
+                  }
+                }}
+                style={{ marginRight: '10px', background: 'white', height: '30px', padding: '0 15px' }}
+                size="small"
+                type="primary"
+              >
+                <span> キャンセル </span>
+              </Button>
+              <Button
+                onClick={() => {
+                  setEdit(false)
+                  setConfirmSave(false)
+                  handleSave(memberAS, record, userAS)
+                }}
+                style={{ height: '30px', padding: '0 15px' }}
+                size="small"
+                type="primary"
+              >
+                <span> 保存 </span>
+              </Button>
+              {' '}
+            </div>
+          </>
+        ) : (
+          <>
+            {managers.length > 0 ? (
+              <div
+                onClick={() => {
+                  setConfirmSave(true)
+                  setEdit(true)
+                  if (confirmSave) {
+                    setEdit(false)
+                  }
+                }}
+              >
+                {' '}
+                <div className="flex items-center">
+                  {managers.join(', ')}
+                  <EditTwoTone className="ml-1" />
                 </div>
-              ) : null}
-            </>
-          )
-          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</>}
+              </div>
+            ) : (
+              <div
+                onClick={() => {
+                  setEdit(true)
+                  setConfirmSave(true)
+                  if (confirmSave) {
+                    setEdit(false)
+                  }
+                }}
+                style={{ width: '100%', height: '100%' }}
+              >
+                <div className="flex items-center">
+                  <EditTwoTone />
+                  <span style={{ color: '#999' }} className="ml-1">担当者を選択してください</span>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     )
   }
@@ -412,7 +531,6 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
-                setEditOrDL(false)
                 modelDelete(record.idtask)
               }}
             />
@@ -523,10 +641,14 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value
         ? task.taskName.toLowerCase().includes(value)
-        || task.managers.some((manager) => manager.toLowerCase().includes(value))
+            || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
+        && (category
+          ? !task.category_name.localeCompare(category)
+          : task.category_name)
+        && (milestone
+          ? !task.milestone_name.localeCompare(milestone)
+          : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -543,10 +665,14 @@ function TaskList() {
       (task) => (value ? !task.status.localeCompare(value) : task.status)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
+        && (category
+          ? !task.category_name.localeCompare(category)
+          : task.category_name)
+        && (milestone
+          ? !task.milestone_name.localeCompare(milestone)
+          : task.milestone_name),
     )
     setTemperaryData(filteredData)
     setLoading(false)
@@ -635,7 +761,11 @@ function TaskList() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="pr-3">表示件数 </span>
-                  <Select size="large" value={itemCount} onChange={handleSelect}>
+                  <Select
+                    size="large"
+                    value={itemCount}
+                    onChange={handleSelect}
+                  >
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -650,6 +780,7 @@ function TaskList() {
                         </h6>
 
                         <Select
+                          size="large"
                           placeholder="カテゴリ"
                           style={{ width: '300px' }}
                           allowClear="true"
@@ -664,6 +795,7 @@ function TaskList() {
                         </h6>
 
                         <Select
+                          size="large"
                           placeholder="マイルストーン"
                           style={{ width: '300px' }}
                           allowClear="true"
@@ -679,7 +811,7 @@ function TaskList() {
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {(isFilterCA || isFilterMI) || visible ? (
+                    {isFilterCA || isFilterMI || visible ? (
                       <Button
                         size="large"
                         shape="circle"
@@ -687,7 +819,11 @@ function TaskList() {
                         icon={<FilterOutlined id="filter" />}
                       />
                     ) : (
-                      <Button size="large" shape="circle" icon={<FilterOutlined id="filter" />} />
+                      <Button
+                        size="large"
+                        shape="circle"
+                        icon={<FilterOutlined id="filter" />}
+                      />
                     )}
                   </Popover>
                   <Input
