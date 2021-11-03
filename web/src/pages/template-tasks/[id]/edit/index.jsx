@@ -357,7 +357,7 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item label="マイルストーン" required={!isPreview} >
+                    <Form.Item label="マイルストーン" required={!isPreview}>
                       <ItemDropdow
                         setConfilm={setConfilm}
                         form={form}
@@ -447,7 +447,7 @@ const EditTemplateTaskPage = () => {
                   <MarkDownView source={description} />
                 </div>
                 <div className="flex justify-end -mr-32">
-                <Form.Item >
+                  <Form.Item>
                     <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
                       <CancelEditTemplateTask confilm={confilm} id={pathId} />
                       <Button
@@ -488,7 +488,7 @@ const EditTemplateTaskPage = () => {
                         </Button>
                       </Space>
                     </div>
-                </Form.Item>
+                  </Form.Item>
                 </div>
               </Form>
             </div>
