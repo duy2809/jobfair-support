@@ -59,12 +59,7 @@ function TaskList() {
   const [milestone, setMilestone] = useState('')
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
-  const [confirmSave, setConfirmSave] = useState(false)
-  let dataSave = {
-    memberAS: null,
-    record: null,
-    userAS: null,
-  }
+  const [editOrDL, setEditOrDL] = useState(true)
   // select number to display
   const handleSelect = (value) => {
     setPagination((preState) => ({
@@ -99,10 +94,7 @@ function TaskList() {
       const mem = []
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
-        mem.push({
-          id: dataResponse[i].users[j].id,
-          name: dataResponse[i].users[j].name,
-        })
+        mem.push({ id: dataResponse[i].users[j].id, name: dataResponse[i].users[j].name })
       }
       data.push({
         id: i + 1,
@@ -160,7 +152,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const saveEditNotification = () => {
@@ -168,7 +160,7 @@ function TaskList() {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       duration: 3,
       message: '変更は正常に保存されました。',
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const deletetpl = async (id) => {
@@ -193,13 +185,12 @@ function TaskList() {
       onOk: async () => {
         deletetpl(id)
       },
-      onCancel: () => {},
+      onCancel: () => { },
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
     })
   }
-
   const handleEdit = (id) => {
     router.push(`/edit-task/${id}`)
   }
@@ -212,7 +203,7 @@ function TaskList() {
       (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
@@ -229,7 +220,7 @@ function TaskList() {
       (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
@@ -250,35 +241,37 @@ function TaskList() {
     }
 
     return (
-      <Tag onMouseDown={onPreventMouseDown} closable={closable} onClose={onClose}>
-        <span className="text-blue-600 icon-tag">{label}</span>
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+      >
+        <span className="text-blue-600 icon-tag">
+          {label}
+        </span>
       </Tag>
     )
   }
   const handleSave = async (value, record, userAS) => {
-    const defaultText = value ? value.filter((item) => typeof item === 'string') : null
-    const defaultNumber = value ? value.filter((item) => typeof item === 'number') : null
+    const defaultText = value ? value.filter((item) => typeof (item) === 'string') : null
+    const defaultNumber = value ? value.filter((item) => typeof (item) === 'number') : null
 
     const allIdMember = []
-    if (defaultText) {
-      // eslint-disable-next-line array-callback-return
-      record.mems.map((item) => {
-        if (defaultText.includes(item.name)) {
-          allIdMember.push(item.id)
-        }
-      })
-    }
+    // eslint-disable-next-line array-callback-return
+    record.mems.map((item) => {
+      if (defaultText.includes(item.name)) {
+        allIdMember.push(item.id)
+      }
+    })
 
-    const newData = defaultNumber ? defaultNumber.concat(allIdMember) : null
+    const newData = defaultNumber.concat(allIdMember)
     const allNameMember = []
-    if (newData) {
-      // eslint-disable-next-line array-callback-return
-      userAS.map((item) => {
-        if (newData.includes(item.id)) {
-          allNameMember.push(item.name)
-        }
-      })
-    }
+    // eslint-disable-next-line array-callback-return
+    userAS.map((item) => {
+      if (newData.includes(item.id)) {
+        allNameMember.push(item.name)
+      }
+    })
     const data = {
       assignee: newData,
     }
@@ -292,31 +285,15 @@ function TaskList() {
     })
     setTemperaryData(newList)
     // record.managers = data
-    await updateManagerTask(record.idtask, data).then(() => {
-      saveEditNotification()
-    })
-  }
-  const modalConfilm = (memberAS, record, userAS) => {
-    Modal.confirm({
-      title: 'このまま保存してもいいですか？',
-      icon: <ExclamationCircleOutlined />,
-      content: '',
-      onOk: async () => {
-        setConfirmSave(false)
-        handleSave(memberAS, record, userAS)
-        router.reload()
-      },
-      onCancel: () => {
-        setConfirmSave(true)
-      },
-      centered: true,
-      okText: 'はい',
-      cancelText: 'いいえ',
-    })
+    await updateManagerTask(record.idtask, data)
+      .then(() => {
+        saveEditNotification()
+      })
   }
   const member = (managers, record) => {
+    const [show, setShow] = useState(false)
     const [edit, setEdit] = useState(false)
-    const [memberAS, setMemberAS] = useState(managers)
+    const [memberAS, setMemberAS] = useState(null)
     let userAS = []
     if (dataCategory) {
       // eslint-disable-next-line array-callback-return
@@ -326,92 +303,31 @@ function TaskList() {
         }
       })
     }
-    if (edit) {
-      dataSave = {
-        memberAS,
-        record,
-        userAS,
-      }
-    }
     return (
       <div className="listMember">
-        {edit ? (
-          <>
-            <Select
-              mode="multiple"
-              onChange={(value) => {
-                setMemberAS(value)
-              }}
-              style={{ width: '100%' }}
-              defaultValue={managers}
-              showArrow
-              tagRender={tagRender}
-            >
-              {userAS.map((item) => (
-                <Select.Option className="validate-user" key={item.name} value={item.id}>
-                  {item.name}
-                </Select.Option>
-              ))}
-            </Select>
-
-            <div className="save">
-              <Button
-                onClick={() => {
-                  setConfirmSave(false)
-                  setEdit(false)
-                  handleSave(memberAS, record, userAS)
-                }}
-                style={{ height: '30px', padding: '0 15px' }}
-                size="small"
-                type="primary"
-              >
-                <span> 保存 </span>
-              </Button>
-              {' '}
-            </div>
-          </>
-        ) : (
-          <>
-            {managers.length > 0 ? (
-              <div
-                onClick={() => {
-                  setConfirmSave(true)
-                  setEdit(true)
-                  if (confirmSave) {
-                    if (dataSave.memberAS !== null) {
-                      setEdit(false)
-                      modalConfilm(dataSave.memberAS, dataSave.record, dataSave.userAS)
-                    } else {
-                      setEdit(false)
-                      modalConfilm(record.managers, dataSave.record, dataSave.userAS)
-                    }
-                  }
-                }}
-              >
-                {managers.join(', ')}
-              </div>
-            ) : (
-              <div
-                onClick={() => {
-                  setConfirmSave(true)
-                  setEdit(true)
-                  if (confirmSave) {
-                    if (dataSave.memberAS) {
-                      setEdit(false)
-                      modalConfilm(dataSave.memberAS, dataSave.record, dataSave.userAS)
-                    } else {
-                      setEdit(false)
-                      modalConfilm(record.managers, dataSave.record, dataSave.userAS)
-                    }
-                  }
-                }}
-                style={{ width: '100%', height: '100%', opacity: '0' }}
-              >
-                {['n']}
-              </div>
-            )}
-          </>
-        )}
+        {edit && editOrDL
+          ? (
+            <>
+              <Select mode="multiple" onChange={(value) => { setMemberAS(value); setShow(true) }} style={{ width: '100%' }} defaultValue={managers} showArrow tagRender={tagRender}>
+                {userAS.map((item) => (
+                  <Select.Option
+                    className="validate-user"
+                    key={item.name}
+                    value={item.id}
+                  >
+                    {item.name}
+                  </Select.Option>
+                ))}
+              </Select>
+              {show ? (
+                <div className="save">
+                  <Button onClick={() => { setEdit(false); handleSave(memberAS, record, userAS); setShow(false) }} style={{ height: '30px', padding: '0 15px' }} size="small" type="primary"><span> 保存 </span></Button>
+                  {' '}
+                </div>
+              ) : null}
+            </>
+          )
+          : <>{managers.length > 0 ? <div onClick={() => { setEditOrDL(true); setShow(true); setEdit(true) }}>{managers.join(', ')}</div> : <div onClick={() => { setEditOrDL(true); setEdit(true); setShow(true) }} style={{ width: '100%', height: '100%', opacity: '0' }}>{['n']}</div>}</>}
       </div>
     )
   }
@@ -496,6 +412,7 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
+                setEditOrDL(false)
                 modelDelete(record.idtask)
               }}
             />
@@ -606,7 +523,7 @@ function TaskList() {
     const filteredData = originalData.filter(
       (task) => (value
         ? task.taskName.toLowerCase().includes(value)
-            || task.managers.some((manager) => manager.toLowerCase().includes(value))
+        || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
@@ -626,7 +543,7 @@ function TaskList() {
       (task) => (value ? !task.status.localeCompare(value) : task.status)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
+          || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
         && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
@@ -733,7 +650,6 @@ function TaskList() {
                         </h6>
 
                         <Select
-                          size="large"
                           placeholder="カテゴリ"
                           style={{ width: '300px' }}
                           allowClear="true"
@@ -748,7 +664,6 @@ function TaskList() {
                         </h6>
 
                         <Select
-                          size="large"
                           placeholder="マイルストーン"
                           style={{ width: '300px' }}
                           allowClear="true"
@@ -764,7 +679,7 @@ function TaskList() {
                     visible={visible}
                     onVisibleChange={handleVisibleChange}
                   >
-                    {isFilterCA || isFilterMI || visible ? (
+                    {(isFilterCA || isFilterMI) || visible ? (
                       <Button
                         size="large"
                         shape="circle"

@@ -2,13 +2,12 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Comment implements ShouldBroadcastNow
+class Events
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -28,11 +27,6 @@ class Comment implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('comment-channel');
-    }
-
-    public function broadcastWith()
-    {
-        return ['data' => 'test'];
+        return new PrivateChannel('channel-name');
     }
 }

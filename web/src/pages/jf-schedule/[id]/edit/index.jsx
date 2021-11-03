@@ -36,7 +36,6 @@ function editJobfairSchedule() {
   const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([])
   const [nameInput, setNameInput] = useState('')
   // const [isModalVisible, setIsModalVisible] = useState(false)
-  const [isError, setIsError] = useState(false)
 
   useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
@@ -101,65 +100,60 @@ function editJobfairSchedule() {
     })
   })
 
-  const onFinish = async (e) => {
+  const onFinish = async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
     const dataSend = {
-      schedule: {
-        name: nameInput,
-      },
+      name: nameInput,
       addedMilestones: addedMilestonesList,
       addedTemplateTasks: addedTemplateTaskList,
     }
     if (nameInput !== beforeEditName) {
-      await postCheckExistName(dataSend)
-        .then(({ data }) => {
-          if (
-            (data === 'exist'
-              && !(
-                form.isFieldTouched('jfschedule_name')
-                && form.isFieldTouched('milestone_select')
-              ))
-            || !!form.getFieldsError().filter(({ errors }) => errors.length)
-              .length
-            || isError === true
-          ) {
-            e.prevenDefault()
-            openNotification('error', 'このJFスケジュール名は存在しています。')
-          } else {
-            putData(id, dataSend)
-              .then((res) => {
-                if (res.status === 200) {
-                  // setIsModalVisible(false)
-                  router.push('/schedule/')
-                  openNotification('success', '変更は正常に保存されました。')
-                  // setTimeout(() => {
-                  // }, 1000)
-                }
-              })
-              .catch()
-          }
-        })
+      await postCheckExistName(dataSend).then(({ data }) => {
+        if (data === 'exist'
+        //   && !(
+        //     form.isFieldTouched('jfschedule_name')
+        //     && form.isFieldTouched('milestone_select')
+        //   ))
+        // || !!form.getFieldsError().filter(({ errors }) => errors.length)
+        //   .length
+        // || isError === true
+        ) {
+          // e.prevenDefault()
+          openNotification('error', 'このJFスケジュール名は存在しています。')
+        } else {
+          putData(id, dataSend).then((res) => {
+            if (res.status === 200) {
+              router.push('/schedule')
+              openNotification('success', '変更は正常に保存されました。')
+            }
+          })
+            .catch((error) => {
+              if (error.response.data.errors.addedMilestones) {
+                openNotification('error', error.response.data.errors.addedMilestones[0])
+              } else if (error.response.data.errors.addedTemplateTasks) {
+                openNotification('error', error.response.data.errors.addedTemplateTasks[0])
+              }
+            })
+        }
+      })
         .catch()
     } else {
-      putData(id, dataSend)
-        .then((res) => {
-          if (res.status === 200) {
-            // setIsModalVisible(false)
-            router.push('/schedule/')
-            openNotification('success', '変更は正常に保存されました。')
+      putData(id, dataSend).then((res) => {
+        if (res.status === 200) {
+          // setIsModalVisible(false)
+          router.push('/schedule/')
+          openNotification('success', '変更は正常に保存されました。')
+        }
+      })
+        .catch((error) => {
+          if (error.response.data.errors.addedMilestones) {
+            openNotification('error', error.response.data.errors.addedMilestones[0])
+          } else if (error.response.data.errors.addedTemplateTasks) {
+            openNotification('error', error.response.data.errors.addedTemplateTasks[0])
           }
         })
-        .catch()
     }
-  }
-
-  const onFinishFailed = () => {
-    setIsError(true)
-    // const { errorFields } = errorInfo;
-    // errorFields.forEach((itemError) => {
-    //   itemError.errors.forEach((error) => openNotification("error", error));
-    // });
   }
 
   const onDeleteTemplateTask = (id) => {
@@ -183,7 +177,7 @@ function editJobfairSchedule() {
   const selectMilestoneProps = {
     mode: 'multiple',
     optionFilterProp: 'label',
-    // value: addedMilestonesList,
+    value: addedMilestonesList,
     options: milestonesOptions,
     onChange: (newValue) => {
       setAddedMilestonesList(newValue)
@@ -216,7 +210,6 @@ function editJobfairSchedule() {
         .catch()
     }
   }
-
   // const showModal = () => {
   //   if (
   //     !(form.isFieldTouched('jfschedule_name') && form.isFieldTouched('milestone_select'))
@@ -244,8 +237,8 @@ function editJobfairSchedule() {
             size="large"
             form={form}
             name="edit-jfschedule"
-            // onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
+            onFinish={onFinish}
+            // onFinishFailed={onFinishFailed}
             requiredMark="optional"
           >
             <div className="w-1/2">
@@ -336,7 +329,6 @@ function editJobfairSchedule() {
                   style={{ letterSpacing: '-2px' }}
                   htmlType="submit"
                   className="ml-3"
-                  onClick={onFinish}
                 >
                   保存
                 </Button>

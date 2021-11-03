@@ -1,8 +1,9 @@
 import echo from '../connection'
 
-export default class CommentChannel {
-  constructor() {
-    this.channel = echo.channel('laravel_database_comment-channel')
+export default class NotificationChannel {
+  constructor(userId) {
+    this.userId = userId
+    this.channel = echo.private(`App.Models.User.${userId}`)
     this.onOutputCb = null
   }
 

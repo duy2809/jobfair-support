@@ -25,9 +25,10 @@ import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 import Loading from '../../components/loading'
 
-// TODO call API add file + folder + search + visit folder
 export default function File() {
   const { store } = useContext(ReactReduxContext)
+  const user = store.getState().get('auth').get('user')
+
   const router = useRouter()
   const JFid = router.query.JFid
   const formatter = buildFormatter(frenchStrings)
@@ -44,8 +45,6 @@ export default function File() {
   const [loading, setLoading] = useState(false)
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
-
-  const user = store.getState().get('auth').get('user')
 
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')
@@ -637,8 +636,7 @@ export default function File() {
                     {recentUpdated.map((el, index) => (
                       <>
                         <div
-                          className={`my-2 px-6 ${
-                            index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
+                          className={`my-2 px-6 ${index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
                           }`}
                         >
                           <div className="flex flex-row items-center">

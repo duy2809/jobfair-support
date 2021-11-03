@@ -1,15 +1,14 @@
-import { DeleteTwoTone, EditTwoTone, RightCircleOutlined } from '@ant-design/icons'
+import React, { useEffect, useState, useContext } from 'react'
 // import Swiper core and required modules
 import { Modal, notification, Spin } from 'antd'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
+import Link from 'next/link'
 import { ReactReduxContext } from 'react-redux'
-import OtherLayout from '../../../layouts/OtherLayout'
-import { deleteSchedule, getSchedule } from '../../../api/schedule-detail'
-import { loadingIcon } from '../../../components/loading'
-import GanttChart from './gantt'
+import { RightCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
+import { getSchedule, deleteSchedule } from '../../../api/schedule-detail'
 import ScheduleDetail from './list'
+import Navbar from '../../../components/navbar/index'
+import GanttChart from './gantt'
 
 function ScheduleDetailGeneral() {
   const [status, setStatus] = useState(false) // false is lsit,true is gantt
@@ -66,43 +65,44 @@ function ScheduleDetailGeneral() {
   }
 
   return (
-    <OtherLayout>
-      <OtherLayout.Main>
-        <div className="px-12 h-full">
-          <div className="flex items-center justify-between">
-            <div />
-            <h1 className="my-5 text-2xl font-bold" style={{ color: '#272343' }}>
-              {scheduleName}
-            </h1>
-            <div
-              className="flex justify-end"
-              style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
-            >
-              <Link href={`/jf-schedule/${id}/edit`}>
-                <EditTwoTone className="border-none mx-1 text-2xl" />
-              </Link>
-              <DeleteTwoTone onClick={showModal} className="border-none mx-1 text-2xl" />
-              <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
-                <p>削除してもよろしいですか？</p>
-              </Modal>
-            </div>
+    <div className="app">
+      <header>
+        <Navbar />
+      </header>
+      <div className="px-12">
+        <div className="flex items-center justify-between">
+          <div />
+          <h1 className="my-5 text-2xl font-bold" style={{ color: '#272343' }}>
+            {scheduleName}
+          </h1>
+          <div
+            className="flex justify-end"
+            style={{ visibility: role === 'superadmin' ? 'visible' : 'hidden' }}
+          >
+            <Link href={`/jf-schedule/${id}/edit`}>
+              <EditTwoTone className="border-none mx-1 text-2xl" />
+            </Link>
+            <DeleteTwoTone onClick={showModal} className="border-none mx-1 text-2xl" />
+            <Modal title="削除" visible={isModalVisible} onOk={handleOk}>
+              <p>削除してもよろしいですか？</p>
+            </Modal>
           </div>
-
-          <Spin spinning={loading} indicator={loadingIcon}>
-            <div className="mt-12 relative h-full">
-              {status ? <GanttChart id={id} /> : <ScheduleDetail />}
-            </div>
-          </Spin>
         </div>
-        <span className="mb-12 ml-2 ">
-          <RightCircleOutlined
-            className="text-4xl gantt-chart inline cursor-pointer absolute bottom-1/2"
-            style={{ right: '40px', marginBottom: !status ? '1.5%' : '0' }}
-            onClick={changeScreen}
-          />
-        </span>
-      </OtherLayout.Main>
-    </OtherLayout>
+
+        <Spin spinning={loading}>
+          <div className="mt-12 relative">
+            {status ? <GanttChart id={id} /> : <ScheduleDetail />}
+            <span className="mb-12 ml-2">
+              <RightCircleOutlined
+                className="text-4xl gantt-chart inline cursor-pointer absolute bottom-1/2"
+                style={{ right: '-4%', marginBottom: !status ? '1.5%' : '0' }}
+                onClick={changeScreen}
+              />
+            </span>
+          </div>
+        </Spin>
+      </div>
+    </div>
   )
 }
 ScheduleDetailGeneral.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
