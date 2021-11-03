@@ -701,4 +701,4 @@ export default function File() {
     </div>
   )
 }
-File.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+File.middleware = ['auth']

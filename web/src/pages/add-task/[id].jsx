@@ -293,5 +293,5 @@ function index() {
   )
 }
 
-index.middleware = ['auth:superadmin', 'auth:admin']
+index.middleware = ['auth']
 export default index
