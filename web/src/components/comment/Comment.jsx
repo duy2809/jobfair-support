@@ -32,7 +32,9 @@ function Comment(props) {
 
   useEffect(() => {
     setUserId(store.getState().get('auth').get('user').get('id'))
-    setCommentOverflow(props.content.length > MAX_CHAR_PER_LINE)
+    if (props.comment.content) {
+      setCommentOverflow(props.comment.content.length > MAX_CHAR_PER_LINE)
+    }
   }, [])
 
   const editComment = () => {
@@ -42,9 +44,9 @@ function Comment(props) {
 
   const deleteComment = async () => {
     try {
-      const comments = commentArray.filter((comment) => comment.id !== props.id)
+      const comments = commentArray.filter((comment) => comment.id !== props.comment.id)
 
-      const response = await deleteCommentAPI.deleteComment(props.id)
+      const response = await deleteCommentAPI.deleteComment(props.comment.id)
 
       if (response.status === 200) {
         store.dispatch({
@@ -85,18 +87,18 @@ function Comment(props) {
           <Avatar
             className="mr-4 inline-block"
             size={AVATAR_SIZE}
-            src={`${process.env.APP_URL}/api/avatar/${props.author.id}`}
+            src={`${process.env.APP_URL}/api/avatar/${props.comment.author.id}`}
           />
         </div>
         <div className="flex flex-col w-full">
           <div className="flex flex-row justify-between">
             <div className="flex gap-4">
-              <span className="comment__author">{props.author.name}</span>
+              <span className="comment__author">{props.comment.author.name}</span>
               <span className="comment__time">
-                {moment(props.created).format('YYYY/MM/DD HH:mm:ss')}
+                {moment(props.comment.created).format('YYYY/MM/DD HH:mm:ss')}
               </span>
             </div>
-            <div className="mr-4" hidden={userId !== props.author.id}>
+            <div className="mr-4" hidden={userId !== props.comment.author.id}>
               <EditTwoTone
                 className="border-none mx-1 text-2xl"
                 type="primary"
@@ -111,30 +113,34 @@ function Comment(props) {
           </div>
           <div className="flex">
             {/* comment content */}
-            <div className="">
-              {props.content.length > MAX_CHAR_PER_LINE && !expanded ? (
+            <div className="bg-red-600">
+              {props.comment.content &&
+              props.comment.content.length > MAX_CHAR_PER_LINE &&
+              !expanded ? (
                 <MarkDownView
                   id="editor"
-                  source={props.content.slice(0, MAX_CHAR_PER_LINE)}
-                  className={classNames(
+                  source={props.comment.content.slice(0, MAX_CHAR_PER_LINE)}
+                  className={`${classNames(
                     'comment__content',
                     expanded ? 'expanded' : 'collapse',
                     commentOverflow ? 'comment__overflow' : ''
-                  )}
+                  )} bg-red-600`}
                 />
               ) : (
                 <MarkDownView
                   id="editor"
-                  source={props.content}
-                  className={classNames(
+                  source={props.comment.content}
+                  className={`${classNames(
                     'comment__content',
                     expanded ? 'expanded' : 'collapse',
                     commentOverflow ? 'comment__overflow' : ''
-                  )}
+                  )} bg-red-600`}
                 />
               )}
             </div>
-
+            <div className="flex flex-col float-right">
+              <Typography className="bg-black-600 ">pppp</Typography>
+            </div>
             {/*   display more button */}
             <Typography.Link className="mr-4 see-more float-right" onClick={toggleExpanded}>
               {/* eslint-disable-next-line no-nested-ternary */}

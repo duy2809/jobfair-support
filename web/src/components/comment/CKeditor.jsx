@@ -4,18 +4,12 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 // import Mention from '@ckeditor/ckeditor5-mention/src/mention'
 function CKeditor() {
-  ClassicEditor.create('', {})
-  //   console.log(window.document.querySelector('#ck-editor'))
-  const config = {
-    // plugins: [Uploader],
-  }
   return (
     <div>
       <div className="App">
         <CKEditor
           editor={ClassicEditor}
           data=""
-          config={config}
           onReady={(editor) => {
             console.log(editor)
           }}

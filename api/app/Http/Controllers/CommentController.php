@@ -30,7 +30,7 @@ class CommentController extends Controller
         $status = '';
         $request->validate([
             'task_id'     => 'required|numeric|exists:tasks,id',
-            'body'        => 'string',
+            'body'        => 'string' | '',
             'status'      => 'string',
             'description' => 'string',
         ]);
@@ -97,7 +97,9 @@ class CommentController extends Controller
                 'id'     => $comment->user->id,
                 'name'   => $comment->user->name,
                 'avatar' => $comment->user->avatar,
+
             ],
+
             'created'   => $comment->created_at,
             'content'   => $comment->body,
             'edited'    => $comment->updated_at > $comment->created_at,
@@ -130,17 +132,24 @@ class CommentController extends Controller
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
         $result = $data->comments->map(function ($comment) {
+            // return $comment;
             return [
-                'id'        => $comment->id,
-                'author'    => [
+                'id'              => $comment->id,
+                'author'          => [
                     'id'     => $comment->user->id,
                     'name'   => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                 ],
-                'created'   => $comment->created_at,
-                'content'   => $comment->body,
-                'edited'    => $comment->updated_at > $comment->created_at,
-                'last_edit' => $comment->updated_at,
+                'created'         => $comment->created_at,
+                'content'         => $comment->body,
+                'edited'          => $comment->updated_at > $comment->created_at,
+                'last_edit'       => $comment->updated_at,
+                'old_assignees'   => $comment->old_assignees,
+                'new_assignees'   => $comment->new_assignees,
+                'old_description' => $comment->old_description,
+                'new_description' => $comment->new_description,
+                'old_status'      => $comment->old_status,
+                'new_status'      => $comment->new_status,
             ];
         });
 

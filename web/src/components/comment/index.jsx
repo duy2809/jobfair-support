@@ -60,6 +60,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   }
 
   const closeBox = () => {
+    clearForm()
     setVisible(false)
     setShow(true)
   }
@@ -82,7 +83,11 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       })
     })
   }
-
+  const clearForm = () => {
+    form.resetFields()
+    setEditing(false)
+    setValue('')
+  }
   useEffect(() => {
     // new CommentChannel()
     //   .onOutput((data) => {
@@ -144,14 +149,14 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       // TODO: change task description
       const comment = {
         task_id: id,
-        body: value,
+        body: value ?? '',
         assignee: JSON.stringify(assignee),
         status,
-        description: 'Task Description',
       }
 
       const response = await addComment(comment)
       const newComment = response.data
+      console.log(newComment)
       // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
       if (newComment) {
         store.dispatch({
@@ -209,7 +214,6 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       status,
       admin: assignee,
     })
-
     const isEdited = await editTask(id, data)
     if (isEdited.status === 200) {
       notification.open({
@@ -219,18 +223,6 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
         onClick: () => {},
       })
     }
-    // const data = {
-    //   name: values.name,
-    //   description_of_detail: values.detail,
-    //   beforeTasks: beforeID,
-    //   afterTasks: afterIDs,
-    //   start_time: values.start_time.format(Extensions.dateFormat),
-    //   end_time: values.end_time.format(Extensions.dateFormat),
-    //   admin: adminas,
-    //   user_id: users.id,
-    //   status: values.status,
-    //   reviewers: reviewersSelected,
-    // }
   }
 
   return (
@@ -246,18 +238,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       {/* list comments history  */}
       <div className="comment-history">
         {commentArray.map((comment) => (
-          <Comment
-            key={comment.id}
-            id={comment.id}
-            author={comment.author}
-            created={comment.created}
-            content={comment.content}
-            edited={comment.edited}
-            lastEdit={comment.lastEdit}
-            assignee={comment.assignee}
-            status={comment.status}
-            parentCallBack={callBack}
-          />
+          <Comment key={comment.id} comment={comment} parentCallBack={callBack} />
         ))}
       </div>
 
@@ -292,10 +273,12 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                   </Form.Item>
                 </div>
                 <div className="pos-right">
-                  <Form.Item label={<p className="font-bold">ステータス</p>} required name="status">
+                  <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
                     <Select size="large" className="addJF-selector" placeholder="ステータス">
                       {listStatus.map((element) => (
-                        <Select.Option value={element}>{element}</Select.Option>
+                        <Select.Option disabled={editing} value={element}>
+                          {element}
+                        </Select.Option>
                       ))}
                     </Select>
                   </Form.Item>
@@ -311,6 +294,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                           <Select.Option
                             className="validate-user"
                             key={element.id}
+                            disabled={editing}
                             value={element.id}
                           >
                             {element.name}
@@ -321,6 +305,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                       <Select
                         mode="multiple"
                         showArrow
+                        disabled={editing}
                         tagRender={tagRender}
                         style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
                         className="multiples"
@@ -329,6 +314,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                           <Select.Option
                             className="validate-user"
                             key={element.id}
+                            disabled={editing}
                             value={element.id}
                           >
                             {element.name}

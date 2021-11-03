@@ -141,7 +141,7 @@ function TaskDetail() {
     fetchReviewersList()
     setLoading(false)
   }, [user])
-  const assigneeNames = listMemberAssignee.map((assignee) => assignee.name)
+  const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
@@ -247,8 +247,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {listMemberAssignee
                           ? listMemberAssignee.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
+                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                            ))
                           : null}
                       </ul>
                     </div>
@@ -341,27 +341,27 @@ function TaskDetail() {
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
-                            </li>
-                          ))
+                              <li>
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: '5px',
+                                    paddingBottom: '3px',
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={item.name}>
+                                    <a
+                                      href={`/task-detail/${item.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-block text-blue-600 whitespace-nowrap "
+                                    >
+                                      {truncate(item.name)}
+                                    </a>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))
                           : null}
                       </ul>
                     </>
@@ -378,27 +378,27 @@ function TaskDetail() {
                       <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
                           ? afterTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
-                            </li>
-                          ))
+                              <li>
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: '5px',
+                                    paddingBottom: '3px',
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={item.name}>
+                                    <a
+                                      href={`/task-detail/${item.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-block text-blue-600 whitespace-nowrap "
+                                    >
+                                      {truncate(item.name)}
+                                    </a>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))
                           : null}
                       </ul>
                     </>
@@ -417,8 +417,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {reviewersList
                           ? reviewersList.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
+                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                            ))
                           : null}
                       </ul>
                     </div>
