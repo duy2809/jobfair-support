@@ -198,13 +198,7 @@ const EditMember = ({ data }) => {
                 >
                   {categoriesSystem.map((item) => (
                     <Option key={item.id} value={item.id}>
-                      <p
-                        style={{
-                          maxWidth: '80px',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                      >
+                      <p>
                         {item.category_name}
                       </p>
                     </Option>

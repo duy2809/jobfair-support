@@ -146,9 +146,9 @@ Route::prefix('members')->group(function () {
 
 Route::resource('/notification', NotificationController::class);
 Route::get('/notification/delete/{id}', 'NotificationController@destroy');
-Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
+Route::get('/notification/show-unread/{id}', 'NotificationController@showUnread');
 Route::post('/notification/update/{id}', 'NotificationController@update');
-Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+Route::get('/notification/update_all_read/{id}', 'NotificationController@updateAllRead');
 
 //task
 Route::resource('/task', 'TaskController');

@@ -1,12 +1,28 @@
-import React from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown } from 'antd'
+import { Menu, Dropdown, Avatar } from 'antd'
 import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
+import { ReactReduxContext } from 'react-redux'
 import './styles.scss'
 import { logout } from '../../api/authenticate'
 import Notification from './notification'
+import { getAvatar } from '../../api/profile'
 
 export default function Navbar() {
+  const { store } = useContext(ReactReduxContext)
+
+  const [user, setUser] = useState(null)
+  const [avatarUser, setAvatarUser] = useState('')
+  useEffect(async () => {
+    setUser(store.getState().get('auth').get('user'))
+    if (user) {
+      const id = user.get('id')
+      await getAvatar(id).then(() => {
+        const link = `../../api/avatar/${id}`
+        setAvatarUser(link)
+      })
+    }
+  }, [user])
   const handleLogout = async () => {
     try {
       const response = await logout()
@@ -87,13 +103,24 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center ">
         <Notification />
         <div className="pl-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            <div className="user-icon-container">
-              <UserOutlined className="user-icon" />
-            </div>
+            {avatarUser ? (
+              <Avatar
+                size={45}
+                style={{
+                  backgroundColor: '#FFD802',
+                  cursor: 'pointer',
+                }}
+                src={avatarUser}
+              />
+            ) : (
+              <div className="user-icon-container">
+                <UserOutlined className="user-icon" />
+              </div>
+            )}
           </Dropdown>
         </div>
       </div>

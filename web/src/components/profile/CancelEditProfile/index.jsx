@@ -22,7 +22,6 @@ const CancelEditProfile = () => {
     <>
       <Button
         size="large"
-        htmlType="button"
         onClick={showModal}
         className="text-base px-8 mr-2"
         style={{ backgroundColor: '#fff' }}

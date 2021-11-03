@@ -4,7 +4,7 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import 'antd/dist/antd.css'
-import { Input, Space, Table, Row, Col, Select, Button, Tooltip } from 'antd'
+import { Input, Space, Table, Row, Col, Select, Button, Tooltip, Empty } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { loadingIcon } from '../loading'
 import AddCategory from './AddCategory'
@@ -153,6 +153,14 @@ export default function ListCategories() {
           pagination={{ pageSize: pageS }}
           className="mt-5"
           loading={{ spinning: loading, indicator: loadingIcon }}
+          locale={{
+            emptyText: (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="該当結果が見つかりませんでした"
+              />
+            ),
+          }}
         />
       </div>
     </div>

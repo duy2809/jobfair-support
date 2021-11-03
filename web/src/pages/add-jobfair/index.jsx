@@ -1,7 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
-/* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
 import {
   CheckCircleTwoTone,
   ExclamationCircleOutlined,
@@ -22,9 +18,9 @@ import {
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import addJFAPI from '~/api/add-jobfair'
-import OtherLayout from '~/layouts/OtherLayout'
-import * as Extensions from '~/utils/extensions'
-import Loading from '~/components/loading'
+import OtherLayout from '../../layouts/OtherLayout'
+import * as Extensions from '../../utils/extensions'
+import Loading from '../../components/loading'
 import './style.scss'
 
 const index = () => {
@@ -34,10 +30,31 @@ const index = () => {
   const [listMilestone, setlistMilestone] = useState([])
   const [listTask, setlistTask] = useState([])
   const [disableBtn, setdisableBtn] = useState(false)
+  const [isFormChange, setIsFormChange] = useState(false)
   const [loading, setLoading] = useState(true)
-  const [confilm, setConfilm] = useState(false)
   const [form] = Form.useForm()
   const router = useRouter()
+
+  // check if all input is empty.
+  const checkIsFormInputEmpty = () => {
+    // get all input values .
+    const inputValues = form.getFieldsValue()
+    //  return type :[]
+    const inputs = Object.values(inputValues)
+
+    for (let i = 0; i < inputs.length; i += 1) {
+      const element = inputs[i]
+      if (element) {
+        return false
+      }
+    }
+    return true
+  }
+
+  const onChangeForm = () => {
+    setIsFormChange(true)
+  }
+
   useEffect(() => {
     // Extensions.unSaveChangeConfirm(true)
 
@@ -87,7 +104,7 @@ const index = () => {
 
   //  open prompt after cancel button clicked .
   const cancelConfirmModle = () => {
-    if (!confilm) {
+    if (checkIsFormInputEmpty() && !isFormChange) {
       routeTo('/jobfairs')
     } else {
       Modal.confirm({
@@ -204,18 +221,8 @@ const index = () => {
     }
   }
 
-  const handleInputEmpty = () => {
-    form.setFieldsValue({
-      name: '*',
-      number_of_companies: '*',
-      jobfair_admin_id: '*',
-      number_of_students: '*',
-      schedule_id: '*',
-    })
-  }
-
   /* Validator of all input. */
-  const JFNameValidator = (_, value, name) => {
+  const JFNameValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -256,7 +263,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const studentsJoinValidator = (_, value, name) => {
+  const studentsJoinValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -274,7 +281,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const JFAdminValidator = (_, value, name) => {
+  const JFAdminValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -282,7 +289,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const JFScheduleValidator = (_, value, name) => {
+  const JFScheduleValidator = (_, value) => {
     if (!value) {
       // handleInputEmpty(name)
       return Promise.reject(new Error('この項目は必須です'))
@@ -316,15 +323,13 @@ const index = () => {
                     initialValues={{ defaultInputValue: 0 }}
                     onFinish={onFinishSuccess}
                     onFinishFailed={onFinishFailed}
+                    onValuesChange={onChangeForm}
                     labelAlign="right"
                   >
                     <div className="flex justify-center">
                       <div className="left-side w-1/2">
                         {/* jobfair name */}
-                        <Form.Item
-                          label={<p className="font-bold text-right">JF名</p>}
-                          required
-                        >
+                        <Form.Item label={<p className="font-bold text-right">JF名</p>} required>
                           <Form.Item
                             name="name"
                             noStyle
@@ -340,13 +345,8 @@ const index = () => {
                               id="validate_name"
                               onBlur={checkIsJFNameExisted}
                               onChange={() => {
-                                setConfilm(true)
-                                document
-                                  .getElementById('error-msg')
-                                  .setAttribute('hidden', 'true')
-                                document.getElementById(
-                                  'validate_name',
-                                ).style.border = '1px solid #e5e7eb'
+                                document.getElementById('error-msg').setAttribute('hidden', 'true')
+                                document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
                               }}
                               placeholder="JF名を入力する"
                               maxLength={200}
@@ -378,7 +378,6 @@ const index = () => {
                             size="large"
                             min={1}
                             onChange={(e) => {
-                              setConfilm(true)
                               autoConvertHalfwidth(e)
                             }}
                             placeholder="参加企業社数"
@@ -400,15 +399,9 @@ const index = () => {
                             size="large"
                             className="addJF-selector"
                             placeholder="管理者を選択"
-                            onChange={(e) => {
-                              setConfilm(true)
-                            }}
                           >
                             {listAdminJF.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.id}
-                              >
+                              <Select.Option key={element.id} value={element.id}>
                                 {element.name}
                               </Select.Option>
                             ))}
@@ -416,9 +409,7 @@ const index = () => {
                         </Form.Item>
                         {/* list milestones */}
                         <Form.Item label=" ">
-                          <span className="label font-bold">
-                            マイルストーン一覧
-                          </span>
+                          <span className="label font-bold">マイルストーン一覧</span>
                           <List
                             className="demo-infinite-container"
                             bordered
@@ -455,9 +446,6 @@ const index = () => {
                           ]}
                         >
                           <DatePicker
-                            onChange={(e) => {
-                              setConfilm(true)
-                            }}
                             help="Please select the correct date"
                             className="py-2"
                             format={Extensions.dateFormat}
@@ -482,7 +470,6 @@ const index = () => {
                             min={1}
                             onChange={(e) => {
                               autoConvertHalfwidth(e)
-                              setConfilm(true)
                             }}
                             placeholder="推定参加学生数"
                           />
@@ -490,11 +477,7 @@ const index = () => {
                         {/* jobfair schedule */}
                         <Form.Item
                           required
-                          label={(
-                            <p className="font-bold text-right">
-                              JFスケジュール
-                            </p>
-                          )}
+                          label={<p className="font-bold text-right">JFスケジュール</p>}
                           name="schedule_id"
                           // label="JFスケジュール"
                           rules={[
@@ -507,16 +490,10 @@ const index = () => {
                             size="large"
                             className="addJF-selector"
                             placeholder="JF-スケジュールを選択"
-                            onSelect={() => {
-                              setConfilm(true)
-                              onScheduleSelect()
-                            }}
+                            onSelect={onScheduleSelect}
                           >
                             {listSchedule.map((element) => (
-                              <Select.Option
-                                key={element.id}
-                                value={element.id}
-                              >
+                              <Select.Option key={element.id} value={element.id}>
                                 {element.name}
                               </Select.Option>
                             ))}

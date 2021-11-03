@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip } from 'antd'
+import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip, Empty } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
 import { webInit } from '../../api/web-init'
 import './styles.scss'
-import { loadingIcon } from '../../components/loading'
 
 const MilestonePage = () => {
   const [isRenderFirstly, setIsRenderFirstly] = useState(true)
@@ -301,8 +300,16 @@ const MilestonePage = () => {
                 rowKey={(record) => record.id}
                 dataSource={data}
                 pagination={pagination}
-                loading={{ spinning: loading, indicator: loadingIcon }}
+                loading={loading}
                 onChange={(e) => tableChangeHandler(e)}
+                locale={{
+                  emptyText: (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description="該当結果が見つかりませんでした"
+                    />
+                  ),
+                }}
               />
             </div>
           </div>
