@@ -71,6 +71,7 @@ class TaskExpired extends Notification
             ],
         ];
     }
+
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
