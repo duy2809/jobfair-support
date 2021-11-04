@@ -214,16 +214,8 @@ export default function Notification() {
     })
   }
 
-  const handlerClick = (type, id) => {
-    if (type === 'タスク') {
-      window.location.href = `/task-detail/${id}`
-    }
-    if (type === 'メンバ') {
-      window.location.href = `/member/${id}`
-    }
-    if (type === 'JF') {
-      window.location.href = `/jf-toppage/${id}`
-    }
+  const handlerClick = (url) => {
+    window.location.href = url
   }
 
   // const convertDate = (date) => {
