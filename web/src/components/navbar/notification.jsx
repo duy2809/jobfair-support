@@ -138,7 +138,7 @@ export default function Notification() {
         const newItem = {
           action, avatar: `/api/avatar/${userid}`, url, created_at: isoDateTime, read_at: null,
         }
-        setUnReadLength(unreadLength + 1)
+        setUnReadLength((prev) => prev + 1)
         setDataNoti((prev) => [newItem, ...prev])
       })
       .listen()

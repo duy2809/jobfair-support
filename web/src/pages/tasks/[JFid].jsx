@@ -110,10 +110,10 @@ function TaskList() {
         end_date: dataResponse[i].end_time,
         status: dataResponse[i].status,
         category_name: dataResponse[i].categories[0]?.category_name,
-        milestone_name: dataResponse[i].milestone.name,
+        milestone_name: dataResponse[i]?.milestone.name,
         managers: manager,
         mems: mem,
-        idCategory: dataResponse[i].categories[0].id,
+        idCategory: dataResponse[i].categories[0]?.id,
       })
     }
 
