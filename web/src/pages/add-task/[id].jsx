@@ -1,5 +1,5 @@
-import { CheckCircleTwoTone, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import axios from 'axios'
+import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Input, Modal, Select, Space, Table, notification } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -43,7 +43,9 @@ function index() {
         const info = await addTaskAPI.getJobfair(router.query.id)
         const categories = await addTaskAPI.getCategories()
         const milestones = await addTaskAPI.getMilestones()
-        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(router.query.id)
+        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(
+          router.query.id,
+        )
         setlistCatergories(categories.data)
         setlistMilestones(Array.from(milestones.data))
         setJobfair(info.data)
@@ -97,7 +99,9 @@ function index() {
   const handleSelectCategory = (value) => {
     setCategory(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
+      (templateTask) => (value
+        ? !templateTask.category_name.localeCompare(value)
+        : templateTask.category_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -111,7 +115,9 @@ function index() {
   const handlSelectMilestone = (value) => {
     setMilestone(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
+      (templateTask) => (value
+        ? !templateTask.milestone_name.localeCompare(value)
+        : templateTask.milestone_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -155,8 +161,7 @@ function index() {
     }
   }
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に登録されました。',
       onClick: () => {},
@@ -190,7 +195,10 @@ function index() {
             <div className="container mx-auto w-3/4">
               <div className="grid grid-cols-1 grid-flow-row justify-center">
                 {/* task header */}
-                <div className="header flex justify-between mb-6 " style={{ flex: '0 0 100%' }}>
+                <div
+                  className="header flex justify-between mb-6 "
+                  style={{ flex: '0 0 100%' }}
+                >
                   <div className="flex space-x-2" style={{ flex: '0 0 70%' }}>
                     <Select
                       size="large"
@@ -201,7 +209,10 @@ function index() {
                       onChange={handleSelectCategory}
                     >
                       {listCatergories.map((element) => (
-                        <Select.Option key={element.id} value={element.category_name}>
+                        <Select.Option
+                          key={element.id}
+                          value={element.category_name}
+                        >
                           {element.category_name}
                         </Select.Option>
                       ))}
@@ -284,7 +295,9 @@ index.getInitialProps = async (ctx) => {
   const userId = ctx.store.getState().get('auth').get('user').get('id')
   if (userId) {
     try {
-      await axios.get(`${ctx.serverURL}/is-admin-jobfair`, { params: { userId, jobfairId } })
+      await axios.get(`${ctx.serverURL}/is-admin-jobfair`, {
+        params: { userId, jobfairId },
+      })
     } catch (err) {
       ctx.res.writeHead(302, { Location: '/error' })
       ctx.res.end()

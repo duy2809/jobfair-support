@@ -1,8 +1,4 @@
-import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-  ExclamationCircleTwoTone,
-} from '@ant-design/icons'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import {
   Button,
   DatePicker,
@@ -126,8 +122,7 @@ const index = () => {
   }
   //  open success notification after add jobfair button clicked .
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に登録されました。',
       onClick: () => {},
@@ -163,15 +158,13 @@ const index = () => {
       setdisableBtn(false)
       const errorResponse = JSON.parse(error.request.response)
       if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
-        notification.open({
-          icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+        notification.error({
           duration: 3,
           message: errorResponse.errors.name[0],
           onClick: () => {},
         })
       } else {
-        notification.open({
-          icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+        notification.error({
           duration: 3,
           message: errorResponse.errors.name[0],
           onClick: () => {},
@@ -330,7 +323,10 @@ const index = () => {
                     <div className="flex justify-center">
                       <div className="left-side w-1/2">
                         {/* jobfair name */}
-                        <Form.Item label={<p className="font-bold text-right">JF名</p>} required>
+                        <Form.Item
+                          label={<p className="font-bold text-right">JF名</p>}
+                          required
+                        >
                           <Form.Item
                             name="name"
                             noStyle
@@ -346,8 +342,12 @@ const index = () => {
                               id="validate_name"
                               onBlur={checkIsJFNameExisted}
                               onChange={() => {
-                                document.getElementById('error-msg').setAttribute('hidden', 'true')
-                                document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                                document
+                                  .getElementById('error-msg')
+                                  .setAttribute('hidden', 'true')
+                                document.getElementById(
+                                  'validate_name',
+                                ).style.border = '1px solid #e5e7eb'
                               }}
                               placeholder="JF名を入力する"
                               maxLength={200}
@@ -402,7 +402,10 @@ const index = () => {
                             placeholder="管理者を選択"
                           >
                             {listAdminJF.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
+                              <Select.Option
+                                key={element.id}
+                                value={element.id}
+                              >
                                 {element.name}
                               </Select.Option>
                             ))}
@@ -410,7 +413,9 @@ const index = () => {
                         </Form.Item>
                         {/* list milestones */}
                         <Form.Item label=" ">
-                          <span className="label font-bold">マイルストーン一覧</span>
+                          <span className="label font-bold">
+                            マイルストーン一覧
+                          </span>
                           <List
                             className="demo-infinite-container"
                             bordered
@@ -479,7 +484,11 @@ const index = () => {
                         {/* jobfair schedule */}
                         <Form.Item
                           required
-                          label={<p className="font-bold text-right">JFスケジュール</p>}
+                          label={(
+                            <p className="font-bold text-right">
+                              JFスケジュール
+                            </p>
+                          )}
                           name="schedule_id"
                           // label="JFスケジュール"
                           rules={[
@@ -495,7 +504,10 @@ const index = () => {
                             onSelect={onScheduleSelect}
                           >
                             {listSchedule.map((element) => (
-                              <Select.Option key={element.id} value={element.id}>
+                              <Select.Option
+                                key={element.id}
+                                value={element.id}
+                              >
                                 {element.name}
                               </Select.Option>
                             ))}

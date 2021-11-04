@@ -1,12 +1,15 @@
+import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined, ExclamationCircleTwoTone,
-  LoadingOutlined,
-} from '@ant-design/icons'
-import {
-  Button, Form, Spin,
-  Input, Modal, notification,
-  Select, Space, Tag, Tooltip,
+  Button,
+  Form,
+  Spin,
+  Input,
+  Modal,
+  notification,
+  Select,
+  Space,
+  Tag,
+  Tooltip,
 } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -152,7 +155,7 @@ const index = () => {
           onFormReset()
           routeTo('/template-tasks')
         },
-        onCancel: () => { },
+        onCancel: () => {},
         okText: 'はい',
         centered: true,
         cancelText: 'いいえ',
@@ -161,11 +164,10 @@ const index = () => {
   }
   //  open success notification after add button clicked .
   const successNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に登録されました。',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
 
@@ -213,18 +215,16 @@ const index = () => {
       } catch (error) {
         const isDuplicate = JSON.parse(error.request.response).message
         if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
-          notification.open({
-            icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+          notification.error({
             duration: 3,
             message: 'このJF名は既に使用されています。',
-            onClick: () => { },
+            onClick: () => {},
           })
         } else {
-          notification.open({
-            icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
+          notification.error({
             duration: 3,
             message: '保存に失敗しました。',
-            onClick: () => { },
+            onClick: () => {},
           })
         }
         setdisableBtn(false)
@@ -281,13 +281,13 @@ const index = () => {
       return Promise.reject(new Error('0以上の数字で入力してください'))
     }
     if (Extensions.isFullWidth(value)) {
-
       // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
 
     // setinputTest(Extention.toHalfWidth(value.toString()))
-    if (!Extensions.isFullWidth(value)
-      && (!Extensions.Reg.floatNumber.test(value * 1.0))
+    if (
+      !Extensions.isFullWidth(value)
+      && !Extensions.Reg.floatNumber.test(value * 1.0)
     ) {
       return Promise.reject(new Error('使用できない文字が含まれています。'))
     }
@@ -321,7 +321,6 @@ const index = () => {
             {label}
             {/* <a href="" className="my-1">{label}</a> */}
           </span>
-
         </Tooltip>
       </Tag>
     )
@@ -330,7 +329,9 @@ const index = () => {
     try {
       const templateName = form.getFieldValue('template_name')
       if (templateName) {
-        const response = await addTemplateTasksAPI.isTemplateTaskExisted({ name: templateName })
+        const response = await addTemplateTasksAPI.isTemplateTaskExisted({
+          name: templateName,
+        })
         if (response.data.length) {
           setIsTemplateExisted(true)
           document.getElementById('validate_name').style.border = '1px solid red'
@@ -394,12 +395,16 @@ const index = () => {
   }
   return (
     <>
-
       <OtherLayout>
         <OtherLayout.Main>
           <div className="add-template-task-page">
             <div id="loading">
-              <Spin style={{ fontSize: '30px', color: '#ffd803' }} spinning={loading} indicator={loadingIcon} size="large">
+              <Spin
+                style={{ fontSize: '30px', color: '#ffd803' }}
+                spinning={loading}
+                indicator={loadingIcon}
+                size="large"
+              >
                 <h1>テンプレートタスク追加 </h1>
                 <div className="container mx-auto flex-1 justify-center px-4  pb-20">
                   {/* page title */}
@@ -445,16 +450,36 @@ const index = () => {
                                       id="validate_name"
                                       onBlur={isTemplateTaskExisted}
                                       onChange={() => {
-                                        document.getElementById('error-msg').setAttribute('hidden', 'true')
-                                        document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
+                                        document
+                                          .getElementById('error-msg')
+                                          .setAttribute('hidden', 'true')
+                                        document.getElementById(
+                                          'validate_name',
+                                        ).style.border = '1px solid #e5e7eb'
                                       }}
-                                      style={{ display: isPreview ? 'none' : '' }}
+                                      style={{
+                                        display: isPreview ? 'none' : '',
+                                      }}
                                       placeholder="タスクテンプレート名を入力する"
                                       maxLength={200}
                                     />
                                   </Form.Item>
-                                  <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.name}</p>
-                                  <span id="error-msg" style={{ color: '#ff3860', fontSize: '14px' }} className="text-red-600" hidden>この名前はすでに存在します</span>
+                                  <p
+                                    style={{ display: isPreview ? '' : 'none' }}
+                                  >
+                                    {dataPreview.name}
+                                  </p>
+                                  <span
+                                    id="error-msg"
+                                    style={{
+                                      color: '#ff3860',
+                                      fontSize: '14px',
+                                    }}
+                                    className="text-red-600"
+                                    hidden
+                                  >
+                                    この名前はすでに存在します
+                                  </span>
                                 </Form.Item>
 
                                 {/* milestone */}
@@ -478,16 +503,25 @@ const index = () => {
                                       size="large"
                                       className="addJF-selector "
                                       placeholder="マイルストーンを選択"
-                                      style={{ display: isPreview ? 'none' : '' }}
+                                      style={{
+                                        display: isPreview ? 'none' : '',
+                                      }}
                                     >
                                       {listMilestones.map((element) => (
-                                        <Select.Option key={element.id} value={[element.name, element.id]}>
+                                        <Select.Option
+                                          key={element.id}
+                                          value={[element.name, element.id]}
+                                        >
                                           {element.name}
                                         </Select.Option>
                                       ))}
                                     </Select>
                                   </Form.Item>
-                                  <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.milestone}</p>
+                                  <p
+                                    style={{ display: isPreview ? '' : 'none' }}
+                                  >
+                                    {dataPreview.milestone}
+                                  </p>
                                 </Form.Item>
 
                                 {/* relation */}
@@ -499,7 +533,11 @@ const index = () => {
 
                                 </Form.Item> */}
                                 <Form.Item label="前のタスク">
-                                  <Form.Item noStyle className="task ml-3" name="beforeTasks">
+                                  <Form.Item
+                                    noStyle
+                                    className="task ml-3"
+                                    name="beforeTasks"
+                                  >
                                     <Select
                                       mode="multiple"
                                       size="large"
@@ -509,49 +547,59 @@ const index = () => {
                                       className="w-100"
                                       placeholder="リレーションを選択"
                                       onChange={filtedArr}
-                                      style={{ display: isPreview ? 'none' : '' }}
+                                      style={{
+                                        display: isPreview ? 'none' : '',
+                                      }}
                                     >
                                       {beforeTasks.map((element) => (
-                                        <Select.Option key={element.id} value={element.name}>
+                                        <Select.Option
+                                          key={element.id}
+                                          value={element.name}
+                                        >
                                           {element.name}
                                         </Select.Option>
                                       ))}
                                     </Select>
                                   </Form.Item>
-                                  {
-                                    beforeTasksChoose ? (
-                                      <ul
-                                        className="list__task col-span-2"
-                                        style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                                      >
-                                        {beforeTasksChoose.map((element) => (
-                                          <li className="task__chil">
-                                            <Tag
-                                              style={{
-                                                marginRight: 3,
-                                                paddingTop: '5px',
-                                                paddingBottom: '3px',
-                                              }}
+                                  {beforeTasksChoose ? (
+                                    <ul
+                                      className="list__task col-span-2"
+                                      style={{
+                                        border: '1px solid #d9d9d9',
+                                        display: isPreview ? '' : 'none',
+                                      }}
+                                    >
+                                      {beforeTasksChoose.map((element) => (
+                                        <li className="task__chil">
+                                          <Tag
+                                            style={{
+                                              marginRight: 3,
+                                              paddingTop: '5px',
+                                              paddingBottom: '3px',
+                                            }}
+                                          >
+                                            <Tooltip
+                                              placement="top"
+                                              title={element}
                                             >
-                                              <Tooltip placement="top" title={element}>
-                                                <div className="inline-block text-blue-600 whitespace-nowrap">
-                                                  {truncate(element)}
-                                                </div>
-                                              </Tooltip>
-                                            </Tag>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    ) : (
-                                      <ul
-                                        className="list__task col-span-2"
-                                        style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                                      />
-                                    )
-                                  }
-
+                                              <div className="inline-block text-blue-600 whitespace-nowrap">
+                                                {truncate(element)}
+                                              </div>
+                                            </Tooltip>
+                                          </Tag>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  ) : (
+                                    <ul
+                                      className="list__task col-span-2"
+                                      style={{
+                                        border: '1px solid #d9d9d9',
+                                        display: isPreview ? '' : 'none',
+                                      }}
+                                    />
+                                  )}
                                 </Form.Item>
-
                               </div>
                             </div>
                             <div className="right-side mx-4 w-1/2">
@@ -579,20 +627,25 @@ const index = () => {
                                     style={{ display: isPreview ? 'none' : '' }}
                                   >
                                     {listCatergories.map((element) => (
-                                      <Select.Option key={element.id} value={[element.category_name, element.id]}>
+                                      <Select.Option
+                                        key={element.id}
+                                        value={[
+                                          element.category_name,
+                                          element.id,
+                                        ]}
+                                      >
                                         {element.category_name}
                                       </Select.Option>
                                     ))}
                                   </Select>
                                 </Form.Item>
-                                <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.category}</p>
+                                <p style={{ display: isPreview ? '' : 'none' }}>
+                                  {dataPreview.category}
+                                </p>
                               </Form.Item>
 
                               {/* Kōsū - effort  */}
-                              <Form.Item
-                                label="工数"
-                                required={!isPreview}
-                              >
+                              <Form.Item label="工数" required={!isPreview}>
                                 <Space className="space-items-special flex justify-between ">
                                   <div className="w-1/2 max-w-xs flex-grow ">
                                     <Form.Item
@@ -607,7 +660,11 @@ const index = () => {
                                     >
                                       <Input
                                         className="h-1/2"
-                                        style={{ padding: '10px', width: '180%', display: isPreview ? 'none' : '' }}
+                                        style={{
+                                          padding: '10px',
+                                          width: '180%',
+                                          display: isPreview ? 'none' : '',
+                                        }}
                                         type="text"
                                         size="large"
                                         min={1}
@@ -634,10 +691,15 @@ const index = () => {
                                         size="large"
                                         showSearch={false}
                                         placeholder="時間"
-                                        style={{ display: isPreview ? 'none' : '' }}
+                                        style={{
+                                          display: isPreview ? 'none' : '',
+                                        }}
                                       >
                                         {isDayData.map((element) => (
-                                          <Select.Option key={element.id} value={[element.name, element.id]}>
+                                          <Select.Option
+                                            key={element.id}
+                                            value={[element.name, element.id]}
+                                          >
                                             {element.name}
                                           </Select.Option>
                                         ))}
@@ -645,7 +707,9 @@ const index = () => {
                                     </Form.Item>
                                     <p
                                       className="slash-devider text-3xl font-extrabold leading-10"
-                                      style={{ display: isPreview ? 'none' : '' }}
+                                      style={{
+                                        display: isPreview ? 'none' : '',
+                                      }}
                                     >
                                       {' '}
                                       /
@@ -666,10 +730,15 @@ const index = () => {
                                         showArrow
                                         showSearch={false}
                                         placeholder="学生数"
-                                        style={{ display: isPreview ? 'none' : '' }}
+                                        style={{
+                                          display: isPreview ? 'none' : '',
+                                        }}
                                       >
                                         {unitData.map((element) => (
-                                          <Select.Option key={element.id} value={[element.name, element.id]}>
+                                          <Select.Option
+                                            key={element.id}
+                                            value={[element.name, element.id]}
+                                          >
                                             {element.name}
                                           </Select.Option>
                                         ))}
@@ -680,7 +749,6 @@ const index = () => {
                                 <p style={{ display: isPreview ? '' : 'none' }}>
                                   {dataPreview.effort}
                                   {' '}
-&nbsp;
                                   {' '}
                                   {dataPreview.is_day}
                                   /
@@ -697,7 +765,11 @@ const index = () => {
 
                               </Form.Item> */}
                               <Form.Item label="次のタスク">
-                                <Form.Item noStyle name="afterTasks" className="task ml-3">
+                                <Form.Item
+                                  noStyle
+                                  name="afterTasks"
+                                  className="task ml-3"
+                                >
                                   <Select
                                     mode="multiple"
                                     size="large"
@@ -710,61 +782,83 @@ const index = () => {
                                     style={{ display: isPreview ? 'none' : '' }}
                                   >
                                     {afterTasks.map((element) => (
-                                      <Select.Option key={element.id} value={element.name}>
+                                      <Select.Option
+                                        key={element.id}
+                                        value={element.name}
+                                      >
                                         {element.name}
                                       </Select.Option>
                                     ))}
                                   </Select>
                                 </Form.Item>
-                                {afterTasksChoose
-                                  ? (
-                                    <ul
-                                      className="list__task col-span-2"
-                                      style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                                    >
-                                      {afterTasksChoose.map((element) => (
-                                        <li className="task__chil">
-                                          <Tag
-                                            style={{
-                                              marginRight: 3,
-                                              paddingTop: '5px',
-                                              paddingBottom: '3px',
-                                            }}
+                                {afterTasksChoose ? (
+                                  <ul
+                                    className="list__task col-span-2"
+                                    style={{
+                                      border: '1px solid #d9d9d9',
+                                      display: isPreview ? '' : 'none',
+                                    }}
+                                  >
+                                    {afterTasksChoose.map((element) => (
+                                      <li className="task__chil">
+                                        <Tag
+                                          style={{
+                                            marginRight: 3,
+                                            paddingTop: '5px',
+                                            paddingBottom: '3px',
+                                          }}
+                                        >
+                                          <Tooltip
+                                            placement="top"
+                                            title={element}
                                           >
-                                            <Tooltip placement="top" title={element}>
-                                              <div className="inline-block text-blue-600 whitespace-nowrap">
-                                                {truncate(element)}
-                                              </div>
-                                            </Tooltip>
-                                          </Tag>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  ) : (
-                                    <ul
-                                      className="list__task col-span-2"
-                                      style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                                    />
-                                  )}
+                                            <div className="inline-block text-blue-600 whitespace-nowrap">
+                                              {truncate(element)}
+                                            </div>
+                                          </Tooltip>
+                                        </Tag>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <ul
+                                    className="list__task col-span-2"
+                                    style={{
+                                      border: '1px solid #d9d9d9',
+                                      display: isPreview ? '' : 'none',
+                                    }}
+                                  />
+                                )}
                               </Form.Item>
                             </div>
-
                           </div>
                           {/* details    */}
-                          <div className="pr-3 pl-14 mb-2" style={{ display: isPreview ? 'none' : '' }}>
-                            <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={markdown} onChange={setMarkdown} />
+                          <div
+                            className="pr-3 pl-14 mb-2"
+                            style={{ display: isPreview ? 'none' : '' }}
+                          >
+                            <MDEditor
+                              style={{ height: '40px !important' }}
+                              preview="edit"
+                              height="300"
+                              value={markdown}
+                              onChange={setMarkdown}
+                            />
                           </div>
-                          <div className="pr-3 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
+                          <div
+                            className="pr-3 ml-14 mb-2 des"
+                            style={{ display: isPreview ? '' : 'none' }}
+                          >
                             <MarkDownView source={markdown} />
                           </div>
 
                           {/* 2 button */}
                           <div className="mt-8 flex justify-end -mr-4">
-                            <Form.Item
-                              label=" "
-                              colon={false}
-                            >
-                              <Space size={20} style={{ display: isPreview ? 'none' : '' }}>
+                            <Form.Item label=" " colon={false}>
+                              <Space
+                                size={20}
+                                style={{ display: isPreview ? 'none' : '' }}
+                              >
                                 <Button
                                   htmlType="button"
                                   className="ant-btn"
@@ -798,7 +892,10 @@ const index = () => {
                                   登録
                                 </Button>
                               </Space>
-                              <div style={{ display: isPreview ? '' : 'none' }} className="flex justify-end mr-4">
+                              <div
+                                style={{ display: isPreview ? '' : 'none' }}
+                                className="flex justify-end mr-4"
+                              >
                                 <Space size={20}>
                                   <Button
                                     htmlType="button"
@@ -827,7 +924,6 @@ const index = () => {
 
                           {/* end form */}
                         </Form>
-
                       </div>
                     </div>
                   </div>
@@ -835,10 +931,8 @@ const index = () => {
               </Spin>
             </div>
           </div>
-
         </OtherLayout.Main>
       </OtherLayout>
-
     </>
   )
 }
