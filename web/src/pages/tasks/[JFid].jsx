@@ -102,19 +102,21 @@ function TaskList() {
           name: dataResponse[i].users[j].name,
         })
       }
-      data.push({
-        id: i + 1,
-        idtask: dataResponse[i].id,
-        taskName: dataResponse[i].name,
-        start_date: dataResponse[i].start_time,
-        end_date: dataResponse[i].end_time,
-        status: dataResponse[i].status,
-        category_name: dataResponse[i].categories[0]?.category_name,
-        milestone_name: dataResponse[i].milestone.name,
-        managers: manager,
-        mems: mem,
-        idCategory: dataResponse[i].categories[0].id,
-      })
+      if (dataResponse[i].categories[0] && dataResponse[i].milestone) {
+        data.push({
+          id: i + 1,
+          idtask: dataResponse[i].id,
+          taskName: dataResponse[i].name,
+          start_date: dataResponse[i].start_time,
+          end_date: dataResponse[i].end_time,
+          status: dataResponse[i].status,
+          category_name: dataResponse[i].categories[0]?.category_name,
+          milestone_name: dataResponse[i].milestone.name,
+          managers: manager,
+          mems: mem,
+          idCategory: dataResponse[i].categories[0].id,
+        })
+      }
     }
 
     setTemperaryData(data)
