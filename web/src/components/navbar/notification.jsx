@@ -14,13 +14,9 @@ import { getNotification, update, updateAllRead, getUnreadNotification, deleteNo
 export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
-<<<<<<< HEAD
 
   const { store } = useContext(ReactReduxContext)
   const [user, setUser] = useState(store.getState().get('auth').get('user'))
-=======
-  const [user, setUser] = useState(null)
->>>>>>> push fix redirect after login
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
   const [loading, setLoading] = useState(false)
@@ -33,10 +29,6 @@ export default function Notification() {
     setLoading(true)
     try {
       // setUserName([])
-<<<<<<< HEAD
-=======
-      setDataNoti([])
->>>>>>> push fix redirect after login
       setUser(store.getState().get('auth').get('user'))
       if (user) {
         const id = user.get('id')
@@ -107,7 +99,6 @@ export default function Notification() {
     }
   }
 
-<<<<<<< HEAD
   // TODO: fix bug crash browser
   useEffect(() => {
     new NotificationChannel(store.getState().get('auth').get('user').get('id'))
@@ -163,18 +154,6 @@ export default function Notification() {
   //     }
   //   })
   // }
-=======
-  if (user) {
-    const id = user.get('id')
-    getUnreadNotification(id).then((res) => {
-      if (!res.data) {
-        setUnReadLength(0)
-      } else {
-        setUnReadLength(res.data.noti.length)
-      }
-    })
-  }
->>>>>>> push fix redirect after login
 
   useEffect(() => {
     fetchData()
@@ -226,11 +205,7 @@ export default function Notification() {
   }
 
   const onChange = () => {
-<<<<<<< HEAD
     updateAllRead(user.get('id')).then((res) => {
-=======
-    updateAllRead().then((res) => {
->>>>>>> push fix redirect after login
       if (res.data == null) {
         return
       }
@@ -239,16 +214,8 @@ export default function Notification() {
     })
   }
 
-  const handlerClick = (type, id) => {
-    if (type === 'タスク') {
-      window.location.href = `/task-detail/${id}`
-    }
-    if (type === 'メンバ') {
-      window.location.href = `/member/${id}`
-    }
-    if (type === 'JF') {
-      window.location.href = `/jf-toppage/${id}`
-    }
+  const handlerClick = (url) => {
+    window.location.href = url
   }
 
   // const convertDate = (date) => {
