@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 class FixNotificationTable extends Migration
@@ -13,11 +12,11 @@ class FixNotificationTable extends Migration
      */
     public function up()
     {
-        Schema::table('notifications', function($table) {
-            $table->dropColumn('subjectable_type','subjectable_id');
+        Schema::table('notifications', function ($table) {
+            $table->dropColumn('subjectable_type', 'subjectable_id');
             $table->dropForeign('notifications_user_id_foreign');
             $table->dropColumn('user_id');
-         });
+        });
     }
 
     /**
@@ -27,10 +26,10 @@ class FixNotificationTable extends Migration
      */
     public function down()
     {
-        Schema::table('notifications', function($table) {
+        Schema::table('notifications', function ($table) {
             $table->morphs('subjectable');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-         });
+        });
     }
 }
