@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TemplateTaskRequest;
 use App\Models\Category;
+use App\Models\Jobfair;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,22 @@ class TemplateTaskController extends Controller
             ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
 
         return response()->json($templateTasks);
+    }
+
+    public function getTemplateTaskNotAdded($id)
+    {
+        $task = Jobfair::with([
+            'schedule.tasks' => function ($q) {
+                $q->select('template_task_id', 'schedule_id');
+            },
+        ])->find($id);
+
+        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
+                                      ->with(['categories:id,category_name', 'milestone:id,name'])
+                                      ->orderBy('template_tasks.id', 'DESC')
+                                      ->get(['id', 'name', 'milestone_id']);
+
+        return response()->json($templateTask);
     }
 
     /**

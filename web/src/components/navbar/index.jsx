@@ -20,7 +20,7 @@ export default function Navbar() {
       await getAvatar(id).then(() => {
         const link = `../../api/avatar/${id}`
         setAvatarUser(link)
-      })
+      }).catch(() => setAvatarUser(null))
     }
   }, [user])
   const handleLogout = async () => {

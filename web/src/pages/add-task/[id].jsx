@@ -46,7 +46,7 @@ function index() {
         const info = await addTaskAPI.getJobfair(router.query.id)
         const categories = await addTaskAPI.getCategories()
         const milestones = await addTaskAPI.getMilestones()
-        const tasks = await addTaskAPI.getAllTemplateTasks()
+        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(router.query.id)
         setlistCatergories(categories.data)
         setlistMilestones(Array.from(milestones.data))
         setJobfair(info.data)

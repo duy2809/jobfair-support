@@ -91,6 +91,7 @@ Route::post('/update-password', [ResetPasswordController::class, 'updatePassword
 
 //template-task
 Route::resource('/template-tasks', 'TemplateTaskController');
+Route::get('/template-task-not-added/{id}', 'TemplateTaskController@getTemplateTaskNotAdded');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
