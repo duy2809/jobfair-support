@@ -237,9 +237,7 @@ const MilestoneList = () => {
     <div>
       <div className="container-list">
         <Row style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-          <Col>
-            <h1 style={{ marginLeft: '0px' }}>マイルストーン一覧</h1>
-          </Col>
+          <Col />
         </Row>
 
         <Row style={{ justifyContent: 'space-between' }}>

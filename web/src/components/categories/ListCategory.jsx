@@ -93,7 +93,6 @@ export default function ListCategories() {
   }, [category])
   return (
     <div className="list-category">
-      <h1>カテゴリー覧</h1>
 
       <div className="list">
         <div className="flex justify-between items-center">
