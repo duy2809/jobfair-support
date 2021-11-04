@@ -11,7 +11,6 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
-use App\Events\Noti;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +87,7 @@ Route::prefix('member')->group(function () {
 // login, logout
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/preURL', [AuthController::class, 'preURL']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
