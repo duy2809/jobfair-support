@@ -14,8 +14,8 @@ const addTemplateTaskAPI = {
     const url = '/categories-template-tasks'
     return instance.get(url)
   },
-  getAllTemplateTasks: () => {
-    const url = '/template-tasks'
+  getAllTemplateTasksNotAdded: (id) => {
+    const url = `/template-task-not-added/${id}`
     return instance.get(url)
   },
   addTasks: (id, data) => {

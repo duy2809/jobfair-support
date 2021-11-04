@@ -759,68 +759,71 @@ const index = () => {
                           </div>
 
                           {/* 2 button */}
-                          <Form.Item
-                            label=" "
-                            colon={false}
-                            className="my-10 mx-4"
-                          >
-                            <Space size={20} className="flex place-content-end pr-4" style={{ display: isPreview ? 'none' : '' }}>
-                              <Button
-                                htmlType="button"
-                                className="ant-btn"
-                                onClick={cancelConfirmModle}
-                                disabled={disableBtn}
-                                loading={disableBtn}
-                              >
-                                キャンセル
-                              </Button>
-                              {/* --------------------------- */}
-                              <Button
-                                className="preview_btn"
-                                htmlType="submit"
-                                onClick={() => {
-                                  setChosePreview(!chosePreview)
-                                }}
-                                disabled={disableBtn}
-                                loading={disableBtn}
-                                style={{ letterSpacing: '-1px' }}
-                              >
-                                プレビュー
-                              </Button>
-                              {/* --------------------------- */}
-                              <Button
-                                type="primary"
-                                htmlType="submit"
-                                disabled={disableBtn}
-                                loading={disableBtn}
-                                style={{ letterSpacing: '-1px' }}
-                              >
-                                登録
-                              </Button>
-                            </Space>
-                            <Space style={{ display: isPreview ? '' : 'none' }} size={20} className="flex place-content-end pr-4">
-                              <Button
-                                htmlType="button"
-                                onClick={() => {
-                                  setIsPreview(false)
-                                }}
-                                disabled={disableBtn}
-                                loading={disableBtn}
-                                style={{ letterSpacing: '-1px' }}
-                              >
-                                編集
-                              </Button>
-                              <Button
-                                type="primary"
-                                htmlType="submit"
-                                disabled={disableBtn}
-                                loading={disableBtn}
-                                style={{ letterSpacing: '-1px' }}
-                              >
-                                登録
-                              </Button>
-                            </Space>
-                          </Form.Item>
+                          <div className="mt-8 flex justify-end -mr-4">
+                            <Form.Item
+                              label=" "
+                              colon={false}
+                            >
+                              <Space size={20} style={{ display: isPreview ? 'none' : '' }}>
+                                <Button
+                                  htmlType="button"
+                                  className="ant-btn"
+                                  onClick={cancelConfirmModle}
+                                  disabled={disableBtn}
+                                  loading={disableBtn}
+                                >
+                                  キャンセル
+                                </Button>
+                                {/* --------------------------- */}
+                                <Button
+                                  className="preview_btn"
+                                  htmlType="submit"
+                                  onClick={() => {
+                                    setChosePreview(!chosePreview)
+                                  }}
+                                  disabled={disableBtn}
+                                  loading={disableBtn}
+                                  style={{ letterSpacing: '-1px' }}
+                                >
+                                  プレビュー
+                                </Button>
+                                {/* --------------------------- */}
+                                <Button
+                                  type="primary"
+                                  htmlType="submit"
+                                  disabled={disableBtn}
+                                  loading={disableBtn}
+                                  style={{ letterSpacing: '-1px' }}
+                                >
+                                  登録
+                                </Button>
+                              </Space>
+                              <div style={{ display: isPreview ? '' : 'none' }} className="flex justify-end mr-4">
+                                <Space size={20}>
+                                  <Button
+                                    htmlType="button"
+                                    onClick={() => {
+                                      setIsPreview(false)
+                                    }}
+                                    disabled={disableBtn}
+                                    loading={disableBtn}
+                                    style={{ letterSpacing: '-1px' }}
+                                  >
+                                    編集
+                                  </Button>
+                                  <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    disabled={disableBtn}
+                                    loading={disableBtn}
+                                    style={{ letterSpacing: '-1px' }}
+                                  >
+                                    登録
+                                  </Button>
+                                </Space>
+                              </div>
+                            </Form.Item>
+                          </div>
 
                           {/* end form */}
                         </Form>

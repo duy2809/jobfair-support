@@ -46,7 +46,7 @@ function index() {
         const info = await addTaskAPI.getJobfair(router.query.id)
         const categories = await addTaskAPI.getCategories()
         const milestones = await addTaskAPI.getMilestones()
-        const tasks = await addTaskAPI.getAllTemplateTasks()
+        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(router.query.id)
         setlistCatergories(categories.data)
         setlistMilestones(Array.from(milestones.data))
         setJobfair(info.data)
@@ -54,7 +54,6 @@ function index() {
         setLoading(false)
         return null
       } catch (error) {
-        setLoading(false)
         return Error('内容が登録されません。よろしいですか？')
       }
     }
@@ -258,8 +257,8 @@ function index() {
                   />
                 </div>
                 {/* 2 button */}
-                <div className="data-controller">
-                  <Space size={20} className="flex justify-end">
+                <div className="flex justify-end">
+                  <Space size={20}>
                     <Button
                       size="large"
                       htmlType="button"

@@ -44,12 +44,10 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
-Route::resource('/jobfair', 'JobfairController');
 
 // schedule
 
 Route::resource('/schedules', 'ScheduleController');
-Route::get('/schedules', 'ScheduleController@getAll');
 Route::get('jf-schedules/all-milestones', 'ScheduleController@getAllMilestones');
 Route::get('jf-schedules/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
 Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
@@ -93,6 +91,7 @@ Route::post('/update-password', [ResetPasswordController::class, 'updatePassword
 
 //template-task
 Route::resource('/template-tasks', 'TemplateTaskController');
+Route::get('/template-task-not-added/{id}', 'TemplateTaskController@getTemplateTaskNotAdded');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
@@ -146,9 +145,9 @@ Route::prefix('members')->group(function () {
 
 Route::resource('/notification', NotificationController::class);
 Route::get('/notification/delete/{id}', 'NotificationController@destroy');
-Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
+Route::get('/notification/show-unread/{id}', 'NotificationController@showUnread');
 Route::post('/notification/update/{id}', 'NotificationController@update');
-Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+Route::get('/notification/update_all_read/{id}', 'NotificationController@updateAllRead');
 
 //task
 Route::resource('/task', 'TaskController');

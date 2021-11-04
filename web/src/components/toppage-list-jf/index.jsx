@@ -5,15 +5,13 @@ import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
 import { loadingIcon } from '../loading'
-
+import './style.scss'
 // const { Search } = Input;
 
-const List = ({
+const ListJfToppage = ({
   searchIcon,
   text,
   showTimeInput,
-  showCategoryInput,
-  showMilestoneInput,
   showSearchByJFInput,
   dataColumn,
   dataSource,
@@ -38,10 +36,34 @@ const List = ({
     setNewDataColumn(
       dataColumn.map((data) => {
         if (data.title === '名前') {
+          data.render = (row, record) => (
+            <div>
+              <div className="top-row">
+                {' '}
+                <Tooltip title={row}>
+                  <a href={`/jf-toppage/${record.key}`}>{truncate(row)}</a>
+                </Tooltip>
+              </div>
+              <div className="bottom-row">
+                <a href={`/tasks/${record.key}`}>タスク一覧</a>
+                <span className="sp">|</span>
+                <a href={`/gantt-chart/${record.key}`}>ガントチャート</a>
+                <span className="sp">|</span>
+                <a href={`/kanban/${record.key}`}>カンバン</a>
+                <span className="sp">|</span>
+                <a href={`/file/${record.key}`}>ファイル</a>
+
+              </div>
+
+            </div>
+          )
+        }
+        if (data.title === 'タイム') {
           data.render = (row) => (
-            <Tooltip title={row}>
-              <a>{truncate(row)}</a>
-            </Tooltip>
+            <div>
+              <span>開始日: </span>
+              <span>{row}</span>
+            </div>
           )
         }
         return data
@@ -153,7 +175,7 @@ const List = ({
     getTask()
   }
   return (
-    <div ref={ref}>
+    <div className="toppage-jf-list" ref={ref}>
       <div
         style={{
           display: 'flex',
@@ -161,19 +183,6 @@ const List = ({
           marginBottom: '10px',
         }}
       >
-        {/* <Link href={route}>
-          <a
-            style={{
-              fontSize: '30px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {text}
-          </a>
-        </Link> */}
-
         <button
           type="button"
           className="flex items-center font-bold"
@@ -212,14 +221,6 @@ const List = ({
               />
             </Link>
           )}
-          {/* <Link href={routeToAdd}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
-            />
-          </Link> */}
-
           <span className="queue-demo">
             {showSearchIcon && (
               <Button
@@ -294,40 +295,11 @@ const List = ({
                 </div>
               )}
             </div>
-
-            <div className="flex items-center justify-end px-2">
-              {showCategoryInput && (
-                <div className="flex items-center justify-end px-2">
-                  <div>
-                    <Input
-                      name="category"
-                      placeholder="カテゴリ"
-                      type="text"
-                      onChange={searchInput}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {showMilestoneInput && (
-                <div className="flex items-center justify-end px-2">
-                  <div>
-                    <Input
-                      name="milestone"
-                      placeholder="マイルストーン"
-                      type="text"
-                      onChange={searchInput}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Table data */}
           <div>
             <Table
-              scroll={{ y: 280, x: 240 }}
               pagination={false}
               dataSource={list.length >= 5
                 ? list.slice(list.length - 5, list.length).reverse()
@@ -342,12 +314,10 @@ const List = ({
   )
 }
 
-List.propTypes = {
+ListJfToppage.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   showTimeInput: PropTypes.bool.isRequired,
-  showCategoryInput: PropTypes.bool.isRequired,
-  showMilestoneInput: PropTypes.bool.isRequired,
   showSearchByJFInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
@@ -356,4 +326,4 @@ List.propTypes = {
   isLoading: PropTypes.bool.isRequired,
 }
 
-export default List
+export default ListJfToppage

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ScheduleRequest;
 use App\Models\Category;
 use App\Models\Milestone;
 use App\Models\Schedule;
@@ -22,8 +23,7 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        // return Schedule::whereNull('jobfair_id')->get();
-        return Schedule::all();
+        return Schedule::whereNull('jobfair_id')->get();
     }
 
     public function getAll()
@@ -107,10 +107,10 @@ class ScheduleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ScheduleRequest $request, $id)
     {
         $schedule = Schedule::findOrFail($id);
-        $schedule->name = $request->schedule['name'];
+        $schedule->name = $request->name;
         $schedule->save();
         $addedMilestones = $request->addedMilestones;
         $addedTemplateTasks = $request->addedTemplateTasks;
@@ -127,7 +127,7 @@ class ScheduleController extends Controller
 
     public function getMilestones($id)
     {
-        return Schedule::with(['milestones:id,name'])->find($id, ['id']);
+        return Schedule::with('milestones:id,name')->find($id, ['id']);
     }
 
     public function getTemplateTasks($id)

@@ -31,7 +31,7 @@ const TemplateTaskSubTable = ({
   const ref = useRef()
   const [newDataColumn, setNewDataColumn] = useState([])
   const [show, setShow] = useState(false)
-  const [showTable, setShowTable] = useState(false)
+  const [showTable, setShowTable] = useState(true)
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
   const [list, setList] = useState([])
   const [filter, setFilter] = useState(() => ({

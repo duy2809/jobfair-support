@@ -13,3 +13,10 @@
     height: 40px;
   }
 }
+
+.react-autosuggest__suggestions-container.react-autosuggest__suggestions-container--open {
+  background: #ccc;
+  z-index: 1000;
+  position: absolute;
+  border-radius: 5px;
+}
