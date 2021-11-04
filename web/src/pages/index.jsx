@@ -17,7 +17,7 @@ const LoginPage = () => {
   const router = useRouter()
 
   const { store } = useContext(ReactReduxContext)
-
+  //  console.log(store)
   // To disable submit button at the beginning.
   useEffect(() => {
     const user = store.getState().get('auth').get('user')
@@ -51,9 +51,13 @@ const LoginPage = () => {
     try {
       const response = await login(values)
       if (response.request.status === 200) {
-        const { auth } = response.data
+        const { auth, preURL } = response.data
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
-        router.push('/top-page')
+        if (preURL == null) {
+          router.push('/top-page')
+        } else {
+          router.push(preURL)
+        }
         openNotification('success', '正常にログインしました')
       }
     } catch (error) {
@@ -219,6 +223,7 @@ const LoginPage = () => {
               </Form.Item>
             </Form>
           </div>
+
         </Layout.Main>
       </Layout>
     </div>

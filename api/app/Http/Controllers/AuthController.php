@@ -19,14 +19,22 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-
+        $preURL = session()->get('preURL');
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            return response()->json(['message' => 'Login successfully', 'auth' => auth()->user()], 200);
+            return response()->json(['message' => 'Login successfully', 'auth' => auth()->user(), 'preURL' => $preURL], 200);
         }
 
         return response()->json(['message' => 'Email or password is incorrect'], 400);
+    }
+
+    public function preURL(Request $request)
+    {
+        $url = $request->query('preURL');
+        session()->put('preURL', $url);
+
+        return $url;
     }
 
     /**
