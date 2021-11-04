@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskEdited;
 use Carbon\Carbon;
+use function PHPSTORM_META\map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -33,7 +34,6 @@ class CommentController extends Controller
         $status = '';
         $request->validate([
             'task_id'     => 'required|numeric|exists:tasks,id',
-            'body'        => 'string',
             'status'      => 'string',
             'description' => 'string',
         ]);
@@ -145,21 +145,41 @@ class CommentController extends Controller
 
         // return new comment
         $comment = Comment::create($input);
+        $listOldAssignees = [];
+        $listNewAssignees = [];
+        if ($comment->old_assignees && $comment->new_assignees) {
 
+            $listOldAssignees = explode(',', $comment->old_assignees);
+            $listNewAssignees = explode(',', $comment->new_assignees);
+
+        }
+        $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
+            return User::find($assingee)->name;
+        });
+        $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
+            return User::find($assingee)->name;
+        });
+
+        // return [$comment, $listOldAssignees, $listNewAssignees];
         return [
-            'id'        => $comment->id,
-            'author'    => [
+            'id'            => $comment->id,
+            'author'        => [
                 'id'     => $comment->user->id,
                 'name'   => $comment->user->name,
                 'avatar' => $comment->user->avatar,
 
             ],
-            'created'   => $comment->created_at,
-            'content'   => $comment->body,
-            'edited'    => $comment->updated_at > $comment->created_at,
-            'last_edit' => $comment->updated_at,
-            'assignee'  => $assignee,
-            'status'    => $status,
+            'created'       => $comment->created_at,
+            'content'       => $comment->body,
+            'edited'        => $comment->updated_at > $comment->created_at,
+            'last_edit'     => $comment->updated_at,
+            'assignee'      => $assignee,
+            'status'        => $status,
+            'old_status'    => $comment->old_status ?? null,
+            'new_status'    => $comment->new_status ?? null,
+
+            'new_assignees' => $listNewAssignees,
+            'old_assignees' => $listOldAssignees,
         ];
     }
 
@@ -185,7 +205,23 @@ class CommentController extends Controller
             },
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
+
         $result = $data->comments->map(function ($comment) {
+            $listOldAssignees = [];
+            $listNewAssignees = [];
+            if ($comment->old_assignees && $comment->new_assignees) {
+
+                $listOldAssignees = explode(',', $comment->old_assignees);
+                $listNewAssignees = explode(',', $comment->new_assignees);
+
+            }
+            $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+            $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+
             // return $comment;
             return [
                 'id'              => $comment->id,
@@ -198,8 +234,8 @@ class CommentController extends Controller
                 'content'         => $comment->body,
                 'edited'          => $comment->updated_at > $comment->created_at,
                 'last_edit'       => $comment->updated_at,
-                'old_assignees'   => $comment->old_assignees,
-                'new_assignees'   => $comment->new_assignees,
+                'old_assignees'   => $listOldAssignees ?? null,
+                'new_assignees'   => $listNewAssignees ?? null,
                 'old_description' => $comment->old_description,
                 'new_description' => $comment->new_description,
                 'old_status'      => $comment->old_status,
@@ -231,6 +267,7 @@ class CommentController extends Controller
         }
 
         $comment = Comment::find($id);
+        return $comment;
         $data = [
             'id'        => $comment->id,
             'author'    => [
