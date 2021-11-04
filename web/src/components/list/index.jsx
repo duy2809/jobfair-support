@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip } from 'antd'
+import { Table, Input, DatePicker, Tooltip } from 'antd'
 import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -185,33 +185,22 @@ const List = ({
 
         <div className="flex items-center">
           <Link href={route}>
-            <Button
-              style={{ border: 'none', margin: '0', padding: '0' }}
-            >
-              <img style={{ width: '24px', marginRight: '4px', height: '24px' }} src="https://cdn0.iconfinder.com/data/icons/web-design-and-development-4/512/180-512.png" alt="" />
-            </Button>
+
+            <img style={{ width: '24px', marginRight: '4px', height: '24px' }} src="https://cdn0.iconfinder.com/data/icons/web-design-and-development-4/512/180-512.png" alt="" />
+
           </Link>
           {text === 'タスク' || role === 'member' ? null : (
-            <Link href={routeToAdd}>
-              <Button
-                style={{ border: 'none', marginBottom: '5px' }}
-                shape="circle"
-                icon={<PlusOutlined style={{ fontSize: '24px' }} />}
-              />
+            <Link className="hv-icon" href={routeToAdd}>
+              <PlusOutlined style={{ fontSize: '24px', margin: '0 5px' }} />
             </Link>
           )}
           <span className="queue-demo">
             {showSearchIcon && (
-              <Button
-                style={{ border: 'none' }}
-                shape="circle"
-                icon={(
-                  <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '24px' }}
-                  />
-                )}
-                onClick={onClick}
-              />
+              <span className="hv-icon" onClick={onClick}>
+                <SearchOutlined
+                  style={{ marginLeft: '4px', fontSize: '24px' }}
+                />
+              </span>
             )}
 
             <span>
