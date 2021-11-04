@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, Table, Input, DatePicker, Tooltip } from 'antd'
-import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined, ExportOutlined } from '@ant-design/icons'
+import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
@@ -9,6 +9,8 @@ import './style.scss'
 // const { Search } = Input;
 
 const ListJfToppage = ({
+  routeToAdd,
+  role,
   searchIcon,
   text,
   showTimeInput,
@@ -16,7 +18,6 @@ const ListJfToppage = ({
   dataColumn,
   dataSource,
   route,
-  routeToAdd,
   isLoading,
 }) => {
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
@@ -41,7 +42,7 @@ const ListJfToppage = ({
               <div className="top-row">
                 {' '}
                 <Tooltip title={row}>
-                  <a href={`/jf-toppage/${record.key}`}>{truncate(row)}</a>
+                  <a style={{ fontSize: '18px' }} href={`/jf-toppage/${record.key}`}>{truncate(row)}</a>
                 </Tooltip>
               </div>
               <div className="bottom-row">
@@ -205,14 +206,15 @@ const ListJfToppage = ({
         </button>
 
         <div className="flex items-center">
+
           <Link href={route}>
             <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<ExportOutlined style={{ fontSize: '24px' }} />}
-            />
+              style={{ border: 'none', padding: '0' }}
+            >
+              <img style={{ width: '24px', marginRight: '4px', height: '24px' }} src="https://cdn0.iconfinder.com/data/icons/web-design-and-development-4/512/180-512.png" alt="" />
+            </Button>
           </Link>
-          {text === 'タスク一覧' ? null : (
+          {text === 'タスク' || role === 'member' ? null : (
             <Link href={routeToAdd}>
               <Button
                 style={{ border: 'none', marginBottom: '5px' }}
@@ -254,11 +256,7 @@ const ListJfToppage = ({
       {showTable ? (
         <div
           style={{
-            display: 'grid',
-            gridTemplateRows: '15% 75%',
-            height: '480px',
             backgroundColor: 'white',
-            border: '1px solid black',
             borderRadius: '10px',
           }}
         >
@@ -267,9 +265,9 @@ const ListJfToppage = ({
               display: 'grid',
             }}
           >
-            <div className="flex items-center justify-end px-2">
+            <div className="flex items-center justify-end">
               {showTimeInput && (
-                <div className="flex items-center justify-end px-2">
+                <div className="flex items-center justify-end">
                   <div>
                     <DatePicker
                       name="date"
@@ -323,6 +321,7 @@ ListJfToppage.propTypes = {
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
   routeToAdd: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
 }
 
