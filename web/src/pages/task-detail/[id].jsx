@@ -1,23 +1,19 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import React, { useEffect, useState, useContext } from 'react'
-import './style.scss'
-import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip, Tag } from 'antd'
-
 import {
-  ExclamationCircleOutlined,
-  CheckCircleTwoTone,
-  EditTwoTone,
-  DeleteTwoTone,
+  CheckCircleTwoTone, DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
 } from '@ant-design/icons'
+import { Modal, notification, Tag, Tooltip } from 'antd'
+import { useRouter } from 'next/router'
+import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import JfLayout from '~/layouts/layout-task'
-import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
-import { reviewers } from '../../api/edit-task'
-import Loading from '~/components/loading'
+import { afterTask, beforeTask, deleteTask, taskData } from '~/api/task-detail'
 import Comment from '~/components/comment/index'
+import Loading from '~/components/loading'
+import JfLayout from '~/layouts/layout-task'
+import { reviewers } from '../../api/edit-task'
 import MarkDownView from '../../components/markDownView'
+import './style.scss'
 
 function TaskDetail() {
   const router = useRouter()
@@ -123,9 +119,9 @@ function TaskDetail() {
       cancelText: 'いいえ',
     })
   }
-  const handleBack = () => {
-    router.push(`/tasks/${infoJF.id}`)
-  }
+  // const handleBack = () => {
+  //   router.push(`/tasks/${infoJF.id}`)
+  // }
   const handleEdit = () => {
     router.push(`/edit-task/${infoTask.id}`)
   }
@@ -149,13 +145,6 @@ function TaskDetail() {
       <JfLayout id={infoJF.id} bgr={2}>
         <JfLayout.Main>
           <div className="task-details">
-            <div className="list__button">
-              <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
-                  戻る
-                </Button>
-              </div>
-            </div>
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
@@ -248,8 +237,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {listMemberAssignee
                           ? listMemberAssignee.map((item) => (
-                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                            ))
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                          ))
                           : null}
                       </ul>
                     </div>
@@ -342,27 +331,27 @@ function TaskDetail() {
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                              <li>
-                                <Tag
-                                  style={{
-                                    marginRight: 3,
-                                    paddingTop: '5px',
-                                    paddingBottom: '3px',
-                                  }}
-                                >
-                                  <Tooltip placement="top" title={item.name}>
-                                    <a
-                                      href={`/task-detail/${item.id}`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-block text-blue-600 whitespace-nowrap "
-                                    >
-                                      {truncate(item.name)}
-                                    </a>
-                                  </Tooltip>
-                                </Tag>
-                              </li>
-                            ))
+                            <li>
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
+                              >
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
                           : null}
                       </ul>
                     </>
@@ -378,29 +367,28 @@ function TaskDetail() {
                     <>
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
-                          ? afterTasks.map((item) => (
-                              <li>
-                                <Tag
-                                  style={{
-                                    marginRight: 3,
-                                    paddingTop: '5px',
-                                    paddingBottom: '3px',
-                                  }}
-                                >
-                                  <Tooltip placement="top" title={item.name}>
-                                    <a
-                                      href={`/task-detail/${item.id}`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-block text-blue-600 whitespace-nowrap "
-                                    >
-                                      {truncate(item.name)}
-                                    </a>
-                                  </Tooltip>
-                                </Tag>
-                              </li>
-                            ))
-                          : null}
+                          && afterTasks.map((item) => (
+                            <li>
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
+                              >
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))}
                       </ul>
                     </>
                   ) : (
@@ -418,8 +406,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {reviewersList
                           ? reviewersList.map((item) => (
-                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                            ))
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                          ))
                           : null}
                       </ul>
                     </div>

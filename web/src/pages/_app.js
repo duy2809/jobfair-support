@@ -87,5 +87,5 @@ export default withRouter(
   withRedux(createStore, {
     serializeState: (state) => state,
     deserializeState: (state) => fromJS(state),
-  })(withReduxSaga(Jobfair))
+  })(withReduxSaga(Jobfair)),
 )

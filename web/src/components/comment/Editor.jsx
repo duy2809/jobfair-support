@@ -1,16 +1,21 @@
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import dynamic from 'next/dynamic'
-import React, { useEffect, useState, memo } from 'react'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+import PropTypes from 'prop-types'
+import React, { memo, useEffect, useState } from 'react'
 import { MemberApi } from '../../api/member'
+// import handlePastedText from '../../utils/handleOnPaste'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+
 import './styles.scss'
+
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((module) => module.Editor), {
   ssr: false,
   suspense: true,
 })
 
-function Tiptap(props, { users }) {
-  const [commentContent, setCommentContent] = useState(props.value)
+function index(props) {
+  const commentContent = props.value
+  console.log(commentContent)
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   const onEditorStateChange = async (state) => {
@@ -21,17 +26,19 @@ function Tiptap(props, { users }) {
   }
   const setEditorStateWhenEditing = async () => {
     const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft
+      (module) => module.markdownToDraft,
     )
     setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent)))
+      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
     )
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
-    const names = res.data.map((user) => {
-      return { text: user.name, value: user.name, url: `/member/${user.id}` }
-    })
+    const names = res.data.map((user) => ({
+      text: user.name,
+      value: user.name,
+      url: `/member/${user.id}`,
+    }))
     setUsersName(names)
   }
   useEffect(() => {
@@ -40,6 +47,10 @@ function Tiptap(props, { users }) {
     return () => setEditorState(EditorState.createEmpty())
   }, [])
 
+  // const handleOnPaste = async () => {
+  //   const res = await import('../../utils/handleOnPaste')
+  //   console.log(res)
+  // }
   const mention = {
     separator: ' ',
     trigger: '@',
@@ -48,6 +59,7 @@ function Tiptap(props, { users }) {
   const hashtag = {
     separator: ' ',
     trigger: '#',
+    suggestions: usersName,
   }
   return (
     <div className="editor bg-[#F8F9FA]">
@@ -63,14 +75,13 @@ function Tiptap(props, { users }) {
         wrapperClassName="border rounded-md"
         editorClassName="editor__textarean pb-5 px-5 h-full border max-h-96 max-w-94 overflow-hidden"
         onEditorStateChange={onEditorStateChange}
+        // handlePastedText={handleOnPaste}
       />
     </div>
   )
 }
-Tiptap.getInitialProps = async (ctx) => {
-  const res = await MemberApi.getListMember()
-  console.log(res)
-  return { users: res.data }
+index.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
-
-export default memo(Tiptap)
+export default memo(index)

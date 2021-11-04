@@ -138,12 +138,11 @@ export default function Notification() {
         const newItem = {
           action, avatar: `/api/avatar/${userid}`, url, created_at: isoDateTime, read_at: null,
         }
-        setUnReadLength(unreadLength + 1)
-
-        setDataNoti([newItem, ...dataNoti])
+        setUnReadLength((prev) => prev + 1)
+        setDataNoti((prev) => [newItem, ...prev])
       })
       .listen()
-  }, [dataNoti])
+  }, [])
 
   // if (user) {
   //   const id = user.get('id')

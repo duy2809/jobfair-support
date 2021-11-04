@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Notifications\TaskCreated;
 use App\Notifications\TaskEdited;
 use Carbon\Carbon;
-use function PHPSTORM_META\map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 
@@ -35,6 +34,7 @@ class CommentController extends Controller
         $request->validate([
             'task_id'     => 'required|numeric|exists:tasks,id',
             'status'      => 'string',
+            'body'        => 'string',
             'description' => 'string',
         ]);
         // $input is attributes for new comment
@@ -148,11 +148,10 @@ class CommentController extends Controller
         $listOldAssignees = [];
         $listNewAssignees = [];
         if ($comment->old_assignees && $comment->new_assignees) {
-
             $listOldAssignees = explode(',', $comment->old_assignees);
             $listNewAssignees = explode(',', $comment->new_assignees);
-
         }
+
         $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
             return User::find($assingee)->name;
         });
@@ -210,11 +209,10 @@ class CommentController extends Controller
             $listOldAssignees = [];
             $listNewAssignees = [];
             if ($comment->old_assignees && $comment->new_assignees) {
-
                 $listOldAssignees = explode(',', $comment->old_assignees);
                 $listNewAssignees = explode(',', $comment->new_assignees);
-
             }
+
             $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
                 return User::find($assingee)->name;
             });
@@ -267,23 +265,25 @@ class CommentController extends Controller
         }
 
         $comment = Comment::find($id);
-        return $comment;
-        $data = [
-            'id'        => $comment->id,
-            'author'    => [
-                'id'     => $comment->user->id,
-                'name'   => $comment->user->name,
-                'avatar' => $comment->user->avatar,
-            ],
-            'created'   => $comment->created_at,
-            'content'   => $comment->body,
-            'edited'    => $comment->updated_at > $comment->created_at,
-            'last_edit' => $comment->updated_at,
-            'assignee'  => [],
-            'status'    => 'status',
-        ];
 
-        return response()->json($data, 200);
+        return response()->json($comment, 200);
+
+        // $data = [
+        //     'id'        => $comment->id,
+        //     'author'    => [
+        //         'id'     => $comment->user->id,
+        //         'name'   => $comment->user->name,
+        //         'avatar' => $comment->user->avatar,
+        //     ],
+        //     'created'   => $comment->created_at,
+        //     'content'   => $comment->body,
+        //     'edited'    => $comment->updated_at > $comment->created_at,
+        //     'last_edit' => $comment->updated_at,
+        //     'assignee'  => [],
+        //     'status'    => 'status',
+        // ];
+
+        // return response()->json($data, 200);
     }
 
     /**

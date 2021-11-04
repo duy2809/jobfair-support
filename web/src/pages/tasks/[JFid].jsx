@@ -110,10 +110,10 @@ function TaskList() {
         end_date: dataResponse[i].end_time,
         status: dataResponse[i].status,
         category_name: dataResponse[i].categories[0]?.category_name,
-        milestone_name: dataResponse[i].milestone.name,
+        milestone_name: dataResponse[i]?.milestone.name,
         managers: manager,
         mems: mem,
-        idCategory: dataResponse[i].categories[0].id,
+        idCategory: dataResponse[i].categories[0]?.id,
       })
     }
 
@@ -338,6 +338,12 @@ function TaskList() {
         }
       })
     }
+
+    const addedMember = []
+    record.mems.forEach((item) => {
+      addedMember.push(item.id)
+    })
+
     return (
       <div className="listMember">
         {edit ? (
@@ -349,7 +355,7 @@ function TaskList() {
                 setMemberAS(value)
               }}
               style={{ width: '100%' }}
-              defaultValue={managers}
+              defaultValue={addedMember}
               showArrow
               tagRender={tagRender}
             >
@@ -382,13 +388,20 @@ function TaskList() {
                         setIsEdit(false)
                       },
 
-                      onCancel: () => { setIsEdit(false) },
+                      onCancel: () => {
+                        setIsEdit(false)
+                      },
                       okText: 'はい',
                       cancelText: 'いいえ',
                     })
                   }
                 }}
-                style={{ marginRight: '10px', background: 'white', height: '30px', padding: '0 15px' }}
+                style={{
+                  marginRight: '10px',
+                  background: 'white',
+                  height: '30px',
+                  padding: '0 15px',
+                }}
                 size="small"
                 type="primary"
               >
@@ -440,7 +453,9 @@ function TaskList() {
               >
                 <div className="flex items-center">
                   <EditTwoTone />
-                  <span style={{ color: '#999' }} className="ml-1">担当者を選択してください</span>
+                  <span style={{ color: '#999' }} className="ml-1">
+                    担当者を選択してください
+                  </span>
                 </div>
               </div>
             )}

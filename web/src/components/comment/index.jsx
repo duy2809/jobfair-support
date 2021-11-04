@@ -1,5 +1,5 @@
 import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
-import { Button, Divider, Form, Input, notification, Select, Tag, Tooltip, Typography } from 'antd'
+import { Button, Divider, Form, Input, notification, Select, Tag, Tooltip } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import Comment from './Comment'
 import MyEditor from './Editor'
 import './styles.scss'
 
-function index({ id, statusProp, assigneeProp, taskInfo }) {
+function index({ id, statusProp, assigneeProp }) {
   const [visible, setVisible] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
@@ -43,7 +43,11 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       console.log(error)
     }
   }
-
+  const clearForm = () => {
+    form.resetFields()
+    setEditing(false)
+    setValue('')
+  }
   // Modal
   const showBox = () => {
     setVisible(true)
@@ -73,11 +77,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       })
     })
   }
-  const clearForm = () => {
-    form.resetFields()
-    setEditing(false)
-    setValue('')
-  }
+
   useEffect(() => {
     // new CommentChannel()
     //   .onOutput((data) => {
@@ -142,6 +142,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
         assignee: JSON.stringify(assignee),
         status,
       }
+      console.log(comment)
       const response = await addComment(comment)
       const newComment = response.data
       // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
@@ -232,14 +233,13 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   }
 
   return (
-    <div className="my-10 px-10">
-      <span className="comment__count block">{`コメント(${commentArray.length})`}</span>
-      <Typography.Link
-        className="see-more block text-center"
-        onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
-      >
-        もっと読む
-      </Typography.Link>
+    <div className="comment my-10 px-10 ">
+      <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
+      <div className="flex justify-center items-center ">
+        <Button onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}>
+          コメントをもっと見る
+        </Button>
+      </div>
       <Divider className="mx-2 bg-gray-300" />
       {/* list comments history  */}
       <div className="comment-history">
@@ -249,15 +249,15 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       </div>
 
       <div className="mt-5 box-comment">
-        {show ? (
-          <div className="flex">
-            <Input className="w-3/5" onClick={showBox} placeholder="コメントを入力してください" />
-            <div className="btn" onClick={showBox} style={{ cursor: 'pointer' }}>
-              <EditOutlined className="ml-3 w-2/5" />
+        {show && (
+          <div className="flex justify-between items-center">
+            <Input className="w-3/4" onClick={showBox} placeholder="コメントを入力してください" />
+            <div className="btn w-1/4 text-center" onClick={showBox} style={{ cursor: 'pointer' }}>
+              <EditOutlined className="ml-3 " />
               <span>ステータス変更</span>
             </div>
           </div>
-        ) : null}
+        )}
         {visible ? (
           <div className="box ">
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
@@ -275,76 +275,80 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                     <MyEditor value={value} onChange={typing} />
                   </Form.Item>
                 </div>
-                <div className="pos-right w-4/12">
-                  <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
-                    <Select size="large" className="addJF-selector" placeholder="ステータス">
-                      {listStatus.map((element) => (
-                        <Select.Option disabled={editing} value={element}>
-                          {element}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+                <div className="pos-right w-4/12 ">
+                  {/* selector */}
+                  <div className="h-full xl:mb-1">
+                    <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
+                      <Select size="large" className="addJF-selector" placeholder="ステータス">
+                        {listStatus.map((element) => (
+                          <Select.Option disabled={editing} value={element}>
+                            {element}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
 
-                  <Form.Item
-                    label={<p className="font-bold">担当者</p>}
-                    name="assignee"
-                    className="multiples"
-                  >
-                    {assign ? (
-                      <Select mode="multiple" showArrow tagRender={tagRender}>
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            disabled={editing}
-                            value={element.id}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    ) : (
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        disabled={editing}
-                        tagRender={tagRender}
-                        style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
-                        className="multiples"
-                      >
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            disabled={editing}
-                            value={element.id}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                  <div className="flex items-end justify-end mr-10 ">
-                    <Form.Item label=" " className=" ">
-                      <div className="flex">
+                    <Form.Item
+                      label={<p className="font-bold">担当者</p>}
+                      name="assignee"
+                      className="multiples"
+                    >
+                      {assign ? (
+                        <Select mode="multiple" showArrow tagRender={tagRender}>
+                          {listUser.map((element) => (
+                            <Select.Option
+                              className="validate-user"
+                              key={element.id}
+                              disabled={editing}
+                              value={element.id}
+                            >
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      ) : (
+                        <Select
+                          mode="multiple"
+                          showArrow
+                          disabled={editing}
+                          tagRender={tagRender}
+                          style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                          className="multiples"
+                        >
+                          {listUser.map((element) => (
+                            <Select.Option
+                              className="validate-user"
+                              key={element.id}
+                              disabled={editing}
+                              value={element.id}
+                            >
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      )}
+                    </Form.Item>
+                  </div>
+                  {/* buttons */}
+                  <div className="xl:mt-20">
+                    <Form.Item noStyle>
+                      <div className="grid xl:gap-5 md:gap-2 xl:grid-cols-3 lg:grid-cols-1 overflow-hidden grid-flow-row ">
                         <Button
                           htmlType="button"
-                          className="button_cancel ant-btn"
+                          className="button_cancel ant-btn "
                           onClick={closeBox}
                         >
                           キャンセル
                         </Button>
                         {/* ============================== */}
-                        <Button htmlType="button" type="primary" className="button_preview mx-3">
+                        <Button htmlType="button" type="primary" className="button_preview ">
                           プレビュー
                         </Button>
                         {/* =============================== */}
                         {editing ? (
                           <Button
                             type="primary"
-                            className="edit_brn"
+                            className="edit_brn "
                             style={{ letterSpacing: '-1px' }}
                             onClick={onDoneEditing}
                           >
@@ -354,7 +358,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
                           <Button
                             type="primary"
                             htmlType="submit"
-                            className="button_save"
+                            className="button_save "
                             style={{ letterSpacing: '-1px' }}
                           >
                             <span>追加</span>

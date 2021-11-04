@@ -4,11 +4,10 @@ import {
   EditTwoTone,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Avatar, Divider, Modal, notification, Popover, Typography } from 'antd'
-import { assign } from 'lodash'
+import { Avatar, Button, Divider, Modal, notification, Popover, Typography } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { useContext, useEffect, useState, memo } from 'react'
+import React, { memo, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import * as deleteCommentAPI from '../../api/comment'
 import { commentSelectors } from '../../store/modules/comment'
@@ -82,144 +81,123 @@ function Comment(props) {
 
   return (
     <>
-      {true ? (
-        <div className="comment">
-          <div className="flex flex-row ">
-            <div>
-              <Avatar
-                className="mr-4 inline-block"
-                size={AVATAR_SIZE}
-                src={`${process.env.APP_URL}/api/avatar/${props.comment.author?.id}`}
-              />
-            </div>
-            <div className="flex flex-col w-full">
-              <div className="flex flex-row justify-between">
-                <div className="flex gap-4">
-                  <span className="comment__author">{props.comment.author?.name}</span>
-                  <span className="comment__time">
-                    {moment(props.comment.created).format('YYYY/MM/DD HH:mm:ss')}
-                  </span>
-                </div>
-                <div className="mr-4" hidden={userId !== props.comment.author?.id}>
-                  <EditTwoTone
-                    className="border-none mx-1 text-2xl"
-                    type="primary"
-                    onClick={editComment}
-                  />
-                  <DeleteTwoTone
-                    className="border-none mx-1 text-2xl"
-                    type="primary"
-                    onClick={onDeleteClick}
-                  />
-                </div>
+      <div className="comment">
+        <div className="flex flex-row ">
+          <div>
+            <Avatar
+              className="mr-4 inline-block"
+              size={AVATAR_SIZE}
+              src={`${process.env.APP_URL}/api/avatar/${props.comment.author?.id}`}
+            />
+          </div>
+          <div className="flex flex-col w-full">
+            <div className="flex flex-row justify-between">
+              <div className="flex gap-4">
+                <span className="comment__author">{props.comment.author?.name}</span>
+                <span className="comment__time">
+                  {moment(props.comment.created).format('YYYY/MM/DD HH:mm:ss')}
+                </span>
               </div>
-              <div className="flex">
-                {/* comment content */}
-                <div className="max-w-3xl overflow-hidden">
-                  {props.comment.content &&
-                  props.comment.content.length > MAX_CHAR_PER_LINE &&
-                  !expanded ? (
-                    <MarkDownView
-                      id="editor"
-                      // source={props.comment.content.slice(0, MAX_CHAR_PER_LINE)}
-                      source={props.comment.content}
-                      className={`${classNames(
-                        'comment__content',
-                        expanded ? 'expanded' : 'collapse',
-                        commentOverflow ? 'comment__overflow' : ''
-                      )} bg-red-600`}
-                    />
-                  ) : (
-                    <MarkDownView
-                      id="editor"
-                      source={props.comment.content}
-                      className={`${classNames(
-                        'comment__content',
-                        expanded ? 'expanded' : 'collapse',
-                        commentOverflow ? 'comment__overflow' : ''
-                      )} bg-red-600`}
-                    />
-                  )}
-                </div>
-                {/* assignees changed */}
-                <div className="flex flex-col float-right">
-                  {props.comment.new_assignees?.length > 0 && (
-                    <div className="flex">
-                      <div className="old__asignees ">
-                        {props.comment.old_assignees.map((name) => (
-                          <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                            - {name}
-                          </Typography>
-                        ))}
-                      </div>
-                      &rArr;
-                      <div className="new__asignees">
-                        {props.comment.new_assignees.map((name) => (
-                          <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                            - {name}
-                          </Typography>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                {/* status changed */}
-                <div className="flex flex-col float-right">
-                  {props.comment.new_status?.length > 0 && (
-                    <div className="flex">
-                      <div className="old__asignees ">
+              <div className="mr-4" hidden={userId !== props.comment.author?.id}>
+                <EditTwoTone
+                  className="border-none mx-1 text-2xl"
+                  type="primary"
+                  onClick={editComment}
+                />
+                <DeleteTwoTone
+                  className="border-none mx-1 text-2xl"
+                  type="primary"
+                  onClick={onDeleteClick}
+                />
+              </div>
+            </div>
+            <div className="flex">
+              {/* comment content */}
+              <div className="max-w-3xl overflow-hidden">
+                {/* <div>{props.comment.content}</div> */}
+                {props.comment.content && !expanded && (
+                  <MarkDownView
+                    id="editor"
+                    source={props.comment.content}
+                    className={`${classNames(
+                      'comment__content',
+                      expanded ? 'expanded' : 'collapse',
+                      commentOverflow ? 'comment__overflow' : '',
+                    )} bg-red-600`}
+                  />
+                )}
+              </div>
+              {/* assignees changed */}
+              <div className="flex flex-col float-right">
+                {props.comment.new_assignees?.length > 0 && (
+                  <div className="flex">
+                    <div className="old__asignees ">
+                      {props.comment.old_assignees.map((name) => (
                         <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                          {props.comment.old_status}
+                          -
+                          {name}
                         </Typography>
-                      </div>
-                      &rArr;
-                      <div className="new__asignees">
-                        <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                          {props.comment.new_status}
-                        </Typography>
-                      </div>
+                      ))}
                     </div>
-                  )}
-                </div>
-                {/*   display more button */}
-                <Typography.Link className="mr-4 see-more float-right" onClick={toggleExpanded}>
-                  {/* eslint-disable-next-line no-nested-ternary */}
-                  {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
-                </Typography.Link>
+                    &rArr;
+                    <div className="new__asignees">
+                      {props.comment.new_assignees.map((name) => (
+                        <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
+                          -
+                          {name}
+                        </Typography>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/* status changed */}
+              <div className="flex flex-col float-right">
+                {props.comment.new_status?.length > 0 && (
+                  <div className="flex">
+                    <div className="old__asignees ">
+                      <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
+                        {props.comment.old_status}
+                      </Typography>
+                    </div>
+                    &rArr;
+                    <div className="new__asignees">
+                      <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
+                        {props.comment.new_status}
+                      </Typography>
+                    </div>
+                  </div>
+                )}
+              </div>
+              {/*   display more button */}
+              <Button className="mr-4 see-more float-right" onClick={toggleExpanded}>
+                {/* eslint-disable-next-line no-nested-ternary */}
+                {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
+              </Button>
 
-                <div>
-                  <Popover
-                    content={moment(props.comment.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
-                    trigger="hover"
+              <div>
+                <Popover
+                  content={moment(props.comment.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
+                  trigger="hover"
+                >
+                  <span
+                    className="comment__edited text-gray-500 italic"
+                    hidden={!props.comment.edited}
                   >
-                    <span
-                      className="comment__edited text-gray-500 italic"
-                      hidden={!props.comment.edited}
-                    >
-                      編集済み
-                    </span>
-                  </Popover>
-                </div>
+                    編集済み
+                  </span>
+                </Popover>
               </div>
             </div>
           </div>
-          <Divider className="mx-2 bg-gray-300" />
         </div>
-      ) : (
-        ''
-      )}
+        <Divider className="mx-2 bg-gray-300" />
+      </div>
     </>
   )
 }
 Comment.propTypes = {
-  id: PropTypes.number.isRequired,
-  author: PropTypes.object.isRequired,
-  created: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
-  edited: PropTypes.bool.isRequired,
-  lastEdit: PropTypes.string.isRequired,
-  // assignee: PropTypes.array.isRequired,
-  // status: PropTypes.string.isRequired,
+  comment: PropTypes.object.isRequired,
   parentCallBack: PropTypes.func.isRequired,
 }
 

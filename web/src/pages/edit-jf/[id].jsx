@@ -482,8 +482,8 @@ const index = () => {
                   </Form.Item>
                 </div>
               </div>
-              <div className="flex justify-end mr-10">
-                <Form.Item label=" " className=" mr-10 mt-4">
+              <div className="flex justify-end -mr-5">
+                <Form.Item label=" " className=" mr-8 mt-4">
                   <Space size={12}>
                     <Button
                       htmlType="button"
