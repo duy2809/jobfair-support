@@ -95,7 +95,7 @@ const Top = () => {
   // const [taskData, setTaskData] = useState([])
   // const taskDataItem = []
 
-  const [memberData, setMemberData] = useState([{ name: 'tu', category: 'sAisiaa' }])
+  const [memberData, setMemberData] = useState([])
 
   const [jobfairData, setJobfairData] = useState([])
   const jobfairDataItem = []
