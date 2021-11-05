@@ -78,7 +78,7 @@ export default function ButtonAddFile(props) {
     } else {
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: ((props.updater.get('id') === element.authorId) || (props.updater.get('role') !== 'member')),
+        checkbox: ((props.updater.get('id') === element.authorId) || (props.role !== 'member')),
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -184,6 +184,7 @@ export default function ButtonAddFile(props) {
 
 ButtonAddFile.propTypes = {
   updater: PropTypes.isRequired,
+  role: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   documentId: PropTypes.isRequired,
   setData: PropTypes.isRequired,

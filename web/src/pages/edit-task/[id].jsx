@@ -4,15 +4,16 @@ import { useRouter } from 'next/router'
 import { CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import moment from 'moment'
+import axios from 'axios'
 import JfLayout from '../../layouts/layout-task'
 import { taskData, beforeTask, afterTask, getUser } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers, listReviewersSelectTag, checkRole } from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
-function TaskList() {
+function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
   const { TextArea } = Input
   const router = useRouter()
@@ -255,7 +256,6 @@ function TaskList() {
 
   const getDataUser = async () => {
     await webInit().then((response) => {
-      checkRole(idTask, response.data.auth.user.id).then((res) => console.log(res))
       setUsers({
         id: response.data.auth.user.id,
         name: response.data.auth.user.name,
@@ -729,5 +729,16 @@ function TaskList() {
     </div>
   )
 }
-TaskList.middleware = ['auth:superadmin', 'auth:admin']
-export default TaskList
+// EditTask.middleware = ['auth']
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  try {
+    await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
+  } catch (err) {
+    ctx.res.writeHead(302, { Location: '/error' })
+    ctx.res.end()
+  }
+  return {}
+}
+export default EditTask

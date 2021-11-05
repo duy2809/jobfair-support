@@ -26,13 +26,9 @@ class TaskController extends Controller
 
     public function checkRole(Request $request)
     {
-        $request->validate([
-            'taskId' => 'required|numeric',
-            'userId' => 'required|numeric',
-        ]);
-        $task = Task::findOrFail($request->taskId);
+        $task = Task::findOrFail($request->query('taskId'));
         $adminId = $task->schedule->jobfair->jobfair_admin_id;
-        if ($adminId === $request->userId) {
+        if ($adminId == $request->query('userId')) {
             return response('Access granted', 200);
         } else {
             abort(403, 'Permission denied');
