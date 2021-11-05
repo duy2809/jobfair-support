@@ -36,6 +36,7 @@ const reducer = handleActions(
     [types.ADD_COMMENT]: storeData,
     [types.DELETE_COMMENT]: storeData,
     [types.EDIT_COMMENT]: storeData,
+    [types.CLEAR_STORE]: storeData,
   },
   initState,
 )

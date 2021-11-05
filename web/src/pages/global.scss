@@ -326,3 +326,17 @@ body {
     border-radius: 5px;
   }
 }
+
+#nprogress .bar {
+  height: 0.3rem !important;
+  background-color: #ffd803;
+}
+/* spinner  */
+#nprogress .spinner {
+  display: none;
+  position: fixed;
+  z-index: 1031;
+  color: #ffd803;
+  top: 50%;
+  right: 50%;
+}

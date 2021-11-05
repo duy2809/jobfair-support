@@ -32,16 +32,16 @@ class CommentController extends Controller
         $assignee = [];
         $status = '';
         $request->validate([
-            'task_id' => 'required|numeric|exists:tasks,id',
-            'body' => 'string',
-            'status' => 'string',
+            'task_id'     => 'required|numeric|exists:tasks,id',
+            'status'      => 'string',
+            'body'        => 'string',
             'description' => 'string',
         ]);
         // $input is attributes for new comment
         $input = [
             'user_id' => auth()->user()->id,
             'task_id' => $request->task_id,
-            'body' => $request->body,
+            'body'    => $request->body,
         ];
         $task = Task::find($request->task_id);
 
@@ -91,7 +91,7 @@ class CommentController extends Controller
             $listOldMember = $task->users->pluck('id')->toArray();
             $assignee = collect($listMember)->map(function ($id) {
                 return [
-                    'id' => $id,
+                    'id'   => $id,
                     'name' => User::find($id)->name,
                 ];
             });
@@ -145,20 +145,40 @@ class CommentController extends Controller
 
         // return new comment
         $comment = Comment::create($input);
+        $listOldAssignees = [];
+        $listNewAssignees = [];
+        if ($comment->old_assignees && $comment->new_assignees) {
+            $listOldAssignees = explode(',', $comment->old_assignees);
+            $listNewAssignees = explode(',', $comment->new_assignees);
+        }
 
+        $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
+            return User::find($assingee)->name;
+        });
+        $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
+            return User::find($assingee)->name;
+        });
+
+        // return [$comment, $listOldAssignees, $listNewAssignees];
         return [
-            'id' => $comment->id,
-            'author' => [
-                'id' => $comment->user->id,
-                'name' => $comment->user->name,
+            'id'            => $comment->id,
+            'author'        => [
+                'id'     => $comment->user->id,
+                'name'   => $comment->user->name,
                 'avatar' => $comment->user->avatar,
+
             ],
-            'created' => $comment->created_at,
-            'content' => $comment->body,
-            'edited' => $comment->updated_at > $comment->created_at,
-            'last_edit' => $comment->updated_at,
-            'assignee' => $assignee,
-            'status' => $status,
+            'created'       => $comment->created_at,
+            'content'       => $comment->body,
+            'edited'        => $comment->updated_at > $comment->created_at,
+            'last_edit'     => $comment->updated_at,
+            'assignee'      => $assignee,
+            'status'        => $status,
+            'old_status'    => $comment->old_status ?? null,
+            'new_status'    => $comment->new_status ?? null,
+
+            'new_assignees' => $listNewAssignees,
+            'old_assignees' => $listOldAssignees,
         ];
     }
 
@@ -184,18 +204,40 @@ class CommentController extends Controller
             },
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
+
         $result = $data->comments->map(function ($comment) {
+            $listOldAssignees = [];
+            $listNewAssignees = [];
+            if ($comment->old_assignees && $comment->new_assignees) {
+                $listOldAssignees = explode(',', $comment->old_assignees);
+                $listNewAssignees = explode(',', $comment->new_assignees);
+            }
+
+            $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+            $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+
+            // return $comment;
             return [
-                'id' => $comment->id,
-                'author' => [
-                    'id' => $comment->user->id,
-                    'name' => $comment->user->name,
+                'id'              => $comment->id,
+                'author'          => [
+                    'id'     => $comment->user->id,
+                    'name'   => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                 ],
-                'created' => $comment->created_at,
-                'content' => $comment->body,
-                'edited' => $comment->updated_at > $comment->created_at,
-                'last_edit' => $comment->updated_at,
+                'created'         => $comment->created_at,
+                'content'         => $comment->body,
+                'edited'          => $comment->updated_at > $comment->created_at,
+                'last_edit'       => $comment->updated_at,
+                'old_assignees'   => $listOldAssignees ?? null,
+                'new_assignees'   => $listNewAssignees ?? null,
+                'old_description' => $comment->old_description,
+                'new_description' => $comment->new_description,
+                'old_status'      => $comment->old_status,
+                'new_status'      => $comment->new_status,
             ];
         });
 
@@ -223,22 +265,25 @@ class CommentController extends Controller
         }
 
         $comment = Comment::find($id);
-        $data = [
-            'id' => $comment->id,
-            'author' => [
-                'id' => $comment->user->id,
-                'name' => $comment->user->name,
-                'avatar' => $comment->user->avatar,
-            ],
-            'created' => $comment->created_at,
-            'content' => $comment->body,
-            'edited' => $comment->updated_at > $comment->created_at,
-            'last_edit' => $comment->updated_at,
-            'assignee' => [],
-            'status' => 'status',
-        ];
 
-        return response()->json($data, 200);
+        return response()->json($comment, 200);
+
+        // $data = [
+        //     'id'        => $comment->id,
+        //     'author'    => [
+        //         'id'     => $comment->user->id,
+        //         'name'   => $comment->user->name,
+        //         'avatar' => $comment->user->avatar,
+        //     ],
+        //     'created'   => $comment->created_at,
+        //     'content'   => $comment->body,
+        //     'edited'    => $comment->updated_at > $comment->created_at,
+        //     'last_edit' => $comment->updated_at,
+        //     'assignee'  => [],
+        //     'status'    => 'status',
+        // ];
+
+        // return response()->json($data, 200);
     }
 
     /**

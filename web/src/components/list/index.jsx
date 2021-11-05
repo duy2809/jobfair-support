@@ -1,20 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip } from 'antd'
-import {
-  PlusOutlined,
-  SearchOutlined,
-  DownOutlined,
-  UpOutlined,
-  ExportOutlined,
-} from '@ant-design/icons'
+import { Table, Input, DatePicker, Tooltip } from 'antd'
+import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
 import { loadingIcon } from '../loading'
-
+import './style.scss'
 // const { Search } = Input;
 
 const List = ({
+  id,
   searchIcon,
   text,
   showTimeInput,
@@ -24,6 +19,7 @@ const List = ({
   dataColumn,
   dataSource,
   route,
+  role,
   routeToAdd,
   isLoading,
 }) => {
@@ -44,9 +40,17 @@ const List = ({
     setNewDataColumn(
       dataColumn.map((data) => {
         if (data.title === '名前') {
-          data.render = (row) => (
+          data.render = (row, record) => (
             <Tooltip title={row}>
-              <a>{truncate(row)}</a>
+              {(() => {
+                switch (id) {
+                  case 2: return <a href={`/member/${record.key}`}>{truncate(row)}</a>
+                  case 3: return <a href={`/schedule/${record.key}`}>{truncate(row)}</a>
+                  case 4: return <a href={`/template-task-dt/${record.key}`}>{truncate(row)}</a>
+                  default: return null
+                }
+              })()}
+
             </Tooltip>
           )
         }
@@ -159,7 +163,7 @@ const List = ({
     getTask()
   }
   return (
-    <div ref={ref}>
+    <div className="list-toppage" ref={ref}>
       <div
         style={{
           display: 'flex',
@@ -167,19 +171,6 @@ const List = ({
           marginBottom: '10px',
         }}
       >
-        {/* <Link href={route}>
-          <a
-            style={{
-              fontSize: '30px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {text}
-          </a>
-        </Link> */}
-
         <button
           type="button"
           className="flex items-center font-bold"
@@ -201,41 +192,22 @@ const List = ({
 
         <div className="flex items-center">
           <Link href={route}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<ExportOutlined style={{ fontSize: '24px' }} />}
-            />
+
+            <img style={{ width: '24px', marginRight: '4px', height: '24px' }} src="https://cdn0.iconfinder.com/data/icons/web-design-and-development-4/512/180-512.png" alt="" />
+
           </Link>
-          {text === 'タスク一覧' ? null : (
-            <Link href={routeToAdd}>
-              <Button
-                style={{ border: 'none', marginBottom: '5px' }}
-                shape="circle"
-                icon={<PlusOutlined style={{ fontSize: '24px' }} />}
-              />
+          {text === 'タスク' || role === 'member' ? null : (
+            <Link className="hv-icon" href={routeToAdd}>
+              <PlusOutlined style={{ fontSize: '24px', margin: '0 5px' }} />
             </Link>
           )}
-          {/* <Link href={routeToAdd}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<PlusOutlined style={{ fontSize: '30px' }} />}
-            />
-          </Link> */}
-
           <span className="queue-demo">
             {showSearchIcon && (
-              <Button
-                style={{ border: 'none' }}
-                shape="circle"
-                icon={(
-                  <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '24px' }}
-                  />
-                )}
-                onClick={onClick}
-              />
+              <span className="hv-icon" onClick={onClick}>
+                <SearchOutlined
+                  style={{ marginLeft: '4px', fontSize: '24px' }}
+                />
+              </span>
             )}
 
             <span>
@@ -257,11 +229,7 @@ const List = ({
       {showTable ? (
         <div
           style={{
-            display: 'grid',
-            gridTemplateRows: '15% 75%',
-            height: '480px',
             backgroundColor: 'white',
-            border: '1px solid black',
             borderRadius: '10px',
           }}
         >
@@ -270,9 +238,9 @@ const List = ({
               display: 'grid',
             }}
           >
-            <div className="flex items-center justify-end px-2">
+            <div className="flex items-center justify-end pl-2">
               {showTimeInput && (
-                <div className="flex items-center justify-end px-2">
+                <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <DatePicker
                       name="date"
@@ -286,7 +254,7 @@ const List = ({
               )}
 
               {showSearchByJFInput && (
-                <div className="flex items-center justify-end px-2">
+                <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
                       name="jobfairName"
@@ -299,9 +267,9 @@ const List = ({
               )}
             </div>
 
-            <div className="flex items-center justify-end px-2">
+            <div className="flex items-center justify-end pl-2">
               {showCategoryInput && (
-                <div className="flex items-center justify-end px-2">
+                <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
                       name="category"
@@ -314,7 +282,7 @@ const List = ({
               )}
 
               {showMilestoneInput && (
-                <div className="flex items-center justify-end px-2">
+                <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
                       name="milestone"
@@ -331,7 +299,6 @@ const List = ({
           {/* Table data */}
           <div>
             <Table
-              scroll={{ y: 280, x: 240 }}
               pagination={false}
               dataSource={
                 list.length >= 5
@@ -349,6 +316,7 @@ const List = ({
 }
 
 List.propTypes = {
+  id: PropTypes.number.isRequired,
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   showTimeInput: PropTypes.bool.isRequired,
@@ -359,6 +327,7 @@ List.propTypes = {
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
   routeToAdd: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
   isLoading: PropTypes.bool.isRequired,
 }
 
