@@ -10,11 +10,7 @@ import { taskData, beforeTask, afterTask, getUser } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import {
-  editTask,
-  reviewers,
-  listReviewersSelectTag,
-} from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function EditTask() {
@@ -510,11 +506,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="レビュアー"
-                    name="reviewers"
-                    className="tag_a"
-                  >
+                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
                     <Select
                       showArrow
                       size="large"
@@ -610,11 +602,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="前のタスク"
-                    name="taskBefore"
-                    className="tag_a"
-                  >
+                  <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -631,11 +619,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="次のタスク"
-                    name="afterTask"
-                    className="tag_a"
-                  >
+                  <Form.Item label="次のタスク" name="afterTask" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -652,12 +636,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="担当者"
-                    name="assignee"
-                    required
-                    className="multiples"
-                  >
+                  <Form.Item label="担当者" name="assignee" required className="multiples">
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
                         {listUser.map((element) => (
@@ -752,16 +731,18 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.middleware = ['auth']
 EditTask.getInitialProps = async (ctx) => {
   const taskId = parseInt(ctx.query.id, 10)
   const userId = ctx.store.getState().get('auth').get('user').get('id')
-  try {
-    await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
-  } catch (err) {
-    ctx.res.writeHead(302, { Location: '/error' })
-    ctx.res.end()
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
+    } catch (err) {
+      ctx.res.writeHead(302, { Location: '/error' })
+      ctx.res.end()
+    }
   }
   return {}
 }
+EditTask.middleware = ['auth']
 export default EditTask
