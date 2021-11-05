@@ -1,10 +1,7 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import {
-  CheckCircleTwoTone,
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
+  DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
@@ -44,8 +41,7 @@ function TaskDetail() {
     name: '',
   })
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},
