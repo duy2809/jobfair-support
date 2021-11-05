@@ -19,7 +19,6 @@ import { useRouter } from 'next/router'
 import {
   SearchOutlined,
   FilterOutlined,
-  CheckCircleTwoTone,
   ExclamationCircleOutlined,
   EditTwoTone,
   DeleteTwoTone,
@@ -167,16 +166,14 @@ function TaskList() {
   }
 
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},
     })
   }
   const saveEditNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '変更は正常に保存されました。',
       onClick: () => {},
