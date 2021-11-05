@@ -7,7 +7,7 @@ import {
 import { Avatar, Button, Divider, Modal, notification, Popover, Typography } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import * as deleteCommentAPI from '../../api/comment'
 import { commentSelectors } from '../../store/modules/comment'
@@ -211,4 +211,4 @@ Comment.propTypes = {
   parentCallBack: PropTypes.func.isRequired,
 }
 
-export default memo(Comment)
+export default Comment
