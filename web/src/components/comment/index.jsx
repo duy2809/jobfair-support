@@ -1,17 +1,17 @@
-import { EditOutlined, CheckCircleTwoTone } from '@ant-design/icons'
-import { Button, Divider, Form, Input, Select, Tag, Tooltip, Typography, notification } from 'antd'
+import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
+import { Button, Divider, Form, Input, notification, Select, Tag, Tooltip } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
 import { getUser, taskData } from '../../api/task-detail'
-import Editor from '../box-comment/editor'
 import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
-import { editTask } from '../../api/edit-task'
 import Comment from './Comment'
+import MyEditor from './Editor'
+import './styles.scss'
 
-function index({ id, statusProp, assigneeProp, taskInfo }) {
+function index({ id, statusProp, assigneeProp }) {
   const [visible, setVisible] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
@@ -43,7 +43,11 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
       console.log(error)
     }
   }
-
+  const clearForm = () => {
+    form.resetFields()
+    setEditing(false)
+    setValue('')
+  }
   // Modal
   const showBox = () => {
     setVisible(true)
@@ -51,6 +55,7 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   }
 
   const closeBox = () => {
+    clearForm()
     setVisible(false)
     setShow(true)
   }
@@ -68,7 +73,6 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   const fetchTaskData = async () => {
     await taskData(id).then((response) => {
       form.setFieldsValue({
-        // assignee: listUser,
         status: response.data.status,
       })
     })
@@ -84,6 +88,9 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
     fetchListMember()
     fetchTaskData()
     getMoreComments(0, INIT_COMMENTS_NUM)
+    return () => {
+      store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
+    }
   }, [])
 
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
@@ -127,27 +134,40 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
   const onFormSummit = async () => {
     try {
       const { status, assignee } = form.getFieldsValue()
-      // console.log(form.getFieldsValue())
-      // console.log(assignee)
+
       // TODO: change task description
       const comment = {
         task_id: id,
-        body: value,
+        body: value ?? '',
         assignee: JSON.stringify(assignee),
         status,
-        description: 'Task Description',
       }
-
+      console.log(comment)
       const response = await addComment(comment)
       const newComment = response.data
       // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
-      if (newComment) {
-        store.dispatch({
-          type: actions.ADD_COMMENT,
-          payload: [newComment, ...commentArray],
+      if (response.status === 200) {
+        if (newComment) {
+          store.dispatch({
+            type: actions.ADD_COMMENT,
+            payload: [...commentArray, newComment],
+          })
+          form.resetFields()
+          setValue('')
+          notification.open({
+            icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+            duration: 3,
+            message: '正常に登録されました。',
+            onClick: () => {},
+          })
+        }
+      } else {
+        notification.open({
+          icon: <ExclamationCircleTwoTone twoToneColor="red" />,
+          duration: 3,
+          message: '更新しました!',
+          onClick: () => {},
         })
-        form.resetFields()
-        setValue('')
       }
       return newComment
     } catch (error) {
@@ -155,19 +175,22 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
     }
   }
 
-  const typing = (e) => {
-    setValue(e.target.value)
+  const typing = (data) => {
+    setValue(data)
   }
 
   const callBack = (childState) => {
+    const copyState = {}
+    Object.assign(copyState, childState)
     showBox()
-    setEditingComment(childState)
+    setEditingComment(copyState.comment)
     setEditing(true)
     form.resetFields()
-    setValue(childState.content)
-
+    console.log(copyState.comment.content)
+    const commentContent = copyState.comment.content
+    setValue(commentContent)
     form.setFieldsValue({
-      detail: childState.content,
+      detail: commentContent,
       assignee: assigneeProp,
       status: statusProp,
     })
@@ -175,10 +198,11 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
 
   const onDoneEditing = async (e) => {
     e.preventDefault()
+
     const { status, assignee } = form.getFieldsValue()
     const newComment = { ...editingComment, content: value, status, assignee }
-
     const response = await updateComment(newComment.id, newComment)
+
     if (response.status === 200) {
       const newComments = commentArray.map((comment) => {
         if (comment.id === newComment.id) {
@@ -190,179 +214,160 @@ function index({ id, statusProp, assigneeProp, taskInfo }) {
         type: actions.EDIT_COMMENT,
         payload: newComments,
       })
-    }
-    setEditing(false)
-    form.resetFields()
-    const data = Object.assign(taskInfo, {
-      status,
-      admin: assignee,
-    })
-
-    const isEdited = await editTask(id, data)
-    if (isEdited.status === 200) {
       notification.open({
         icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
         duration: 3,
         message: '更新しました!',
         onClick: () => {},
       })
+      setEditing(false)
+      form.resetFields()
+    } else {
+      notification.open({
+        icon: <ExclamationCircleTwoTone twoToneColor="red" />,
+        duration: 3,
+        message: '更新しました!',
+        onClick: () => {},
+      })
     }
-    // const data = {
-    //   name: values.name,
-    //   description_of_detail: values.detail,
-    //   beforeTasks: beforeID,
-    //   afterTasks: afterIDs,
-    //   start_time: values.start_time.format(Extensions.dateFormat),
-    //   end_time: values.end_time.format(Extensions.dateFormat),
-    //   admin: adminas,
-    //   user_id: users.id,
-    //   status: values.status,
-    //   reviewers: reviewersSelected,
-    // }
   }
 
   return (
-    <div>
-      <span className="comment__count block">{`コメント(${commentArray.length})`}</span>
-      <Typography.Link
-        className="see-more block text-center"
-        onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
-      >
-        もっと読む
-      </Typography.Link>
+    <div className="comment my-10 px-10 ">
+      <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
+      <div className="flex justify-center items-center ">
+        <Button onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}>
+          コメントをもっと見る
+        </Button>
+      </div>
       <Divider className="mx-2 bg-gray-300" />
       {/* list comments history  */}
       <div className="comment-history">
         {commentArray.map((comment) => (
-          <Comment
-            key={comment.id}
-            id={comment.id}
-            author={comment.author}
-            created={comment.created}
-            content={comment.content}
-            edited={comment.edited}
-            lastEdit={comment.lastEdit}
-            assignee={comment.assignee}
-            status={comment.status}
-            parentCallBack={callBack}
-          />
+          <Comment key={comment.id} comment={comment} parentCallBack={callBack} />
         ))}
       </div>
 
       <div className="mt-5 box-comment">
-        {show ? (
-          <div className="flex">
-            <Input
-              style={{ width: '89%' }}
-              onClick={showBox}
-              placeholder="コメントを入力してください"
-            />
-            <div className="btn" onClick={showBox} style={{ cursor: 'pointer' }}>
-              <EditOutlined className="ml-6" />
+        {show && (
+          <div className="flex justify-between items-center">
+            <Input className="w-3/4" onClick={showBox} placeholder="コメントを入力してください" />
+            <div className="btn w-1/4 text-center" onClick={showBox} style={{ cursor: 'pointer' }}>
+              <EditOutlined className="ml-3 " />
               <span>ステータス変更</span>
             </div>
           </div>
-        ) : null}
+        )}
         {visible ? (
-          <div className="box">
+          <div className="box ">
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
-              <div className="pos flex items-center justify-between">
-                <div className="pos-left">
+              <div className="pos flex items-start justify-evenly ">
+                <div className="pos-left w-8/12 mr-5">
                   <Form.Item
                     label=""
                     className="block mx-7"
                     style={{ display: 'block' }}
                     name="detail"
-                    onChange={typing}
+                    // onChange={typing}
                   >
-                    <Editor value={value} />
+                    {/* <Editor value={value} /> */}
+                    {/* <CKeditor /> */}
+                    <MyEditor value={value} onChange={typing} />
                   </Form.Item>
                 </div>
-                <div className="pos-right">
-                  <Form.Item label={<p className="font-bold">ステータス</p>} required name="status">
-                    <Select size="large" className="addJF-selector" placeholder="ステータス">
-                      {listStatus.map((element) => (
-                        <Select.Option value={element}>{element}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+                <div className="pos-right w-4/12 ">
+                  {/* selector */}
+                  <div className="h-full xl:mb-1">
+                    <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
+                      <Select size="large" className="addJF-selector" placeholder="ステータス">
+                        {listStatus.map((element) => (
+                          <Select.Option disabled={editing} value={element}>
+                            {element}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
 
-                  <Form.Item
-                    label={<p className="font-bold">担当者</p>}
-                    name="assignee"
-                    className="multiples"
-                  >
-                    {assign ? (
-                      <Select mode="multiple" showArrow tagRender={tagRender}>
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.id}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    ) : (
-                      <Select
-                        mode="multiple"
-                        showArrow
-                        tagRender={tagRender}
-                        style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
-                        className="multiples"
-                      >
-                        {listUser.map((element) => (
-                          <Select.Option
-                            className="validate-user"
-                            key={element.id}
-                            value={element.id}
-                          >
-                            {element.name}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Form.Item>
-                </div>
-              </div>
-              <div className="flex items-center justify-center ">
-                <Form.Item label=" " className=" ">
-                  <div className="flex">
-                    <Button
-                      htmlType="button"
-                      type="primary"
-                      className="button_cancel"
-                      onClick={closeBox}
+                    <Form.Item
+                      label={<p className="font-bold">担当者</p>}
+                      name="assignee"
+                      className="multiples"
                     >
-                      キャンセル
-                    </Button>
-                    {/* ============================== */}
-                    <Button htmlType="button" type="primary" className="button_preview mx-3">
-                      プレビュー
-                    </Button>
-                    {/* =============================== */}
-                    {editing ? (
-                      <Button
-                        type="primary"
-                        className="edit_brn"
-                        style={{ letterSpacing: '-1px' }}
-                        onClick={onDoneEditing}
-                      >
-                        <span>編集</span>
-                      </Button>
-                    ) : (
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="button_save"
-                        style={{ letterSpacing: '-1px' }}
-                      >
-                        <span>追加</span>
-                      </Button>
-                    )}
+                      {assign ? (
+                        <Select mode="multiple" showArrow tagRender={tagRender}>
+                          {listUser.map((element) => (
+                            <Select.Option
+                              className="validate-user"
+                              key={element.id}
+                              disabled={editing}
+                              value={element.id}
+                            >
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      ) : (
+                        <Select
+                          mode="multiple"
+                          showArrow
+                          disabled={editing}
+                          tagRender={tagRender}
+                          style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
+                          className="multiples"
+                        >
+                          {listUser.map((element) => (
+                            <Select.Option
+                              className="validate-user"
+                              key={element.id}
+                              disabled={editing}
+                              value={element.id}
+                            >
+                              {element.name}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      )}
+                    </Form.Item>
                   </div>
-                </Form.Item>
+                  {/* buttons */}
+                  <div className="xl:mt-20">
+                    <Form.Item noStyle>
+                      <div className="grid xl:gap-5 md:gap-2 xl:grid-cols-3 lg:grid-cols-1 overflow-hidden grid-flow-row ">
+                        <Button
+                          htmlType="button"
+                          className="button_cancel ant-btn "
+                          onClick={closeBox}
+                        >
+                          キャンセル
+                        </Button>
+                        {/* ============================== */}
+                        <Button htmlType="button" type="primary" className="button_preview ">
+                          プレビュー
+                        </Button>
+                        {/* =============================== */}
+                        {editing ? (
+                          <Button
+                            type="primary"
+                            className="edit_brn "
+                            style={{ letterSpacing: '-1px' }}
+                            onClick={onDoneEditing}
+                          >
+                            <span>編集</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            type="primary"
+                            htmlType="submit"
+                            className="button_save "
+                            style={{ letterSpacing: '-1px' }}
+                          >
+                            <span>追加</span>
+                          </Button>
+                        )}
+                      </div>
+                    </Form.Item>
+                  </div>
+                </div>
               </div>
             </Form>
           </div>
