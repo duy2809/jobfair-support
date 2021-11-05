@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import React, { useState, useCallback, useEffect } from 'react'
 import { Form, Input, Button, notification, Select, Modal } from 'antd'
 import { useRouter } from 'next/router'
@@ -67,9 +69,9 @@ const EditMember = ({ data }) => {
         openNotificationSuccess()
       })
       .catch((error) => {
-        const errorMessage = error.response.data.errors.name[0]
+        // const errorMessage = error.response.data.errors.name[0]
         notification.error({
-          message: errorMessage,
+          message: 'メールは既に存在します。別のメールを入力してください',
           duration: 3,
         })
         return error
@@ -77,6 +79,15 @@ const EditMember = ({ data }) => {
       .finally(() => {
         setLoading(false)
       })
+  }
+  const onFinishFailed = (errorInfo) => {
+    console.log(errorInfo)
+    errorInfo.errorFields.forEach((error) => {
+      notification.error({
+        message: error.errors[0],
+        duration: 3,
+      })
+    })
   }
 
   // const handleCancel = () => {
@@ -131,8 +142,14 @@ const EditMember = ({ data }) => {
               colon={false}
               className="w-2/5"
               labelCol={{ span: 8 }}
+              onFinish={handleOk}
+              onFinishFailed={onFinishFailed}
               labelAlign="right"
               form={form}
+              initialValues={{
+                name: nameInput,
+                email: emailInput,
+              }}
               size="large"
             >
               <Form.Item
@@ -148,8 +165,8 @@ const EditMember = ({ data }) => {
                 <Input
                   onChange={onValueNameChange}
                   type="name"
-                  value={nameInput}
-                  defaultValue={nameInput}
+                  // value={nameInput}
+                  // defaultValue={nameInput}
                 />
               </Form.Item>
               <Form.Item
@@ -170,8 +187,8 @@ const EditMember = ({ data }) => {
                 <Input
                   onChange={onValueEmailChange}
                   type="email"
-                  defaultValue={emailInput}
-                  value={emailInput}
+                  // defaultValue={emailInput}
+                  // value={emailInput}
                 />
               </Form.Item>
 
@@ -198,9 +215,7 @@ const EditMember = ({ data }) => {
                 >
                   {categoriesSystem.map((item) => (
                     <Option key={item.id} value={item.id}>
-                      <p>
-                        {item.category_name}
-                      </p>
+                      <p>{item.category_name}</p>
                     </Option>
                   ))}
                 </Select>
@@ -229,7 +244,8 @@ const EditMember = ({ data }) => {
                     size="large"
                     className="ml-4"
                     type="primary"
-                    onClick={handleOk}
+                    htmlType="submit"
+                    // onClick={handleOk}
                   >
                     保存
                   </Button>
