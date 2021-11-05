@@ -18,6 +18,11 @@ const memListDataColumn = [
     dataIndex: 'name',
     key: 'name',
   },
+  {
+    title: 'カテゴリ',
+    dataIndex: 'category',
+    key: 'category',
+  },
 ]
 
 const jfScheduleDataColumn = [
@@ -82,8 +87,7 @@ const Top = () => {
   const [taskData, setTaskData] = useState([])
   const taskDataItem = []
 
-  const [memberData, setMemberData] = useState([])
-  const memberDataItem = []
+  const [memberData, setMemberData] = useState([{ name: 'tu', category: 'sAisiaa' }])
 
   const [jobfairData, setJobfairData] = useState([])
   const jobfairDataItem = []
@@ -117,8 +121,9 @@ const Top = () => {
     const getMember = async () => {
       setLoadingMember(true)
       const response = await members()
-      setMemberData(response.data)
+      const memberDetailList = response.data.map((member) => ({ name: member.name, category: member.categories.map((category) => category.category_name).join(',') }))
       setLoadingMember(false)
+      setMemberData(memberDetailList)
     }
 
     const getJobfair = async () => {
@@ -130,6 +135,7 @@ const Top = () => {
 
     const getTemplate = async () => {
       setLoadingTemplate(true)
+
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
@@ -166,7 +172,6 @@ const Top = () => {
     getTemplate()
     getSchedule()
   }, [])
-
   jobfairData.forEach((jobfair) => {
     const jobfairItem = { key: '', name: '', time: '' }
     jobfairItem.key = jobfair.id
@@ -175,14 +180,18 @@ const Top = () => {
 
     jobfairDataItem.push(jobfairItem)
   })
-
-  memberData.forEach((member) => {
-    const memberItem = { key: '', name: '' }
-    memberItem.key = member.id
-    memberItem.name = member.name
-
-    memberDataItem.push(memberItem)
-  })
+  // memberData.forEach((member) => {
+  //   // console.log(member)
+  //   const memberItem = { key: '', name: '', category: '' }
+  //   memberItem.key = member.id
+  //   memberItem.name = member.name
+  //   // const memberDetail = getMemberDetail(id).then()
+  //   // console.log(member.categories.map((category) => category.category_name).join(','))
+  //   // memberItem.category = member.categories.map((category) => category.category_name).join(',')
+  //   memberItem.category = 'ytsdfa'
+  //   memberDataItem.push(memberItem)
+  //   // console.log(memberDataItem)
+  // })
 
   taskData.forEach((task) => {
     const taskItem = { key: '', name: '', jfName: '', time: '' }
@@ -219,7 +228,7 @@ const Top = () => {
               <List
                 key={2}
                 dataColumn={memListDataColumn}
-                dataSource={memberDataItem}
+                dataSource={memberData}
                 text="メンバ一覧"
                 searchIcon
                 showTimeInput={false}

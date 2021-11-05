@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, Table, Input, DatePicker, Tooltip } from 'antd'
-import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined, ExportOutlined } from '@ant-design/icons'
+import {
+  PlusOutlined,
+  SearchOutlined,
+  DownOutlined,
+  UpOutlined,
+  ExportOutlined,
+} from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
@@ -92,7 +98,7 @@ const List = ({
         )
       }
       if (filter.date) {
-        if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
+        if (dataColumn[1].dataIndex === 'type') { filter.date = filter.date.replace('-', '/') }
         datas = datas.filter(
           (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1,
         )
@@ -185,9 +191,7 @@ const List = ({
         >
           <span className="">
             {showTable ? (
-              <DownOutlined
-                style={{ fontSize: '20px', marginRight: '5px' }}
-              />
+              <DownOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
             ) : (
               <UpOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
             )}
@@ -329,9 +333,11 @@ const List = ({
             <Table
               scroll={{ y: 280, x: 240 }}
               pagination={false}
-              dataSource={list.length >= 5
-                ? list.slice(list.length - 5, list.length).reverse()
-                : list.reverse()}
+              dataSource={
+                list.length >= 5
+                  ? list.slice(list.length - 5, list.length).reverse()
+                  : list.reverse()
+              }
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />

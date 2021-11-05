@@ -19,6 +19,7 @@ class MemberController extends Controller
      */
     public function index()
     {
+        $members = [];
         // if (Auth::user()->role === 2) {
         //     return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->orWhere('role', '=', 3)->get();
         // } else if (Auth::user()->role === 1) {
@@ -27,11 +28,21 @@ class MemberController extends Controller
 
         // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
         if (Auth::user()->role === 1 || Auth::user()->role === 2) {
-            return User::select('id', 'name', 'email', 'created_at')
-                ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
+            $users = User::select('id', 'name', 'email', 'created_at')->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
+            foreach ($users as $user) {
+                array_push($members, User::find($user->id)->load('categories'));
+            }
+
+            return $members;
         }
 
-        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
+        // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
+        $users = User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
+        foreach ($users as $user) {
+            array_push($members, User::find($user->id)->load('categories'));
+        }
+
+        return $members;
     }
 
     public function showMember($id)
