@@ -71,7 +71,7 @@ export default function ButtonAddFolder(props) {
     } else {
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: ((props.updater.get('id') === element.authorId) || (props.updater.get('role') !== 'member')),
+        checkbox: props.updater.get('id') === element.authorId || props.role !== 'member',
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -79,15 +79,18 @@ export default function ButtonAddFolder(props) {
         link: element.link,
       }))
       if (props.path.length > 1) {
-        props.setData([{
-          key: -1,
-          name: '..',
-          checkbox: false,
-          is_file: false,
-          updater: '',
-          updated_at: '',
-          link: '',
-        }, ...result])
+        props.setData([
+          {
+            key: -1,
+            name: '..',
+            checkbox: false,
+            is_file: false,
+            updater: '',
+            updated_at: '',
+            link: '',
+          },
+          ...result,
+        ])
       } else props.setData(result)
       props.setIsCheckAll(false)
       openNotificationSuccess()
@@ -129,15 +132,18 @@ export default function ButtonAddFolder(props) {
           colon={false}
         >
           <Form.Item
-            label={
-              <p style={{ margin: 0 }} className="font-bold">名前</p>
-            }
+            label={(
+              <p style={{ margin: 0 }} className="font-bold">
+                名前
+              </p>
+            )}
             name="name_folder"
             rules={[
               {
                 required: true,
                 message: 'この項目は必須です。',
-              }]}
+              },
+            ]}
           >
             <Input
               type="text"
@@ -154,6 +160,7 @@ export default function ButtonAddFolder(props) {
 
 ButtonAddFolder.propTypes = {
   updater: PropTypes.isRequired,
+  role: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   documentId: PropTypes.isRequired,
   setData: PropTypes.isRequired,

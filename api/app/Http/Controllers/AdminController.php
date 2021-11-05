@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jobfair;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -14,7 +14,7 @@ class AdminController extends Controller
      */
     public function index()
     {
-        return Jobfair::pluck('jobfair_admin_id')->unique();
+        return User::where('role', '=', 2)->get();
     }
 
     /**
