@@ -31,10 +31,14 @@ class CommentController extends Controller
         // validate request: add 'Accept: application/json' to request headers to get error message
         $assignee = [];
         $status = '';
+        if (!$request->has('body') && !$request->has('status') && !$request->has('assignee')) {
+            return response('Can not empty', 409);
+        }
+
         $request->validate([
             'task_id'     => 'required|numeric|exists:tasks,id',
             'status'      => 'string',
-            'body'        => 'string',
+            'body'        => 'string|nullable',
             'description' => 'string',
         ]);
         // $input is attributes for new comment
