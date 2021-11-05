@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Button, Table, Input, DatePicker, Tooltip, Tag } from 'antd'
 import {
-  PlusOutlined,
   SearchOutlined,
   DownOutlined,
   UpOutlined,
@@ -9,9 +8,7 @@ import {
 } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import { taskSearch } from '../../api/top-page'
 import { loadingIcon } from '../loading'
-import { MemberApi } from '~/api/member'
 import './style.scss'
 
 // const { Search } = Input;
@@ -19,11 +16,7 @@ import './style.scss'
 const TaskSubTable = ({
   searchIcon,
   text,
-  loginID,
   showTimeInput,
-  showCategoryInput,
-  showMilestoneInput,
-  showSearchByJFInput,
   taskReviewerList,
   dataColumn,
   dataSource,
@@ -40,10 +33,9 @@ const TaskSubTable = ({
   const [optionStatus, setOptionStatus] = useState('すべて')
   const [optionReviewer, setOptionReviewer] = useState('担当者')
 
-  const [searchNameValue, setSearchNameValue] = useState('')
-  const [searchDateValue, setSearchDateValue] = useState('')
-  const [tasks, setTasks] = useState([])
-
+  // const [searchNameValue, setSearchNameValue] = useState('')
+  // const [searchDateValue, setSearchDateValue] = useState('')
+  // const [tasks, setTasks] = useState([])
 
   const [filter, setFilter] = useState(() => ({
     name: '',
@@ -52,67 +44,67 @@ const TaskSubTable = ({
     reviewer_task: [],
   }))
 
-
   function parseDate(str) {
-    var mdy = str.split('/');
-    return new Date(mdy[0], mdy[1]-1, mdy[2]);
+    const mdy = str.split('/')
+    return new Date(mdy[0], mdy[1] - 1, mdy[2])
   }
   function datediff(first, second) {
-    return Math.round((second-first)/(1000*60*60*24));
+    return Math.round((second - first) / (1000 * 60 * 60 * 24))
   }
   useEffect(() => {
     // console.log(filter)
     setList(dataSource)
-    var today = new Date(),
-    currentDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    const today = new Date()
+    // const currentDate = `${today.getFullYear()}-${
+    //   today.getMonth() + 1
+    // }-${today.getDate()}`
     dataSource.map((data) => {
-      if(data.status=="中 断") {
-        data.time="中断"
-      }
-      else if(datediff(parseDate(data.time),today)>0){
-         data.time="後"+datediff(parseDate(data.time),today)+"日"
-      }
-      else if(datediff(parseDate(data.time),today)<0){
-         data.time=-datediff(parseDate(data.time),today)+"日遅くれ"
+      if (data.status === '中 断') {
+        data.time = '中断'
+      } else if (datediff(parseDate(data.time), today) > 0) {
+        data.time = `後${datediff(parseDate(data.time), today)}日`
+      } else if (datediff(parseDate(data.time), today) < 0) {
+        data.time = `${-datediff(parseDate(data.time), today)}日遅くれ`
       }
       setNewDataColumn(
-      dataColumn.map((data) => {
-      // console.log(taskReviewerList)
-        if (data.title === 'JF名前' ||data.title === 'タスク名前') {
-          data.render = (row) => (
-            <Tooltip title={row}>
-              <a>{truncate(row)}</a>
-            </Tooltip>
-          )
-        }
-        if (data.title === 'タイム'){
-          data.render = (row) => (
-            dataSource.map(data => {
-	      let color = "";
-	      if (data.time.indexOf("中断")>-1) {
-	        color = 'geekblue';
-	      }else if(data.time.indexOf("日遅くれ")>-1){
-                color = 'volcano';
-              }else if(data.time.indexOf("後")>-1){
-                color = 'green';
+        dataColumn.map((dataItem) => {
+          // console.log(taskReviewerList)
+          if (dataItem.title === 'JF名前' || dataItem.title === 'タスク名前') {
+            dataItem.render = (row) => (
+              <Tooltip title={row}>
+                <a>{truncate(row)}</a>
+              </Tooltip>
+            )
+          }
+          if (dataItem.title === 'タイム') {
+            dataItem.render = (row) => dataSource.map((dataLine) => {
+              let color = ''
+              if (dataLine.time.indexOf('中断') > -1) {
+                color = 'geekblue'
+              } else if (dataLine.time.indexOf('日遅くれ') > -1) {
+                color = 'volcano'
+              } else if (dataLine.time.indexOf('後') > -1) {
+                color = 'green'
               }
-	      if (data.time==row) return (
-	        <Tag color={color} key={data.time}>
-		  {data.time}
-	        </Tag>
-	      );
-	    })
-          )
-  	}
-        return data
-      }),
-    )
+              if (dataLine.time === row) {
+                return (
+                  <Tag color={color} key={dataLine.time}>
+                    {dataLine.time}
+                  </Tag>
+                )
+              }
+              return null
+            })
+          }
+          return dataItem
+        }),
+      )
+      return null
     })
     // console.log(dataSource)
   }, [dataSource])
   useEffect(() => {
     // setTasks(dataSource)
-    
   }, [])
   useEffect(() => {
     let datas = [...list]
@@ -124,14 +116,15 @@ const TaskSubTable = ({
       }
       if (filter.status) {
         datas = datas.filter(
-          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase()) !== -1,
-          )
+          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase())
+            !== -1,
+        )
       }
       if (filter.reviewer_task) {
         datas = datas.filter(
-          (data) => filter.reviewer_task.includes(data.key)=== true,
-          )
-          console.log(datas)
+          (data) => filter.reviewer_task.includes(data.key) === true,
+        )
+        console.log(datas)
       }
       if (filter.date) {
         if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
@@ -159,46 +152,44 @@ const TaskSubTable = ({
       })
     }
   }, [])
-  
+
   const onClick = () => {
     setShow(!show)
     setShowSearchIcon(!showSearchIcon)
   }
-  
+
   const onClickShow = () => {
     setShowTable(!showTable)
   }
   const handleSelectStatus = (value) => {
     setOptionStatus(value.target.innerText)
-    if(value.target.innerText=="すべて") setFilter({ ...filter, status: "" })
+    if (value.target.innerText === 'すべて') setFilter({ ...filter, status: '' })
     else setFilter({ ...filter, status: value.target.innerText })
     // console.log(filter)
     setList(dataSource)
   }
   const handleSelectReviewer = (value) => {
-    filter.reviewer_task= []
-    let tempTask=[]
+    filter.reviewer_task = []
+    const tempTask = []
     console.log(dataSource)
     setOptionReviewer(value.target.innerText)
-    if(value.target.innerText=="担当者"){
-      dataSource.forEach(function (item) {
+    if (value.target.innerText === '担当者') {
+      dataSource.forEach((item) => {
         tempTask.push(item.key)
-      });
+      })
       setFilter({ ...filter, reviewer_task: tempTask })
-    }
-    else{
-      taskReviewerList.forEach(function (item) {
+    } else {
+      taskReviewerList.forEach((item) => {
         tempTask.push(item.id)
-      });
-      setFilter({ ...filter, reviewer_task: tempTask})
+      })
+      setFilter({ ...filter, reviewer_task: tempTask })
     }
 
     console.log(filter)
     setList(dataSource)
-    
   }
 
-   const searchInput = (e, dateString = '') => {
+  const searchInput = (e, dateString = '') => {
     // console.log(e)
     if (!dateString) {
       if (e.target.name === 'name') {
@@ -207,7 +198,7 @@ const TaskSubTable = ({
           setFilter({ ...filter, name: '' })
           setList(dataSource)
         }
-     }
+      }
     } else {
       setFilter({ ...filter, date: dateString })
       if (dateString === '') {
@@ -215,7 +206,7 @@ const TaskSubTable = ({
         setList(dataSource)
       }
     }
-   }
+  }
   return (
     <div ref={ref}>
       <div
@@ -293,7 +284,7 @@ const TaskSubTable = ({
             gridTemplateRows: '30% 75%',
             height: '480px',
             backgroundColor: 'white',
-            border: '1px solid black',
+            border: '1px solid white',
             borderRadius: '10px',
           }}
         >
@@ -318,71 +309,82 @@ const TaskSubTable = ({
               )}
             </div>
 
-          <div className="flex items-center justify-end px-5">
-            <div className="text-xl w-full items-center">
-              <div className="flex items-center">
-                <div className="my-2 mr-2 ml-5"><b>役割</b></div>
-                <Button
-                  name="reviewer"
-                  onClick={handleSelectReviewer}
-                   className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
-                  }`}
-                >
-                  担当者
-                </Button>
-                <Button
-                  name="reviewer"
-                  onClick={handleSelectReviewer}
-                   className={`border-0 mx-4 ${optionReviewer === 'レビュアー' ? 'option-active' : ''
-                  }`}
-                >
-                  レビュアー
-                </Button>
+            <div className="flex items-center justify-end px-5">
+              <div className="text-xl w-full items-center">
+                <div className="flex items-center">
+                  <div className="my-2 mr-2 ml-5">
+                    <b>役割</b>
+                  </div>
+                  <Button
+                    name="reviewer"
+                    onClick={handleSelectReviewer}
+                    className={`border-0 mx-4 ${
+                      optionReviewer === '担当者' ? 'option-active' : ''
+                    }`}
+                  >
+                    担当者
+                  </Button>
+                  <Button
+                    name="reviewer"
+                    onClick={handleSelectReviewer}
+                    className={`border-0 mx-4 ${
+                      optionReviewer === 'レビュアー' ? 'option-active' : ''
+                    }`}
+                  >
+                    レビュアー
+                  </Button>
+                </div>
+                <div className="flex items-center">
+                  <div className="my-5 mr-2">
+                    <b>期限日</b>
+                  </div>
+                  <Button
+                    name="status"
+                    onClick={handleSelectStatus}
+                    className={`border-0 mx-4 ${
+                      optionStatus === 'すべて' ? 'option-active' : ''
+                    }`}
+                  >
+                    すべて
+                  </Button>
+                  <Button
+                    name="status"
+                    onClick={handleSelectStatus}
+                    className={`border-0 mx-4 ${
+                      optionStatus === '進行中' ? 'option-active' : ''
+                    }`}
+                  >
+                    進行中
+                  </Button>
+                  <Button
+                    name="status"
+                    onClick={handleSelectStatus}
+                    className={`border-0 mx-4 ${
+                      optionStatus === '今まで' ? 'option-active' : ''
+                    }`}
+                  >
+                    今まで
+                  </Button>
+                  <Button
+                    name="status"
+                    onClick={handleSelectStatus}
+                    className={`border-0 mx-4 ${
+                      optionStatus === '期限きれ' ? 'option-active' : ''
+                    }`}
+                  >
+                    期限きれ
+                  </Button>
+                  <Button
+                    name="status"
+                    onClick={handleSelectStatus}
+                    className={`border-0 mx-4 ${
+                      optionStatus === '中 断' ? 'option-active' : ''
+                    }`}
+                  >
+                    中断
+                  </Button>
+                </div>
               </div>
-              <div className="flex items-center">
-                <div className="my-5 mr-2"><b>期限日</b></div>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                   className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
-                  }`}
-                >
-                  すべて
-                </Button>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                  className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
-                  }`}
-                >
-                  進行中
-                </Button>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                  className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
-                  }`}
-                >
-                  今まで
-                </Button>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                  className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
-                  }`}
-                >
-                  期限きれ
-                </Button>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                  className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''
-                  }`}
-                >
-                  中断
-                </Button>
-              </div>
-            </div>
             </div>
           </div>
 
@@ -391,9 +393,7 @@ const TaskSubTable = ({
             <Table
               scroll={{ y: 280, x: 240 }}
               pagination={false}
-              dataSource={
-                list.reverse()
-              }
+              dataSource={list.reverse()}
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
@@ -407,12 +407,8 @@ const TaskSubTable = ({
 TaskSubTable.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
-  loginID: PropTypes.string.isRequired,
   taskReviewerList: PropTypes.array.isRequired,
   showTimeInput: PropTypes.bool.isRequired,
-  showCategoryInput: PropTypes.bool.isRequired,
-  showMilestoneInput: PropTypes.bool.isRequired,
-  showSearchByJFInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,

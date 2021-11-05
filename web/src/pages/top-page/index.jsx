@@ -11,7 +11,6 @@ import Layout from '../../layouts/OtherLayout'
 // import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 import TaskSubTable from '../../components/TaskSubTable'
 
-
 const { getListSchedule } = ListScheduleApi
 
 const memListDataColumn = [
@@ -83,7 +82,7 @@ const Top = () => {
 
   const [taskData, setTaskData] = useState([])
   const [taskReviewerData, setTaskReviewerData] = useState([])
-  const taskReviewerList= []
+  const taskReviewerList = []
   const taskDataItem = []
 
   const [memberData, setMemberData] = useState([])
@@ -116,7 +115,7 @@ const Top = () => {
       setLoadingTask(true)
       const response = await tasks()
       setTaskData(response.data)
-      
+
       const data = await taskReviewer()
       // console.log(data.data)
       setTaskReviewerData(data.data)
@@ -207,7 +206,7 @@ const Top = () => {
   })
 
   taskData.forEach((task) => {
-    const taskItem = { key: '', name: '', jfName: '', time: '', status: '' , user_id: ''}
+    const taskItem = { key: '', name: '', jfName: '', time: '', status: '', user_id: '' }
     taskItem.key = task.id
     taskItem.name = task.name
     taskItem.jfName = task.jobfair.name
@@ -216,93 +215,89 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
-  taskReviewerData.forEach((taskReviewer) =>{
-    const taskReviewerItem = { id: ''}
-    taskReviewerItem.id = taskReviewer.id
+  taskReviewerData.forEach((taskReviewerIt) => {
+    const taskReviewerItem = { id: '' }
+    taskReviewerItem.id = taskReviewerIt.id
     taskReviewerList.push(taskReviewerItem)
   })
   // console.log(taskDataItem)
   return (
     <Layout>
       <Layout.Main>
+        <div>
           <div>
-            <div>
-              <Row>
-                <Col span={12}>
-                  <ListJfToppage
-                    className="my-3"
-                    role={role}
-                    key={1}
-                    dataColumn={jfListDataColumn}
-                    dataSource={jobfairDataItem}
-                    text="JF"
-                    searchIcon
-                    showTimeInput
-                    route="/jobfairs"
-                    routeToAdd="/add-jobfair"
-                    isLoading={isLoadingJobfair}
-                  />
-                  <List
-                    role={role}
-                    key={2}
-                    dataColumn={memListDataColumn}
-                    dataSource={memberDataItem}
-                    text="メンバ"
-                    searchIcon
-                    showTimeInput={false}
-                    showCategoryInput={false}
-                    showMilestoneInput={false}
-                    route="/member"
-                    routeToAdd="/member/invite"
-                    isLoading={isLoadingMember}
-                  />
-                  <List
-                    role={role}
-                    key={3}
-                    dataColumn={jfScheduleDataColumn}
-                    dataSource={scheduleData}
-                    text="JFスケジュール"
-                    searchIcon
-                    showTimeInput={false}
-                    showCategoryInput={false}
-                    showMilestoneInput={false}
-                    route="/schedule"
-                    routeToAdd="/jf-schedule/add"
-                    isLoading={isLoadingSchedule}
-                  />
-                  <List
-                    role={role}
-                    key={4}
-                    dataColumn={templateTaskDataColumn}
-                    dataSource={templateData}
-                    text="テンプレートタスク"
-                    searchIcon
-                    showTimeInput={false}
-                    showCategoryInput
-                    showMilestoneInput
-                    route="/template-tasks"
-                    routeToAdd="/add-template-task"
-                    isLoading={isLoadingTemplate}
-                  />
-                  <TaskSubTable
-                    key={5}
-                    loginID={id}
-                    dataColumn={taskListDataColumn}
-                    dataSource={taskDataItem}
-                    taskReviewerList={taskReviewerList}
-                    text="タスク一覧"
-                    searchIcon
-                    showTimeInput={false}
-                    showCategoryInput
-                    showMilestoneInput
-                    showSearchByJFInput
-                    routeToAdd="/add-template-task"
-                    route={`member/${id}/tasks`}
-                    isLoading={isLoadingTask}
-                  />
-                </Col>
-                <Col span={12} />
-              </Row>
+            <Row>
+              <Col span={12}>
+                <ListJfToppage
+                  className="my-3"
+                  role={role}
+                  key={1}
+                  dataColumn={jfListDataColumn}
+                  dataSource={jobfairDataItem}
+                  text="JF"
+                  searchIcon
+                  showTimeInput
+                  route="/jobfairs"
+                  routeToAdd="/add-jobfair"
+                  isLoading={isLoadingJobfair}
+                />
+                <List
+                  role={role}
+                  key={2}
+                  dataColumn={memListDataColumn}
+                  dataSource={memberDataItem}
+                  text="メンバ"
+                  searchIcon
+                  showTimeInput={false}
+                  showCategoryInput={false}
+                  showMilestoneInput={false}
+                  route="/member"
+                  routeToAdd="/member/invite"
+                  isLoading={isLoadingMember}
+                />
+                <List
+                  role={role}
+                  key={3}
+                  dataColumn={jfScheduleDataColumn}
+                  dataSource={scheduleData}
+                  text="JFスケジュール"
+                  searchIcon
+                  showTimeInput={false}
+                  showCategoryInput={false}
+                  showMilestoneInput={false}
+                  route="/schedule"
+                  routeToAdd="/jf-schedule/add"
+                  isLoading={isLoadingSchedule}
+                />
+                <List
+                  role={role}
+                  key={4}
+                  dataColumn={templateTaskDataColumn}
+                  dataSource={templateData}
+                  text="テンプレートタスク"
+                  searchIcon
+                  showTimeInput={false}
+                  showCategoryInput
+                  showMilestoneInput
+                  route="/template-tasks"
+                  routeToAdd="/add-template-task"
+                  isLoading={isLoadingTemplate}
+                />
+                <TaskSubTable
+                  key={5}
+                  dataColumn={taskListDataColumn}
+                  dataSource={taskDataItem}
+                  taskReviewerList={taskReviewerList}
+                  text="タスク一覧"
+                  searchIcon
+                  showTimeInput={false}
+                  routeToAdd="/add-template-task"
+                  route={`member/${id}/tasks`}
+                  isLoading={isLoadingTask}
+                />
+              </Col>
+              <Col span={12} />
+            </Row>
           </div>
         </div>
       </Layout.Main>
