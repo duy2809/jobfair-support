@@ -4,11 +4,13 @@ import { ReactReduxContext } from 'react-redux'
 import { notification, Row, Col } from 'antd'
 import List from '../../components/list'
 import ListJfToppage from '../../components/toppage-list-jf'
-import { tasks, members, jobfairs } from '../../api/top-page'
+import { tasks, members, jobfairs, taskReviewer } from '../../api/top-page'
 import { getTaskList as getTemplateTaskList } from '../../api/template-task'
 import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
 // import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
+import TaskSubTable from '../../components/TaskSubTable'
+
 
 const { getListSchedule } = ListScheduleApi
 
@@ -49,14 +51,14 @@ const templateTaskDataColumn = [
 
 const taskListDataColumn = [
   {
-    title: '名前',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '就職フェアの名前',
+    title: 'JF名前',
     dataIndex: 'jfName',
     key: 'JF Name',
+  },
+  {
+    title: 'タスク名前',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
     title: 'タイム',
@@ -80,6 +82,8 @@ const Top = () => {
   ]
 
   const [taskData, setTaskData] = useState([])
+  const [taskReviewerData, setTaskReviewerData] = useState([])
+  const taskReviewerList= []
   const taskDataItem = []
 
   const [memberData, setMemberData] = useState([])
@@ -112,6 +116,10 @@ const Top = () => {
       setLoadingTask(true)
       const response = await tasks()
       setTaskData(response.data)
+      
+      const data = await taskReviewer()
+      // console.log(data.data)
+      setTaskReviewerData(data.data)
       setLoadingTask(false)
     }
 
@@ -197,17 +205,24 @@ const Top = () => {
   })
 
   taskData.forEach((task) => {
-    const taskItem = { key: '', name: '', jfName: '', time: '' }
+    const taskItem = { key: '', name: '', jfName: '', time: '', status: '' , user_id: ''}
     taskItem.key = task.id
     taskItem.name = task.name
     taskItem.jfName = task.jobfair.name
-    taskItem.time = task.start_time
+    taskItem.time = task.end_time
+    taskItem.status = task.status
+    taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
+  taskReviewerData.forEach((taskReviewer) =>{
+    const taskReviewerItem = { id: ''}
+    taskReviewerItem.id = taskReviewer.id
+    taskReviewerList.push(taskReviewerItem)
+  })
+  // console.log(taskDataItem)
   return (
     <Layout>
       <Layout.Main>
-        <div>
           <div>
             <div>
               <Row>
@@ -267,25 +282,25 @@ const Top = () => {
                     routeToAdd="/add-template-task"
                     isLoading={isLoadingTemplate}
                   />
-                  <List
-                    role={role}
+                  <TaskSubTable
                     key={5}
+                    loginID={id}
                     dataColumn={taskListDataColumn}
                     dataSource={taskDataItem}
-                    text="タスク"
+                    taskReviewerList={taskReviewerList}
+                    text="タスク一覧"
                     searchIcon
-                    showTimeInput
-                    showCategoryInput={false}
-                    showMilestoneInput={false}
+                    showTimeInput={false}
+                    showCategoryInput
+                    showMilestoneInput
                     showSearchByJFInput
+                    routeToAdd="/add-template-task"
                     route={`member/${id}/tasks`}
                     isLoading={isLoadingTask}
                   />
                 </Col>
                 <Col span={12} />
               </Row>
-
-            </div>
           </div>
         </div>
       </Layout.Main>

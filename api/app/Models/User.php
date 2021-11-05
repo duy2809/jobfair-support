@@ -55,9 +55,9 @@ class User extends Authenticatable
 
     public function reviewTasks()
     {
-        return $this->belongsToMany(Task::class, 'task_reviewer');
+        return $this->belongsToMany(Task::class, 'task_reviewer', 'reviewer_id', 'task_id');
     }
-
+    
     public function categories()
     {
         return $this->morphToMany(Category::class, 'categoriable');
@@ -68,3 +68,4 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 }
+

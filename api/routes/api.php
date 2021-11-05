@@ -165,6 +165,7 @@ Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
 
 // top-page
 Route::prefix('/top-page')->group(function () {
+    Route::get('/task-reviewer', [TopPageTasksController::class, 'task_reviewer']);
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
     Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
