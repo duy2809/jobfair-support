@@ -27,6 +27,17 @@ class TaskController extends Controller
     {
     }
 
+    public function checkRole(Request $request)
+    {
+        $task = Task::findOrFail($request->query('taskId'));
+        $adminId = $task->schedule->jobfair->jobfair_admin_id;
+        if ($adminId === $request->query('userId')) {
+            return response('Access granted', 200);
+        }
+
+        abort(403, 'Permission denied');
+    }
+
     public function getTaskByJfId($id)
     {
         // $jobfair = Jobfair::find($id);
@@ -255,7 +266,7 @@ class TaskController extends Controller
             'milestone:id,name',
             'categories:id,category_name',
             'users:id,name',
-            'schedule.jobfair:id,name',
+            'schedule.jobfair:id,name,jobfair_admin_id',
             'templateTask:id,effort,is_day,unit',
         ])->find($id);
 
