@@ -1,8 +1,4 @@
-import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-  SearchOutlined,
-} from '@ant-design/icons'
+import { CheckCircleTwoTone, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { Button, Input, Modal, Select, Space, Table, notification } from 'antd'
 import { useRouter } from 'next/router'
@@ -101,9 +97,7 @@ function index() {
   const handleSelectCategory = (value) => {
     setCategory(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value
-        ? !templateTask.category_name.localeCompare(value)
-        : templateTask.category_name)
+      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -117,9 +111,7 @@ function index() {
   const handlSelectMilestone = (value) => {
     setMilestone(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value
-        ? !templateTask.milestone_name.localeCompare(value)
-        : templateTask.milestone_name)
+      (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
@@ -198,10 +190,7 @@ function index() {
             <div className="container mx-auto w-3/4">
               <div className="grid grid-cols-1 grid-flow-row justify-center">
                 {/* task header */}
-                <div
-                  className="header flex justify-between mb-6 "
-                  style={{ flex: '0 0 100%' }}
-                >
+                <div className="header flex justify-between mb-6 " style={{ flex: '0 0 100%' }}>
                   <div className="flex space-x-2" style={{ flex: '0 0 70%' }}>
                     <Select
                       size="large"
@@ -212,10 +201,7 @@ function index() {
                       onChange={handleSelectCategory}
                     >
                       {listCatergories.map((element) => (
-                        <Select.Option
-                          key={element.id}
-                          value={element.category_name}
-                        >
+                        <Select.Option key={element.id} value={element.category_name}>
                           {element.category_name}
                         </Select.Option>
                       ))}
@@ -293,16 +279,18 @@ function index() {
   )
 }
 
-// index.middleware = ['auth']
 index.getInitialProps = async (ctx) => {
-  const taskId = parseInt(ctx.query.id, 10)
+  const jobfairId = parseInt(ctx.query.id, 10)
   const userId = ctx.store.getState().get('auth').get('user').get('id')
-  try {
-    await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
-  } catch (err) {
-    ctx.res.writeHead(302, { Location: '/error' })
-    ctx.res.end()
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-jobfair`, { params: { userId, jobfairId } })
+    } catch (err) {
+      ctx.res.writeHead(302, { Location: '/error' })
+      ctx.res.end()
+    }
   }
   return {}
 }
+index.middleware = ['auth']
 export default index

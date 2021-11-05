@@ -193,4 +193,15 @@ class JobfairController extends Controller
     {
         return Jobfair::where('name', '=', $request->name)->get();
     }
+
+    public function isAdminJobfair(Request $request) 
+    {
+        $jobfair = Jobfair::findOrFail($request->query('jobfairId'));
+        $adminId = $jobfair->jobfair_admin_id;
+        if ($adminId == $request->query('userId')) {
+            return response('Access granted', 200);
+        } else {
+            abort(403, 'Permission denied');
+        }
+    }
 }
