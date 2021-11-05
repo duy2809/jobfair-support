@@ -46,7 +46,6 @@
         "ignoreTemplateLiterals": true
       }
     ],
-    "react/jsx-no-bind": "warn",
     "global-require": "off",
     "no-param-reassign": "off",
     "prefer-destructuring": "off",
