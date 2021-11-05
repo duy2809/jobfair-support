@@ -29,7 +29,8 @@ class TopPageTasksController extends Controller
 
         return response()->json(array_values($result));
     }
-    public function task_reviewer(Request $request)
+
+    public function taskReviewer(Request $request)
     {
         $user = $request->user();
         $taskName = $request->input('task-name') === null ? '' : $request->input('task-name');
