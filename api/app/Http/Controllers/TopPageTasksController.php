@@ -52,5 +52,4 @@ class TopPageTasksController extends Controller
 
         return response()->json(array_values($result));
     }
-   
 }
