@@ -96,13 +96,24 @@ class JobfairController extends Controller
     public function update(Request $request, $id)
     {
         $jobfair = Jobfair::find($id);
-        $jobfair->update($request->all());
-        $schedule = Schedule::where('jobfair_id', '=', $id)->first();
-        $templateSchedule = Schedule::find($request->schedule_id);
-        $schedule->update(['name' => $templateSchedule->name]);
-        $schedule->milestones()->sync($templateSchedule->milestones);
-        $schedule->tasks()->delete();
-        $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+
+        if ($request->schedule_id !== 'none') {
+            $schedule = Schedule::where('jobfair_id', '=', $id)->first();
+            $templateSchedule = Schedule::find($request->schedule_id);
+            $schedule->update(['name' => $templateSchedule->name]);
+            $schedule->milestones()->sync($templateSchedule->milestones);
+            $schedule->tasks()->delete();
+            $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+        }
+
+        $validated = $request->validate([
+            'name'                => 'string|max:256',
+            'start_date'          => 'date',
+            'number_of_students'  => 'numeric',
+            'number_of_companies' => 'numeric',
+            'jobfair_admin_id'    => 'exists:users,id',
+        ]);
+        $jobfair->update($validated);
 
         $editedUser = auth()->user();
 
