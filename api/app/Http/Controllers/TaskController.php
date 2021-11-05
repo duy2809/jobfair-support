@@ -27,6 +27,17 @@ class TaskController extends Controller
     {
     }
 
+    public function checkRole(Request $request)
+    {
+        $task = Task::findOrFail($request->query('taskId'));
+        $adminId = $task->schedule->jobfair->jobfair_admin_id;
+        if ($adminId == $request->query('userId')) {
+            return response('Access granted', 200);
+        } else {
+            abort(403, 'Permission denied');
+        }
+    }
+
     public function getTaskByJfId($id)
     {
         // $jobfair = Jobfair::find($id);
@@ -129,7 +140,7 @@ class TaskController extends Controller
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
             $templateTask = TemplateTask::find($idTemplateTask[$i]);
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -142,7 +153,7 @@ class TaskController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -255,7 +266,7 @@ class TaskController extends Controller
             'milestone:id,name',
             'categories:id,category_name',
             'users:id,name',
-            'schedule.jobfair:id,name',
+            'schedule.jobfair:id,name,jobfair_admin_id',
             'templateTask:id,effort,is_day,unit',
         ])->find($id);
 

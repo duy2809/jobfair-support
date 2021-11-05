@@ -3,6 +3,7 @@ import {
   ExclamationCircleOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
+import axios from 'axios'
 import { Button, Input, Modal, Select, Space, Table, notification } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -292,5 +293,16 @@ function index() {
   )
 }
 
-index.middleware = ['auth:superadmin', 'auth:admin']
+// index.middleware = ['auth']
+index.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  try {
+    await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
+  } catch (err) {
+    ctx.res.writeHead(302, { Location: '/error' })
+    ctx.res.end()
+  }
+  return {}
+}
 export default index
