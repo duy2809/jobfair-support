@@ -1,3 +1,3 @@
-import axios from './axios'
+import instance from './axios'
 
-export const webInit = () => axios.get('/web-init')
+export const webInit = () => instance.get('/web-init')

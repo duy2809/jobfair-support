@@ -286,8 +286,8 @@ index.getInitialProps = async (ctx) => {
     try {
       await axios.get(`${ctx.serverURL}/is-admin-jobfair`, { params: { userId, jobfairId } })
     } catch (err) {
-      ctx.res.writeHead(302, { Location: '/error' })
-      ctx.res.end()
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
     }
   }
   return {}
