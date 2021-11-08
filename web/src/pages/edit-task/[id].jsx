@@ -738,8 +738,8 @@ EditTask.getInitialProps = async (ctx) => {
     try {
       await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
     } catch (err) {
-      ctx.res.writeHead(302, { Location: '/error' })
-      ctx.res.end()
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
     }
   }
   return {}
