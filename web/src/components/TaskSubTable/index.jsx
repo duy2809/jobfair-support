@@ -58,7 +58,7 @@ const TaskSubTable = ({
         id = item.key
       }
     })
-    return '/task-detail/' + id
+    return `/task-detail/${id}`
   }
   useEffect(() => {
     // console.log(filter)
@@ -82,16 +82,16 @@ const TaskSubTable = ({
           // console.log(taskReviewerList)
           if (dataItem.title === 'タスク名前') {
             dataItem.render = (row) => (
-	            <>
-                <Link href= { taskNameToLink({row}) }>{row}</Link>
-	          </>
+              <>
+                <Link href={ taskNameToLink({ row }) }>{row}</Link>
+              </>
             )
           }
-          if (dataItem.title === 'JF名前'){
-          data.render = (row) => (
-            <Tooltip title={row}>
-              <a>{truncate(row)}</a>
-            </Tooltip>
+          if (dataItem.title === 'JF名前') {
+            data.render = (row) => (
+              <Tooltip title={row}>
+                <a>{truncate(row)}</a>
+              </Tooltip>
             )
           }
           if (dataItem.title === 'タイム') {
@@ -184,7 +184,7 @@ const TaskSubTable = ({
     setList(dataSource)
   }
   function onlyUnique(value, index, self) {
-    return self.indexOf(value) === index;
+    return self.indexOf(value) === index
   }
   const handleSelectReviewer = (value) => {
     filter.reviewer_task = []
@@ -198,10 +198,9 @@ const TaskSubTable = ({
       taskReviewerList.forEach((item) => {
         tempTask.push(item.id)
       })
-      var unique =tempTask.filter(onlyUnique);
+      const unique = tempTask.filter(onlyUnique)
       setFilter({ ...filter, reviewer_task: unique })
-    }
-    else if (value.target.innerText === '担当者') {
+    } else if (value.target.innerText === '担当者') {
       dataSource.forEach((item) => {
         tempTask.push(item.key)
       })
