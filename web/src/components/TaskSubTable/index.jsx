@@ -83,7 +83,7 @@ const TaskSubTable = ({
           if (dataItem.title === 'タスク名前') {
             dataItem.render = (row) => (
               <>
-                <Link href={ taskNameToLink({ row }) }>{row}</Link>
+                <Link href={taskNameToLink({ row })}>{row}</Link>
               </>
             )
           }
