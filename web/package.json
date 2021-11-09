@@ -105,12 +105,6 @@
     "webpack": "4.44.1",
     "webpack-filter-warnings-plugin": "^1.2.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
