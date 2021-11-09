@@ -31,7 +31,7 @@ const TaskSubTable = ({
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
   const [list, setList] = useState([])
   const [optionStatus, setOptionStatus] = useState('すべて')
-  const [optionReviewer, setOptionReviewer] = useState('担当者')
+  const [optionReviewer, setOptionReviewer] = useState('すべて')
 
   // const [searchNameValue, setSearchNameValue] = useState('')
   // const [searchDateValue, setSearchDateValue] = useState('')
@@ -51,6 +51,16 @@ const TaskSubTable = ({
   function datediff(first, second) {
     return Math.round((second - first) / (1000 * 60 * 60 * 24))
   }
+  function taskNameToLink(name) {
+// console.log(name)
+    var id=0
+    dataSource.forEach((item) => {
+      if (item.name.indexOf(name.row) > -1) {
+        id = item.key
+      }
+    })
+    return "/task-detail/"+id
+  }
   useEffect(() => {
     // console.log(filter)
     setList(dataSource)
@@ -65,15 +75,24 @@ const TaskSubTable = ({
         data.time = `後${datediff(parseDate(data.time), today)}日`
       } else if (datediff(parseDate(data.time), today) < 0) {
         data.time = `${-datediff(parseDate(data.time), today)}日遅くれ`
+      } else {
+        data.time = `今日`
       }
       setNewDataColumn(
         dataColumn.map((dataItem) => {
           // console.log(taskReviewerList)
-          if (dataItem.title === 'JF名前' || dataItem.title === 'タスク名前') {
+          if (dataItem.title === 'タスク名前') {
             dataItem.render = (row) => (
-              <Tooltip title={row}>
-                <a>{truncate(row)}</a>
-              </Tooltip>
+	      <>
+                <Link href= {taskNameToLink({row})}>{row}</Link>
+	      </>
+            )
+          }
+          if (dataItem.title === 'JF名前'){
+          data.render = (row) => (
+            <Tooltip title={row}>
+              <a>{truncate(row)}</a>
+            </Tooltip>
             )
           }
           if (dataItem.title === 'タイム') {
@@ -104,9 +123,6 @@ const TaskSubTable = ({
     // console.log(dataSource)
   }, [dataSource])
   useEffect(() => {
-    // setTasks(dataSource)
-  }, [])
-  useEffect(() => {
     let datas = [...list]
     if (filter) {
       if (filter.name) {
@@ -124,7 +140,7 @@ const TaskSubTable = ({
         datas = datas.filter(
           (data) => filter.reviewer_task.includes(data.key) === true,
         )
-        console.log(datas)
+        // console.log(datas)
       }
       if (filter.date) {
         if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
@@ -168,12 +184,25 @@ const TaskSubTable = ({
     // console.log(filter)
     setList(dataSource)
   }
+  function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
   const handleSelectReviewer = (value) => {
     filter.reviewer_task = []
     const tempTask = []
-    console.log(dataSource)
+    // console.log(dataSource)
     setOptionReviewer(value.target.innerText)
-    if (value.target.innerText === '担当者') {
+    if (value.target.innerText === 'すべて') {
+      dataSource.forEach((item) => {
+        tempTask.push(item.key)
+      })
+      taskReviewerList.forEach((item) => {
+        tempTask.push(item.id)
+      })
+      var unique =tempTask.filter(onlyUnique);
+      setFilter({ ...filter, reviewer_task: unique })
+    }
+    else if (value.target.innerText === '担当者') {
       dataSource.forEach((item) => {
         tempTask.push(item.key)
       })
@@ -185,10 +214,9 @@ const TaskSubTable = ({
       setFilter({ ...filter, reviewer_task: tempTask })
     }
 
-    console.log(filter)
+    // console.log(filter)
     setList(dataSource)
   }
-
   const searchInput = (e, dateString = '') => {
     // console.log(e)
     if (!dateString) {
@@ -315,6 +343,15 @@ const TaskSubTable = ({
                   <div className="my-2 mr-2 ml-5">
                     <b>役割</b>
                   </div>
+                  <Button
+                    name="reviewer"
+                    onClick={handleSelectReviewer}
+                    className={`border-0 mx-4 ${
+                      optionReviewer === 'すべて' ? 'option-active' : ''
+                    }`}
+                  >
+                    すべて
+                  </Button>
                   <Button
                     name="reviewer"
                     onClick={handleSelectReviewer}
