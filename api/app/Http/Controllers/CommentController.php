@@ -247,6 +247,70 @@ class CommentController extends Controller
 
         return response()->json($result);
     }
+    public function showMoreInJobfair($JFid, Request $request)
+    {
+        $request->validate(
+            [
+                'start' => 'required|numeric',
+                'count' => 'required|numeric',
+            ]
+        );
+        // $data = Task::with([
+        //     'comments' => function ($query) use ($request) {
+        //         $query->latest('updated_at')->offset($request->start)->take($request->count)->get();
+        //     },
+        //     'comments.user:id,name,avatar',
+        // ])->find($id, ['id', 'name']);
+        $comments = collect([]);
+        if ($JFid !== 'all') {
+            $comments = Comment::whereHas('task', function ($query) use ($JFid) {
+                $query->whereHas('schedule', function ($query) use ($JFid) {
+                    $query->where('jobfair_id', $JFid);
+                });
+            })->latest('updated_at')->offset($request->start)->take($request->count)->get();
+        } else {
+            $comments = Comment::latest('updated_at')
+                ->offset($request->start)->take($request->count)->get();
+        }
+
+        $result = $comments->map(function ($comment) {
+            $listOldAssignees = [];
+            $listNewAssignees = [];
+            if ($comment->old_assignees && $comment->new_assignees) {
+                $listOldAssignees = explode(',', $comment->old_assignees);
+                $listNewAssignees = explode(',', $comment->new_assignees);
+            }
+
+            $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+            $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
+                return User::find($assingee)->name;
+            });
+
+            // return $comment;
+            return [
+                'id'              => $comment->id,
+                'author'          => [
+                    'id'     => $comment->user->id,
+                    'name'   => $comment->user->name,
+                    'avatar' => $comment->user->avatar,
+                ],
+                'created'         => $comment->created_at,
+                'content'         => $comment->body,
+                'edited'          => $comment->updated_at > $comment->created_at,
+                'last_edit'       => $comment->updated_at,
+                'old_assignees'   => $listOldAssignees ?? null,
+                'new_assignees'   => $listNewAssignees ?? null,
+                'old_description' => $comment->old_description,
+                'new_description' => $comment->new_description,
+                'old_status'      => $comment->old_status,
+                'new_status'      => $comment->new_status,
+            ];
+        });
+
+        return response()->json($result);
+    }
 
     /**
      * Update the specified resource in storage.

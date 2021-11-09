@@ -181,5 +181,6 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 // comment
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
+Route::get('/jobfair-comment/{JFid}', 'CommentController@showMoreInJobfair');
 Route::delete('/comment/{id}', 'CommentController@destroy');
 Route::post('/comment/{id}', 'CommentController@update');
