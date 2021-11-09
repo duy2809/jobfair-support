@@ -1,28 +1,23 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import React, { useEffect, useState, useContext } from 'react'
-import './style.scss'
-import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip, Tag } from 'antd'
-
 import {
-  ExclamationCircleOutlined,
-  CheckCircleTwoTone,
-  EditTwoTone,
-  DeleteTwoTone,
+  DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
 } from '@ant-design/icons'
+import { Modal, notification, Tag, Tooltip } from 'antd'
+import { useRouter } from 'next/router'
+import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import JfLayout from '~/layouts/layout-task'
-import { taskData, beforeTask, afterTask, deleteTask } from '~/api/task-detail'
-import { reviewers } from '../../api/edit-task'
+import { afterTask, beforeTask, deleteTask, taskData } from '~/api/task-detail'
+import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
-import BoxComment from '~/components/box-comment'
-import CommentHistory from '~/components/comment/CommentHistory'
+import JfLayout from '~/layouts/layout-task'
+import { reviewers } from '../../api/edit-task'
+import MarkDownView from '../../components/markDownView'
+import './style.scss'
 
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
-  const [user, setUser] = useState(null)
   const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const [beforeTasks, setBeforeTask] = useState([])
@@ -46,11 +41,10 @@ function TaskDetail() {
     name: '',
   })
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const [listMemberAssignee, setListMemberAssignee] = useState([])
@@ -66,11 +60,21 @@ function TaskDetail() {
         setLoading(false)
       })
   }
+  const getRole = (id) => {
+    const user = store.getState().get('auth').get('user')
+    if (user.get('id') === id) {
+      setRole('admin')
+    } else {
+      setRole(user.get('role'))
+    }
+  }
+
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
     await taskData(idTask).then((response) => {
       if (response.status === 200) {
         const data = response.data
+        getRole(data.schedule.jobfair.jobfair_admin_id)
         setInfoTask({
           id: data.id,
           name: data.name,
@@ -116,44 +120,34 @@ function TaskDetail() {
       onOk: () => {
         deletetpl()
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
     })
   }
-  const handleBack = () => {
-    router.push(`/tasks/${infoJF.id}`)
-  }
+  // const handleBack = () => {
+  //   router.push(`/tasks/${infoJF.id}`)
+  // }
   const handleEdit = () => {
     router.push(`/edit-task/${infoTask.id}`)
   }
 
   useEffect(() => {
     setLoading(true)
-    setUser(store.getState().get('auth').get('user'))
-    if (user) {
-      setRole(user.get('role'))
-    }
     fetchTaskData()
     fetchBeforeTask()
     fetchAfterTask()
     fetchReviewersList()
     setLoading(false)
-  }, [user])
+  }, [role])
+  const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
       <JfLayout id={infoJF.id} bgr={2}>
         <JfLayout.Main>
           <div className="task-details">
-            <div className="list__button">
-              <div className="button__left">
-                <Button style={{ border: 'none' }} type="primary" onClick={handleBack}>
-                  戻る
-                </Button>
-              </div>
-            </div>
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
@@ -337,7 +331,7 @@ function TaskDetail() {
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
                             <li>
@@ -374,9 +368,9 @@ function TaskDetail() {
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-6" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
-                          ? afterTasks.map((item) => (
+                          && afterTasks.map((item) => (
                             <li>
                               <Tag
                                 style={{
@@ -397,8 +391,7 @@ function TaskDetail() {
                                 </Tooltip>
                               </Tag>
                             </li>
-                          ))
-                          : null}
+                          ))}
                       </ul>
                     </>
                   ) : (
@@ -424,22 +417,24 @@ function TaskDetail() {
                   </div>
                 </div>
               </div>
-              <div className="mx-5 mt-5">
-                <div className=" mx-7 des demo-infinite-container">
-                  {infoTask.description_of_detail}
-                </div>
-                <div className="mx-7">
-                  <BoxComment id={idTask} />
+              <div className="mx-12 mt-5">
+                <div className=" mx-10 des demo-infinite-container">
+                  <MarkDownView source={infoTask.description_of_detail} />
                 </div>
               </div>
             </div>
-            <CommentHistory id={idTask} />
-            <BoxComment id={2} />
+            <Comment
+              id={idTask}
+              statusProp={infoTask.status}
+              assigneeProp={assigneeNames}
+              taskInfo={infoTask}
+            />
+            {/* <Comment id={idTask} /> */}
           </div>
         </JfLayout.Main>
       </JfLayout>
     </div>
   )
 }
-TaskDetail.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TaskDetail.middleware = ['auth:superadmin', 'auth:member']
 export default TaskDetail

@@ -14,7 +14,6 @@ import {
 } from 'antd'
 import {
   SearchOutlined,
-  CheckCircleTwoTone,
   EditTwoTone,
   ExclamationCircleOutlined,
   DeleteTwoTone,
@@ -125,8 +124,7 @@ function ScheduleList() {
     router.push(`/jf-schedule/${id}/edit`)
   }
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},

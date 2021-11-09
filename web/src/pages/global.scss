@@ -93,7 +93,7 @@ body {
 
   .ant-input:hover,
   .ant-input:focus {
-    border: #ffd803 solid 1.2px;
+    border: #ffd803 solid 1px;
   }
 
   .ant-table-row:hover {
@@ -156,23 +156,17 @@ body {
     .ant-select-selector {
     border-color: #ffd803;
   }
-  /*Scroll bar */
+
+  /* width */
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
   }
+
   /* Track */
   ::-webkit-scrollbar-track {
-    border-radius: 0;
+    border-radius: 100vh;
     background: #edf2f7;
-    width: 100%;
-  }
-  .gantt_grid_data {
-    overflow: auto;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   /* Handle */
@@ -187,7 +181,7 @@ body {
     background: #a0aec0;
   }
 
-  thead[class*='ant-table-thead'] th {
+  thead[class*="ant-table-thead"] th {
     background-color: #bae8e8 !important;
   }
 
@@ -331,4 +325,18 @@ body {
     font-size: 16px;
     border-radius: 5px;
   }
+}
+
+#nprogress .bar {
+  height: 0.3rem !important;
+  background-color: #ffd803;
+}
+/* spinner  */
+#nprogress .spinner {
+  display: none;
+  position: fixed;
+  z-index: 1031;
+  color: #ffd803;
+  top: 50%;
+  right: 50%;
 }

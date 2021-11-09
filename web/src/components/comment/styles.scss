@@ -1,4 +1,15 @@
 .comment {
+  html {
+    height: 100%;
+  }
+  .ant-tag {
+    margin: 2px 0px;
+    padding: 6px;
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   &__author {
     font-weight: bold;
   }
@@ -28,5 +39,57 @@
   }
   .ant-avatar.ant-avatar-circle {
     margin-right: 1rem;
+  }
+}
+.editor {
+  .DraftEditor-root {
+    position: relative;
+    overflow: hidden;
+    word-break: break-all;
+    height: 100%;
+    min-height: 170px;
+    padding: 3px;
+  }
+  .public-DraftStyleDefault-ltr {
+    width: fit-content !important;
+  }
+  .rdw-suggestion-dropdown {
+    box-shadow: 1px 4px 5px rgba(0, 0, 0, 30%);
+    position: relative !important;
+  }
+  .rdw-suggestion-option {
+    cursor: pointer;
+    min-width: 100px;
+  }
+  .rdw-suggestion-option:hover {
+    background: powderblue;
+  }
+  .rdw-embedded-wrapper {
+    display: none;
+  }
+  .rdw-editor-main {
+    a {
+      color: rgb(0, 157, 255);
+      text-decoration: underline;
+    }
+  }
+  .rdw-link-modal-buttonsection {
+    position: relative;
+    top: -10px;
+  }
+  .editor__textarean {
+    min-height: 170px;
+  }
+  #linkTarget,
+  #linkTitle {
+    min-height: 30px;
+  }
+  .rdw-link-modal-target-option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .rdw-link-modal {
+    height: fit-content;
   }
 }

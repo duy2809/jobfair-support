@@ -36,14 +36,13 @@ const index = () => {
   const [listTask, setlistTask] = useState([])
   const [disableBtn, setDisableBtn] = useState(false)
   const [changeAdmin, setAdmin] = useState(false)
-  const [changeScedule, setSchedule] = useState(false)
   const [AdminDF, setAdminDF] = useState('')
-  const [SceduleDF, setScheduleDF] = useState('')
   const [form] = Form.useForm()
   const router = useRouter()
   const idJf = router.query.id
   const [isEdit, setIsEdit] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [currentSchedule, setCurrentSchedule] = useState()
 
   const checkIsFormInputEmpty = () => {
     const inputValues = form.getFieldsValue()
@@ -62,13 +61,14 @@ const index = () => {
       setlistMilestone(Array.from(milestones.data.milestones))
     }
   }
-  const getTask = async (id) => {
-    const tasks = await editApi.getTaskList(id)
-    if (tasks.data.template_tasks) {
-      setlistTask(Array.from(tasks.data.template_tasks))
+
+  const getTempateTask = async (id) => {
+    const schedule = await editApi.getTemplateTaskList(id)
+    const taskList = schedule.data.template_tasks.map((task) => task.name)
+    if (taskList) {
+      setlistTask(Array.from(taskList))
     }
   }
-
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -76,13 +76,15 @@ const index = () => {
         const admins = await editApi.getAdmin()
         const schedules = await editApi.getSchedule()
         const jfSchedules = await editApi.ifSchedule(idJf)
+        const templateScheduleId = schedules.data.find((element) => element.name === jfSchedules.data.data[0].name).id
+        setCurrentSchedule(templateScheduleId)
         if (jfSchedules.data.data[0].id) {
           getMilestone(jfSchedules.data.data[0].id)
-          getTask(jfSchedules.data.data[0].id)
+          getTempateTask(templateScheduleId)
+          // getTask(idJf)
         }
         setlistAdminJF(Array.from(admins.data))
         setlistSchedule(Array.from(schedules.data))
-        setScheduleDF(jfSchedules.data.data[0].id.toString())
         setAdminDF(infoJF.data.user.id.toString())
         form.setFieldsValue({
           name: infoJF.data.name,
@@ -90,7 +92,7 @@ const index = () => {
           number_of_students: infoJF.data.number_of_students,
           number_of_companies: infoJF.data.number_of_companies,
           jobfair_admin_id: infoJF.data.user.name,
-          schedule_id: jfSchedules.data.data[0].name,
+          schedule_id: templateScheduleId,
         })
         // Extensions.unSaveChangeConfirm(true)
         return null
@@ -142,7 +144,7 @@ const index = () => {
           router.push('/jobfairs')
         },
 
-        onCancel: () => {},
+        onCancel: () => { },
         okText: 'はい',
         cancelText: 'いいえ',
       })
@@ -154,16 +156,14 @@ const index = () => {
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
       message: '変更は正常に保存されました。',
       duration: 3,
-      onClick: () => {},
+      onClick: () => { },
     })
   }
   const onScheduleSelect = (_, event) => {
     setIsEdit(true)
-    setSchedule(true)
     const scheduleId = event.key
-
     getMilestone(scheduleId)
-    getTask(scheduleId)
+    getTempateTask(scheduleId)
   }
   const adminSelect = () => {
     setIsEdit(true)
@@ -176,7 +176,7 @@ const index = () => {
       Extensions.unSaveChangeConfirm(false)
       const data = {
         name: values.name.toString(),
-        schedule_id: changeScedule ? values.schedule_id * 1.0 : SceduleDF,
+        schedule_id: (values.schedule_id.toString() === currentSchedule.toString()) ? 'none' : values.schedule_id * 1.0,
         start_date: values.start_date.format(Extensions.dateFormat),
         number_of_students: values.number_of_students * 1.0,
         number_of_companies: values.number_of_companies * 1.0,
@@ -203,14 +203,14 @@ const index = () => {
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           message: 'このJF名は既に使用されています。',
           duration: 3,
-          onClick: () => {},
+          onClick: () => { },
         })
       } else {
         notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="#BB371A" />,
           message: '保存に失敗しました。',
           duration: 3,
-          onClick: () => {},
+          onClick: () => { },
         })
       }
       return error
@@ -241,9 +241,9 @@ const index = () => {
     if (value.match(Extensions.Reg.specialCharacter)) {
       return Promise.reject(new Error('使用できない文字が含まれています'))
     }
-    if (value.match(Extensions.Reg.vietnamese)) {
-      return Promise.reject(new Error('ベトナム語は入力できない'))
-    }
+    // if (value.match(Extensions.Reg.vietnamese)) {
+    //   return Promise.reject(new Error('ベトナム語は入力できない'))
+    // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
@@ -469,15 +469,15 @@ const index = () => {
                       dataSource={listTask}
                       renderItem={(item) => (
                         <List.Item className="list-items" key={item.id}>
-                          {item.name}
+                          {item}
                         </List.Item>
                       )}
                     />
                   </Form.Item>
                 </div>
               </div>
-              <div className="flex justify-end mr-10">
-                <Form.Item label=" " className=" mr-10 mt-4">
+              <div className="flex justify-end -mr-5">
+                <Form.Item label=" " className=" mr-8 mt-4">
                   <Space size={12}>
                     <Button
                       htmlType="button"

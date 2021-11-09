@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Input, Empty, Popover, Modal, Select, notification, Tooltip, Button, Space } from 'antd'
 import './style.scss'
-import { SearchOutlined, CheckCircleTwoTone, FilterOutlined, ExclamationCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
+import { SearchOutlined, FilterOutlined, ExclamationCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getTaskList, getCategories, deleteTptt } from '../../api/template-task'
@@ -100,8 +100,7 @@ function TemplateTaskList() {
     setVisible(!visible)
   }
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => { },
@@ -304,20 +303,20 @@ function TemplateTaskList() {
                         <>
                           <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
 
-                          <Select style={{ width: '300px' }} size="large" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
+                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                             {optionCategory}
                           </Select>
 
                           <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
 
-                          <Select style={{ width: '300px' }} size="large" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
+                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
                             {optionMilestone}
                           </Select>
 
                         </>
 
                       )}
-                      className="mr-2 p-2"
+                      className="mr-2"
                       placement="bottomLeft"
                       trigger="click"
                       visible={visible}
@@ -339,7 +338,6 @@ function TemplateTaskList() {
                       )}
                     </Popover>
                     <Input
-                      size="large"
                       className="float-right mr-3"
                       allowClear="true"
                       prefix={<SearchOutlined />}

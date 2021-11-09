@@ -44,7 +44,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
-Route::resource('/jobfair', 'JobfairController');
+Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
 
@@ -92,6 +92,7 @@ Route::post('/update-password', [ResetPasswordController::class, 'updatePassword
 
 //template-task
 Route::resource('/template-tasks', 'TemplateTaskController');
+Route::get('/template-task-not-added/{id}', 'TemplateTaskController@getTemplateTaskNotAdded');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
@@ -145,9 +146,9 @@ Route::prefix('members')->group(function () {
 
 Route::resource('/notification', NotificationController::class);
 Route::get('/notification/delete/{id}', 'NotificationController@destroy');
-Route::get('/show-unread/{id}', [App\Http\Controllers\NotificationController::class, 'showUnread']);
+Route::get('/notification/show-unread/{id}', 'NotificationController@showUnread');
 Route::post('/notification/update/{id}', 'NotificationController@update');
-Route::post('/notification/update_all_read', 'NotificationController@updateAllRead');
+Route::get('/notification/update_all_read/{id}', 'NotificationController@updateAllRead');
 
 //task
 Route::resource('/task', 'TaskController');
@@ -156,6 +157,8 @@ Route::get('/after-tasks/{id}', 'TaskController@getAfterTasks');
 Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
+Route::get('/task/{id}/list-reviewers', 'TaskController@getListReviewers');
+Route::get('/is-admin-task', 'TaskController@checkRole');
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
@@ -176,3 +179,5 @@ Route::put('/kanban/updateTask/{id}', [TaskController::class, 'updateTask']);
 // comment
 Route::apiResource('/comment', CommentController::class);
 Route::get('/show-more-comment/{id}', 'CommentController@showMore');
+Route::delete('/comment/{id}', 'CommentController@destroy');
+Route::post('/comment/{id}', 'CommentController@update');

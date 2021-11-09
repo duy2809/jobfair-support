@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, notification, Tag, Tooltip, Space } from 'antd'
+import { Form, Button, notification, Select, Tag, Tooltip, Space } from 'antd'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../../../layouts/OtherLayout'
@@ -7,7 +7,6 @@ import ItemInput from '../../../../components/template-task-edit/form-item/input
 import CancelEditTemplateTask from '../../../../components/CancelEditTemplateTask'
 import './style.scss'
 import ItemDropdow from '../../../../components/template-task-edit/form-item/dropdown'
-import ItemMultipleDropdown from '../../../../components/template-task-edit/form-item/multiple-dropdown'
 import Effort from '../../../../components/template-task-edit/form-item/effort'
 import {
   getCategoryData,
@@ -37,24 +36,15 @@ const isDayData = [
   { id: 1, name: '日' },
 ]
 
-let tasksList = []
-getTemplateTasksList().then((res) => {
-  tasksList = [...res.data]
-})
-
 const EditTemplateTaskPage = () => {
   const [categoryId, setCategoryId] = useState(0)
   const [milestoneId, setMilestoneId] = useState()
   const [isDay, setIsDay] = useState(0)
   const [unit, setUnit] = useState('')
   const [description, setDescription] = useState('')
-  const [tasks1, setTasks1] = useState([])
-  const [tasks2, setTasks2] = useState([])
   const [pathId, setPathId] = useState('')
   const [categoryData, setCategoryData] = useState([])
   const [milestoneData, setMilestoneData] = useState([])
-  const [prevTasks, setPrevTasks] = useState([])
-  const [nextTasks, setNextTasks] = useState([])
   const [templateTaskNameInput, setTemplateTaskNameInput] = useState('')
   const [categoryInput, setCategoryInput] = useState('')
   const [milestoneInput, setMilestoneInput] = useState('')
@@ -62,11 +52,27 @@ const EditTemplateTaskPage = () => {
   const [form] = Form.useForm()
   const [checkSpace, setCheckSpace] = useState(false)
   const router = useRouter()
-  // const [isModalVisible, setIsModalVisible] = useState(false)
+  const [allTask, setAllTask] = useState([])
+  const [beforeTasksNew, setBeforeTaskNew] = useState([])
+  const [afterTasksNew, setafterTaskNew] = useState([])
+  const [confilm, setConfilm] = useState(false)
+  // eslint-disable-next-line no-unused-vars
+  let tasksList = []
 
+  let NameTPL = ''
+  const getListTPL = async () => {
+    await getTemplateTasksList().then((res) => {
+      tasksList = [...res.data]
+      const data = res.data.filter((e) => e.name !== NameTPL)
+      setBeforeTaskNew(data)
+      setafterTaskNew(data)
+      setAllTask(data)
+    })
+  }
   const fetchTemplateTask = async (id) => {
     await getTemplateTask(id).then((res) => {
       setTemplateTaskNameInput(res.data.name)
+      NameTPL = res.data.name
       let categoryName
       if (res.data.categories.length > 0) {
         setCategoryInput(res.data.categories[0].category_name)
@@ -112,37 +118,23 @@ const EditTemplateTaskPage = () => {
 
   const fetchPrevTasks = async (id) => {
     await getPrevTasks(id).then((res) => {
-      setPrevTasks(res.data.before_tasks)
       const value = []
       res.data.before_tasks.forEach((item) => value.push(item.name))
       form.setFieldsValue({
-        prevTasks: value,
+        taskBefore: value,
       })
     })
   }
 
   const fetchNextTasks = async (id) => {
     await getNextTasks(id).then((res) => {
-      setNextTasks(res.data.after_tasks)
       const value = []
       res.data.after_tasks.forEach((item) => value.push(item.name))
       form.setFieldsValue({
-        nextTasks: value,
+        afterTask: value,
       })
     })
   }
-
-  const fetchTasks = async () => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
-    await setTasks1(
-      tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)),
-    )
-    await setTasks2(
-      tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)),
-    )
-  }
-
   const openNotificationSuccess = () => {
     if (
       templateTaskNameInput !== ''
@@ -161,47 +153,33 @@ const EditTemplateTaskPage = () => {
   useEffect(async () => {
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
+
     setPathId(id)
     fetchTemplateTask(id)
     fetchCategoryData()
     fetchMilestoneData()
     fetchPrevTasks(id)
     fetchNextTasks(id)
-    fetchTasks()
+    getListTPL()
   }, [])
-
-  useEffect(() => {
-    const temp = /[/](\d+)[/]/.exec(window.location.pathname)
-    const id = `${temp[1]}`
-    setTasks1(
-      tasksList.filter((o) => o.id !== Number(id) && !nextTasks.find((item) => item.id === o.id)),
-    )
-    setTasks2(
-      tasksList.filter((o) => o.id !== Number(id) && !prevTasks.find((item) => item.id === o.id)),
-    )
-  }, [prevTasks, nextTasks])
-
-  // const showModal = () => {
-  //   if (
-  //     templateTaskNameInput !== ''
-  //     && categoryInput !== ''
-  //     && milestoneInput !== ''
-  //     && effortNumber !== 0
-  //     && checkSpace === false
-  //   ) {
-  //     setIsModalVisible(true)
-  //   }
-  // }
-
-  const handleOk = () => {
+  const handleOk = async (values) => {
     // setIsModalVisible(false)
+    const beforeID = []
+    const afterIDs = []
+    if (values.taskBefore && values.afterTask) {
+      // eslint-disable-next-line array-callback-return
+      allTask.map((e) => {
+        if (values.taskBefore.includes(e.name)) {
+          beforeID.push(e.id)
+        }
+        if (values.afterTask.includes(e.name)) {
+          afterIDs.push(e.id)
+        }
+      })
+    }
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
-    const submitPrevTasks = []
-    const submitNextTasks = []
-    prevTasks.forEach((item) => submitPrevTasks.push(item.id))
-    nextTasks.forEach((item) => submitNextTasks.push(item.id))
-    updateTemplateTask(id, {
+    await updateTemplateTask(id, {
       name: templateTaskNameInput,
       description_of_detail: description,
       milestone_id: milestoneId,
@@ -209,9 +187,10 @@ const EditTemplateTaskPage = () => {
       unit,
       effort: effortNumber,
       category_id: categoryId,
-      beforeTasks: submitPrevTasks,
-      afterTasks: submitNextTasks,
+      beforeTasks: beforeID,
+      afterTasks: afterIDs,
     })
+
       .then(() => {
         router.push(`/template-task-dt/${id}`)
         setTimeout(() => {
@@ -233,7 +212,62 @@ const EditTemplateTaskPage = () => {
   // const handleCancel = () => {
   //   setIsModalVisible(false)
   // }
-  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const truncates = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const tagRender = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { label, closable, value, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    const id = allTask.find((e) => e.name === value)
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+      >
+        <Tooltip title={label}>
+          {id ? (
+            <a
+              target="_blank"
+              href={`/template-task-dt/${id.id}`}
+              className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+              rel="noreferrer"
+            >
+              {truncates(label)}
+            </a>
+          ) : (
+            <a
+              target="_blank"
+              className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden"
+              rel="noreferrer"
+            >
+              {truncates(label)}
+            </a>
+          )}
+        </Tooltip>
+      </Tag>
+    )
+  }
+  const filtedArr = () => {
+    setConfilm(true)
+    const before = form.getFieldsValue().taskBefore
+    const after = form.getFieldsValue().afterTask
+    let selectedItems = []
+    if (before && !after) {
+      selectedItems = [...selectedItems, ...before]
+    } else if (!before && after) {
+      selectedItems = [...selectedItems, ...after]
+    } else if (before && after) {
+      selectedItems = [...before, ...after]
+    }
+    const filted = allTask.filter((e) => !selectedItems.includes(e.name))
+    setBeforeTaskNew(filted)
+    setafterTaskNew(filted)
+    return filted
+  }
   const [isPreview, setIsPreview] = useState(false)
   const [dataPreview, setDataPreview] = useState([])
   const [chosePreview, setChosePreview] = useState(false)
@@ -276,7 +310,6 @@ const EditTemplateTaskPage = () => {
         <OtherLayout.Main>
           <div className="edit-template-task">
             <h1>テンプレートタスク編集</h1>
-            {/* <div className="h-screen flex flex-col items-center pt-10 bg-white my-8"> */}
             <div className="h-screen flex flex-col items-center pt-10 bg-white my-8">
               <Form
                 form={form}
@@ -292,7 +325,7 @@ const EditTemplateTaskPage = () => {
                 onFinishFailed={onFinishFail}
               >
                 <div className="grid grid-cols-2">
-                  <div className="col-span-1 ml-5 2xl:ml-8">
+                  <div className="col-span-1 ml-8">
                     <Form.Item
                       label="テンプレートタスク名"
                       required={!isPreview}
@@ -300,6 +333,7 @@ const EditTemplateTaskPage = () => {
                       <ItemInput
                         form={form}
                         name="templateTaskName"
+                        setConfilm={setConfilm}
                         setCheckSpace={setCheckSpace}
                         setInput={setTemplateTaskNameInput}
                         display={isPreview}
@@ -312,6 +346,7 @@ const EditTemplateTaskPage = () => {
                       <ItemDropdow
                         form={form}
                         name="category"
+                        setConfilm={setConfilm}
                         setCheckSpace={setCheckSpace}
                         data={categoryData}
                         setInput={setCategoryInput}
@@ -324,6 +359,7 @@ const EditTemplateTaskPage = () => {
                   <div className="col-span-1 ml-8">
                     <Form.Item label="マイルストーン" required={!isPreview}>
                       <ItemDropdow
+                        setConfilm={setConfilm}
                         form={form}
                         name="milestone"
                         setCheckSpace={setCheckSpace}
@@ -338,6 +374,7 @@ const EditTemplateTaskPage = () => {
                   <div className="col-span-1 ml-8">
                     <Form.Item label="工数" required={!isPreview}>
                       <Effort
+                        setConfilm={setConfilm}
                         form={form}
                         unitData={unitData}
                         isDayData={isDayData}
@@ -359,87 +396,47 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item label="前のタスク">
-                      <ItemMultipleDropdown
-                        form={form}
-                        name="prevTasks"
-                        options={tasks1}
-                        selectedItems={prevTasks}
-                        setSelectedItems={setPrevTasks}
-                        display={isPreview}
-                      />
-                      {prevTasks
-                        ? (
-                          <ul
-                            className="list__task col-span-2"
-                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                          >
-                            {prevTasks.map((element) => (
-                              <li className="task__chil">
-                                <Tag
-                                  style={{
-                                    marginRight: 3,
-                                    paddingTop: '5px',
-                                    paddingBottom: '3px',
-                                  }}
-                                >
-                                  <Tooltip placement="top" title={element.name}>
-                                    <div className="inline-block text-blue-600 whitespace-nowrap">
-                                      {truncate(element.name)}
-                                    </div>
-                                  </Tooltip>
-                                </Tag>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <ul
-                            className="list__task col-span-2"
-                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                          />
-                        )}
+                    <Form.Item
+                      label="前のタスク"
+                      name="taskBefore"
+                      className="tag_a"
+
+                    >
+                      <Select
+                        mode="multiple"
+                        showArrow
+                        tagRender={tagRender}
+                        style={{ width: '100%' }}
+                        onChange={filtedArr}
+                      >
+                        {beforeTasksNew.map((element) => (
+                          <Select.Option key={element.id} value={element.name}>
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item label="次のタスク">
-                      <ItemMultipleDropdown
-                        form={form}
-                        name="nextTasks"
-                        options={tasks2}
-                        selectedItems={nextTasks}
-                        setSelectedItems={setNextTasks}
-                        display={isPreview}
-                      />
-                      {nextTasks
-                        ? (
-                          <ul
-                            className="list__task col-span-2"
-                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                          >
-                            {nextTasks.map((element) => (
-                              <li className="task__chil">
-                                <Tag
-                                  style={{
-                                    marginRight: 3,
-                                    paddingTop: '5px',
-                                    paddingBottom: '3px',
-                                  }}
-                                >
-                                  <Tooltip placement="top" title={element.name}>
-                                    <div className="inline-block text-blue-600 whitespace-nowrap">
-                                      {truncate(element.name)}
-                                    </div>
-                                  </Tooltip>
-                                </Tag>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <ul
-                            className="list__task col-span-2"
-                            style={{ border: '1px solid #d9d9d9', display: isPreview ? '' : 'none' }}
-                          />
-                        )}
+                    <Form.Item
+                      label="次のタスク"
+                      name="afterTask"
+                      className="tag_a"
+
+                    >
+                      <Select
+                        mode="multiple"
+                        showArrow
+                        tagRender={tagRender}
+                        style={{ width: '100%' }}
+                        onChange={filtedArr}
+                      >
+                        {afterTasksNew.map((element) => (
+                          <Select.Option key={element.id} value={element.name}>
+                            {element.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </div>
                 </div>
@@ -449,46 +446,50 @@ const EditTemplateTaskPage = () => {
                 <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
                   <MarkDownView source={description} />
                 </div>
-                <Form.Item className="justify-end">
-                  <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
-                    <CancelEditTemplateTask id={pathId} />
-                    <Button
-                      className="preview_btn"
-                      htmlType="submit"
-                      onClick={() => {
-                        setChosePreview(!chosePreview)
-                      }}
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      プレビュー
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base mr-5 2xl:mr-10"
-                    >
-                      <span> 保存 </span>
-                    </Button>
-                  </Space>
-                  <Space style={{ display: isPreview ? '' : 'none' }} size={20} className="flex place-content-end mr-8">
-                    <Button
-                      htmlType="button"
-                      onClick={() => {
-                        setIsPreview(false)
-                      }}
-                      style={{ letterSpacing: '-1px' }}
-                    >
-                      編集
-                    </Button>
-                    <Button
-                      type="primary"
-                      htmlType="submit"
-                      className="text-base "
-                    >
-                      <span> 保存 </span>
-                    </Button>
-                  </Space>
-                </Form.Item>
+                <div className="flex justify-end -mr-32">
+                  <Form.Item>
+                    <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
+                      <CancelEditTemplateTask confilm={confilm} id={pathId} />
+                      <Button
+                        className="preview_btn"
+                        htmlType="submit"
+                        onClick={() => {
+                          setChosePreview(!chosePreview)
+                        }}
+                        style={{ letterSpacing: '-1px' }}
+                      >
+                        プレビュー
+                      </Button>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="text-base mr-5 2xl:mr-10"
+                      >
+                        <span> 保存 </span>
+                      </Button>
+                    </Space>
+                    <div style={{ display: isPreview ? '' : 'none' }} className="mr-40">
+                      <Space size={20}>
+                        <Button
+                          htmlType="button"
+                          onClick={() => {
+                            setIsPreview(false)
+                          }}
+                          style={{ letterSpacing: '-1px' }}
+                        >
+                          編集
+                        </Button>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          className="text-base "
+                        >
+                          <span> 保存 </span>
+                        </Button>
+                      </Space>
+                    </div>
+                  </Form.Item>
+                </div>
               </Form>
             </div>
           </div>

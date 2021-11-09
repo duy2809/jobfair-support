@@ -43,10 +43,9 @@
     border-left: 3px solid transparent;
     margin-bottom: 0px !important;
   }
- 
   .ant-menu-item {
     height: 50px !important;
-    padding-left: 35px !important;
+    padding-left: 20px !important;
     padding-right: 0px !important;
   }
   .ant-menu > .ant-menu-item:hover,
@@ -72,14 +71,7 @@
   .ant-menu-item > .ant-menu-title-content {
     margin-left: 0px;
   }
-  .icon-admin{
-    border: 2px solid black;
-    border-radius: 100%;
-    .user-icon{
-      font-size: 1.25rem;
-      padding: 10px;
-    }
-  }
+
   .button {
     text-align: center;
     font-size: 0.6rem;
@@ -124,10 +116,10 @@
   }
 
   .ant-layout-sider-collapsed {
-    
-    max-width: 100px !important;
-    min-width: 100px !important;
-    width: 100px !important;
+    flex: 0 0 80px !important;
+    max-width: 80px !important;
+    min-width: 80px !important;
+    width: 80px !important;
   }
   .Jf__header {
     display: flex;
@@ -139,7 +131,6 @@
     .admin__jf {
       display: flex;
       padding-left: 1.25rem;
-      padding-right: 28px;
       align-items: center;
     }
     h1 {

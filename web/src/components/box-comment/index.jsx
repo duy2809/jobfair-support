@@ -1,28 +1,22 @@
+import { EditOutlined } from '@ant-design/icons'
+import { Button, Form, Input, Select, Tag, Tooltip } from 'antd'
 import 'antd/dist/antd.css'
-import React, { useState, useEffect } from 'react'
-import { Select, Button, Form, Input, Tag, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
-import './style.scss'
-import dynamic from 'next/dynamic'
-
-import {
-  EditOutlined,
-} from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
 import { getUser, taskData } from '../../api/task-detail'
+import { addComment } from '../../api/comment'
+import BoxComment from './editor'
+import './style.scss'
 
-const BoxComment = ({ id }) => {
+const index = ({ id }) => {
   const [visible, setVisible] = useState(false)
   const [show, setShow] = useState(true)
   const [form] = Form.useForm()
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
+  const [value, setValue] = useState('')
 
-  const MDEditor = dynamic(
-    () => import('~/components/box-comment/editor.jsx'),
-    { ssr: false },
-  )
   // Modal
-
   const showBox = () => {
     setVisible(true)
     setShow(false)
@@ -44,18 +38,12 @@ const BoxComment = ({ id }) => {
   }
 
   const fetchTaskData = async () => {
-    await taskData(id)
-      .then((response) => {
-        // const listmember = []
-        // console.log(response).da
-        // response.data.users.forEach((element) => {
-        //   listmember.push(element.name)
-        // })
-        form.setFieldsValue({
-          // assignee: listmember,
-          status: response.data.status,
-        })
+    await taskData(id).then((response) => {
+      form.setFieldsValue({
+        // assignee: listmember,
+        status: response.data.status,
       })
+    })
   }
 
   useEffect(() => {
@@ -65,7 +53,7 @@ const BoxComment = ({ id }) => {
 
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
 
-  const tagRenderr = (props) => {
+  const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
     const nameUser = form.getFieldValue('assignee')
@@ -90,7 +78,6 @@ const BoxComment = ({ id }) => {
             setAssign(true)
           }
         }}
-        // style={{ marginRight: '3px', paddingTop: '5px', paddingBottom: '3px' }}
         style={{ padding: '7px' }}
       >
         <Tooltip title={label}>
@@ -102,6 +89,24 @@ const BoxComment = ({ id }) => {
     )
   }
 
+  const onFormSummit = async () => {
+    const { status, assignee } = form.getFieldsValue()
+    // TODO: change task description
+    const newComment = {
+      task_id: id,
+      body: value,
+      assignee: JSON.stringify(assignee),
+      status,
+      description: 'Task Description',
+    }
+    const response = await addComment(newComment)
+    if (response.status === 200 || response.status === 201) {
+      console.log(response.data)
+    }
+  }
+  const typing = (e) => {
+    setValue(e.target.value)
+  }
   return (
     <div className="mt-5 box-comment">
       {show ? (
@@ -119,7 +124,7 @@ const BoxComment = ({ id }) => {
       ) : null}
       {visible ? (
         <div className="box">
-          <Form form={form} layout="vertical">
+          <Form form={form} layout="vertical" onFinish={onFormSummit}>
             <div className="pos flex items-center justify-between">
               <div className="pos-left">
                 <Form.Item
@@ -127,10 +132,9 @@ const BoxComment = ({ id }) => {
                   className="block mx-7"
                   style={{ display: 'block' }}
                   name="detail"
+                  onChange={typing}
                 >
-                  <div>
-                    <MDEditor />
-                  </div>
+                  <BoxComment value={value} />
                 </Form.Item>
               </div>
               <div className="pos-right">
@@ -147,12 +151,12 @@ const BoxComment = ({ id }) => {
                   className="multiples"
                 >
                   {assign ? (
-                    <Select mode="multiple" showArrow tagRender={tagRenderr}>
+                    <Select mode="multiple" showArrow tagRender={tagRender}>
                       {listUser.map((element) => (
                         <Select.Option
                           className="validate-user"
                           key={element.id}
-                          value={element.name}
+                          value={element.id}
                         >
                           {element.name}
                         </Select.Option>
@@ -162,7 +166,7 @@ const BoxComment = ({ id }) => {
                     <Select
                       mode="multiple"
                       showArrow
-                      tagRender={tagRenderr}
+                      tagRender={tagRender}
                       style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
                       className="multiples"
                     >
@@ -170,7 +174,7 @@ const BoxComment = ({ id }) => {
                         <Select.Option
                           className="validate-user"
                           key={element.id}
-                          value={element.name}
+                          value={element.id}
                         >
                           {element.name}
                         </Select.Option>
@@ -191,9 +195,11 @@ const BoxComment = ({ id }) => {
                   >
                     キャンセル
                   </Button>
+                  {/* ============================== */}
                   <Button htmlType="button" type="primary" className="button_preview mx-3">
                     プレビュー
                   </Button>
+                  {/* =============================== */}
                   <Button
                     type="primary"
                     htmlType="submit"
@@ -212,8 +218,8 @@ const BoxComment = ({ id }) => {
   )
 }
 
-export default BoxComment
+export default index
 
-BoxComment.propTypes = {
-  id: PropTypes.object.isRequired,
+index.propTypes = {
+  id: PropTypes.number.isRequired,
 }

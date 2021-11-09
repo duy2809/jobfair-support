@@ -68,27 +68,28 @@ function addJobfairSchedule() {
       addedMilestones: addedMilestonesList,
       addedTemplateTasks: addedTemplateTaskList,
     }
-    await postCheckExistName(dataSend).then(async ({ data }) => {
-      if (data === 'exist') {
-        openNotification('error', 'このJFスケジュール名は存在しています。')
-      } else {
-        await postData(dataSend).then((res) => {
-          if (res.status === 200) {
-            router.push('/schedule')
-            openNotification('success', '変更は正常に保存されました。')
-          }
-        })
-      }
-    })
+    await postCheckExistName(dataSend)
+      .then(async ({ data }) => {
+        if (data === 'exist') {
+          openNotification('error', 'このJFスケジュール名は存在しています。')
+        } else {
+          await postData(dataSend)
+            .then((res) => {
+              if (res.status === 200) {
+                router.push('/schedule')
+                openNotification('success', '変更は正常に保存されました。')
+              }
+            })
+        }
+      })
   }
 
-  // const onFinishFailed = (errorInfo) => {
-  //   console.log(errorInfo);
-  //   const { errorFields } = errorInfo;
-  //   errorFields.forEach((itemError) => {
-  //     itemError.errors.forEach((error) => openNotification("error", error));
-  //   });
-  // };
+  const onFinishFailed = (errorInfo) => {
+    const { errorFields } = errorInfo
+    errorFields.forEach((itemError) => {
+      itemError.errors.forEach((error) => openNotification('error', error))
+    })
+  }
 
   const onDeleteTemplateTask = (id) => {
     const newState = _.filter(addedTemplateTaskList, (item) => item !== id)
@@ -129,16 +130,17 @@ function addJobfairSchedule() {
     const dataSend = {
       name: nameInput,
     }
-    await postCheckExistName(dataSend).then(({ data }) => {
-      if (data === 'exist') {
-        form.setFields([
-          {
-            name: 'jfschedule_name',
-            errors: ['このJFスケジュール名は存在しています。'],
-          },
-        ])
-      }
-    })
+    await postCheckExistName(dataSend)
+      .then(({ data }) => {
+        if (data === 'exist') {
+          form.setFields([
+            {
+              name: 'jfschedule_name',
+              errors: ['このJFスケジュール名は存在しています。'],
+            },
+          ])
+        }
+      })
   }
 
   const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
@@ -155,7 +157,7 @@ function addJobfairSchedule() {
             form={form}
             name="edit-jfschedule"
             onFinish={onFinish}
-            // onFinishFailed={onFinishFailed}
+            onFinishFailed={onFinishFailed}
             requiredMark="optional"
           >
             <div className="w-1/2">

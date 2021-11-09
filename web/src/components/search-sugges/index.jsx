@@ -24,7 +24,7 @@ export default function SearchSugges({ listTask, id }) {
     const inputLength = inputValue.length
     return inputLength === 0
       ? []
-      : listTask.filter((lang) => lang.name.toLowerCase().slice(0, inputLength) === inputValue)
+      : listTask.filter((lang) => lang.name.toLowerCase().includes(inputValue))
   }
   // eslint-disable-next-line no-shadow
   const onSuggestionsFetchRequested = ({ value }) => {

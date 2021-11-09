@@ -1,36 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
-import {
-  Form,
-  Input,
-  Select,
-  Tag,
-  DatePicker,
-  Button,
-  notification,
-  Modal,
-  Tooltip,
-} from 'antd'
+import { CheckCircleTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import moment from 'moment'
+import axios from 'axios'
 import JfLayout from '../../layouts/layout-task'
-import {
-  taskData,
-  beforeTask,
-  afterTask,
-  getUser,
-} from '../../api/task-detail'
+import { taskData, beforeTask, afterTask, getUser } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers } from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
-function TaskList() {
+function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
   const { TextArea } = Input
   const router = useRouter()
@@ -64,57 +47,68 @@ function TaskList() {
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
+  const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const fetchTaskData = async () => {
-    await reviewers(idTask).then((response) => {
-      if (response.status === 200) {
-        setReviewersData(response.data)
-      }
-    }).catch((err) => {
-      console.log(err)
-    })
-    await taskData(idTask)
+    await reviewers(idTask)
       .then((response) => {
         if (response.status === 200) {
-          const data = response.data
-          setInfoTask({
-            name: data.name,
-            categories: data.categories[0].category_name,
-            milestone: data.milestone.name,
-            status: data.status,
-            start_time: data.start_time,
-            end_time: data.end_time,
-            effort: data.template_task.effort,
-            is_day: data.template_task.is_day,
-            unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
-          })
-          setIdJF(data.schedule.jobfair.id)
-          // eslint-disable-next-line no-use-before-define
-          fetchListTask()
-          const listmember = []
-          data.users.forEach((element) => {
-            listmember.push(element.name)
-          })
-          const listReviewers = []
-          reviewersData.forEach((element) => {
-            listReviewers.push(element.name)
-          })
-          form.setFieldsValue({
-            name: data.name,
-            category: data.categories[0].category_name,
-            milestone: data.milestone.name,
-            assignee: listmember,
-            status: data.status,
-            start_time: moment(
-              data.start_time.split('-').join('/'),
-              dateFormat,
-            ),
-            end_time: moment(data.end_time.split('-').join('/'), dateFormat),
-            detail: data.description_of_detail,
-            reviewers: listReviewers,
-          })
+          setReviewersData(response.data)
         }
       })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    await listReviewersSelectTag(idTask)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log(response.data)
+          setReviewersSelectTag(response.data)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+    await taskData(idTask).then((response) => {
+      if (response.status === 200) {
+        const data = response.data
+        setInfoTask({
+          name: data.name,
+          categories: data.categories[0].category_name,
+          milestone: data.milestone.name,
+          status: data.status,
+          start_time: data.start_time,
+          end_time: data.end_time,
+          effort: data.template_task.effort,
+          is_day: data.template_task.is_day,
+          unit: data.template_task.unit,
+          description_of_detail: data.description_of_detail,
+        })
+        setIdJF(data.schedule.jobfair.id)
+        // eslint-disable-next-line no-use-before-define
+        fetchListTask()
+        const listmember = []
+        data.users.forEach((element) => {
+          listmember.push(element.name)
+        })
+        const listReviewers = []
+        reviewersData.forEach((element) => {
+          listReviewers.push(element.name)
+        })
+        form.setFieldsValue({
+          name: data.name,
+          category: data.categories[0].category_name,
+          milestone: data.milestone.name,
+          assignee: listmember,
+          status: data.status,
+          start_time: moment(data.start_time.split('-').join('/'), dateFormat),
+          end_time: moment(data.end_time.split('-').join('/'), dateFormat),
+          detail: data.description_of_detail,
+          reviewers: listReviewers,
+        })
+      }
+    })
   }
   const startDayValidator = (_, value) => {
     if (!value) {
@@ -177,9 +171,7 @@ function TaskList() {
     const { label, closable, onClose } = props
     const nameUser = form.getFieldValue('assignee')
     if (nameUser.length !== 0) {
-      document
-        .getElementById('error-user')
-        .setAttribute('hidden', 'text-red-600')
+      document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
       setAssign(true)
     }
     const onPreventMouseDown = (event) => {
@@ -195,15 +187,11 @@ function TaskList() {
           const nameUsers = form.getFieldValue('assignee')
           if (nameUsers.length === 0) {
             setAssign(false)
-            document
-              .getElementById('error-user')
-              .removeAttribute('hidden', 'text-red-600')
+            document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
           }
           if (nameUsers.length !== 0) {
             setAssign(true)
-            document
-              .getElementById('error-user')
-              .setAttribute('hidden', 'text-red-600')
+            document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
           }
         }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
@@ -254,9 +242,7 @@ function TaskList() {
     })
     if (e.target.value) {
       document.getElementById('validate_name').style.border = '1px solid #ffd803'
-      return document
-        .getElementById('error-msg')
-        .setAttribute('hidden', 'text-red-600')
+      return document.getElementById('error-msg').setAttribute('hidden', 'text-red-600')
     }
 
     document.getElementById('validate_name').style.border = '0.5px solid red'
@@ -269,14 +255,13 @@ function TaskList() {
   }
 
   const getDataUser = async () => {
-    await webInit()
-      .then((response) => {
-        setUsers({
-          id: response.data.auth.user.id,
-          name: response.data.auth.user.name,
-          role: response.data.auth.user.role,
-        })
+    await webInit().then((response) => {
+      setUsers({
+        id: response.data.auth.user.id,
+        name: response.data.auth.user.name,
+        role: response.data.auth.user.role,
       })
+    })
   }
   const saveNotification = () => {
     notification.open({
@@ -299,9 +284,7 @@ function TaskList() {
         if (values.name === element.name) {
           checkName = true
           document.getElementById('validate_name').style.border = '1px solid red'
-          return document
-            .getElementById('error-msg')
-            .removeAttribute('hidden', 'text-red-600')
+          return document.getElementById('error-msg').removeAttribute('hidden', 'text-red-600')
         }
       }
     })
@@ -384,28 +367,26 @@ function TaskList() {
     }
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask)
-      .then((response) => {
-        const listbfTask = []
-        response.data.before_tasks.forEach((element) => {
-          listbfTask.push(element.name)
-        })
-        form.setFieldsValue({
-          taskBefore: listbfTask,
-        })
+    await beforeTask(idTask).then((response) => {
+      const listbfTask = []
+      response.data.before_tasks.forEach((element) => {
+        listbfTask.push(element.name)
       })
+      form.setFieldsValue({
+        taskBefore: listbfTask,
+      })
+    })
   }
   const fetchafterTask = async () => {
-    await afterTask(idTask)
-      .then((response) => {
-        const listatTask = []
-        response.data.after_tasks.forEach((element) => {
-          listatTask.push(element.name)
-        })
-        form.setFieldsValue({
-          afterTask: listatTask,
-        })
+    await afterTask(idTask).then((response) => {
+      const listatTask = []
+      response.data.after_tasks.forEach((element) => {
+        listatTask.push(element.name)
       })
+      form.setFieldsValue({
+        afterTask: listatTask,
+      })
+    })
   }
   const fetchListTask = async () => {
     await jftask(idJF)
@@ -419,10 +400,9 @@ function TaskList() {
       })
   }
   const fetchListMember = async () => {
-    await getUser()
-      .then((response) => {
-        setListUser(response.data)
-      })
+    await getUser().then((response) => {
+      setListUser(response.data)
+    })
   }
   useEffect(() => {
     fetchTaskData()
@@ -438,7 +418,7 @@ function TaskList() {
   return (
     <div>
       <Loading loading={loading} overlay={loading} />
-      <JfLayout id={idJF}>
+      <JfLayout id={idJF} bgr={2}>
         <JfLayout.Main>
           <h1>タスク編集 </h1>
           <div className="edit-task">
@@ -467,7 +447,6 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
-
                   >
                     <Input
                       id="validate_name"
@@ -475,6 +454,7 @@ function TaskList() {
                       type="text"
                       placeholder="タスク名を入力する"
                       maxLength={20}
+                      size="large"
                       onChange={onValueNameChange}
                     />
                   </Form.Item>
@@ -508,16 +488,12 @@ function TaskList() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -533,11 +509,16 @@ function TaskList() {
                   <Form.Item label="レビュアー" name="reviewers" className="tag_a">
                     <Select
                       showArrow
+                      size="large"
                       tagRender={tagRender}
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
                     >
-                      {listUser.map((element) => (
+                      <Select.Option className="validate-user" key={undefined} value={undefined}>
+                        None
+                      </Select.Option>
+
+                      {reviewersSelectTag.map((element) => (
                         <Select.Option
                           className="validate-user"
                           key={element.id}
@@ -559,7 +540,6 @@ function TaskList() {
                         validator: TaskNameValidator,
                       },
                     ]}
-
                   >
                     <Select
                       size="large"
@@ -586,7 +566,6 @@ function TaskList() {
                         validator: startDayValidator,
                       },
                     ]}
-
                   >
                     <DatePicker
                       size="large"
@@ -610,7 +589,6 @@ function TaskList() {
                         validator: EndDayValidator,
                       },
                     ]}
-
                   >
                     <DatePicker
                       size="large"
@@ -624,12 +602,7 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="前のタスク"
-                    name="taskBefore"
-                    className="tag_a"
-
-                  >
+                  <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -646,12 +619,7 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="次のタスク"
-                    name="afterTask"
-                    className="tag_a"
-
-                  >
+                  <Form.Item label="次のタスク" name="afterTask" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -668,13 +636,7 @@ function TaskList() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="担当者"
-                    name="assignee"
-                    required
-                    className="multiples"
-
-                  >
+                  <Form.Item label="担当者" name="assignee" required className="multiples">
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
                         {listUser.map((element) => (
@@ -737,7 +699,7 @@ function TaskList() {
                   </Form.Item>
                 </div>
               </div>
-              <div className="flex justify-end mr-11">
+              <div className="flex justify-end mr-2">
                 <Form.Item label=" " className=" ">
                   <div className="flex ">
                     <Button
@@ -769,5 +731,18 @@ function TaskList() {
     </div>
   )
 }
-TaskList.middleware = ['auth:superadmin', 'auth:admin']
-export default TaskList
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, { params: { userId, taskId } })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+EditTask.middleware = ['auth']
+export default EditTask

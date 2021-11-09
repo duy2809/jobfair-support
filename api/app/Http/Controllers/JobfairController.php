@@ -6,7 +6,11 @@ use App\Http\Requests\JobfairRequest;
 use App\Models\Jobfair;
 use App\Models\Schedule;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\JobfairCreated;
+use App\Notifications\JobfairEdited;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
@@ -66,6 +70,8 @@ class JobfairController extends Controller
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
+        $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
+
         return $jobfair;
     }
 
@@ -90,13 +96,37 @@ class JobfairController extends Controller
     public function update(Request $request, $id)
     {
         $jobfair = Jobfair::find($id);
-        $jobfair->update($request->all());
-        $schedule = Schedule::where('jobfair_id', '=', $id)->first();
-        $templateSchedule = Schedule::find($request->schedule_id);
-        $schedule->update(['name' => $templateSchedule->name]);
-        $schedule->milestones()->sync($templateSchedule->milestones);
-        $schedule->tasks()->delete();
-        $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+
+        if ($request->schedule_id !== 'none') {
+            $schedule = Schedule::where('jobfair_id', '=', $id)->first();
+            $templateSchedule = Schedule::find($request->schedule_id);
+            $schedule->update(['name' => $templateSchedule->name]);
+            $schedule->milestones()->sync($templateSchedule->milestones);
+            $schedule->tasks()->delete();
+            $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+        }
+
+        $validated = $request->validate([
+            'name'                => 'string|max:256',
+            'start_date'          => 'date',
+            'number_of_students'  => 'numeric',
+            'number_of_companies' => 'numeric',
+            'jobfair_admin_id'    => 'exists:users,id',
+        ]);
+        $jobfair->update($validated);
+
+        $editedUser = auth()->user();
+
+        // notify user
+        if ($editedUser->role === 1) {
+            $jobfair->user->notify(new JobfairEdited($jobfair, $editedUser));
+        } else {
+            Notification::send(
+                User::where('role', 1)
+                    ->get(),
+                new JobfairEdited($jobfair, $editedUser)
+            );
+        }
 
         return response()->json('success');
     }
@@ -173,5 +203,16 @@ class JobfairController extends Controller
     public function checkNameExisted(Request $request)
     {
         return Jobfair::where('name', '=', $request->name)->get();
+    }
+
+    public function isAdminJobfair(Request $request)
+    {
+        $jobfair = Jobfair::findOrFail($request->query('jobfairId'));
+        $adminId = $jobfair->jobfair_admin_id;
+        if ($adminId === $request->query('userId')) {
+            return response('Access granted', 200);
+        }
+
+        abort(403, 'Permission denied');
     }
 }

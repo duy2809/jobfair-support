@@ -7,7 +7,7 @@ import {
   TableOutlined,
   UserOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Avatar } from 'antd'
 import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -17,6 +17,7 @@ import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
 import { findSlot } from '../../utils/pages'
 import './style.scss'
+import { getAvatar } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
   const styles = {
@@ -26,12 +27,13 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   const main = findSlot(JfLayout.Main, children)
   const [startDate, setStartDate] = useState()
-  const [avt, setAvt] = useState('')
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
+  const [AdminId, setAdminId] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(true)
+  const [avatarAdmin, setAvatarAdmin] = useState(null)
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
@@ -40,13 +42,18 @@ const JfLayout = ({ children, id, bgr }) => {
       await jfdata(id).then((response) => {
         setName(response.data.name)
         setStartDate(response.data.start_date.split('-').join('/'))
-        setAvt(response.data.user.avatar)
         setNumberOfStudents(response.data.number_of_students)
         setNumberOfCompanies(response.data.number_of_companies)
+        setAdminId(response.data.jobfair_admin_id)
       })
-      // .catch((error) => {
-      //   console.log(error)
-      // })
+      if (AdminId) {
+        await getAvatar(AdminId)
+          .then(() => {
+            const link = `../../api/avatar/${AdminId}`
+            setAvatarAdmin(link)
+          })
+          .catch(() => setAvatarAdmin(null))
+      }
     }
   }
   useEffect(() => {
@@ -81,7 +88,11 @@ const JfLayout = ({ children, id, bgr }) => {
               }}
             >
               <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
-                <div className="button" type="primary" onClick={toggleCollapsed}>
+                <div
+                  className="button"
+                  type="primary"
+                  onClick={toggleCollapsed}
+                >
                   {collapsed ? (
                     <MenuOutlined className="sidebar-icons" />
                   ) : (
@@ -91,7 +102,11 @@ const JfLayout = ({ children, id, bgr }) => {
               </div>
             </div>
             {bgr === 1 ? (
-              <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
+              <Menu.Item
+                key="1"
+                icon={<HomeOutlined className="sidebar-icons" />}
+                style={styles}
+              >
                 <Link href={`/jf-toppage/${id}`}>ホーム</Link>
               </Menu.Item>
             ) : (
@@ -113,7 +128,10 @@ const JfLayout = ({ children, id, bgr }) => {
                 <Link href={`/tasks/${id}`}>タスク</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
+              <Menu.Item
+                key="2"
+                icon={<FileProtectOutlined className="sidebar-icons" />}
+              >
                 <Link href={`/tasks/${id}`}>タスク</Link>
               </Menu.Item>
             )}
@@ -127,51 +145,85 @@ const JfLayout = ({ children, id, bgr }) => {
                 <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
+              <Menu.Item
+                key="3"
+                icon={<BarChartOutlined className="sidebar-icons" />}
+              >
                 <Link href={`/gantt-chart/${id}`}>ガントチャート</Link>
               </Menu.Item>
             )}
 
             {bgr === 4 ? (
-              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
+              <Menu.Item
+                key="4"
+                icon={<TableOutlined className="sidebar-icons" />}
+                style={styles}
+              >
                 <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
+              <Menu.Item
+                key="4"
+                icon={<TableOutlined className="sidebar-icons" />}
+              >
                 <Link href={`/kanban/${id}`}>カンバン</Link>
               </Menu.Item>
             )}
 
             {bgr === 5 ? (
-              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
+              <Menu.Item
+                key="5"
+                icon={<FileOutlined className="sidebar-icons" />}
+                style={styles}
+              >
                 <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             ) : (
-              <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />}>
+              <Menu.Item
+                key="5"
+                icon={<FileOutlined className="sidebar-icons" />}
+              >
                 <Link href={`/file/${id}`}>ファイル</Link>
               </Menu.Item>
             )}
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <div className="Jf__header px-11">
+          <div className="Jf__header px-5">
             <h1>{name}</h1>
-            <div className="admin__jf px-5">
+            <div className="admin__jf">
               <span className="text-lg">{startDate ?? 'N/A'}</span>
-              <span className="text-lg px-2 ">{`企業: ${numberOfStudents ?? 'N/A'}`}</span>
-              <span className="text-lg px-2 ">{`学生: ${numberOfCompanies ?? 'N/A'}`}</span>
+              <span className="text-lg px-2 ">
+                {`企業: ${
+                  numberOfStudents ?? 'N/A'
+                }`}
+              </span>
+              <span className="text-lg px-2 ">
+                {`学生: ${
+                  numberOfCompanies ?? 'N/A'
+                }`}
+              </span>
               <div className="avatar pl-3 pr-2">
-                {avt ? (
-                  <img className="avt" src={avt} alt="avatar" />
+                {avatarAdmin ? (
+                  <Avatar
+                    size={45}
+                    style={{
+                      backgroundColor: '#FFD802',
+                      cursor: 'pointer',
+                    }}
+                    src={avatarAdmin}
+                  />
                 ) : (
-                  <div className="icon-admin">
-                    <UserOutlined className="user-icon" />
+                  <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
+                    <UserOutlined className="text-xl user-icon" />
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <Content className="site-layout-background">{_get(main, 'props.children')}</Content>
+          <Content className="site-layout-background">
+            {_get(main, 'props.children')}
+          </Content>
         </Layout>
       </Layout>
     </div>
@@ -186,6 +238,9 @@ JfLayout.defaultProps = {
   children: [],
 }
 JfLayout.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  children: PropTypes.oneOfType([
+    PropTypes.node,
+    PropTypes.arrayOf(PropTypes.node),
+  ]),
 }
 export default JfLayout

@@ -17,6 +17,8 @@ import Middleware from '~/modules/middleware'
 import { LOAD as INIT_AUTH_USER } from '~/store/modules/auth'
 
 import 'antd/dist/antd.css'
+import 'tailwindcss/tailwind.css'
+import 'nprogress/nprogress.css'
 import './global.scss'
 
 Sentry.init({ dsn: `${process.env.SENTRY_DSN}` })
@@ -38,10 +40,12 @@ if (process.env.NODE_ENV !== 'production') {
   })
 }
 
+const serverURL = process.env.SERVER_API_URL
 class Jobfair extends App {
   static async getInitialProps({ Component, ctx }) {
     if (ctx.isServer) {
       axios.defaults.headers.common.cookie = ctx.req.headers.cookie || ''
+      ctx.serverURL = serverURL
       await usePromise(ctx.store.dispatch, {
         type: INIT_AUTH_USER,
         payload: { res: ctx.res },
@@ -53,7 +57,7 @@ class Jobfair extends App {
     const middleware = new Middleware(ctx)
     await middleware.validate(Component)
 
-    return { pageProps }
+    return { ...pageProps }
   }
 
   componentDidCatch(error, errorInfo) {
