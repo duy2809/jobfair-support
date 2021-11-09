@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Imports\CategoriesImport;
 use App\Imports\MilestonesImport;
 use App\Imports\TemplateTasksImport;
+use App\Imports\UsersImport;
 use Excel;
 use Illuminate\Database\Seeder;
 
@@ -160,8 +161,10 @@ class DatabaseSeeder extends Seeder
         // }
 
         // $this->call([FileSeeder::class]);
+        $this->call(SuperAdminSeeder::class);
         Excel::import(new MilestonesImport(), base_path('file/milestone.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new CategoriesImport(), base_path('file/categories.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new TemplateTasksImport(), base_path('file/template_task.ods'), null, \Maatwebsite\Excel\Excel::ODS);
+        Excel::import(new UsersImport(), base_path('file/users.ods'), null, \Maatwebsite\Excel\Excel::ODS);
     }
 }

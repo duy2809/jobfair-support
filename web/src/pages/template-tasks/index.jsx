@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Input, Empty, Popover, Modal, Select, notification, Tooltip, Button, Space } from 'antd'
 import './style.scss'
-import { SearchOutlined, CheckCircleTwoTone, FilterOutlined, ExclamationCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
+import { SearchOutlined, FilterOutlined, ExclamationCircleOutlined, EditTwoTone, DeleteTwoTone } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import OtherLayout from '../../layouts/OtherLayout'
 import { getTaskList, getCategories, deleteTptt } from '../../api/template-task'
@@ -100,8 +100,7 @@ function TemplateTaskList() {
     setVisible(!visible)
   }
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => { },

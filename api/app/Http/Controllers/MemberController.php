@@ -19,19 +19,12 @@ class MemberController extends Controller
      */
     public function index()
     {
-        // if (Auth::user()->role === 2) {
-        //     return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->orWhere('role', '=', 3)->get();
-        // } else if (Auth::user()->role === 1) {
-        //     return User::select('id', 'name', 'email', 'created_at')->get();
+        // if (Auth::user()->role === 1 || Auth::user()->role === 2) {
+        //     return User::select('id', 'name', 'email', 'created_at')
+        //         ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
         // }
 
-        // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
-        if (Auth::user()->role === 1 || Auth::user()->role === 2) {
-            return User::select('id', 'name', 'email', 'created_at')
-                ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
-        }
-
-        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
+        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->where('email', '<>', Auth::user()->email)->get();
     }
 
     public function showMember($id)
@@ -48,8 +41,8 @@ class MemberController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|min:3|max:30',
-            'email' => 'required|min:10|max:50',
+            'name' => 'required|min:3|max:50',
+            'email' => 'required|min:10|max:100',
             'email' => Rule::unique('users')->ignore($id)->where('email', request('email')),
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -73,7 +66,7 @@ class MemberController extends Controller
 
     public function getMember()
     {
-        $user = User::select('id', 'name')->where('role', '=', 3)->get();
+        $user = User::select('id', 'name')->where('role', '=', 2)->get();
 
         return response()->json($user);
     }

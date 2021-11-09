@@ -15,10 +15,10 @@ export default function Notification() {
   // const [userName, setUserName] = useState([])
   // const [lengthNoti, setLengthNoti] = useState()
 
-  const [user, setUser] = useState(null)
+  const { store } = useContext(ReactReduxContext)
+  const [user, setUser] = useState(store.getState().get('auth').get('user'))
   const [unread, setUnRead] = useState(false)
   const [unreadLength, setUnReadLength] = useState(0)
-  const { store } = useContext(ReactReduxContext)
   const [loading, setLoading] = useState(false)
   const [deleteNotiCheck, setDeleteNoti] = useState(0)
   const [checkUpdate, setCheckUpdate] = useState(0)
@@ -142,7 +142,7 @@ export default function Notification() {
         setDataNoti((prev) => [newItem, ...prev])
       })
       .listen()
-  }, [])
+  }, [user])
 
   // if (user) {
   //   const id = user.get('id')
