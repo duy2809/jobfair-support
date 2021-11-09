@@ -431,11 +431,13 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
-                        {reviewersList
+                        {reviewersList.length != 0
                           ? reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
                           ))
-                          : null}
+                          : 
+                            <li className="task__chil">None</li>
+                          }
                       </ul>
                     </div>
                   </div>

@@ -124,7 +124,7 @@ function EditTask() {
           start_time: moment(data.start_time.split('-').join('/'), dateFormat),
           end_time: moment(data.end_time.split('-').join('/'), dateFormat),
           detail: data.description_of_detail,
-          reviewers: listReviewers,
+          reviewers: listReviewers.length == 0 ? ["None"] : listReviewers,
         })
       }
     })

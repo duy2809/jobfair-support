@@ -549,7 +549,6 @@ class TaskController extends Controller
                 array_push($listReviewers, $user);
             }
         }
-
         return response()->json($listReviewers);
     }
 
