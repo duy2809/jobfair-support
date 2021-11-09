@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { MemberApi } from '../../api/member'
 import './styles.scss'
+import TodoList from './TodoList'
 
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((module) => module.Editor), {
   ssr: false,
@@ -14,7 +15,6 @@ const Editor = dynamic(() => import('react-draft-wysiwyg').then((module) => modu
 
 function index(props) {
   const commentContent = props.value
-  console.log(commentContent)
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   const onEditorStateChange = async (state) => {
@@ -25,10 +25,10 @@ function index(props) {
   }
   const setEditorStateWhenEditing = async () => {
     const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft,
+      (module) => module.markdownToDraft
     )
     setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
+      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent)))
     )
   }
   const getAllUser = async () => {
@@ -46,10 +46,6 @@ function index(props) {
     return () => setEditorState(EditorState.createEmpty())
   }, [])
 
-  // const handleOnPaste = async () => {
-  //   const res = await import('../../utils/handleOnPaste')
-  //   console.log(res)
-  // }
   const mention = {
     separator: ' ',
     trigger: '@',
@@ -74,7 +70,10 @@ function index(props) {
         wrapperClassName="border rounded-md"
         editorClassName="editor__textarean pb-5 px-5 h-full border max-h-96 max-w-94 overflow-hidden"
         onEditorStateChange={onEditorStateChange}
-        // handlePastedText={handleOnPaste}
+        handlePastedText={() => false}
+        toolbarCustomButtons={[
+          <TodoList onChange={onEditorStateChange} editorState={editorState} />,
+        ]}
       />
     </div>
   )

@@ -1,11 +1,14 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import {
-  CheckCircleTwoTone, DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
+  CheckCircleTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useCallback } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import { afterTask, beforeTask, deleteTask, taskData } from '~/api/task-detail'
 import Comment from '~/components/comment/index'
@@ -37,6 +40,8 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
+  const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [infoJF, setInfoJF] = useState({
     id: null,
     name: '',
@@ -62,7 +67,21 @@ function TaskDetail() {
         setLoading(false)
       })
   }
+  const getChildProps = useCallback((childState) => {
+    const copyState = {}
+    Object.assign(copyState, childState)
+    console.log(childState)
+    console.log(copyState.new_assignees.length)
+    console.log(listMemberAssignee)
 
+    if (copyState.new_assignees.length > 0) {
+      setNewAsigneesFromNewComment(copyState.new_assignees)
+    }
+    if (copyState.new_status !== '') {
+      setTaskStatus(copyState.new_status)
+    }
+    console.log(childState)
+  }, [])
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
     await taskData(idTask).then((response) => {
@@ -81,6 +100,8 @@ function TaskDetail() {
           unit: data.template_task.unit,
           description_of_detail: data.description_of_detail,
         })
+        setTaskStatus(data.status)
+        console.log(data.users)
         setListMemberAssignee(data.users)
         setInfoJF({
           id: data.schedule.jobfair.id,
@@ -235,11 +256,16 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
-                        {listMemberAssignee
-                          ? listMemberAssignee.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
-                          : null}
+                        {newAsigneesFromNewComment.length > 0
+                          ? newAsigneesFromNewComment &&
+                            newAsigneesFromNewComment.map((item, index) => {
+                              const id = index + item
+                              return <li key={id} className="task__chil">{`${item},`}</li>
+                            })
+                          : listMemberAssignee &&
+                            listMemberAssignee.map((item) => (
+                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                            ))}
                       </ul>
                     </div>
                   </div>
@@ -250,31 +276,31 @@ function TaskDetail() {
                       <p className="font-bold text-right">ステータス</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      {infoTask.status === '未着手' ? (
+                      {taskStatus === '未着手' ? (
                         <span
                           style={{ background: '#5EB5A6', color: '#fff' }}
                           className=" stt item__right"
                         >
-                          {infoTask.status}
+                          {taskStatus}
                         </span>
                       ) : null}
-                      {infoTask.status === '進行中' ? (
+                      {taskStatus === '進行中' ? (
                         <span
                           style={{ background: '#A1AF2F', color: '#fff' }}
                           className=" stt item__right"
                         >
-                          {infoTask.status}
+                          {taskStatus}
                         </span>
                       ) : null}
-                      {infoTask.status === '完了' ? (
+                      {taskStatus === '完了' ? (
                         <span
                           style={{ background: '#4488C5', color: '#fff' }}
                           className=" stt item__right"
                         >
-                          {infoTask.status}
+                          {taskStatus}
                         </span>
                       ) : null}
-                      {infoTask.status === '中断' ? (
+                      {taskStatus === '中断' ? (
                         <span
                           style={{
                             background: 'rgb(185, 86, 86)',
@@ -282,10 +308,10 @@ function TaskDetail() {
                           }}
                           className=" stt item__right"
                         >
-                          {infoTask.status}
+                          {taskStatus}
                         </span>
                       ) : null}
-                      {infoTask.status === '未完了' ? (
+                      {taskStatus === '未完了' ? (
                         <span
                           style={{
                             background: 'rgb(121, 86, 23)',
@@ -293,7 +319,7 @@ function TaskDetail() {
                           }}
                           className=" stt item__right"
                         >
-                          {infoTask.status}
+                          {taskStatus}
                         </span>
                       ) : null}
                     </div>
@@ -331,27 +357,27 @@ function TaskDetail() {
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
-                            </li>
-                          ))
+                              <li>
+                                <Tag
+                                  style={{
+                                    marginRight: 3,
+                                    paddingTop: '5px',
+                                    paddingBottom: '3px',
+                                  }}
+                                >
+                                  <Tooltip placement="top" title={item.name}>
+                                    <a
+                                      href={`/task-detail/${item.id}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-block text-blue-600 whitespace-nowrap "
+                                    >
+                                      {truncate(item.name)}
+                                    </a>
+                                  </Tooltip>
+                                </Tag>
+                              </li>
+                            ))
                           : null}
                       </ul>
                     </>
@@ -366,8 +392,8 @@ function TaskDetail() {
                   {afterTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
-                        {afterTasks
-                          && afterTasks.map((item) => (
+                        {afterTasks &&
+                          afterTasks.map((item) => (
                             <li>
                               <Tag
                                 style={{
@@ -406,8 +432,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {reviewersList
                           ? reviewersList.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
+                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                            ))
                           : null}
                       </ul>
                     </div>
@@ -425,6 +451,7 @@ function TaskDetail() {
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
               taskInfo={infoTask}
+              parentCallback={getChildProps}
             />
             {/* <Comment id={idTask} /> */}
           </div>
