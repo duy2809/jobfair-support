@@ -18,7 +18,6 @@ export default class Middleware {
 
   resolve(identifiers = []) {
     if (this.solved) return this.middleware
-
     _each(identifiers, (name, key) => {
       const matched = name.match(/^([a-z0-9_\-.]+)(?::([a-z0-9_\-.]+))?$/i)
 

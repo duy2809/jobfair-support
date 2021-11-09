@@ -1,14 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import {
-  CheckCircleTwoTone,
   DeleteTwoTone,
   EditTwoTone,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
-import React, { useContext, useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
 import { afterTask, beforeTask, deleteTask, taskData } from '~/api/task-detail'
 import Comment from '~/components/comment/index'
@@ -21,7 +20,6 @@ import './style.scss'
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
-  const [user, setUser] = useState(null)
   const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const [beforeTasks, setBeforeTask] = useState([])
@@ -47,8 +45,7 @@ function TaskDetail() {
     name: '',
   })
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},
@@ -80,13 +77,21 @@ function TaskDetail() {
     if (copyState.new_status !== '') {
       setTaskStatus(copyState.new_status)
     }
-    console.log(childState)
   }, [])
+  const getRole = (id) => {
+    const user = store.getState().get('auth').get('user')
+    if (user.get('id') === id) {
+      setRole('admin')
+    } else {
+      setRole(user.get('role'))
+    }
+  }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
     await taskData(idTask).then((response) => {
       if (response.status === 200) {
         const data = response.data
+        getRole(data.schedule.jobfair.jobfair_admin_id)
         setInfoTask({
           id: data.id,
           name: data.name,
@@ -149,16 +154,12 @@ function TaskDetail() {
 
   useEffect(() => {
     setLoading(true)
-    setUser(store.getState().get('auth').get('user'))
-    if (user) {
-      setRole(user.get('role'))
-    }
     fetchTaskData()
     fetchBeforeTask()
     fetchAfterTask()
     fetchReviewersList()
     setLoading(false)
-  }, [user])
+  }, [role])
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
   return (
     <div>
@@ -257,13 +258,13 @@ function TaskDetail() {
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
                         {newAsigneesFromNewComment.length > 0
-                          ? newAsigneesFromNewComment &&
-                            newAsigneesFromNewComment.map((item, index) => {
+                          ? newAsigneesFromNewComment
+                            && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return <li key={id} className="task__chil">{`${item},`}</li>
                             })
-                          : listMemberAssignee &&
-                            listMemberAssignee.map((item) => (
+                          : listMemberAssignee
+                            && listMemberAssignee.map((item) => (
                               <li key={item.id} className="task__chil">{`${item.name},`}</li>
                             ))}
                       </ul>
@@ -357,27 +358,27 @@ function TaskDetail() {
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                              <li>
-                                <Tag
-                                  style={{
-                                    marginRight: 3,
-                                    paddingTop: '5px',
-                                    paddingBottom: '3px',
-                                  }}
-                                >
-                                  <Tooltip placement="top" title={item.name}>
-                                    <a
-                                      href={`/task-detail/${item.id}`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-block text-blue-600 whitespace-nowrap "
-                                    >
-                                      {truncate(item.name)}
-                                    </a>
-                                  </Tooltip>
-                                </Tag>
-                              </li>
-                            ))
+                            <li>
+                              <Tag
+                                style={{
+                                  marginRight: 3,
+                                  paddingTop: '5px',
+                                  paddingBottom: '3px',
+                                }}
+                              >
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </Tag>
+                            </li>
+                          ))
                           : null}
                       </ul>
                     </>
@@ -392,8 +393,8 @@ function TaskDetail() {
                   {afterTasks?.length > 0 ? (
                     <>
                       <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
-                        {afterTasks &&
-                          afterTasks.map((item) => (
+                        {afterTasks
+                          && afterTasks.map((item) => (
                             <li>
                               <Tag
                                 style={{
@@ -432,8 +433,8 @@ function TaskDetail() {
                       <ul className="list__member">
                         {reviewersList
                           ? reviewersList.map((item) => (
-                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                            ))
+                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                          ))
                           : null}
                       </ul>
                     </div>
@@ -460,5 +461,5 @@ function TaskDetail() {
     </div>
   )
 }
-TaskDetail.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TaskDetail.middleware = ['auth:superadmin', 'auth:member']
 export default TaskDetail

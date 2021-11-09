@@ -45,6 +45,7 @@ export default function File() {
   const [loading, setLoading] = useState(false)
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
+  const [role, setRole] = useState('')
 
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')
@@ -115,7 +116,7 @@ export default function File() {
 
               const result = res.data.map((element) => ({
                 key: element.id,
-                checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+                checkbox: user.get('id') === element.authorId || role !== 'member',
                 is_file: element.is_file,
                 name: element.name,
                 updater: element.updaterName,
@@ -145,7 +146,7 @@ export default function File() {
 
               const result = res.data.map((element) => ({
                 key: element.id,
-                checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+                checkbox: user.get('id') === element.authorId || role !== 'member',
                 is_file: element.is_file,
                 name: element.name,
                 updater: element.updaterName,
@@ -197,12 +198,21 @@ export default function File() {
       ),
     },
   ]
+  const getRole = () => {
+    const manageIds = Array.from(user.get('manage_jf_ids'))
+    if (manageIds.includes(parseInt(JFid, 10))) {
+      setRole('admin')
+    } else {
+      setRole(user.get('role'))
+    }
+  }
   useEffect(async () => {
+    getRole()
     setLoading(true)
     let res = await getRootPathFile(JFid)
     let result = res.data.map((element) => ({
       key: element.id,
-      checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+      checkbox: user.get('id') === element.authorId || role !== 'member',
       is_file: element.is_file,
       name: element.name,
       updater: element.updaterName,
@@ -222,7 +232,7 @@ export default function File() {
     }))
     setRecentUpdated(result)
     setLoading(false)
-  }, [])
+  }, [role])
   useEffect(() => {
     const temp = []
     for (let index = 0; index < data.length; index += 1) {
@@ -307,7 +317,7 @@ export default function File() {
       })
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+        checkbox: user.get('id') === element.authorId || role !== 'member',
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -355,7 +365,7 @@ export default function File() {
       })
       const result = res.data.map((element) => ({
         key: element.id,
-        checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+        checkbox: user.get('id') === element.authorId || role !== 'member',
         is_file: element.is_file,
         name: element.name,
         updater: element.updaterName,
@@ -390,7 +400,7 @@ export default function File() {
 
     const result = res.data.map((element) => ({
       key: element.id,
-      checkbox: user.get('id') === element.authorId || user.get('role') !== 'member',
+      checkbox: user.get('id') === element.authorId || role !== 'member',
       is_file: element.is_file,
       name: element.name,
       updater: element.updaterName,
@@ -427,6 +437,7 @@ export default function File() {
                 <div className="w-full h-14 flex flex-row justify-end gap-x-6">
                   <ButtonAddFile
                     updater={user}
+                    role={role}
                     path={directory}
                     documentId={JFid}
                     setData={setData}
@@ -434,6 +445,7 @@ export default function File() {
                   />
                   <ButtonAddFolder
                     updater={user}
+                    role={role}
                     path={directory}
                     documentId={JFid}
                     setData={setData}
@@ -477,9 +489,7 @@ export default function File() {
                               })
                               const result = res.data.map((element) => ({
                                 key: element.id,
-                                checkbox:
-                                  user.get('id') === element.authorId
-                                  || user.get('role') !== 'member',
+                                checkbox: user.get('id') === element.authorId || role !== 'member',
                                 is_file: element.is_file,
                                 name: element.name,
                                 updater: element.updaterName,
@@ -699,4 +709,4 @@ export default function File() {
     </div>
   )
 }
-File.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+File.middleware = ['auth']

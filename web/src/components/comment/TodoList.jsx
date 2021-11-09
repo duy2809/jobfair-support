@@ -1,4 +1,4 @@
-import { EditorState, Modifier, convertFromHTML, ContentState } from 'draft-js'
+import { ContentState, EditorState, Modifier } from 'draft-js'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -14,12 +14,11 @@ function TodoList(props) {
     // )
     // onChange(EditorState.push(editorState, contentState, 'insert-characters'))
     const htmlToDraft = await import('html-to-draftjs').then((module) => module.default)
-    console.log(htmlToDraft(data))
-    let { contentBlocks, entityMap } = htmlToDraft(data)
-    let contentStateCus = Modifier.replaceWithFragment(
+    const { contentBlocks, entityMap } = htmlToDraft(data)
+    const contentStateCus = Modifier.replaceWithFragment(
       editorState.getCurrentContent(),
       editorState.getSelection(),
-      ContentState.createFromBlockArray(contentBlocks, entityMap).getBlockMap()
+      ContentState.createFromBlockArray(contentBlocks, entityMap).getBlockMap(),
     )
 
     onChange(EditorState.push(editorState, contentStateCus, 'insert-fragment'))
@@ -28,8 +27,8 @@ function TodoList(props) {
   return <div onClick={addStar}>⭐</div>
 }
 TodoList.propTypes = {
-  onChange: PropTypes.func,
-  editorState: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
+  editorState: PropTypes.object.isRequired,
 }
 
 export default TodoList

@@ -25,10 +25,10 @@ function index(props) {
   }
   const setEditorStateWhenEditing = async () => {
     const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft
+      (module) => module.markdownToDraft,
     )
     setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent)))
+      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
     )
   }
   const getAllUser = async () => {

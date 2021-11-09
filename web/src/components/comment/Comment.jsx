@@ -22,7 +22,7 @@ function Comment(props) {
   const [commentOverflow, setCommentOverflow] = useState(false)
   const { store } = useContext(ReactReduxContext)
   const [userId, setUserId] = useState(1)
-  const classNames = (...classes) => classes.filter(Boolean).join(' ')
+  // const classNames = (...classes) => classes.filter(Boolean).join(' ')
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
   const toggleExpanded = () => {
@@ -155,8 +155,8 @@ function Comment(props) {
                     </div>
                   )}
                 </div>
-                {(props.comment.new_status?.length > 0 ||
-                  props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
+                {(props.comment.new_status?.length > 0
+                  || props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
               </div>
               {/* <Divider className="mx-2 bg-gray-300" /> */}
 
@@ -165,7 +165,11 @@ function Comment(props) {
                 <div className="max-w-4xl  px-2 w-10/12">
                   {/* <div>{props.comment.content}</div> */}
                   {props.comment.content && (
-                    <div className={expanded ? 'h-auto' : 'h-10 overflow-hidden'}>
+                    <div
+                      className={
+                        expanded ? 'h-auto break-words' : 'h-10 break-words overflow-hidden'
+                      }
+                    >
                       <MarkDownView id="editor" source={props.comment.content} className="" />
                     </div>
                   )}
