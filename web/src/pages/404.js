@@ -1,7 +1,6 @@
-import React from 'react';
-import ErrorNotFound from '../components/err-not-found';
-import Otherlayout from '../layouts/OtherLayout';
-import Nav from '../components/navbar/index';
+import React from 'react'
+import ErrorNotFound from '../components/err-not-found'
+import Otherlayout from '../layouts/OtherLayout'
 
 function Custom404() {
   return (
@@ -12,7 +11,7 @@ function Custom404() {
         </Otherlayout.Main>
       </Otherlayout>
     </>
-  );
+  )
 }
 
-export default Custom404;
+export default Custom404
