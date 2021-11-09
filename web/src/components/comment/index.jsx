@@ -31,13 +31,15 @@ function index({ id, statusProp, assigneeProp }) {
     try {
       const response = await getComments(id, start, count)
       if (response.status === 200) {
-        store.dispatch({
-          type: actions.LOAD_COMMENT,
-          payload: {
-            params: [id, start, count],
-            commentArray,
-          },
-        })
+        if (response.data.length > 0) {
+          store.dispatch({
+            type: actions.LOAD_COMMENT,
+            payload: {
+              params: [id, start, count],
+              commentArray,
+            },
+          })
+        }
       }
     } catch (error) {
       console.log(error)
@@ -143,6 +145,15 @@ function index({ id, statusProp, assigneeProp }) {
         status,
       }
       console.log(comment)
+
+      if (!(comment.body || comment.assignee || comment.status)) {
+        return notification.open({
+          icon: <ExclamationCircleTwoTone twoToneColor="red" />,
+          duration: 3,
+          message: '更新しました!',
+          onClick: () => {},
+        })
+      }
       const response = await addComment(comment)
       const newComment = response.data
       // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
@@ -154,20 +165,13 @@ function index({ id, statusProp, assigneeProp }) {
           })
           form.resetFields()
           setValue('')
-          notification.open({
+          return notification.open({
             icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
             duration: 3,
             message: '正常に登録されました。',
             onClick: () => {},
           })
         }
-      } else {
-        notification.open({
-          icon: <ExclamationCircleTwoTone twoToneColor="red" />,
-          duration: 3,
-          message: '更新しました!',
-          onClick: () => {},
-        })
       }
       return newComment
     } catch (error) {
@@ -332,7 +336,7 @@ function index({ id, statusProp, assigneeProp }) {
                   {/* buttons */}
                   <div className="xl:mt-20">
                     <Form.Item noStyle>
-                      <div className="grid xl:gap-5 md:gap-2 xl:grid-cols-3 lg:grid-cols-1 overflow-hidden grid-flow-row ">
+                      <div className="grid xl:gap-5 md:gap-2 gap-2 xl:grid-cols-3 lg:grid-cols-1 overflow-hidden grid-flow-row ">
                         <Button
                           htmlType="button"
                           className="button_cancel ant-btn "

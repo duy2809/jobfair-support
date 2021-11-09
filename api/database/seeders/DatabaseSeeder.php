@@ -5,11 +5,9 @@ namespace Database\Seeders;
 use App\Imports\CategoriesImport;
 use App\Imports\MilestonesImport;
 use App\Imports\TemplateTasksImport;
-use App\Models\User;
+use App\Imports\UsersImport;
 use Excel;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,41 +19,40 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // first 3 users in 3 role
-        User::create([
-            'name'           => 'Sun Asterisk',
-            'email'          => 'jobfair@sun-asterisk.com',
-            'password'       => Hash::make('12345678'),
-            'avatar'         => 'images/avatars/default.jpg',
-            'role'           => 1,
-            'chatwork_id'    => Str::random(10),
-            'remember_token' => null,
-            'updated_at'     => now(),
-            'created_at'     => now(),
-        ]);
+        // $JFadmin = User::create([
+        //     'name'           => 'Sun Asterisk',
+        //     'email'          => 'jobfair@sun-asterisk.com',
+        //     'password'       => Hash::make('12345678'),
+        //     'avatar'         => 'images/avatars/default.jpg',
+        //     'role'           => 1,
+        //     'chatwork_id'    => Str::random(10),
+        //     'remember_token' => null,
+        //     'updated_at'     => now(),
+        //     'created_at'     => now(),
+        // ]);
 
-        User::create([
-            'name'           => 'JF Admin',
-            'email'          => 'AnAdmin@sun-asterisk.com',
-            'password'       => Hash::make('12345678'),
-            'avatar'         => 'images/avatars/default.jpg',
-            'role'           => 2,
-            'chatwork_id'    => Str::random(10),
-            'remember_token' => null,
-            'updated_at'     => now(),
-            'created_at'     => now(),
-        ]);
-        User::create([
-            'name'           => 'Member',
-            'email'          => 'AMember@sun-asterisk.com',
-            'password'       => Hash::make('12345678'),
-            'avatar'         => 'images/avatars/default.jpg',
-            'role'           => 3,
-            'chatwork_id'    => Str::random(10),
-            'remember_token' => null,
-            'updated_at'     => now(),
-            'created_at'     => now(),
-        ]);
-        // milestones data
+        // User::create([
+        //     'name'           => 'JF Admin',
+        //     'email'          => 'AnAdmin@sun-asterisk.com',
+        //     'password'       => Hash::make('12345678'),
+        //     'avatar'         => 'images/avatars/default.jpg',
+        //     'role'           => 2,
+        //     'chatwork_id'    => Str::random(10),
+        //     'remember_token' => null,
+        //     'updated_at'     => now(),
+        //     'created_at'     => now(),
+        // ]);
+        // User::create([
+        //     'name'           => 'Member',
+        //     'email'          => 'AMember@sun-asterisk.com',
+        //     'password'       => Hash::make('12345678'),
+        //     'avatar'         => 'images/avatars/default.jpg',
+        //     'role'           => 3,
+        //     'chatwork_id'    => Str::random(10),
+        //     'remember_token' => null,
+        //     'updated_at'     => now(),
+        //     'created_at'     => now(),
+        // ]);
         // $milestones = [
         //     [
         //         '会社紹介',
@@ -69,7 +66,7 @@ class DatabaseSeeder extends Seeder
         //     ['2回目の面接', 5, 1],
         //     [' 2回目の面接結果', 6, 1],
         // ];
-        // create category + category detail
+        // // create category + category detail
         // Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => '1次面接練習']);
         // Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => 'TC業務']);
         // Category::factory()->has(CategoryDetail::factory()->count(3))->create(['category_name' => '企業担当']);
@@ -122,7 +119,7 @@ class DatabaseSeeder extends Seeder
         //     foreach ($templateSchedule->templateTasks as $templateTask) {
         //         //create tasks
         //         $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-        //         $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
+        //         $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
         //         $duration = 0;
         //         if ($templateTask->unit === 'students') {
         //             $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -136,7 +133,7 @@ class DatabaseSeeder extends Seeder
         //         $newTask = Task::create([
         //             'name'             => $templateTask->name,
         //             'start_time'       => $startTime,
-        //             'end_time'         => date('Y-m-d', strtotime($startTime.' + '.$duration.'days')),
+        //             'end_time'         => date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days')),
         //             'status'           => collect([
         //                 '未着手',
         //                 '進行中',
@@ -164,8 +161,10 @@ class DatabaseSeeder extends Seeder
         // }
 
         // $this->call([FileSeeder::class]);
+        $this->call(SuperAdminSeeder::class);
         Excel::import(new MilestonesImport(), base_path('file/milestone.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new CategoriesImport(), base_path('file/categories.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new TemplateTasksImport(), base_path('file/template_task.ods'), null, \Maatwebsite\Excel\Excel::ODS);
+        Excel::import(new UsersImport(), base_path('file/users.ods'), null, \Maatwebsite\Excel\Excel::ODS);
     }
 }

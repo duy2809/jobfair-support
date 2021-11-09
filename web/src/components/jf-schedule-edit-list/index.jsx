@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { List, Select, Form } from 'antd'
-import { FileDoneOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons'
+import { FileDoneOutlined, DeleteTwoTone, CloseOutlined } from '@ant-design/icons'
 import './styles.scss'
 
 function jfScheduleEditList({
@@ -87,11 +87,11 @@ function jfScheduleEditList({
             <Link href={`/template-task-dt/${templateTask.id}`}>
               <a>{templateTask.name}</a>
             </Link>
-            <DeleteOutlined
+            <DeleteTwoTone
               onClick={() => {
                 onDeleteTemplateTask(templateTask.id)
               }}
-              style={{ fontSize: '24px' }}
+              style={{ fontSize: '14px' }}
             />
           </div>
         </List.Item>

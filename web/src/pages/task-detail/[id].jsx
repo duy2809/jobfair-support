@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import {
-  CheckCircleTwoTone, DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
+  DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
@@ -18,7 +18,6 @@ import './style.scss'
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
-  const [user, setUser] = useState(null)
   const [role, setRole] = useState(null)
   const { store } = useContext(ReactReduxContext)
   const [beforeTasks, setBeforeTask] = useState([])
@@ -42,8 +41,7 @@ function TaskDetail() {
     name: '',
   })
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},
@@ -62,12 +60,21 @@ function TaskDetail() {
         setLoading(false)
       })
   }
+  const getRole = (id) => {
+    const user = store.getState().get('auth').get('user')
+    if (user.get('id') === id) {
+      setRole('admin')
+    } else {
+      setRole(user.get('role'))
+    }
+  }
 
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
     await taskData(idTask).then((response) => {
       if (response.status === 200) {
         const data = response.data
+        getRole(data.schedule.jobfair.jobfair_admin_id)
         setInfoTask({
           id: data.id,
           name: data.name,
@@ -128,16 +135,12 @@ function TaskDetail() {
 
   useEffect(() => {
     setLoading(true)
-    setUser(store.getState().get('auth').get('user'))
-    if (user) {
-      setRole(user.get('role'))
-    }
     fetchTaskData()
     fetchBeforeTask()
     fetchAfterTask()
     fetchReviewersList()
     setLoading(false)
-  }, [user])
+  }, [role])
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
   return (
     <div>
@@ -433,5 +436,5 @@ function TaskDetail() {
     </div>
   )
 }
-TaskDetail.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TaskDetail.middleware = ['auth:superadmin', 'auth:member']
 export default TaskDetail

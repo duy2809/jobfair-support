@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Role;
+use App\Models\Jobfair;
 use Illuminate\Http\Request;
 
 class WebInit extends Controller
@@ -35,10 +36,6 @@ class WebInit extends Controller
 
                 break;
             case 2:
-                $roleStr = Role::ADMIN;
-
-                break;
-            case 3:
                 $roleStr = Role::MEMBER;
 
                 break;
@@ -46,16 +43,19 @@ class WebInit extends Controller
                 break;
         }
 
+        $manageIds = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
+
         return [
             'user' => [
-                'id'          => $user->id,
-                'name'        => $user->name,
-                'email'       => $user->email,
-                'avatar'      => $user->avatar,
-                'role'        => $roleStr,
-                'chatwork_id' => $user->chatwork_id,
-                'created_at'  => $user->created_at,
-                'updated_at'  => $user->updated_at,
+                'id'            => $user->id,
+                'name'          => $user->name,
+                'email'         => $user->email,
+                'avatar'        => $user->avatar,
+                'role'          => $roleStr,
+                'manage_jf_ids' => $manageIds,
+                'chatwork_id'   => $user->chatwork_id,
+                'created_at'    => $user->created_at,
+                'updated_at'    => $user->updated_at,
             ],
         ];
     }

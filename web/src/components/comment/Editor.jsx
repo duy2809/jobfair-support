@@ -1,11 +1,10 @@
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import dynamic from 'next/dynamic'
 import PropTypes from 'prop-types'
-import React, { memo, useEffect, useState } from 'react'
-import { MemberApi } from '../../api/member'
+import React, { useEffect, useState } from 'react'
 // import handlePastedText from '../../utils/handleOnPaste'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-
+import { MemberApi } from '../../api/member'
 import './styles.scss'
 
 const Editor = dynamic(() => import('react-draft-wysiwyg').then((module) => module.Editor), {
@@ -84,4 +83,4 @@ index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 }
-export default memo(index)
+export default index

@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { Button, Modal, notification, Tooltip, Tag } from 'antd'
 import {
   ExclamationCircleOutlined,
-  CheckCircleTwoTone,
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons'
@@ -61,8 +60,7 @@ function templatetTaskDt() {
   }
 
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => { },

@@ -44,6 +44,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
+Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
 
@@ -85,6 +86,7 @@ Route::prefix('member')->group(function () {
 // login, logout
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/preURL', [AuthController::class, 'preURL']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
@@ -157,6 +159,7 @@ Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
 Route::get('/task/{id}/list-reviewers', 'TaskController@getListReviewers');
+Route::get('/is-admin-task', 'TaskController@checkRole');
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');

@@ -79,15 +79,9 @@ function MemberDetailPage() {
           <div className="flex mt-2">
             {role === 'superadmin' ? (
               <>
-                <EditTwoTone
-                  onClick={handleEdit}
-                  className="border-none mx-1 text-2xl"
-                />
+                <EditTwoTone onClick={handleEdit} className="border-none mx-1 text-2xl" />
 
-                <DeleteTwoTone
-                  onClick={modelDelete}
-                  className="border-none mx-1 text-2xl"
-                />
+                <DeleteTwoTone onClick={modelDelete} className="border-none mx-1 text-2xl" />
               </>
             ) : null}
           </div>
