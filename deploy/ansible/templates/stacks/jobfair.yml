@@ -1,6 +1,7 @@
 version: '3.5'
 
 x-application-env: &application-env
+  APP_NAME: "{{ config.app.name }}"
   APP_KEY: "{{ config.app.key }}"
   APP_URL: "{{ config.app.url }}"
   SERVER_API_URL: "{{ config.server.api.url }}"
@@ -15,6 +16,8 @@ x-application-env: &application-env
 
   CACHE_DRIVER: "{{ config.cache.driver }}"
   SESSION_DRIVER: "{{ config.session.driver }}"
+  BROADCAST_DRIVER: "{{ config.broadcast.driver }}"
+  QUEUE_CONNECTION: "{{ config.queue.connection }}"
 
   FILESYSTEM_DRIVER: "{{ config.filesystem.driver }}"
   QUEUE_CONNECTION: "{{ config.queue.connection }}"
@@ -75,8 +78,8 @@ services:
         - traefik.http.routers.web.rule=Host(`{{ domain }}`)
         - traefik.http.routers.web.entrypoints={{ traefik_entrypoint }}
         - traefik.http.services.web.loadbalancer.server.port=3000
-        - traefik.http.routers.web.middlewares=web-auth
-        - traefik.http.middlewares.web-auth.basicauth.usersFile=/etc/traefik/jfs.htpasswd
+        # - traefik.http.routers.web.middlewares=web-auth
+        # - traefik.http.middlewares.web-auth.basicauth.usersFile=/etc/traefik/jfs.htpasswd
     networks:
       default:
       traefik:
@@ -119,15 +122,16 @@ services:
     environment:
       REDIS_KEY_PREFIX: sun_jobfair_database_
       REDIS_HOST: redis
-      AUTH_HOST: http://{{ domain }}
+      AUTH_HOST: http://api
       AUTH_ENDPOINT: /broadcasting/auth
+      DEV_MODE: "true"
     deploy:
       labels:
         - traefik.enable=true
         - traefik.http.routers.ws.rule=Host(`{{ domain }}`) && PathPrefix(`/socket.io`)
         - traefik.http.routers.ws.entrypoints={{ traefik_entrypoint }}
         - traefik.http.services.ws.loadbalancer.server.port=6001
-        - traefik.http.routers.ws.middlewares=web-auth
+        # - traefik.http.routers.ws.middlewares=web-auth
     networks:
       - default
       - traefik
