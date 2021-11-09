@@ -20,7 +20,9 @@ class InviteMemberController extends Controller
         if (!$user) {
             $username = '';
             if (str_contains($request->email, '@sun-asterisk.com')) {
-                $username = explode('@sun-asterisk', $request->email)[0];
+                $accountName = explode('@sun-asterisk', $request->email)[0];
+                $accountName = str_replace('.', ' ', $accountName);
+                $username = ucwords($accountName);
             } else {
                 $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
                 $randomString = '';
