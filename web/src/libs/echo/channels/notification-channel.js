@@ -3,11 +3,7 @@ import echo from '../connection'
 export default class NotificationChannel {
   constructor(userId) {
     this.userId = userId
-<<<<<<< HEAD
     this.channel = echo.private(`App.Models.User.${userId}`)
-=======
-    this.channel = echo.channel(`laravel_database_private-App.Models.User.${userId}`)
->>>>>>> test notification realtime
     this.onOutputCb = null
   }
 
