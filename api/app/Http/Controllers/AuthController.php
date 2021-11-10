@@ -27,7 +27,7 @@ class AuthController extends Controller
             $manageIds = Jobfair::where('jobfair_admin_id', $user->id)->pluck('id')->toArray();
             $user->setAttribute('manage_jf_ids', $manageIds);
 
-            return response()->json(['message' => 'Login successfully', 'auth' => auth()->user(), 'preURL' => $preURL], 200);
+            return response()->json(['message' => 'Login successfully', 'auth' => $user, 'preURL' => $preURL], 200);
         }
 
         return response()->json(['message' => 'Email or password is incorrect'], 400);
