@@ -160,6 +160,7 @@ const List = ({
           display: 'flex',
           justifyContent: 'space-between',
           marginBottom: '10px',
+          height: '40px',
         }}
       >
         <button
@@ -211,6 +212,7 @@ const List = ({
                   style={{
                     width: '270px',
                     height: '40px',
+
                   }}
                   name="name"
                   className="no-border"

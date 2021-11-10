@@ -182,6 +182,7 @@ const ListJfToppage = ({
           display: 'flex',
           justifyContent: 'space-between',
           marginBottom: '10px',
+          height: '40px',
         }}
       >
         <button

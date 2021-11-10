@@ -1,8 +1,5 @@
 .list-toppage{
     margin: 30px 0;
-    img{
-        transition: .3s;
-    }
     img:hover{
         filter: invert(83%) sepia(27%) saturate(2852%) hue-rotate(353deg) brightness(108%) contrast(106%);
         cursor: pointer;
