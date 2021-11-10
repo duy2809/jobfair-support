@@ -283,18 +283,23 @@ const Top = () => {
                   routeToAdd="/add-template-task"
                   isLoading={isLoadingTemplate}
                 />
-                <TaskSubTable
-                  key={5}
-                  dataColumn={taskListDataColumn}
-                  dataSource={taskDataItem}
-                  taskReviewerList={taskReviewerList}
-                  text="タスク一覧"
-                  searchIcon
-                  showTimeInput={false}
-                  routeToAdd="/add-template-task"
-                  route={`member/${id}/tasks`}
-                  isLoading={isLoadingTask}
-                />
+                {
+                  role === 'superadmin' ? null : (
+                    <TaskSubTable
+                      key={5}
+                      dataColumn={taskListDataColumn}
+                      dataSource={taskDataItem}
+                      taskReviewerList={taskReviewerList}
+                      text="タスク一覧"
+                      searchIcon
+                      showTimeInput={false}
+                      routeToAdd="/add-template-task"
+                      route={`member/${id}/tasks`}
+                      isLoading={isLoadingTask}
+                    />
+                  )
+                }
+
               </Col>
               <Col span={12} />
             </Row>
