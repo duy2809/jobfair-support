@@ -16,13 +16,13 @@ import MarkDownView from '../markDownView'
 import './styles.scss'
 
 function Comment(props) {
-  const AVATAR_SIZE = 50
-  const MAX_CHAR_PER_LINE = 112
+  const AVATAR_SIZE = 42
+  const MAX_CHAR_PER_LINE = 300
   const [expanded, setExpanded] = useState(false)
   const [commentOverflow, setCommentOverflow] = useState(false)
   const { store } = useContext(ReactReduxContext)
   const [userId, setUserId] = useState(1)
-  const classNames = (...classes) => classes.filter(Boolean).join(' ')
+  // const classNames = (...classes) => classes.filter(Boolean).join(' ')
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
   const toggleExpanded = () => {
@@ -34,7 +34,7 @@ function Comment(props) {
     if (props.comment.content) {
       setCommentOverflow(props.comment.content.length > MAX_CHAR_PER_LINE)
     }
-  }, [])
+  }, [props.comment.content])
 
   const editComment = () => {
     console.log(props)
@@ -160,29 +160,20 @@ function Comment(props) {
               </div>
               {/* <Divider className="mx-2 bg-gray-300" /> */}
 
-              <div className="flex ">
+              <div className="flex items-center overflow-hidden ">
                 {/* comment content */}
-                <div className="max-w-3xl overflow-hidden px-2">
+                <div className="max-w-4xl  px-2 w-10/12">
                   {/* <div>{props.comment.content}</div> */}
-                  {props.comment.content && !expanded && (
-                    <div className="">
-                      <MarkDownView
-                        id="editor"
-                        source={props.comment.content}
-                        className={`${classNames(
-                          'comment__content',
-                          expanded ? 'expanded' : 'collapse',
-                          commentOverflow ? 'comment__overflow' : '',
-                        )} bg-red-600`}
-                      />
+                  {props.comment.content && (
+                    <div
+                      className={
+                        expanded ? 'h-auto break-words' : 'h-10 break-words overflow-hidden'
+                      }
+                    >
+                      <MarkDownView id="editor" source={props.comment.content} className="" />
                     </div>
                   )}
                 </div>
-                {/*   display more button */}
-                <Button className="mr-4 see-more float-right" onClick={toggleExpanded}>
-                  {/* eslint-disable-next-line no-nested-ternary */}
-                  {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
-                </Button>
                 {/* edited time */}
                 <div>
                   <Popover
@@ -190,13 +181,23 @@ function Comment(props) {
                     trigger="hover"
                   >
                     <span
-                      className="comment__edited text-gray-500 italic"
+                      className="comment__edited inline text-gray-500 italic  w-1/12"
                       hidden={!props.comment.edited}
                     >
                       編集済み
                     </span>
                   </Popover>
                 </div>
+                {/*   display more button */}
+                {commentOverflow && (
+                  <Button
+                    className="block mx-2 xl:w-1/12 lg:w-2/12 see-more float-right"
+                    onClick={toggleExpanded}
+                  >
+                    {/* eslint-disable-next-line no-nested-ternary */}
+                    {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

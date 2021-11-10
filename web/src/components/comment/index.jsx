@@ -1,7 +1,7 @@
 import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
 import { Button, Divider, Form, Input, notification, Select, Tag, Tooltip } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, memo, useCallback } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
 import { getUser, taskData } from '../../api/task-detail'
@@ -11,7 +11,7 @@ import Comment from './Comment'
 import MyEditor from './Editor'
 import './styles.scss'
 
-function index({ id, statusProp, assigneeProp }) {
+function index({ id, statusProp, assigneeProp, parentCallback }) {
   const [visible, setVisible] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
@@ -52,6 +52,7 @@ function index({ id, statusProp, assigneeProp }) {
   }
   // Modal
   const showBox = () => {
+    clearForm()
     setVisible(true)
     setShow(false)
   }
@@ -62,6 +63,9 @@ function index({ id, statusProp, assigneeProp }) {
     setShow(true)
   }
 
+  const pushData2Parent = useCallback((data) => {
+    parentCallback(data)
+  }, [])
   const fetchListMember = async () => {
     await getUser()
       .then((response) => {
@@ -159,6 +163,13 @@ function index({ id, statusProp, assigneeProp }) {
       // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
       if (response.status === 200) {
         if (newComment) {
+          console.log(newComment)
+          if (newComment.new_assignees || newComment.new_status) {
+            pushData2Parent({
+              new_assignees: newComment.new_assignees ?? '',
+              new_status: newComment.new_status ?? '',
+            })
+          }
           store.dispatch({
             type: actions.ADD_COMMENT,
             payload: [...commentArray, newComment],
@@ -205,35 +216,40 @@ function index({ id, statusProp, assigneeProp }) {
 
     const { status, assignee } = form.getFieldsValue()
     const newComment = { ...editingComment, content: value, status, assignee }
-    const response = await updateComment(newComment.id, newComment)
-
-    if (response.status === 200) {
-      const newComments = commentArray.map((comment) => {
-        if (comment.id === newComment.id) {
-          return newComment
-        }
-        return comment
-      })
-      store.dispatch({
-        type: actions.EDIT_COMMENT,
-        payload: newComments,
-      })
-      notification.open({
-        icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
-        duration: 3,
-        message: '更新しました!',
-        onClick: () => {},
-      })
-      setEditing(false)
-      form.resetFields()
-    } else {
+    console.log(newComment)
+    try {
+      const response = await updateComment(newComment.id, newComment)
+      if (response.status === 200) {
+        const newComments = commentArray.map((comment) => {
+          if (comment.id === newComment.id) {
+            return newComment
+          }
+          return comment
+        })
+        store.dispatch({
+          type: actions.EDIT_COMMENT,
+          payload: newComments,
+        })
+        notification.open({
+          icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+          duration: 3,
+          message: '更新しました!',
+          onClick: () => {},
+        })
+        setEditing(false)
+        form.resetFields()
+        return newComments
+      }
+    } catch (error) {
       notification.open({
         icon: <ExclamationCircleTwoTone twoToneColor="red" />,
         duration: 3,
         message: '更新しました!',
         onClick: () => {},
       })
+      return error
     }
+    return newComment
   }
 
   return (
@@ -283,7 +299,12 @@ function index({ id, statusProp, assigneeProp }) {
                   {/* selector */}
                   <div className="h-full xl:mb-1">
                     <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
-                      <Select size="large" className="addJF-selector" placeholder="ステータス">
+                      <Select
+                        size="large"
+                        defaultValue=""
+                        className="addJF-selector"
+                        placeholder="ステータス"
+                      >
                         {listStatus.map((element) => (
                           <Select.Option disabled={editing} value={element}>
                             {element}
@@ -383,4 +404,4 @@ function index({ id, statusProp, assigneeProp }) {
 
 index.propTypes = {}
 
-export default index
+export default memo(index)
