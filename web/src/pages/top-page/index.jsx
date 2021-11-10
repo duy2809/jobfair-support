@@ -241,48 +241,55 @@ const Top = () => {
                   routeToAdd="/add-jobfair"
                   isLoading={isLoadingJobfair}
                 />
-                <List
-                  role={role}
-                  key={2}
-                  dataColumn={memListDataColumn}
-                  dataSource={memberDataItem}
-                  text="メンバ"
-                  searchIcon
-                  showTimeInput={false}
-                  showCategoryInput={false}
-                  showMilestoneInput={false}
-                  route="/member"
-                  routeToAdd="/member/invite"
-                  isLoading={isLoadingMember}
-                />
-                <List
-                  role={role}
-                  key={3}
-                  dataColumn={jfScheduleDataColumn}
-                  dataSource={scheduleData}
-                  text="JFスケジュール"
-                  searchIcon
-                  showTimeInput={false}
-                  showCategoryInput={false}
-                  showMilestoneInput={false}
-                  route="/schedule"
-                  routeToAdd="/jf-schedule/add"
-                  isLoading={isLoadingSchedule}
-                />
-                <List
-                  role={role}
-                  key={4}
-                  dataColumn={templateTaskDataColumn}
-                  dataSource={templateData}
-                  text="テンプレートタスク"
-                  searchIcon
-                  showTimeInput={false}
-                  showCategoryInput
-                  showMilestoneInput
-                  route="/template-tasks"
-                  routeToAdd="/add-template-task"
-                  isLoading={isLoadingTemplate}
-                />
+                {
+                  role === 'superadmin' ? (
+                    <>
+                      <List
+                        role={role}
+                        key={2}
+                        dataColumn={memListDataColumn}
+                        dataSource={memberDataItem}
+                        text="メンバ"
+                        searchIcon
+                        showTimeInput={false}
+                        showCategoryInput={false}
+                        showMilestoneInput={false}
+                        route="/member"
+                        routeToAdd="/member/invite"
+                        isLoading={isLoadingMember}
+                      />
+                      <List
+                        role={role}
+                        key={3}
+                        dataColumn={jfScheduleDataColumn}
+                        dataSource={scheduleData}
+                        text="JFスケジュール"
+                        searchIcon
+                        showTimeInput={false}
+                        showCategoryInput={false}
+                        showMilestoneInput={false}
+                        route="/schedule"
+                        routeToAdd="/jf-schedule/add"
+                        isLoading={isLoadingSchedule}
+                      />
+                      <List
+                        role={role}
+                        key={4}
+                        dataColumn={templateTaskDataColumn}
+                        dataSource={templateData}
+                        text="テンプレートタスク"
+                        searchIcon
+                        showTimeInput={false}
+                        showCategoryInput
+                        showMilestoneInput
+                        route="/template-tasks"
+                        routeToAdd="/add-template-task"
+                        isLoading={isLoadingTemplate}
+                      />
+                    </>
+                  ) : null
+                }
+
                 {
                   role === 'superadmin' ? null : (
                     <TaskSubTable
