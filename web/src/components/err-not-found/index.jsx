@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-globals */
-import { RollbackOutlined } from '@ant-design/icons'
 import React from 'react'
+import { RollbackOutlined } from '@ant-design/icons'
 
-const ErrorNotFound = () => (
+export default function ErrorNotFound() {
   <div className="flex items-center justify-center mt-24">
     <div className="flex items-center gap-x-8">
       <div
@@ -39,6 +39,4 @@ const ErrorNotFound = () => (
       </div>
     </div>
   </div>
-)
-
-export default ErrorNotFound
+}
