@@ -834,5 +834,5 @@ function TaskList() {
     </JfLayout>
   )
 }
-TaskList.middleware = ['auth']
+TaskList.middleware = ['auth:superadmin', 'auth:member']
 export default TaskList

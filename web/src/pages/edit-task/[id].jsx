@@ -744,5 +744,5 @@ EditTask.getInitialProps = async (ctx) => {
   }
   return {}
 }
-EditTask.middleware = ['auth']
+EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
