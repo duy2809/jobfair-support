@@ -113,6 +113,8 @@ function TaskDetail() {
           name: data.schedule.jobfair.name,
         })
       }
+    }).catch(() => {
+      window.location.href = '/error'
     })
   }
   const fetchBeforeTask = async () => {
@@ -129,6 +131,8 @@ function TaskDetail() {
   const fetchReviewersList = async () => {
     await reviewers(idTask).then((response) => {
       setReviewersList(response.data)
+    }).catch(() => {
+      window.location.href = '/error'
     })
   }
   const modelDelete = () => {
