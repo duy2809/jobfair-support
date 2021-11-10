@@ -59,6 +59,7 @@ function TaskList() {
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
   const [isEdit, setIsEdit] = useState(false)
+  const [deleteOrEdit, setDeleteOrEdit] = useState(true)
   const [confirmSave, setConfirmSave] = useState(false)
   // select number to display
   const handleSelect = (value) => {
@@ -304,12 +305,7 @@ function TaskList() {
         }
       })
     }
-
-    const addedMember = []
-    record.mems.forEach((item) => {
-      addedMember.push(item.id)
-    })
-
+    const filted = userAS.filter((e) => !managers.includes(e.name))
     return (
       <div className="listMember">
         {edit ? (
@@ -321,12 +317,17 @@ function TaskList() {
                 setMemberAS(value)
               }}
               style={{ width: '100%' }}
-              defaultValue={addedMember}
+              defaultValue={managers}
               showArrow
+              // eslint-disable-next-line react/jsx-no-bind
               tagRender={tagRender}
             >
-              {userAS.map((item) => (
-                <Select.Option className="validate-user" key={item.name} value={item.id}>
+              {filted.map((item) => (
+                <Select.Option
+                  className="validate-user"
+                  key={item.name}
+                  value={item.id}
+                >
                   {item.name}
                 </Select.Option>
               ))}
@@ -336,7 +337,7 @@ function TaskList() {
               <Button
                 onClick={() => {
                   setConfirmSave(false)
-
+                  setDeleteOrEdit(true)
                   if (!isEdit) {
                     setEdit(false)
                   } else {
@@ -346,11 +347,13 @@ function TaskList() {
                       content: '',
                       centered: true,
                       onOk: () => {
+                        setDeleteOrEdit(true)
                         setEdit(false)
                         setIsEdit(false)
                       },
 
                       onCancel: () => {
+                        setDeleteOrEdit(true)
                         setIsEdit(false)
                       },
                       okText: 'はい',
@@ -371,6 +374,7 @@ function TaskList() {
               </Button>
               <Button
                 onClick={() => {
+                  setDeleteOrEdit(true)
                   setEdit(false)
                   setConfirmSave(false)
                   handleSave(memberAS, record, userAS)
@@ -391,6 +395,7 @@ function TaskList() {
                 onClick={() => {
                   setConfirmSave(true)
                   setEdit(true)
+                  setDeleteOrEdit(false)
                   if (confirmSave) {
                     setEdit(false)
                   }
@@ -507,7 +512,9 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
-                modelDelete(record.idtask)
+                if (deleteOrEdit) {
+                  modelDelete(record.idtask)
+                }
               }}
             />
           </Space>
