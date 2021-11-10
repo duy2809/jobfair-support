@@ -5,7 +5,6 @@ import {
   HomeOutlined,
   MenuOutlined,
   TableOutlined,
-  UserOutlined,
 } from '@ant-design/icons'
 import { Layout, Menu, Avatar } from 'antd'
 import _get from 'lodash/get'
@@ -47,10 +46,14 @@ const JfLayout = ({ children, id, bgr }) => {
         setAdminId(response.data.jobfair_admin_id)
       })
       if (AdminId) {
-        await getAvatar(AdminId)
-          .then(() => {
-            const link = `../../api/avatar/${AdminId}`
-            setAvatarAdmin(link)
+        await getAvatar(id)
+          .then((res) => {
+            if (!res.data) {
+              setAvatarAdmin(null)
+            } else {
+              const link = `../../api/avatar/${AdminId}`
+              setAvatarAdmin(link)
+            }
           })
           .catch(() => setAvatarAdmin(null))
       }
@@ -207,16 +210,16 @@ const JfLayout = ({ children, id, bgr }) => {
                 {avatarAdmin ? (
                   <Avatar
                     size={45}
-                    style={{
-                      backgroundColor: '#FFD802',
-                      cursor: 'pointer',
-                    }}
                     src={avatarAdmin}
                   />
                 ) : (
-                  <div className="px-2 border-2 border-black rounded-full py-1 mb-1 cursor-pointer">
-                    <UserOutlined className="text-xl user-icon" />
-                  </div>
+                  <Avatar
+                    size={45}
+                    style={{
+                      backgroundColor: '#FFD802',
+                    }}
+                    src="../images/avatars/default.jpg"
+                  />
                 )}
               </div>
             </div>

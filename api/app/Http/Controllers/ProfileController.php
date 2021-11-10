@@ -45,6 +45,9 @@ class ProfileController extends Controller
     {
         // return Storage::download(Auth::user()->avatar,'avatar');
         $avatar = User::find($id)->avatar;
+        if (strcmp($avatar, 'images/avatars/default.jpg') === 0) {
+            return null;
+        }
 
         return Storage::download($avatar);
 
