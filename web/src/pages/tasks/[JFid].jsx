@@ -323,11 +323,7 @@ function TaskList() {
               tagRender={tagRender}
             >
               {filted.map((item) => (
-                <Select.Option
-                  className="validate-user"
-                  key={item.name}
-                  value={item.id}
-                >
+                <Select.Option className="validate-user" key={item.name} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
@@ -802,7 +798,7 @@ function TaskList() {
                     onChange={onSearch}
                     defaultValue={valueSearch}
                   />
-                  {role === 'superadmin' ? (
+                  {role === 'admin' ? (
                     <>
                       <Button
                         size="large"
@@ -838,5 +834,5 @@ function TaskList() {
     </JfLayout>
   )
 }
-TaskList.middleware = ['auth:superadmin', 'auth:member']
+TaskList.middleware = ['auth']
 export default TaskList
