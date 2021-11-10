@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Broadcasting\CommentCreated;
 use App\Models\Comment;
 use App\Models\Task;
 use App\Models\User;
@@ -143,12 +144,21 @@ class CommentController extends Controller
                     if ($editedUser->id !== $jobfairAdmin->id) {
                         $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
                     }
+
+                    $isUpdatedTask = true;
                 }
             }
         }
 
+        // mark if a comment is changing task info or not
+        if (!$isUpdatedTask) {
+            $input['is_normal_comment'] = true;
+        }
+
         // return new comment
         $comment = Comment::create($input);
+        CommentCreated::dispatch($comment);
+
         $listOldAssignees = [];
         $listNewAssignees = [];
         if ($comment->old_assignees && $comment->new_assignees) {
@@ -204,7 +214,7 @@ class CommentController extends Controller
         );
         $data = Task::with([
             'comments' => function ($query) use ($request) {
-                $query->latest('updated_at')->offset($request->start)->take($request->count)->get();
+                $query->where('is_created_task', false)->latest('updated_at')->offset($request->start)->take($request->count)->get();
             },
             'comments.user:id,name,avatar',
         ])->find($id, ['id', 'name']);
@@ -217,36 +227,66 @@ class CommentController extends Controller
                 $listNewAssignees = explode(',', $comment->new_assignees);
             }
 
-            $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
-                return User::find($assingee)->name;
-            });
-            $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
-                return User::find($assingee)->name;
-            });
+            $listOldAssignees = User::whereIn('id', $listOldAssignees)->pluck('name');
+            $listNewAssignees = User::whereIn('id', $listNewAssignees)->pluck('name');
+            $listOldPreviousTasks = [];
+            $listNewPreviousTasks = [];
+            $listOldFollowingTasks = [];
+            $listNewFollowingTasks = [];
+            $listOldReviewers = [];
+            $listNewReviewers = [];
+            if ($comment->old_previous_tasks && $comment->new_previous_tasks) {
+                $listOldPreviousTasks = explode(',', $comment->old_previous_tasks);
+                $listNewPreviousTasks = explode(',', $comment->new_previous_tasks);
+            }
+
+            if ($comment->old_following_tasks && $comment->new_following_tasks) {
+                $listOldFollowingTasks = explode(',', $comment->old_following_tasks);
+                $listNewFollowingTasks = explode(',', $comment->new_following_tasks);
+            }
+
+            if ($comment->old_reviewers && $comment->new_reviewers) {
+                $listOldReviewers = explode(',', $comment->old_reviewers);
+                $listNewReviewers = explode(',', $comment->new_reviewers);
+            }
 
             // return $comment;
             return [
-                'id'              => $comment->id,
-                'author'          => [
+                'id'                  => $comment->id,
+                'author'              => [
                     'id'     => $comment->user->id,
                     'name'   => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                 ],
-                'created'         => $comment->created_at,
-                'content'         => $comment->body,
-                'edited'          => $comment->updated_at > $comment->created_at,
-                'last_edit'       => $comment->updated_at,
-                'old_assignees'   => $listOldAssignees ?? null,
-                'new_assignees'   => $listNewAssignees ?? null,
-                'old_description' => $comment->old_description,
-                'new_description' => $comment->new_description,
-                'old_status'      => $comment->old_status,
-                'new_status'      => $comment->new_status,
+                'created'             => $comment->created_at,
+                'content'             => $comment->body,
+                'edited'              => $comment->updated_at > $comment->created_at,
+                'last_edit'           => $comment->updated_at,
+                'old_assignees'       => $listOldAssignees ?? null,
+                'new_assignees'       => $listNewAssignees ?? null,
+                'old_description'     => $comment->old_description,
+                'new_description'     => $comment->new_description,
+                'old_status'          => $comment->old_status,
+                'new_status'          => $comment->new_status,
+                'old_previous_tasks'  => $listOldPreviousTasks ?? null,
+                'new_previous_tasks'  => $listNewPreviousTasks ?? null,
+                'old_following_tasks' => $listOldFollowingTasks ?? null,
+                'new_following_tasks' => $listNewFollowingTasks ?? null,
+                'old_name'            => $comment->old_name,
+                'new_name'            => $comment->new_name,
+                'old_reviewers'       => $listOldReviewers ?? null,
+                'new_reviewers'       => $listNewReviewers ?? null,
+                'old_start_date'      => $comment->old_start_date,
+                'new_start_date'      => $comment->new_start_date,
+                'old_end_date'        => $comment->old_end_date,
+                'new_end_date'        => $comment->new_end_date,
+                'is_created_task'     => $comment->is_created_task,
             ];
         });
 
         return response()->json($result);
     }
+
     public function showMoreInJobfair($JFid, Request $request)
     {
         $request->validate(
@@ -267,9 +307,9 @@ class CommentController extends Controller
                 $query->whereHas('schedule', function ($query) use ($JFid) {
                     $query->where('jobfair_id', $JFid);
                 });
-            })->latest('updated_at')->offset($request->start)->take($request->count)->get();
+            })->where('is_normal_comment', false)->latest('updated_at')->offset($request->start)->take($request->count)->get();
         } else {
-            $comments = Comment::latest('updated_at')
+            $comments = Comment::where('is_normal_comment', false)->latest('updated_at')
                 ->offset($request->start)->take($request->count)->get();
         }
 
@@ -281,31 +321,60 @@ class CommentController extends Controller
                 $listNewAssignees = explode(',', $comment->new_assignees);
             }
 
-            $listOldAssignees = collect($listOldAssignees)->map(function ($assingee) {
-                return User::find($assingee)->name;
-            });
-            $listNewAssignees = collect($listNewAssignees)->map(function ($assingee) {
-                return User::find($assingee)->name;
-            });
+            $listOldAssignees = User::whereIn('id', $listOldAssignees)->pluck('name');
+            $listNewAssignees = User::whereIn('id', $listNewAssignees)->pluck('name');
+            $listOldPreviousTasks = [];
+            $listNewPreviousTasks = [];
+            $listOldFollowingTasks = [];
+            $listNewFollowingTasks = [];
+            $listOldReviewers = [];
+            $listNewReviewers = [];
+            if ($comment->old_previous_tasks && $comment->new_previous_tasks) {
+                $listOldPreviousTasks = explode(',', $comment->old_previous_tasks);
+                $listNewPreviousTasks = explode(',', $comment->new_previous_tasks);
+            }
+
+            if ($comment->old_following_tasks && $comment->new_following_tasks) {
+                $listOldFollowingTasks = explode(',', $comment->old_following_tasks);
+                $listNewFollowingTasks = explode(',', $comment->new_following_tasks);
+            }
+
+            if ($comment->old_reviewers && $comment->new_reviewers) {
+                $listOldReviewers = explode(',', $comment->old_reviewers);
+                $listNewReviewers = explode(',', $comment->new_reviewers);
+            }
 
             // return $comment;
             return [
-                'id'              => $comment->id,
-                'author'          => [
+                'id'                  => $comment->id,
+                'author'              => [
                     'id'     => $comment->user->id,
                     'name'   => $comment->user->name,
                     'avatar' => $comment->user->avatar,
                 ],
-                'created'         => $comment->created_at,
-                'content'         => $comment->body,
-                'edited'          => $comment->updated_at > $comment->created_at,
-                'last_edit'       => $comment->updated_at,
-                'old_assignees'   => $listOldAssignees ?? null,
-                'new_assignees'   => $listNewAssignees ?? null,
-                'old_description' => $comment->old_description,
-                'new_description' => $comment->new_description,
-                'old_status'      => $comment->old_status,
-                'new_status'      => $comment->new_status,
+                'created'             => $comment->created_at,
+                'content'             => $comment->body,
+                'edited'              => $comment->updated_at > $comment->created_at,
+                'last_edit'           => $comment->updated_at,
+                'old_assignees'       => $listOldAssignees ?? null,
+                'new_assignees'       => $listNewAssignees ?? null,
+                'old_description'     => $comment->old_description,
+                'new_description'     => $comment->new_description,
+                'old_status'          => $comment->old_status,
+                'new_status'          => $comment->new_status,
+                'old_previous_tasks'  => $listOldPreviousTasks ?? null,
+                'new_previous_tasks'  => $listNewPreviousTasks ?? null,
+                'old_following_tasks' => $listOldFollowingTasks ?? null,
+                'new_following_tasks' => $listNewFollowingTasks ?? null,
+                'old_name'            => $comment->old_name,
+                'new_name'            => $comment->new_name,
+                'old_reviewers'       => $listOldReviewers ?? null,
+                'new_reviewers'       => $listNewReviewers ?? null,
+                'old_start_date'      => $comment->old_start_date,
+                'new_start_date'      => $comment->new_start_date,
+                'old_end_date'        => $comment->old_end_date,
+                'new_end_date'        => $comment->new_end_date,
+                'is_created_task'     => $comment->is_created_task,
             ];
         });
 

@@ -27,6 +27,7 @@ class AddFieldsToCommentsTable extends Migration
             $table->date('old_end_date')->nullable();
             $table->date('new_end_date')->nullable();
             $table->boolean('is_created_task')->default(false);
+            $table->boolean('is_normal_comment')->default(false);
         });
     }
 
@@ -52,6 +53,7 @@ class AddFieldsToCommentsTable extends Migration
                 'old_end_date',
                 'new_end_date',
                 'is_created_task',
+                'is_normal_comment',
             ]);
         });
     }
