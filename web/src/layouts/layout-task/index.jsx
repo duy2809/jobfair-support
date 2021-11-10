@@ -198,12 +198,12 @@ const JfLayout = ({ children, id, bgr }) => {
               <span className="text-lg">{startDate ?? 'N/A'}</span>
               <span className="text-lg px-2 ">
                 {`企業: ${
-                  numberOfStudents ?? 'N/A'
+                  numberOfCompanies ?? 'N/A'
                 }`}
               </span>
               <span className="text-lg px-2 ">
                 {`学生: ${
-                  numberOfCompanies ?? 'N/A'
+                  numberOfStudents ?? 'N/A'
                 }`}
               </span>
               <div className="avatar pl-3 pr-2">
