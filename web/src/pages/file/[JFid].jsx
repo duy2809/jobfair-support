@@ -710,5 +710,5 @@ function File() {
     </div>
   )
 }
-File.middleware = ['auth']
+File.middleware = ['auth:superadmin', 'auth:member']
 export default File

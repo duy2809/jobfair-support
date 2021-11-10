@@ -305,5 +305,5 @@ index.getInitialProps = async (ctx) => {
   }
   return {}
 }
-index.middleware = ['auth']
+index.middleware = ['auth:superadmin', 'auth:member']
 export default index
