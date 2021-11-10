@@ -398,5 +398,5 @@ const EditProfilePage = () => {
     </div>
   )
 }
-EditProfilePage.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+EditProfilePage.middleware = ['auth:superadmin', 'auth:member']
 export default EditProfilePage
