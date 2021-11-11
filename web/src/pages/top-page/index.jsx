@@ -117,14 +117,14 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      setTaskData(response.data)
+      let tasksData = response.data.filter(
+        (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
+      )
+      setTaskData(tasksData)
 
       const data = await taskReviewer()
-      // console.log(data.data)
       setTaskReviewerData(data.data)
       setLoadingTask(false)
-      // console.log("s")
-      // console.log(data)
     }
 
     const getMember = async () => {

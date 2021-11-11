@@ -126,11 +126,11 @@ const TaskSubTable = ({
   useEffect(() => {
     let datas = [...list]
     if (filter) {
-      if (filter.name) {
-        datas = datas.filter(
-          (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
-        )
-      }
+      // if (filter.name) {
+      //   datas = datas.filter(
+      //     (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
+      //   )
+      // }
       if (filter.status) {
         datas = datas.filter(
           (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase())
@@ -220,14 +220,18 @@ const TaskSubTable = ({
     setList(dataSource)
   }
   const searchInput = (e, dateString = '') => {
-    // console.log(e)
     if (!dateString) {
       if (e.target.name === 'name') {
-        setFilter({ ...filter, name: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, name: '' })
-          setList(dataSource)
-        }
+        let datas = dataSource.filter(
+          (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
+        )
+      setList(datas)
+
+        // setFilter({ ...filter, name: e.target.value })
+        // if (e.target.value === '') {
+        //   setFilter({ ...filter, name: '' })
+        //   setList(dataSource)
+        // }
       }
     } else {
       setFilter({ ...filter, date: dateString })
@@ -288,7 +292,7 @@ const TaskSubTable = ({
                 shape="circle"
                 icon={(
                   <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '30px' }}
+                    style={{ marginLeft: '4px', fontSize: '24px' }}
                   />
                 )}
                 onClick={onClick}
