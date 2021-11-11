@@ -520,7 +520,7 @@ function TaskList() {
     : [
       {
         title: 'タスク名',
-        width: '15%',
+        width: '35%',
         dataIndex: 'taskName',
         fixed: 'left',
         ellipsis: {
@@ -567,7 +567,7 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '20%',
+        fixed: '25%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
