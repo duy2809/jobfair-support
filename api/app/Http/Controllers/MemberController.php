@@ -27,7 +27,7 @@ class MemberController extends Controller
         // }
 
         // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->get();
-        if (Auth::user()->role === 1 || Auth::user()->role === 2) {
+        if (Auth::user()->role === 1) {
             $users = User::select('id', 'name', 'email', 'created_at')->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
             foreach ($users as $user) {
                 array_push($members, User::find($user->id)->load('categories'));
@@ -37,7 +37,7 @@ class MemberController extends Controller
         }
 
         // return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
-        $users = User::select('id', 'name', 'email', 'created_at')->where('role', '=', 3)->where('email', '<>', Auth::user()->email)->get();
+        $users = User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->where('email', '<>', Auth::user()->email)->get();
         foreach ($users as $user) {
             array_push($members, User::find($user->id)->load('categories'));
         }
