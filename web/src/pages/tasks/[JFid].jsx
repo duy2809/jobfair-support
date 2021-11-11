@@ -428,7 +428,7 @@ function TaskList() {
     )
   }
   // columns of tables
-  const columns = role === 'superadmin' || role === 'admin'
+  const columns = role === 'admin'
     ? [
       {
         title: 'タスク名',
@@ -496,7 +496,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => (role === 'superadmin' || role === 'admin') && (
+        render: (_text, record) => role === 'admin' && (
           <Space size="middle">
             <EditTwoTone
               id={record.id}
@@ -572,14 +572,6 @@ function TaskList() {
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
         onCell: handleRow,
-      },
-      {
-        title: '担当者',
-        width: '30%',
-        dataIndex: 'managers',
-        fixed: 'left',
-        onCell: handleRow,
-        render: (managers) => <a>{managers.join(', ')}</a>,
       },
     ]
   const fetchCTGR = async () => {
