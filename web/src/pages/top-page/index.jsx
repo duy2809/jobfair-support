@@ -10,6 +10,7 @@ import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
 // import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 import TaskSubTable from '../../components/TaskSubTable'
+import RecentUpdate from '../../components/recentUpdate'
 
 const { getListSchedule } = ListScheduleApi
 
@@ -226,7 +227,7 @@ const Top = () => {
       <Layout.Main>
         <div>
           <div>
-            <Row>
+            <Row gutter={[50, 50]}>
               <Col span={12}>
                 <ListJfToppage
                   className="my-3"
@@ -308,7 +309,9 @@ const Top = () => {
                 }
 
               </Col>
-              <Col span={12} />
+              <Col span={12}>
+                <RecentUpdate />
+              </Col>
             </Row>
           </div>
         </div>
