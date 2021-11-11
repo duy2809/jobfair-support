@@ -7,7 +7,7 @@ import {
 import { Avatar, Button, Divider, Modal, notification, Popover, Typography } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import * as deleteCommentAPI from '../../api/comment'
 import { commentSelectors } from '../../store/modules/comment'
@@ -16,13 +16,13 @@ import MarkDownView from '../markDownView'
 import './styles.scss'
 
 function Comment(props) {
-  const AVATAR_SIZE = 50
-  const MAX_CHAR_PER_LINE = 112
+  const AVATAR_SIZE = 42
+  const MAX_CHAR_PER_LINE = 300
   const [expanded, setExpanded] = useState(false)
   const [commentOverflow, setCommentOverflow] = useState(false)
   const { store } = useContext(ReactReduxContext)
   const [userId, setUserId] = useState(1)
-  const classNames = (...classes) => classes.filter(Boolean).join(' ')
+  // const classNames = (...classes) => classes.filter(Boolean).join(' ')
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
   const toggleExpanded = () => {
@@ -34,7 +34,7 @@ function Comment(props) {
     if (props.comment.content) {
       setCommentOverflow(props.comment.content.length > MAX_CHAR_PER_LINE)
     }
-  }, [])
+  }, [props.comment.content])
 
   const editComment = () => {
     console.log(props)
@@ -111,82 +111,95 @@ function Comment(props) {
                 />
               </div>
             </div>
-            <div className="flex">
-              {/* comment content */}
-              <div className="max-w-3xl overflow-hidden">
-                {/* <div>{props.comment.content}</div> */}
-                {props.comment.content && !expanded && (
-                  <MarkDownView
-                    id="editor"
-                    source={props.comment.content}
-                    className={`${classNames(
-                      'comment__content',
-                      expanded ? 'expanded' : 'collapse',
-                      commentOverflow ? 'comment__overflow' : '',
-                    )} bg-red-600`}
-                  />
-                )}
-              </div>
-              {/* assignees changed */}
-              <div className="flex flex-col float-right">
-                {props.comment.new_assignees?.length > 0 && (
-                  <div className="flex">
-                    <div className="old__asignees ">
-                      {props.comment.old_assignees.map((name) => (
-                        <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                          -
-                          {name}
+            <div className="flex flex-col">
+              <div className="flex flex-col ">
+                {/* status changed */}
+                <div className="">
+                  {props.comment.new_status?.length > 0 && (
+                    <div className="flex">
+                      <div className="old__status flex">
+                        <strong className="text-right" style={{ minWidth: '90px' }}>
+                          ステータス：
+                        </strong>
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.old_status}
                         </Typography>
-                      ))}
-                    </div>
-                    &rArr;
-                    <div className="new__asignees">
-                      {props.comment.new_assignees.map((name) => (
-                        <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                          -
-                          {name}
+                      </div>
+                      &rArr;
+                      <div className="new__status">
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.new_status}
                         </Typography>
-                      ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+                {/* assignees changed */}
+                <div className="">
+                  {props.comment.new_assignees?.length > 0 && (
+                    <div className="flex">
+                      <div className="old__asignees flex">
+                        <strong className="text-right" style={{ minWidth: '90px' }}>
+                          担当者：
+                        </strong>
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic">
+                          {props.comment.old_assignees.join(', ')}
+                        </Typography>
+                      </div>
+                      &rArr;
+                      <div className="new__asignees">
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.new_assignees.join(', ')}
+                        </Typography>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {(props.comment.new_status?.length > 0
+                  || props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
               </div>
-              {/* status changed */}
-              <div className="flex flex-col float-right">
-                {props.comment.new_status?.length > 0 && (
-                  <div className="flex">
-                    <div className="old__asignees ">
-                      <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                        {props.comment.old_status}
-                      </Typography>
-                    </div>
-                    &rArr;
-                    <div className="new__asignees">
-                      <Typography className="bg-black-600 text-[#888888] text-sm px-2 italic ">
-                        {props.comment.new_status}
-                      </Typography>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {/*   display more button */}
-              <Button className="mr-4 see-more float-right" onClick={toggleExpanded}>
-                {/* eslint-disable-next-line no-nested-ternary */}
-                {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
-              </Button>
+              {/* <Divider className="mx-2 bg-gray-300" /> */}
 
-              <div>
-                <Popover
-                  content={moment(props.comment.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
-                  trigger="hover"
-                >
-                  <span
-                    className="comment__edited text-gray-500 italic"
-                    hidden={!props.comment.edited}
+              <div className="flex items-center overflow-hidden ">
+                {/* comment content */}
+                <div className="max-w-4xl  px-2 w-10/12">
+                  {/* <div>{props.comment.content}</div> */}
+                  {props.comment.content && (
+                    <div
+                      className={
+                        expanded
+                          ? 'h-auto break-words'
+                          : commentOverflow && 'h-10 break-words overflow-hidden'
+                      }
+                    >
+                      <MarkDownView id="editor" source={props.comment.content} className="" />
+                    </div>
+                  )}
+                </div>
+                {/* edited time */}
+                <div>
+                  <Popover
+                    content={moment(props.comment.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
+                    trigger="hover"
                   >
-                    編集済み
-                  </span>
-                </Popover>
+                    <span
+                      className="comment__edited inline text-gray-500 italic  w-1/12"
+                      hidden={!props.comment.edited}
+                    >
+                      編集済み
+                    </span>
+                  </Popover>
+                </div>
+                {/*   display more button */}
+                {commentOverflow && (
+                  <Button
+                    className="block mx-2 xl:w-1/12 lg:w-2/12 see-more float-right"
+                    onClick={toggleExpanded}
+                  >
+                    {/* eslint-disable-next-line no-nested-ternary */}
+                    {expanded ? '閉じる' : commentOverflow ? 'もっと読む' : ''}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -201,4 +214,4 @@ Comment.propTypes = {
   parentCallBack: PropTypes.func.isRequired,
 }
 
-export default memo(Comment)
+export default Comment

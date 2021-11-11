@@ -169,6 +169,7 @@ const List = ({
           display: 'flex',
           justifyContent: 'space-between',
           marginBottom: '10px',
+          height: '40px',
         }}
       >
         <button
@@ -182,9 +183,12 @@ const List = ({
         >
           <span className="">
             {showTable ? (
-              <DownOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
-            ) : (
               <UpOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
+            ) : (
+              <DownOutlined
+                style={{ fontSize: '20px', marginRight: '5px' }}
+              />
+
             )}
           </span>
           {text}
@@ -198,22 +202,27 @@ const List = ({
           </Link>
           {text === 'タスク' || role === 'member' ? null : (
             <Link className="hv-icon" href={routeToAdd}>
-              <PlusOutlined style={{ fontSize: '24px', margin: '0 5px' }} />
+              <PlusOutlined className="hv-icon" style={{ fontSize: '24px', margin: '0 5px' }} />
             </Link>
           )}
           <span className="queue-demo">
             {showSearchIcon && (
-              <span className="hv-icon" onClick={onClick}>
+              <a className="hv-icon" onClick={onClick}>
                 <SearchOutlined
                   style={{ marginLeft: '4px', fontSize: '24px' }}
                 />
-              </span>
+              </a>
             )}
 
             <span>
               {show ? (
                 <Input
                   // key="demo"
+                  style={{
+                    width: '270px',
+                    height: '40px',
+
+                  }}
                   name="name"
                   className="no-border"
                   placeholder="名前"
@@ -243,6 +252,10 @@ const List = ({
                 <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <DatePicker
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="date"
                       size="large"
                       placeholder="タイム"
@@ -257,6 +270,10 @@ const List = ({
                 <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="jobfairName"
                       placeholder="就職フェアの名前"
                       type="text"
@@ -272,6 +289,10 @@ const List = ({
                 <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="category"
                       placeholder="カテゴリ"
                       type="text"
@@ -285,6 +306,10 @@ const List = ({
                 <div className="flex items-center justify-end pl-2 mb-2">
                   <div>
                     <Input
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="milestone"
                       placeholder="マイルストーン"
                       type="text"

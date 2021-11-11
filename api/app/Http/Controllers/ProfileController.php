@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -45,6 +44,9 @@ class ProfileController extends Controller
     {
         // return Storage::download(Auth::user()->avatar,'avatar');
         $avatar = User::find($id)->avatar;
+        if (strcmp($avatar, 'images/avatars/default.jpg') === 0) {
+            return null;
+        }
 
         return Storage::download($avatar);
 
@@ -62,13 +64,7 @@ class ProfileController extends Controller
     {
         $rules = [
             'name' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('users')->whereNot('id', $id),
-
-            ],
-            'chatwork_id' => 'required|string',
+            'email' => 'required|email|unique:users,email,'.$id,
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -116,6 +112,7 @@ class ProfileController extends Controller
 
             $path = "/images/avatars/$avatar";
             $request->avatar = $path;
+            $user['avatar'] = $path;
             $user->update();
 
             return response()->json($path);

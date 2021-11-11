@@ -183,6 +183,7 @@ const ListJfToppage = ({
           display: 'flex',
           justifyContent: 'space-between',
           marginBottom: '10px',
+          height: '40px',
         }}
       >
         <button
@@ -196,11 +197,12 @@ const ListJfToppage = ({
         >
           <span className="">
             {showTable ? (
+              <UpOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
+            ) : (
               <DownOutlined
                 style={{ fontSize: '20px', marginRight: '5px' }}
               />
-            ) : (
-              <UpOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
+
             )}
           </span>
           {text}
@@ -218,17 +220,21 @@ const ListJfToppage = ({
           )}
           <span className="queue-demo">
             {showSearchIcon && (
-              <span className="hv-icon" onClick={onClick}>
+              <a className="hv-icon" onClick={onClick}>
                 <SearchOutlined
                   className="hv-icon"
                   style={{ marginLeft: '4px', fontSize: '24px' }}
                 />
-              </span>
+              </a>
             )}
 
             <span>
               {show ? (
                 <Input
+                  style={{
+                    width: '270px',
+                    height: '40px',
+                  }}
                   // key="demo"
                   name="name"
                   className="no-border"
@@ -259,6 +265,10 @@ const ListJfToppage = ({
                 <div className="flex items-center justify-end">
                   <div>
                     <DatePicker
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="date"
                       size="large"
                       placeholder="タイム"
@@ -273,6 +283,10 @@ const ListJfToppage = ({
                 <div className="flex items-center justify-end px-2">
                   <div>
                     <Input
+                      style={{
+                        width: '270px',
+                        height: '40px',
+                      }}
                       name="jobfairName"
                       placeholder="就職フェアの名前"
                       type="text"

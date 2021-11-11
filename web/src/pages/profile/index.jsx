@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react'
 import { Avatar, notification } from 'antd'
-import { EditTwoTone } from '@ant-design/icons'
+import { EditTwoTone, UserOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import { useRouter } from 'next/router'
 import Otherlayout from '../../layouts/OtherLayout'
@@ -29,11 +29,17 @@ const Profile = () => {
         setChatWorkIdUser(response.data.chatwork_id)
         setEmailUser(response.data.email)
       })
+      await getAvatar(id)
+        .then((res) => {
+          if (!res.data) {
+            setAvatarUser(null)
+          } else {
+            const link = `../../api/avatar/${id}`
+            setAvatarUser(link)
+          }
+        })
+        .catch(() => setAvatarUser(null))
       setLoading(false)
-      await getAvatar(id).then(() => {
-        const link = `api/avatar/${id}`
-        setAvatarUser(link)
-      })
     }
   }, [user])
 
@@ -55,15 +61,26 @@ const Profile = () => {
           ) : (
             <div className="grid grid-cols-12 grid-rows-1 gap-2">
               <div className="row-span-1 col-span-3 justify-self-end">
-                <Avatar
-                  size={150}
-                  style={{
-                    backgroundColor: '#FFD802',
-                    lineHeight: '100px',
-                    marginRight: '60px',
-                  }}
-                  src={avatarUser}
-                />
+                {avatarUser ? (
+                  <Avatar
+                    size={150}
+                    style={{
+                      lineHeight: '100px',
+                      marginRight: '60px',
+                    }}
+                    src={avatarUser}
+                  />
+                ) : (
+                  <Avatar
+                    size={150}
+                    style={{
+                      backgroundColor: '#FFD802',
+                      lineHeight: '100px',
+                      marginRight: '60px',
+                    }}
+                    src="../images/avatars/default.jpg"
+                  />
+                )}
               </div>
               <div className="h-80 col-span-6 border-2 border-gray-300">
                 <div className="grid grid-cols-3" style={{ marginLeft: '75%' }}>

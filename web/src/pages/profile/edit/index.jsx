@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 // import { useRouter } from 'next/router'
-import { Form, Input, Button, notification } from 'antd'
+import { Form, Input, Button, notification, Avatar } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
 // import Avatar from '../UI/avatar/Avatar'
@@ -32,10 +32,16 @@ const EditProfilePage = () => {
 
   webInit().then((res) => {
     const id = res.data.auth.user.id
-    getAvatar(id).then(() => {
-      const link = `/api/avatar/${id}`
-      setAvatarUser(link)
-    })
+    getAvatar(id)
+      .then((response) => {
+        if (!response.data) {
+          setAvatarUser(null)
+        } else {
+          const link = `../../api/avatar/${id}`
+          setAvatarUser(link)
+        }
+      })
+      .catch(() => setAvatarUser(null))
   }, [])
 
   const updateAvt = async () => {
@@ -131,7 +137,12 @@ const EditProfilePage = () => {
 
   const handleOk = async () => {
     setLoading(true)
-    if (nameInput === '' || emailInput === '' || idChatWorkInput === '' || isDisable === true) {
+    if (
+      nameInput === ''
+      || emailInput === ''
+      || idChatWorkInput === ''
+      || isDisable === true
+    ) {
       setIsDisable(true)
       setLoading(false)
     } else {
@@ -221,11 +232,20 @@ const EditProfilePage = () => {
                     </div>
                   ) : (
                     <div onClick={clickHandler}>
-                      <img
-                        className="avatar-img"
-                        alt="user-img"
-                        src={`${avatarUser}`}
-                      />
+                      {avatarUser ? (
+                        <Avatar
+                          size={150}
+                          src={avatarUser}
+                        />
+                      ) : (
+                        <Avatar
+                          size={150}
+                          style={{
+                            backgroundColor: '#FFD802',
+                          }}
+                          src="../images/avatars/default.jpg"
+                        />
+                      )}
                     </div>
                   )}
                 </div>
@@ -371,14 +391,12 @@ const EditProfilePage = () => {
                   </Button>
                 </div>
               </div>
-
             </div>
-
           </div>
         </Otherlayout.Main>
       </Otherlayout>
     </div>
   )
 }
-EditProfilePage.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+EditProfilePage.middleware = ['auth:superadmin', 'auth:member']
 export default EditProfilePage

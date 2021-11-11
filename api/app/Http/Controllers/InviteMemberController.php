@@ -18,11 +18,27 @@ class InviteMemberController extends Controller
         ]);
         $user = User::whereEmail($request->email)->first();
         if (!$user) {
+            $username = '';
+            if (str_contains($request->email, '@sun-asterisk.com')) {
+                $accountName = explode('@sun-asterisk', $request->email)[0];
+                $accountName = str_replace('.', ' ', $accountName);
+                $username = ucwords($accountName);
+            } else {
+                $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                $randomString = '';
+                for ($i = 0; $i < 15; $i++) {
+                    $index = rand(0, strlen($characters) - 1);
+                    $randomString .= $characters[$index];
+                }
+
+                $username = $randomString;
+            }
+
             DB::table('users')->insert([
                 'email' => $request->email,
-                'name' => Str::random(15),
+                'name' => $username,
                 'password' => Hash::make('12345678'),
-                'role' => 3,
+                'role' => 2,
                 'chatwork_id' => null,
                 'avatar' => 'images/avatars/default.jpg',
                 'created_at' => now(),

@@ -15,8 +15,8 @@ const addJFAPI = {
     return instance.get(url)
   },
   getAdmin: () => {
-    const url = '/admins'
-    return instance.get(url)
+    const url = '/category-member'
+    return instance.get(url, { params: { category: 'Xseeds管理者' } })
   },
   addJF: (data) => {
     const url = '/jobfair'

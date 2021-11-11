@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import {
   Table,
   Input,
@@ -19,23 +19,23 @@ import { useRouter } from 'next/router'
 import {
   SearchOutlined,
   FilterOutlined,
-  CheckCircleTwoTone,
   ExclamationCircleOutlined,
   EditTwoTone,
   DeleteTwoTone,
 } from '@ant-design/icons'
+import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
 import { jftask } from '../../api/jf-toppage'
-import { webInit } from '../../api/web-init'
 import { deleteTask, updateManagerTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
 import { getCategorys } from '../../api/edit-task'
 
 function TaskList() {
   const router = useRouter()
-  const [users, setUsers] = useState('')
+  const { store } = useContext(ReactReduxContext)
+  const [role, setRole] = useState('')
   const [itemCount, setItemCount] = useState(10)
   const [pagination, setPagination] = useState({
     position: ['bottomCenter'],
@@ -59,6 +59,7 @@ function TaskList() {
   const [active, setActive] = useState([1, 0, 0, 0, 0, 0])
   const [dataCategory, setDataCategory] = useState()
   const [isEdit, setIsEdit] = useState(false)
+  const [deleteOrEdit, setDeleteOrEdit] = useState(true)
   const [confirmSave, setConfirmSave] = useState(false)
   // select number to display
   const handleSelect = (value) => {
@@ -67,10 +68,7 @@ function TaskList() {
       pageSize: value,
     }))
     setItemCount(value)
-    localStorage.setItem(
-      'pagination',
-      JSON.stringify({ ...pagination, pageSize: value }),
-    )
+    localStorage.setItem('pagination', JSON.stringify({ ...pagination, pageSize: value }))
   }
   const handleVisibleChange = () => {
     setVisible(!visible)
@@ -125,21 +123,12 @@ function TaskList() {
       setTemperaryData(filteredData)
     }
     if (status) {
-      const arrayStatus = [
-        '全て',
-        '未着手',
-        '進行中',
-        '完了',
-        '中断',
-        '未完了',
-      ]
+      const arrayStatus = ['全て', '未着手', '進行中', '完了', '中断', '未完了']
       const index = arrayStatus.indexOf(router.query.status)
       const arr = [0, 0, 0, 0, 0, 0]
       arr[index] = 1
       setActive(arr)
-      const filteredData = data.filter(
-        (task) => !task.status.localeCompare(router.query.status),
-      )
+      const filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
       setTemperaryData(filteredData)
     }
   }
@@ -148,9 +137,7 @@ function TaskList() {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>
-          {response.data[i].category_name}
-        </Option>,
+        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
       )
     }
     setOptionCategory(option)
@@ -159,24 +146,20 @@ function TaskList() {
   const loadMilestoneOptions = (response) => {
     const option = []
     for (let i = 0; i < response.data.length; i += 1) {
-      option.push(
-        <Option key={response.data[i].name}>{response.data[i].name}</Option>,
-      )
+      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
     }
     setOptionMileStone(option)
   }
 
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に削除されました',
       onClick: () => {},
     })
   }
   const saveEditNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '変更は正常に保存されました。',
       onClick: () => {},
@@ -220,16 +203,12 @@ function TaskList() {
     } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (task) => (value
-        ? !task.category_name.localeCompare(value)
-        : task.category_name)
+      (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -241,16 +220,12 @@ function TaskList() {
     } else setIsFilterMI(false)
     setMilestone(value)
     const filteredData = originalData.filter(
-      (task) => (value
-        ? !task.milestone_name.localeCompare(value)
-        : task.milestone_name)
+      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -269,22 +244,14 @@ function TaskList() {
     }
 
     return (
-      <Tag
-        onMouseDown={onPreventMouseDown}
-        closable={closable}
-        onClose={onClose}
-      >
+      <Tag onMouseDown={onPreventMouseDown} closable={closable} onClose={onClose}>
         <span className="text-blue-600 icon-tag">{label}</span>
       </Tag>
     )
   }
   const handleSave = async (value, record, userAS) => {
-    const defaultText = value
-      ? value.filter((item) => typeof item === 'string')
-      : null
-    const defaultNumber = value
-      ? value.filter((item) => typeof item === 'number')
-      : null
+    const defaultText = value ? value.filter((item) => typeof item === 'string') : null
+    const defaultNumber = value ? value.filter((item) => typeof item === 'number') : null
 
     const allIdMember = []
     if (defaultText) {
@@ -338,12 +305,7 @@ function TaskList() {
         }
       })
     }
-
-    const addedMember = []
-    record.mems.forEach((item) => {
-      addedMember.push(item.id)
-    })
-
+    const filted = userAS.filter((e) => !managers.includes(e.name))
     return (
       <div className="listMember">
         {edit ? (
@@ -355,16 +317,13 @@ function TaskList() {
                 setMemberAS(value)
               }}
               style={{ width: '100%' }}
-              defaultValue={addedMember}
+              defaultValue={managers}
               showArrow
+              // eslint-disable-next-line react/jsx-no-bind
               tagRender={tagRender}
             >
-              {userAS.map((item) => (
-                <Select.Option
-                  className="validate-user"
-                  key={item.name}
-                  value={item.id}
-                >
+              {filted.map((item) => (
+                <Select.Option className="validate-user" key={item.name} value={item.id}>
                   {item.name}
                 </Select.Option>
               ))}
@@ -374,7 +333,7 @@ function TaskList() {
               <Button
                 onClick={() => {
                   setConfirmSave(false)
-
+                  setDeleteOrEdit(true)
                   if (!isEdit) {
                     setEdit(false)
                   } else {
@@ -384,11 +343,13 @@ function TaskList() {
                       content: '',
                       centered: true,
                       onOk: () => {
+                        setDeleteOrEdit(true)
                         setEdit(false)
                         setIsEdit(false)
                       },
 
                       onCancel: () => {
+                        setDeleteOrEdit(true)
                         setIsEdit(false)
                       },
                       okText: 'はい',
@@ -409,6 +370,7 @@ function TaskList() {
               </Button>
               <Button
                 onClick={() => {
+                  setDeleteOrEdit(true)
                   setEdit(false)
                   setConfirmSave(false)
                   handleSave(memberAS, record, userAS)
@@ -429,6 +391,7 @@ function TaskList() {
                 onClick={() => {
                   setConfirmSave(true)
                   setEdit(true)
+                  setDeleteOrEdit(false)
                   if (confirmSave) {
                     setEdit(false)
                   }
@@ -465,7 +428,7 @@ function TaskList() {
     )
   }
   // columns of tables
-  const columns = users === 'superadmin' || users === 'admin'
+  const columns = role === 'admin'
     ? [
       {
         title: 'タスク名',
@@ -533,7 +496,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => (users === 'superadmin' || users === 'admin') && (
+        render: (_text, record) => role === 'admin' && (
           <Space size="middle">
             <EditTwoTone
               id={record.id}
@@ -545,7 +508,9 @@ function TaskList() {
             <DeleteTwoTone
               id={record.id}
               onClick={() => {
-                modelDelete(record.idtask)
+                if (deleteOrEdit) {
+                  modelDelete(record.idtask)
+                }
               }}
             />
           </Space>
@@ -608,22 +573,25 @@ function TaskList() {
         render: (taskName) => <a>{taskName}</a>,
         onCell: handleRow,
       },
-      {
-        title: '担当者',
-        width: '30%',
-        dataIndex: 'managers',
-        fixed: 'left',
-        onCell: handleRow,
-        render: (managers) => <a>{managers.join(', ')}</a>,
-      },
     ]
   const fetchCTGR = async () => {
     await getCategorys().then((response) => {
       setDataCategory(response.data)
     })
   }
+  const getRole = () => {
+    const id = router.query.JFid
+    const user = store.getState().get('auth').get('user')
+    const manageIds = Array.from(user.get('manage_jf_ids'))
+    if (manageIds.includes(parseInt(id, 10))) {
+      setRole('admin')
+    } else {
+      setRole(user.get('role'))
+    }
+  }
   useEffect(async () => {
     setLoading(true)
+    getRole()
     initPagination()
     fetchCTGR()
     await jftask(router.query.JFid).then((response) => {
@@ -636,13 +604,8 @@ function TaskList() {
     await getAllMileStone().then((response) => {
       loadMilestoneOptions(response)
     })
-    await webInit()
-      .then((response) => {
-        setUsers(response.data.auth.user.role)
-      })
-      .catch((error) => Error(error.toString()))
     setLoading(false)
-  }, [])
+  }, [role])
   // Search data on Table
   const searchDataOnTable = (value) => {
     value = value.toLowerCase()
@@ -651,12 +614,8 @@ function TaskList() {
         ? task.taskName.toLowerCase().includes(value)
             || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name)
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -675,12 +634,8 @@ function TaskList() {
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category
-          ? !task.category_name.localeCompare(category)
-          : task.category_name)
-        && (milestone
-          ? !task.milestone_name.localeCompare(milestone)
-          : task.milestone_name),
+        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
     )
     setTemperaryData(filteredData)
     setLoading(false)
@@ -769,11 +724,7 @@ function TaskList() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <span className="pr-3">表示件数 </span>
-                  <Select
-                    size="large"
-                    value={itemCount}
-                    onChange={handleSelect}
-                  >
+                  <Select size="large" value={itemCount} onChange={handleSelect}>
                     <Option value={10}>10</Option>
                     <Option value={25}>25</Option>
                     <Option value={50}>50</Option>
@@ -827,11 +778,7 @@ function TaskList() {
                         icon={<FilterOutlined id="filter" />}
                       />
                     ) : (
-                      <Button
-                        size="large"
-                        shape="circle"
-                        icon={<FilterOutlined id="filter" />}
-                      />
+                      <Button size="large" shape="circle" icon={<FilterOutlined id="filter" />} />
                     )}
                   </Popover>
                   <Input
@@ -843,7 +790,7 @@ function TaskList() {
                     onChange={onSearch}
                     defaultValue={valueSearch}
                   />
-                  {users === 'superadmin' ? (
+                  {role === 'admin' ? (
                     <>
                       <Button
                         size="large"
@@ -879,5 +826,5 @@ function TaskList() {
     </JfLayout>
   )
 }
-TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TaskList.middleware = ['auth:superadmin', 'auth:member']
 export default TaskList

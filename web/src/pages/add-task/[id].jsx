@@ -1,8 +1,5 @@
-import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-  SearchOutlined,
-} from '@ant-design/icons'
+import axios from 'axios'
+import { ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Input, Modal, Select, Space, Table, notification } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -46,7 +43,9 @@ function index() {
         const info = await addTaskAPI.getJobfair(router.query.id)
         const categories = await addTaskAPI.getCategories()
         const milestones = await addTaskAPI.getMilestones()
-        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(router.query.id)
+        const tasks = await addTaskAPI.getAllTemplateTasksNotAdded(
+          router.query.id,
+        )
         setlistCatergories(categories.data)
         setlistMilestones(Array.from(milestones.data))
         setJobfair(info.data)
@@ -162,8 +161,7 @@ function index() {
     }
   }
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       duration: 3,
       message: '正常に登録されました。',
       onClick: () => {},
@@ -292,5 +290,20 @@ function index() {
   )
 }
 
-index.middleware = ['auth:superadmin', 'auth:admin']
+index.getInitialProps = async (ctx) => {
+  const jobfairId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-jobfair`, {
+        params: { userId, jobfairId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+index.middleware = ['auth:superadmin', 'auth:member']
 export default index

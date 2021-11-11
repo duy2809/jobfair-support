@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -106,5 +107,18 @@ class CategoryController extends Controller
     public function getCategoriesWithMember()
     {
         return Category::with('users:id,name')->get();
+    }
+
+    public function getMembersByCategory(Request $request)
+    {
+        if ($request->has('category')) {
+            $categoryName = $request->input('category');
+
+            return User::whereHas('categories', function ($query) use ($categoryName) {
+                $query->where('category_name', $categoryName);
+            })->get();
+        }
+
+        return response('Not found', 404);
     }
 }

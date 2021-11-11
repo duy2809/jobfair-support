@@ -104,6 +104,13 @@ function addJobfairSchedule() {
     })
   }
 
+  const onDeleteAllTemplateTask = (arr) => {
+    const newState = addedTemplateTaskList.filter(
+      (item) => !arr.includes(item),
+    )
+    setAddedTemplateTaskList(newState)
+  }
+
   const onAddTemplateTask = (id) => {
     const newState = [...addedTemplateTaskList, id]
     setAddedTemplateTaskList(newState)
@@ -229,6 +236,7 @@ function addJobfairSchedule() {
                       addedTemplateTaskChildernList={addedTemplateTaskChildernList}
                       templateTaskOptions={templateTaskOptions}
                       onDeleteTemplateTask={onDeleteTemplateTask}
+                      onDeleteAllTemplateTask={onDeleteAllTemplateTask}
                       onDeleteMilestone={onDeleteMilestone}
                       onAddTemplateTask={onAddTemplateTask}
                       selectName={`template_task_select_${milestone.id}`}

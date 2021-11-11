@@ -18,7 +18,7 @@ const editApi = {
     return instance.get(url)
   },
 
-  getTaskList: (id) => {
+  getTemplateTaskList: (id) => {
     const url = `/schedules/${id}/template-tasks`
     // const url = `/jobfair/${id}/tasks`
 

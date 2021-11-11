@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
 import {
-  CheckCircleTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
-import {
   Form,
   Input,
   Select,
@@ -16,7 +12,9 @@ import {
   Modal,
   Tooltip,
 } from 'antd'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import moment from 'moment'
+import axios from 'axios'
 import JfLayout from '../../layouts/layout-task'
 import {
   taskData,
@@ -34,7 +32,7 @@ import {
 } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
-function TaskList() {
+function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
   const { TextArea } = Input
   const router = useRouter()
@@ -292,19 +290,21 @@ function TaskList() {
       })
     })
   }
+
   const saveNotification = () => {
-    notification.open({
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    notification.success({
       message: '変更は正常に保存されました。',
       duration: 3,
       onClick: () => {},
     })
   }
+
   const forbidNotification = () => {
     notification.error({
       message: 'Method not allowed',
     })
   }
+
   const onFinishSuccess = async (values) => {
     let checkName = false
     // eslint-disable-next-line consistent-return
@@ -787,5 +787,20 @@ function TaskList() {
     </div>
   )
 }
-TaskList.middleware = ['auth:superadmin', 'auth:admin']
-export default TaskList
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+EditTask.middleware = ['auth:superadmin', 'auth:member']
+export default EditTask

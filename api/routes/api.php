@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
@@ -44,6 +45,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
+Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
 
@@ -85,6 +87,7 @@ Route::prefix('member')->group(function () {
 // login, logout
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/preURL', [AuthController::class, 'preURL']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
 Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
@@ -103,7 +106,7 @@ Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::cla
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
 Route::get('/category-jobfair', [App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
-
+Route::get('/category-member', [CategoryController::class, 'getMembersByCategory']);
 Route::prefix('categories')->group(function () {
     Route::get('/', 'CategoryController@getCatgories');
 });
@@ -157,12 +160,14 @@ Route::get('/users', 'MemberController@getMember');
 Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
 Route::get('/task/{id}/list-reviewers', 'TaskController@getListReviewers');
+Route::get('/is-admin-task', 'TaskController@checkRole');
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');
 
 // top-page
 Route::prefix('/top-page')->group(function () {
+    Route::get('/task-reviewer', [TopPageTasksController::class, 'taskReviewer']);
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
     Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
     Route::get('/jobfairs', [JobfairController::class, 'index']);
