@@ -347,6 +347,10 @@ class CommentController extends Controller
             // return $comment;
             return [
                 'id'                  => $comment->id,
+                'task'                => [
+                    'name' => $comment->task->name,
+                    'id'   => $comment->task->id,
+                ],
                 'author'              => [
                     'id'     => $comment->user->id,
                     'name'   => $comment->user->name,
