@@ -133,8 +133,7 @@ const TaskSubTable = ({
       // }
       if (filter.status) {
         datas = datas.filter(
-          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase())
-            !== -1 ,
+          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase()) !== -1,
         )
       }
       if (filter.reviewer_task) {
