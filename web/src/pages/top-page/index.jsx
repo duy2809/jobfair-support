@@ -117,7 +117,7 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      let tasksData = response.data.filter(
+      const tasksData = response.data.filter(
         (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
       )
       setTaskData(tasksData)

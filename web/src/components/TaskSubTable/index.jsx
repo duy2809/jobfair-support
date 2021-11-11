@@ -4,7 +4,7 @@ import {
   SearchOutlined,
   DownOutlined,
   UpOutlined,
-  ExportOutlined,
+  // ExportOutlined,
 } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -134,7 +134,7 @@ const TaskSubTable = ({
       if (filter.status) {
         datas = datas.filter(
           (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase())
-            !== -1 ,
+            !== -1,
         )
       }
       if (filter.reviewer_task) {
@@ -222,10 +222,10 @@ const TaskSubTable = ({
   const searchInput = (e, dateString = '') => {
     if (!dateString) {
       if (e.target.name === 'name') {
-        let datas = dataSource.filter(
+        const datas = dataSource.filter(
           (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
         )
-      setList(datas)
+        setList(datas)
 
         // setFilter({ ...filter, name: e.target.value })
         // if (e.target.value === '') {
@@ -357,7 +357,7 @@ const TaskSubTable = ({
                     name="reviewer"
                     onClick={handleSelectReviewer}
                     className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     すべて
                   </Button>
@@ -365,16 +365,16 @@ const TaskSubTable = ({
                     name="reviewer"
                     onClick={handleSelectReviewer}
                     className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     担当者
                   </Button>
                   <Button
                     name="reviewer"
                     onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === 'レビュアー' ?
-                      'option-active' : ''
-                      }`}
+                    className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
+                      ? 'option-active' : ''
+                    }`}
                   >
                     レビュアー
                   </Button>
@@ -387,7 +387,7 @@ const TaskSubTable = ({
                     name="status"
                     onClick={handleSelectStatus}
                     className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     すべて
                   </Button>
@@ -395,7 +395,7 @@ const TaskSubTable = ({
                     name="status"
                     onClick={handleSelectStatus}
                     className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     進行中
                   </Button>
@@ -403,7 +403,7 @@ const TaskSubTable = ({
                     name="status"
                     onClick={handleSelectStatus}
                     className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     今まで
                   </Button>
@@ -411,7 +411,7 @@ const TaskSubTable = ({
                     name="status"
                     onClick={handleSelectStatus}
                     className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     期限きれ
                   </Button>
@@ -419,7 +419,7 @@ const TaskSubTable = ({
                     name="status"
                     onClick={handleSelectStatus}
                     className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''
-                      }`}
+                    }`}
                   >
                     中断
                   </Button>
