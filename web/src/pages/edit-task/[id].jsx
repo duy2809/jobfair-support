@@ -124,7 +124,7 @@ function EditTask() {
           start_time: moment(data.start_time.split('-').join('/'), dateFormat),
           end_time: moment(data.end_time.split('-').join('/'), dateFormat),
           detail: data.description_of_detail,
-          reviewers: listReviewers.length == 0 ? ["None"] : listReviewers,
+          reviewers: listReviewers.length === 0 ? ['None'] : listReviewers,
         })
       }
     })
@@ -231,8 +231,8 @@ function EditTask() {
   }
   const filtedArr = () => {
     setIsEdit(true)
-    const before = form.getFieldsValue().beforeTasks
-    const after = form.getFieldsValue().afterTasks
+    const before = form.getFieldsValue().taskBefore
+    const after = form.getFieldsValue().afterTask
     let selectedItems = []
     if (before && !after) {
       selectedItems = [...selectedItems, ...before]
@@ -422,9 +422,10 @@ function EditTask() {
   const fetchListTask = async () => {
     await jftask(idJF)
       .then((response) => {
-        setAllTask(response.data.schedule.tasks)
-        setBeforeTaskNew(response.data.schedule.tasks)
-        setafterTaskNew(response.data.schedule.tasks)
+        const notSelectedTask = response.data.schedule.tasks.filter((task) => task.name !== infoTask.name)
+        setAllTask(notSelectedTask)
+        setBeforeTaskNew(notSelectedTask)
+        setafterTaskNew(notSelectedTask)
       })
       .catch((err) => {
         console.log(err)
