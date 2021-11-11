@@ -231,7 +231,7 @@ const ListJfToppage = ({
               {show ? (
                 <Input
                   style={{
-                    width: '270px',
+                    width: '200px',
                     height: '40px',
                   }}
                   // key="demo"
@@ -265,7 +265,7 @@ const ListJfToppage = ({
                   <div>
                     <DatePicker
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="date"
@@ -283,7 +283,7 @@ const ListJfToppage = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="jobfairName"

@@ -210,7 +210,7 @@ const List = ({
                 <Input
                   // key="demo"
                   style={{
-                    width: '270px',
+                    width: '200px',
                     height: '40px',
 
                   }}
@@ -244,7 +244,7 @@ const List = ({
                   <div>
                     <DatePicker
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="date"
@@ -262,7 +262,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="jobfairName"
@@ -281,7 +281,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="category"
@@ -298,7 +298,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="milestone"
