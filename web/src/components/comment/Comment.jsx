@@ -167,7 +167,9 @@ function Comment(props) {
                   {props.comment.content && (
                     <div
                       className={
-                        expanded ? 'h-auto break-words' : 'h-10 break-words overflow-hidden'
+                        expanded
+                          ? 'h-auto break-words'
+                          : commentOverflow && 'h-10 break-words overflow-hidden'
                       }
                     >
                       <MarkDownView id="editor" source={props.comment.content} className="" />
