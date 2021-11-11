@@ -50,19 +50,22 @@ const templateTaskDataColumn = [
 
 const taskListDataColumn = [
   {
-    title: 'JF名前',
+    title: 'JF名',
     dataIndex: 'jfName',
     key: 'JF Name',
+    width: '30%',
   },
   {
-    title: 'タスク名前',
+    title: 'タスク名',
     dataIndex: 'name',
     key: 'name',
+    width: '45%',
   },
   {
     title: 'タイム',
     dataIndex: 'time',
     key: 'time',
+    width: '25%',
   },
 ]
 
@@ -215,6 +218,7 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
+
   taskReviewerData.forEach((taskReviewerIt) => {
     const taskReviewerItem = { id: '' }
     taskReviewerItem.id = taskReviewerIt.id
