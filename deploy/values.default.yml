@@ -44,7 +44,7 @@ basic_auth:
 
 config:
   app:
-    name: Jobfair Support
+    name: sun_jobfair
     key:
     env: production
     debug: "false"
@@ -71,6 +71,9 @@ config:
 
   queue:
     connection: redis
+
+  broadcast:
+    driver: redis
 
   mail:
     mailer: smtp

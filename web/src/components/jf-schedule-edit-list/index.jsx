@@ -1,7 +1,11 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { List, Select, Form } from 'antd'
-import { FileDoneOutlined, DeleteTwoTone, CloseOutlined } from '@ant-design/icons'
+import {
+  FileDoneOutlined,
+  DeleteTwoTone,
+  CloseOutlined,
+} from '@ant-design/icons'
 import './styles.scss'
 
 function jfScheduleEditList({
@@ -9,6 +13,7 @@ function jfScheduleEditList({
   addedTemplateTaskChildernList,
   templateTaskOptions,
   onDeleteTemplateTask,
+  onDeleteAllTemplateTask,
   onDeleteMilestone,
   onAddTemplateTask,
   milestone,
@@ -45,6 +50,8 @@ function jfScheduleEditList({
     showArrow: true,
   }
 
+  const dataList = templateTaskChildernList.filter((templateTask) => addedTemplateTaskChildernList.includes(templateTask.id))
+
   const renderHeader = ({ id, name }) => (
     <div className="flex justify-between items-center">
       <div className="flex items-center">
@@ -67,14 +74,15 @@ function jfScheduleEditList({
           <CloseOutlined
             style={{ fontSize: '24px' }}
             className="ml-5"
-            onClick={() => onDeleteMilestone(id)}
+            onClick={() => {
+              onDeleteMilestone(id)
+              onDeleteAllTemplateTask(addedTemplateTaskChildernList)
+            }}
           />
         </div>
       </Form.Item>
     </div>
   )
-
-  const dataList = templateTaskChildernList.filter((templateTask) => addedTemplateTaskChildernList.includes(templateTask.id))
 
   return (
     <List

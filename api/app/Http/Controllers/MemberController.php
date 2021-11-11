@@ -24,7 +24,10 @@ class MemberController extends Controller
         //         ->where('role', '!=', 1)->where('email', '<>', Auth::user()->email)->get();
         // }
 
-        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)->where('email', '<>', Auth::user()->email)->get();
+        return User::select('id', 'name', 'email', 'created_at')->where('role', '=', 2)
+            ->where('email', '<>', Auth::user()->email)
+            ->orderBy('updated_at', 'desc')
+            ->get();
     }
 
     public function showMember($id)

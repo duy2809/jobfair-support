@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
 import { Menu, Dropdown, Avatar } from 'antd'
-import { CaretDownOutlined, UserOutlined } from '@ant-design/icons'
+import { CaretDownOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import './styles.scss'
 import { logout } from '../../api/authenticate'
@@ -17,10 +17,16 @@ export default function Navbar() {
     setUser(store.getState().get('auth').get('user'))
     if (user) {
       const id = user.get('id')
-      await getAvatar(id).then(() => {
-        const link = `../../api/avatar/${id}`
-        setAvatarUser(link)
-      }).catch(() => setAvatarUser(null))
+      await getAvatar(id)
+        .then((res) => {
+          if (!res.data) {
+            setAvatarUser(null)
+          } else {
+            const link = `../../api/avatar/${id}`
+            setAvatarUser(link)
+          }
+        })
+        .catch(() => setAvatarUser(null))
     }
   }, [user])
   const handleLogout = async () => {
@@ -111,15 +117,19 @@ export default function Navbar() {
               <Avatar
                 size={45}
                 style={{
-                  backgroundColor: '#FFD802',
                   cursor: 'pointer',
                 }}
                 src={avatarUser}
               />
             ) : (
-              <div className="user-icon-container">
-                <UserOutlined className="user-icon" />
-              </div>
+              <Avatar
+                size={45}
+                style={{
+                  backgroundColor: '#FFD802',
+                  cursor: 'pointer',
+                }}
+                src="../images/avatars/default.jpg"
+              />
             )}
           </Dropdown>
         </div>

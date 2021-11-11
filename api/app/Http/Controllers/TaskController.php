@@ -29,9 +29,9 @@ class TaskController extends Controller
 
     public function checkRole(Request $request)
     {
-        $task = Task::findOrFail($request->query('taskId'));
+        $task = Task::findOrFail($request->input('taskId'));
         $adminId = $task->schedule->jobfair->jobfair_admin_id;
-        if ($adminId === $request->query('userId')) {
+        if ($adminId === intval($request->input('userId'))) {
             return response('Access granted', 200);
         }
 
@@ -78,24 +78,24 @@ class TaskController extends Controller
         $jobfair = Jobfair::find($id);
         $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
             return [
-                'jobfairName' => $jobfair->name,
+                'jobfairName'           => $jobfair->name,
 
-                'id' => $item->id,
-                'name' => $item->name,
-                'start_time' => $item->start_time,
-                'end_time' => $item->end_time,
-                'status' => $item->status,
-                'remind_member' => $item->remind_member,
+                'id'                    => $item->id,
+                'name'                  => $item->name,
+                'start_time'            => $item->start_time,
+                'end_time'              => $item->end_time,
+                'status'                => $item->status,
+                'remind_member'         => $item->remind_member,
                 'description_of_detail' => $item->description_of_detail,
-                'relation_task_id' => null,
-                'milestone_id' => $item->milestone,
-                'user_id' => $item->user_id,
-                'created_at' => $item->created_at,
-                'updated_at' => $item->updated_at,
-                'schedule_id' => $item->schedule_d,
-                'memo' => $item->memo,
-                'template_task_id' => $item->template_task_id,
-                'taskName' => $item->name,
+                'relation_task_id'      => null,
+                'milestone_id'          => $item->milestone,
+                'user_id'               => $item->user_id,
+                'created_at'            => $item->created_at,
+                'updated_at'            => $item->updated_at,
+                'schedule_id'           => $item->schedule_d,
+                'memo'                  => $item->memo,
+                'template_task_id'      => $item->template_task_id,
+                'taskName'              => $item->name,
             ];
         });
 
@@ -181,21 +181,21 @@ class TaskController extends Controller
             '未完了',
         ];
         $request->validate([
-            'name' => [
+            'name'                  => [
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
-            'start_time' => 'date',
-            'end_time' => 'date',
-            'status' => [
+            'start_time'            => 'date',
+            'end_time'              => 'date',
+            'status'                => [
                 Rule::in($status),
             ],
-            'remind_member' => 'boolean',
-            'milestone_id' => 'exists:milestones,id',
-            'schedule_id' => 'exists:schedules,id',
-            'user_id' => 'exists:users,id',
-            'memo' => 'string|nullable',
+            'remind_member'         => 'boolean',
+            'milestone_id'          => 'exists:milestones,id',
+            'schedule_id'           => 'exists:schedules,id',
+            'user_id'               => 'exists:users,id',
+            'memo'                  => 'string|nullable',
             'description_of_detail' => 'string|nullable',
-            'template_task_id' => 'exists:template_tasks,id',
+            'template_task_id'      => 'exists:template_tasks,id',
         ]);
         $task->update($request->all());
         //notification TaskEdited
@@ -296,12 +296,12 @@ class TaskController extends Controller
         $task = Task::find($id);
         $ad = $task->schedule->jobfair->user->id;
         $request->validate([
-            'user_id' => 'exists:users,id',
+            'user_id'               => 'exists:users,id',
             'description_of_detail' => 'string|nullable',
-            'template_task_id' => 'exists:template_tasks,id',
-            'start_time' => 'date',
-            'end_time' => 'date',
-            'name' => [
+            'template_task_id'      => 'exists:template_tasks,id',
+            'start_time'            => 'date',
+            'end_time'              => 'date',
+            'name'                  => [
                 Rule::unique('tasks')->whereNot('id', $id)->where('schedule_id', $task->schedule_id),
             ],
         ]);

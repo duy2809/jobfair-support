@@ -89,6 +89,9 @@ all:
       session:
         driver: #@ data.values.config.session.driver
 
+      broadcast:
+        driver: #@ data.values.config.broadcast.driver
+
       cache:
         driver: #@ data.values.config.cache.driver
 

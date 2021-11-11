@@ -25,7 +25,7 @@ import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 import Loading from '../../components/loading'
 
-export default function File() {
+function File() {
   const { store } = useContext(ReactReduxContext)
   const user = store.getState().get('auth').get('user')
 
@@ -646,7 +646,8 @@ export default function File() {
                     {recentUpdated.map((el, index) => (
                       <>
                         <div
-                          className={`my-2 px-6 ${index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
+                          className={`my-2 px-6 ${
+                            index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
                           }`}
                         >
                           <div className="flex flex-row items-center">
@@ -709,4 +710,5 @@ export default function File() {
     </div>
   )
 }
-File.middleware = ['auth']
+File.middleware = ['auth:superadmin', 'auth:member']
+export default File
