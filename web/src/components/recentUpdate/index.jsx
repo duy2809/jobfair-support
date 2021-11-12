@@ -11,7 +11,7 @@ function RecentUpdate() {
   // const [loading, setLoading] = useState(false)
   const [start, setStart] = useState(0)
   const [list, setList] = useState([])
-  const [curTimeEdit, setCurTimeEdit] = useState('')
+  const [tempTimeEdit, setTempTimeEdit] = useState('')
   const changeFormat = (date) => {
     const temp = new Date(date)
     const year = temp.getFullYear()
@@ -22,16 +22,20 @@ function RecentUpdate() {
   } 
   const addData = (response) => {
     // setInitLoading(false)
-    response.data.forEach((element) => {
-      if (changeFormat(element.last_edit) === curTimeEdit) {
+    const data = response.data
+    data.forEach((element) => {
+      if (changeFormat(element.last_edit) === tempTimeEdit) {
         element.display = false
       } else {
         element.display = true
-        setCurTimeEdit(changeFormat(element.last_edit))
+        setTempTimeEdit(changeFormat(element.last_edit))
       }
     })
-    setList(list.concat(response.data))
-    setStart(start + 5)
+    data.forEach((element)=> {
+      console.log(element.display)
+    })
+    setList(list.concat(data))
+    //setStart(start + 5)
   }
   useEffect(async () => {
     setList([])
@@ -39,7 +43,7 @@ function RecentUpdate() {
       addData(response)
     })
   }, [])
-  // const data = [
+  // const data = [q
   //   {
   //     title: "木村さんがタスクを追加",
   //     display: true,
@@ -58,7 +62,7 @@ function RecentUpdate() {
   //   },
   // ];
   const onLoadMore = async () => {
-    await getJobfairComment('all', start, 5).then((response) => {
+    await getJobfairComment('all', 5, 5).then((response) => {
       addData(response)
     })
   }
@@ -84,9 +88,9 @@ function RecentUpdate() {
         dataSource={list}
         renderItem={(item) => (
           <>
-            {item.display ? (
+            {item.display && ( 
               <Divider orientation="center">{changeFormat(item.last_edit)}</Divider>
-            ) : null}
+            )}
             <List.Item className="border hover:border-black">
               <List.Item.Meta
                 avatar={(
@@ -104,7 +108,7 @@ function RecentUpdate() {
                 )}
                 title={(
                   <>
-                    <a href="https://ant.design">{item.author.name}</a>
+                    <a href="">{item.author.name}</a>
                     {item.is_created_task ? (
                       <span>さんがタスクを追加</span>
                     ) : (
