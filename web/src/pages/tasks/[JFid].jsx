@@ -520,7 +520,7 @@ function TaskList() {
     : [
       {
         title: 'タスク名',
-        width: '15%',
+        width: '35%',
         dataIndex: 'taskName',
         fixed: 'left',
         ellipsis: {
@@ -567,11 +567,22 @@ function TaskList() {
       },
       {
         title: 'マイルストーン',
-        fixed: '20%',
+        fixed: '25%',
         dataIndex: 'milestone_name',
         width: 80,
         render: (taskName) => <a>{taskName}</a>,
         onCell: handleRow,
+      },
+      {
+        title: '担当者',
+        width: '27%',
+        dataIndex: 'managers',
+        fixed: 'left',
+        render: (managers) => (
+          <div className="flex items-center">
+            {managers.length > 0 ? managers.join(', ') : ''}
+          </div>
+        ),
       },
     ]
   const fetchCTGR = async () => {

@@ -136,6 +136,7 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
+      width: '40%',
       render: (templateTaskName) => <Tooltip title={templateTaskName}><a>{templateTaskName}</a></Tooltip>,
       onCell: handleRow,
     },
@@ -146,6 +147,7 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
+      width: '15%',
       render: (categoryName) => (
         <Tooltip title={categoryName}>
           <a>{categoryName}</a>
@@ -159,6 +161,7 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
+      width: '25%',
       render: (milestoneName) => (
         <Tooltip title={milestoneName}>
           <a>{milestoneName}</a>
