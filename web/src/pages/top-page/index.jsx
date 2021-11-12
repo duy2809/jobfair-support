@@ -61,19 +61,22 @@ const templateTaskDataColumn = [
 
 const taskListDataColumn = [
   {
-    title: 'JF名前',
+    title: 'JF名',
     dataIndex: 'jfName',
     key: 'JF Name',
+    width: '30%',
   },
   {
-    title: 'タスク名前',
+    title: 'タスク名',
     dataIndex: 'name',
     key: 'name',
+    width: '45%',
   },
   {
     title: 'タイム',
     dataIndex: 'time',
     key: 'time',
+    width: '25%',
   },
 ]
 
@@ -126,14 +129,14 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      setTaskData(response.data)
+      const tasksData = response.data.filter(
+        (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
+      )
+      setTaskData(tasksData)
 
       const data = await taskReviewer()
-      // console.log(data.data)
       setTaskReviewerData(data.data)
       setLoadingTask(false)
-      // console.log("s")
-      // console.log(data)
     }
 
     const getMember = async () => {
@@ -241,6 +244,7 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
+
   taskReviewerData.forEach((taskReviewerIt) => {
     const taskReviewerItem = { id: '' }
     taskReviewerItem.id = taskReviewerIt.id

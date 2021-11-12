@@ -1,4 +1,11 @@
-.option-active {
-  background-color: #ffd803 !important;
-  border-radius: 10px !important;
+.task-sub-table {
+  .option-active {
+    background-color: #ffd803 !important;
+    border-radius: 10px !important;
+  }
+  img:hover {
+    filter: invert(83%) sepia(27%) saturate(2852%) hue-rotate(353deg)
+      brightness(108%) contrast(106%);
+    cursor: pointer;
+  }
 }
