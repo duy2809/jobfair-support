@@ -12,7 +12,7 @@ import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
 import { jftask } from '../../api/jf-toppage'
-import SearchSugges from '../../components/search-sugges'
+// import SearchSugges from '../../components/search-sugges'
 import Loading from '../../components/loading'
 
 function jftoppage() {
@@ -51,11 +51,11 @@ function jftoppage() {
                 <h3 className="title-h3">最近の更新</h3>
                 <NotificationsJf id={idJf} />
               </div>
-              <div className="flex flex-col w-1/2 space-x-50 justify-center">
-                <div className="cha ...  w-11/12 ml-12">
+              <div className="flex flex-col w-1/2 justify-center">
+                {/* <div className="cha ...  w-11/12 ml-12">
                   <SearchSugges className="h-7" listTask={listTask} id={idJf} />
-                </div>
-                <div className="justify-center ... w-11/12 ml-12 mt-12">
+                </div> */}
+                <div className="justify-center ... w-11/12 ml-12">
                   <div className="status__global">
                     <h3>ステータス</h3>
                     <div className="status">
