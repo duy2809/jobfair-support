@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
@@ -105,7 +106,7 @@ Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::cla
 Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
 Route::get('/category-jobfair', [App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
-
+Route::get('/category-member', [CategoryController::class, 'getMembersByCategory']);
 Route::prefix('categories')->group(function () {
     Route::get('/', 'CategoryController@getCatgories');
 });

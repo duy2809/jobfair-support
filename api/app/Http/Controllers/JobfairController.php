@@ -193,7 +193,8 @@ class JobfairController extends Controller
     {
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
-                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
+                    ->where('tasks.name', 'LIKE', '%'.$request->name.'%');
             },
         ])->find($id, ['id']);
 
@@ -207,9 +208,9 @@ class JobfairController extends Controller
 
     public function isAdminJobfair(Request $request)
     {
-        $jobfair = Jobfair::findOrFail($request->query('jobfairId'));
+        $jobfair = Jobfair::findOrFail($request->input('jobfairId'));
         $adminId = $jobfair->jobfair_admin_id;
-        if ($adminId === $request->query('userId')) {
+        if ($adminId === intval($request->input('userId'))) {
             return response('Access granted', 200);
         }
 

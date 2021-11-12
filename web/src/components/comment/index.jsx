@@ -1,18 +1,20 @@
 import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
-import { Button, Divider, Form, Input, notification, Select, Tag, Tooltip } from 'antd'
+import { Button, Divider, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
-import React, { useContext, useEffect, useState, memo, useCallback } from 'react'
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
 import { getUser, taskData } from '../../api/task-detail'
 import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
+import MarkDownView from '../markDownView'
 import Comment from './Comment'
 import MyEditor from './Editor'
 import './styles.scss'
 
 function index({ id, statusProp, assigneeProp, parentCallback }) {
   const [visible, setVisible] = useState(false)
+  const [previewing, setPreviewing] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
   const [form] = Form.useForm()
@@ -62,7 +64,9 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
     setVisible(false)
     setShow(true)
   }
-
+  const openPreview = () => {
+    setPreviewing(true)
+  }
   const pushData2Parent = useCallback((data) => {
     parentCallback(data)
   }, [])
@@ -144,11 +148,11 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
       // TODO: change task description
       const comment = {
         task_id: id,
-        body: value ?? '',
+        body: value.replace(/\\s/g, ' ') ?? '',
         assignee: JSON.stringify(assignee),
         status,
       }
-      console.log(comment)
+      console.log()
 
       if (!(comment.body || comment.assignee || comment.status)) {
         return notification.open({
@@ -278,8 +282,33 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
             </div>
           </div>
         )}
-        {visible ? (
+        {visible && (
           <div className="box ">
+            <Modal
+              title="Basic Modal"
+              centered
+              visible={previewing}
+              onOk={() => {
+                setPreviewing(false)
+              }}
+              onCancel={() => {
+                setPreviewing(false)
+              }}
+              footer={[
+                <Button
+                  key="submit"
+                  type="primary"
+                  onClick={() => {
+                    setPreviewing(false)
+                  }}
+                >
+                  OK
+                </Button>,
+              ]}
+              // onCancel={() => {}}
+            >
+              <MarkDownView source={value.replace(/\\s/g, '')} />
+            </Modal>
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
               <div className="pos flex items-start justify-evenly ">
                 <div className="pos-left w-8/12 mr-5">
@@ -366,7 +395,12 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
                           キャンセル
                         </Button>
                         {/* ============================== */}
-                        <Button htmlType="button" type="primary" className="button_preview ">
+                        <Button
+                          htmlType="button"
+                          type="primary"
+                          onClick={openPreview}
+                          className="button_preview "
+                        >
                           プレビュー
                         </Button>
                         {/* =============================== */}
@@ -396,7 +430,7 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
               </div>
             </Form>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   )
