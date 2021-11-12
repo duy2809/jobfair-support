@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
+// use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InviteMemberController;
 use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
@@ -102,11 +102,11 @@ Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkN
 
 //category
 Route::apiResource('/category', CategoryController::class);
-Route::get('/category/find/{key}', [App\Http\Controllers\CategoryController::class, 'search']);
-Route::get('/category/checkDuplicate/{name}', [App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
-Route::get('/category/checkUniqueEdit/{id}/{name}', [App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
-Route::get('/category-jobfair', [App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
-Route::get('/category-member', [CategoryController::class, 'getMembersByCategory']);
+Route::get('/category/find/{key}', [\App\Http\Controllers\CategoryController::class, 'search']);
+Route::get('/category/checkDuplicate/{name}', [\App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
+Route::get('/category/checkUniqueEdit/{id}/{name}', [\App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
+Route::get('/category-jobfair', [\App\Http\Controllers\CategoryController::class, 'getCategoriesWithMember']);
+Route::get('/category-member', [\App\Http\Controllers\CategoryController::class, 'getMembersByCategory']);
 Route::prefix('categories')->group(function () {
     Route::get('/', 'CategoryController@getCatgories');
 });

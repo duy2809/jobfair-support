@@ -169,7 +169,7 @@ function MemberList() {
       title: 'メンバ名',
       dataIndex: 'name',
       key: 'メンバ名',
-      width: '30%',
+      width: '40%',
       ellipsis: {
         showTitle: false,
       },
@@ -198,7 +198,7 @@ function MemberList() {
     {
       title: '参加日',
       dataIndex: 'date',
-      width: `${role === 'superadmin' ? '20%' : '30%'}`,
+      width: `${role === 'superadmin' ? '20%' : '20%'}`,
       key: '参加日',
       ellipsis: {
         showTitle: false,

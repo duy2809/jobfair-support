@@ -4,7 +4,7 @@ import {
   SearchOutlined,
   DownOutlined,
   UpOutlined,
-  ExportOutlined,
+  // ExportOutlined,
 } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -49,7 +49,7 @@ const TaskSubTable = ({
     return new Date(mdy[0], mdy[1] - 1, mdy[2])
   }
   function datediff(first, second) {
-    return Math.round((second - first) / (1000 * 60 * 60 * 24))
+    return Math.round((first - second) / (1000 * 60 * 60 * 24))
   }
   function taskNameToLink(name) {
     let id = 0
@@ -67,8 +67,9 @@ const TaskSubTable = ({
     // const currentDate = `${today.getFullYear()}-${
     //   today.getMonth() + 1
     // }-${today.getDate()}`
+
     dataSource.map((data) => {
-      if (data.status === '中 断') {
+      if (data.status === '中断') {
         data.time = '中断'
       } else if (datediff(parseDate(data.time), today) > 0) {
         data.time = `後${datediff(parseDate(data.time), today)}日`
@@ -77,62 +78,62 @@ const TaskSubTable = ({
       } else {
         data.time = '今日'
       }
-      setNewDataColumn(
-        dataColumn.map((dataItem) => {
-          // console.log(taskReviewerList)
-          if (dataItem.title === 'タスク名前') {
-            dataItem.render = (row) => (
-              <>
-                <Link href={taskNameToLink({ row })}>{row}</Link>
-              </>
-            )
-          }
-          if (dataItem.title === 'JF名前') {
-            data.render = (row) => (
-              <Tooltip title={row}>
-                <a>{truncate(row)}</a>
-              </Tooltip>
-            )
-          }
-          if (dataItem.title === 'タイム') {
-            dataItem.render = (row) => dataSource.map((dataLine) => {
-              let color = ''
-              if (dataLine.time.indexOf('中断') > -1) {
-                color = 'geekblue'
-              } else if (dataLine.time.indexOf('日遅くれ') > -1) {
-                color = 'volcano'
-              } else if (dataLine.time.indexOf('後') > -1) {
-                color = 'green'
-              }
-              if (dataLine.time === row) {
-                return (
-                  <Tag color={color} key={dataLine.time}>
-                    {dataLine.time}
-                  </Tag>
-                )
-              }
-              return null
-            })
-          }
-          return dataItem
-        }),
-      )
+
       return null
     })
     // console.log(dataSource)
+    setNewDataColumn(
+      dataColumn.map((dataItem) => {
+        // console.log(taskReviewerList)
+        if (dataItem.title === 'タスク名') {
+          dataItem.render = (row) => (
+            <>
+              <Link href={taskNameToLink({ row })}>{row}</Link>
+            </>
+          )
+        }
+        if (dataItem.title === 'JF名') {
+          dataItem.render = (row) => (
+            <Tooltip title={row}>
+              <a>{truncate(row)}</a>
+            </Tooltip>
+          )
+        }
+        if (dataItem.title === 'タイム') {
+          dataItem.render = (row) => dataSource.map((dataLine) => {
+            let color = ''
+            if (dataLine.time.indexOf('中断') > -1) {
+              color = 'geekblue'
+            } else if (dataLine.time.indexOf('日遅くれ') > -1) {
+              color = 'volcano'
+            } else if (dataLine.time.indexOf('後') > -1) {
+              color = 'green'
+            }
+            if (dataLine.time === row) {
+              return (
+                <Tag color={color} key={dataLine.time}>
+                  {dataLine.time}
+                </Tag>
+              )
+            }
+            return null
+          })
+        }
+        return dataItem
+      }),
+    )
   }, [dataSource])
   useEffect(() => {
     let datas = [...list]
     if (filter) {
-      if (filter.name) {
-        datas = datas.filter(
-          (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
-        )
-      }
+      // if (filter.name) {
+      //   datas = datas.filter(
+      //     (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
+      //   )
+      // }
       if (filter.status) {
         datas = datas.filter(
-          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase())
-            !== -1,
+          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase()) !== -1,
         )
       }
       if (filter.reviewer_task) {
@@ -148,6 +149,8 @@ const TaskSubTable = ({
         )
       }
       setList(datas)
+    } else {
+      setList(dataSource)
     }
   }, [filter])
   useEffect(() => {
@@ -216,14 +219,18 @@ const TaskSubTable = ({
     setList(dataSource)
   }
   const searchInput = (e, dateString = '') => {
-    // console.log(e)
     if (!dateString) {
       if (e.target.name === 'name') {
-        setFilter({ ...filter, name: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, name: '' })
-          setList(dataSource)
-        }
+        const datas = dataSource.filter(
+          (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
+        )
+        setList(datas)
+
+        // setFilter({ ...filter, name: e.target.value })
+        // if (e.target.value === '') {
+        //   setFilter({ ...filter, name: '' })
+        //   setList(dataSource)
+        // }
       }
     } else {
       setFilter({ ...filter, date: dateString })
@@ -234,7 +241,7 @@ const TaskSubTable = ({
     }
   }
   return (
-    <div ref={ref}>
+    <div ref={ref} className="task-sub-table">
       <div
         style={{
           display: 'flex',
@@ -245,9 +252,9 @@ const TaskSubTable = ({
         <div>
           <button
             type="button"
-            className="flex items-center"
+            className="flex items-center font-bold"
             style={{
-              fontSize: '30px',
+              fontSize: '24px',
               outline: 'none',
             }}
             onClick={onClickShow}
@@ -267,10 +274,14 @@ const TaskSubTable = ({
 
         <div className="flex items-center">
           <Link href={route}>
-            <Button
-              style={{ border: 'none', marginBottom: '5px' }}
-              shape="circle"
-              icon={<ExportOutlined style={{ fontSize: '30px' }} />}
+            <img
+              style={{
+                width: '24px',
+                marginRight: '4px',
+                height: '24px',
+              }}
+              src="https://cdn0.iconfinder.com/data/icons/web-design-and-development-4/512/180-512.png"
+              alt=""
             />
           </Link>
           <span className="queue-demo">
@@ -280,7 +291,7 @@ const TaskSubTable = ({
                 shape="circle"
                 icon={(
                   <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '30px' }}
+                    style={{ marginLeft: '4px', fontSize: '24px' }}
                   />
                 )}
                 onClick={onClick}
@@ -344,8 +355,7 @@ const TaskSubTable = ({
                   <Button
                     name="reviewer"
                     onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${
-                      optionReviewer === 'すべて' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
                     }`}
                   >
                     すべて
@@ -353,8 +363,7 @@ const TaskSubTable = ({
                   <Button
                     name="reviewer"
                     onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${
-                      optionReviewer === '担当者' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
                     }`}
                   >
                     担当者
@@ -362,8 +371,8 @@ const TaskSubTable = ({
                   <Button
                     name="reviewer"
                     onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${
-                      optionReviewer === 'レビュアー' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
+                      ? 'option-active' : ''
                     }`}
                   >
                     レビュアー
@@ -376,8 +385,7 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${
-                      optionStatus === 'すべて' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
                     }`}
                   >
                     すべて
@@ -385,8 +393,7 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${
-                      optionStatus === '進行中' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
                     }`}
                   >
                     進行中
@@ -394,8 +401,7 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${
-                      optionStatus === '今まで' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
                     }`}
                   >
                     今まで
@@ -403,8 +409,7 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${
-                      optionStatus === '期限きれ' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
                     }`}
                   >
                     期限きれ
@@ -412,8 +417,7 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${
-                      optionStatus === '中 断' ? 'option-active' : ''
+                    className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''
                     }`}
                   >
                     中断

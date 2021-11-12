@@ -9,6 +9,7 @@ import './style.scss'
 // const { Search } = Input;
 
 const List = ({
+  id,
   searchIcon,
   text,
   showTimeInput,
@@ -39,9 +40,17 @@ const List = ({
     setNewDataColumn(
       dataColumn.map((data) => {
         if (data.title === '名前') {
-          data.render = (row) => (
+          data.render = (row, record) => (
             <Tooltip title={row}>
-              <a>{truncate(row)}</a>
+              {(() => {
+                switch (id) {
+                  case 2: return <a href={`/member/${record.key}`}>{truncate(row)}</a>
+                  case 3: return <a href={`/schedule/${record.key}`}>{truncate(row)}</a>
+                  case 4: return <a href={`/template-task-dt/${record.key}`}>{truncate(row)}</a>
+                  default: return null
+                }
+              })()}
+
             </Tooltip>
           )
         }
@@ -93,7 +102,7 @@ const List = ({
         )
       }
       if (filter.date) {
-        if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
+        if (dataColumn[1].dataIndex === 'type') { filter.date = filter.date.replace('-', '/') }
         datas = datas.filter(
           (data) => data.time.toLowerCase().indexOf(filter.date.toLowerCase()) !== -1,
         )
@@ -210,7 +219,7 @@ const List = ({
                 <Input
                   // key="demo"
                   style={{
-                    width: '270px',
+                    width: '200px',
                     height: '40px',
 
                   }}
@@ -244,7 +253,7 @@ const List = ({
                   <div>
                     <DatePicker
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="date"
@@ -262,7 +271,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="jobfairName"
@@ -281,7 +290,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="category"
@@ -298,7 +307,7 @@ const List = ({
                   <div>
                     <Input
                       style={{
-                        width: '270px',
+                        width: '200px',
                         height: '40px',
                       }}
                       name="milestone"
@@ -316,9 +325,11 @@ const List = ({
           <div>
             <Table
               pagination={false}
-              dataSource={list.length >= 5
-                ? list.slice(list.length - 5, list.length).reverse()
-                : list.reverse()}
+              dataSource={
+                list.length >= 5
+                  ? list.slice(list.length - 5, list.length).reverse()
+                  : list.reverse()
+              }
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
@@ -330,6 +341,7 @@ const List = ({
 }
 
 List.propTypes = {
+  id: PropTypes.number.isRequired,
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   showTimeInput: PropTypes.bool.isRequired,

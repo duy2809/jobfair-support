@@ -142,7 +142,7 @@ function JFList() {
       title: 'JF名',
       dataIndex: 'JF名',
       fixed: 'left',
-      width: 80,
+      width: '25%',
       ellipsis: {
         showTitle: false,
       },
@@ -158,7 +158,7 @@ function JFList() {
       title: '開始日',
       dataIndex: '開始日',
       fixed: 'left',
-      width: 100,
+      width: '13%',
       ellipsis: {
         showTitle: false,
       },
@@ -172,7 +172,7 @@ function JFList() {
     {
       title: '推定参加学生数',
       dataIndex: '推定参加学生数',
-      width: 100,
+      width: '13%',
       responsive: ['md'],
       ellipsis: {
         showTitle: false,
@@ -190,7 +190,7 @@ function JFList() {
     {
       title: '参加企業社数',
       dataIndex: '参加企業社数',
-      width: 100,
+      width: '13%',
       responsive: ['sm'],
       ellipsis: {
         showTitle: false,
@@ -208,7 +208,7 @@ function JFList() {
     {
       title: '管理者',
       dataIndex: '管理者',
-      width: 80,
+      width: '25%',
       ellipsis: {
         showTitle: false,
       },
@@ -225,7 +225,7 @@ function JFList() {
     {
       title: users === 'superadmin' ? 'アクション' : '',
       fixed: 'right',
-      width: users === 'superadmin' ? 50 : 1,
+      width: users === 'superadmin' ? '10%' : 1,
       render: (text, record) => users === 'superadmin' && (
         <Space size="middle">
           <a href={`/edit-jf/${record.idJF}`}>
