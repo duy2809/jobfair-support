@@ -573,6 +573,17 @@ function TaskList() {
         render: (taskName) => <a>{taskName}</a>,
         onCell: handleRow,
       },
+      {
+        title: '担当者',
+        width: '27%',
+        dataIndex: 'managers',
+        fixed: 'left',
+        render: (managers) => (
+          <div className="flex items-center">
+            {managers.length > 0 ? managers.join(', ') : ''}
+          </div>
+        ),
+      },
     ]
   const fetchCTGR = async () => {
     await getCategorys().then((response) => {
