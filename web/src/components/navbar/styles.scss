@@ -49,7 +49,7 @@
 }
 
 .notification {
-  width: 450px;
+  width: 500px;
   .noti-header {
     display: flex;
     justify-content: space-between;
@@ -67,7 +67,7 @@
 
   .ant-list-items {
     margin: auto;
-    height: 450px;
+    height: auto;
     max-height: 520px;
     overflow: auto;
     cursor: pointer;
@@ -96,6 +96,6 @@
   }
 
   .noti-list-item {
-    width: 340px;
+    width: 420px;
   }
 }
