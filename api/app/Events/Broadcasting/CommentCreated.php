@@ -71,6 +71,10 @@ class CommentCreated implements ShouldBroadcastNow
         // return $this->comment;
         return [
             'id'                  => $this->comment->id,
+            'task'                => [
+                'name' => $this->comment->task->name,
+                'id'   => $this->comment->task->id,
+            ],
             'author'              => [
                 'id'     => $this->comment->user->id,
                 'name'   => $this->comment->user->name,
@@ -99,6 +103,8 @@ class CommentCreated implements ShouldBroadcastNow
             'old_end_date'        => $this->comment->old_end_date,
             'new_end_date'        => $this->comment->new_end_date,
             'is_created_task'     => $this->comment->is_created_task,
+            'jobfair_id'          => $this->comment->task->schedule->jobfair->id,
+            'is_normal_comment'   => $this->comment->is_normal_comment,
         ];
     }
 }

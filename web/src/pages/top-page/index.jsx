@@ -310,7 +310,7 @@ const Top = () => {
 
               </Col>
               <Col span={12}>
-                <RecentUpdate />
+                <RecentUpdate JFid="all" />
               </Col>
             </Row>
           </div>

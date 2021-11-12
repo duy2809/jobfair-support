@@ -307,7 +307,7 @@ class CommentController extends Controller
                 $query->whereHas('schedule', function ($query) use ($JFid) {
                     $query->where('jobfair_id', $JFid);
                 });
-            })->where('is_normal_comment', false)->latest('updated_at')->offset($request->start)->take($request->count)->get();
+            })->latest('updated_at')->offset($request->start)->take($request->count)->get();
         } else {
             $comments = Comment::where('is_normal_comment', false)->latest('updated_at')
                 ->offset($request->start)->take($request->count)->get();
@@ -316,7 +316,7 @@ class CommentController extends Controller
         $result = $comments->map(function ($comment) {
             $listOldAssignees = [];
             $listNewAssignees = [];
-            if ($comment->old_assignees && $comment->new_assignees) {
+            if ($comment->old_assignees || $comment->new_assignees) {
                 $listOldAssignees = explode(',', $comment->old_assignees);
                 $listNewAssignees = explode(',', $comment->new_assignees);
             }
@@ -329,17 +329,17 @@ class CommentController extends Controller
             $listNewFollowingTasks = [];
             $listOldReviewers = [];
             $listNewReviewers = [];
-            if ($comment->old_previous_tasks && $comment->new_previous_tasks) {
+            if ($comment->old_previous_tasks || $comment->new_previous_tasks) {
                 $listOldPreviousTasks = explode(',', $comment->old_previous_tasks);
                 $listNewPreviousTasks = explode(',', $comment->new_previous_tasks);
             }
 
-            if ($comment->old_following_tasks && $comment->new_following_tasks) {
+            if ($comment->old_following_tasks || $comment->new_following_tasks) {
                 $listOldFollowingTasks = explode(',', $comment->old_following_tasks);
                 $listNewFollowingTasks = explode(',', $comment->new_following_tasks);
             }
 
-            if ($comment->old_reviewers && $comment->new_reviewers) {
+            if ($comment->old_reviewers || $comment->new_reviewers) {
                 $listOldReviewers = explode(',', $comment->old_reviewers);
                 $listNewReviewers = explode(',', $comment->new_reviewers);
             }
@@ -379,6 +379,7 @@ class CommentController extends Controller
                 'old_end_date'        => $comment->old_end_date,
                 'new_end_date'        => $comment->new_end_date,
                 'is_created_task'     => $comment->is_created_task,
+                'is_normal_comment'   => $comment->is_normal_comment,
             ];
         });
 
