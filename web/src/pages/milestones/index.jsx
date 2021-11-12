@@ -178,13 +178,13 @@ const MilestonePage = () => {
           <a>{milestoneName}</a>
         </Tooltip>
       ),
-      width: '60%',
+      width: '70%',
 
     },
     {
       title: '期日',
       dataIndex: 'period',
-      width: `${role === 'superadmin' ? '30%' : '50%'}`,
+      width: `${role === 'superadmin' ? '20%' : '30%'}`,
       ellipsis: {
         showTitle: false,
       },
