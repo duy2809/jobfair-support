@@ -29,7 +29,7 @@ const columnTask = (type, data) => {
 
 const Column = dynamic(() => import('../../components/kanban/Column'))
 
-export default function KanBan() {
+function KanBan() {
   const router = useRouter()
   const idJf = router.query.JFid
 
@@ -190,8 +190,7 @@ export default function KanBan() {
     })
 
     const isAssignee = await checkAssignee(taskID, currentUserId)
-    if (store.getState().get('auth').get('user').get('role') !== 'superadmin'
-        && isAdminJobfair.length === 0 && isAssignee.data === ''
+    if (isAdminJobfair.length === 0 && isAssignee.data === ''
     ) {
       return
     }
@@ -353,3 +352,5 @@ export default function KanBan() {
     </div>
   )
 }
+KanBan.middleware = ['auth:superadmin', 'auth:member']
+export default KanBan
