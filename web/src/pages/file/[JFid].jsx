@@ -292,6 +292,13 @@ function File() {
       setIsModalEditFolderVisible(true)
     }
   }
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      duration: 2.5,
+    })
+  }
   const handleEditFileOk = () => {
     const nameInput = formEditFile.getFieldValue('name_file')
     const linkInput = formEditFile.getFieldValue('link')
@@ -391,39 +398,49 @@ function File() {
     })
   }
   const handleOkDelete = async () => {
-    setLoading(true)
-    const idArray = []
-    data.forEach((element, index) => {
-      if (isChecked[index] && element.checkbox) idArray.push(element.key)
-    })
-    const res = await deleteDocument(JFid, { id: idArray })
-
-    const result = res.data.map((element) => ({
-      key: element.id,
-      checkbox: user.get('id') === element.authorId || role !== 'member',
-      is_file: element.is_file,
-      name: element.name,
-      updater: element.updaterName,
-      updated_at: element.updated_at,
-      link: element.link,
-    }))
-    if (directory.length > 1) {
-      setData([
-        {
-          key: -1,
-          name: '..',
-          checkbox: false,
-          is_file: false,
-          updater: '',
-          updated_at: '',
-          link: '',
-        },
-        ...result,
-      ])
-    } else setData(result)
-    setIsModalDeleteVisible(false)
-    setIsCheckAll(false)
-    setLoading(false)
+    try {
+      setLoading(true)
+      const idArray = []
+      data.forEach((element, index) => {
+        if (isChecked[index] && element.checkbox) idArray.push(element.key)
+      })
+      const res = await deleteDocument(JFid, { id: idArray })
+      // if(res.Status === 400)
+      const result = res.data.map((element) => ({
+        key: element.id,
+        checkbox: user.get('id') === element.authorId || role !== 'member',
+        is_file: element.is_file,
+        name: element.name,
+        updater: element.updaterName,
+        updated_at: element.updated_at,
+        link: element.link,
+      }))
+      if (directory.length > 1) {
+        setData([
+          {
+            key: -1,
+            name: '..',
+            checkbox: false,
+            is_file: false,
+            updater: '',
+            updated_at: '',
+            link: '',
+          },
+          ...result,
+        ])
+      } else setData(result)
+      setIsModalDeleteVisible(false)
+      setIsCheckAll(false)
+      setLoading(false)
+    } catch {
+      openNotification(
+        'error',
+        'Không được xóa file của người khác!',
+      )
+      setIsModalDeleteVisible(false)
+      setIsCheckAll(false)
+      setLoading(false)
+    }
   }
   return (
     <div className="File">
