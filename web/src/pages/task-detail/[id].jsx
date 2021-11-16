@@ -114,7 +114,7 @@ function TaskDetail() {
         })
       }
     }).catch(() => {
-      window.location.href = '/error'
+      router.push('/error')
     })
   }
   const fetchBeforeTask = async () => {
@@ -132,7 +132,7 @@ function TaskDetail() {
     await reviewers(idTask).then((response) => {
       setReviewersList(response.data)
     }).catch(() => {
-      window.location.href = '/error'
+      router.push('/error')
     })
   }
   const modelDelete = () => {
