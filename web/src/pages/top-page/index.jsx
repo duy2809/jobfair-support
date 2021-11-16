@@ -18,6 +18,14 @@ const memListDataColumn = [
     title: '名前',
     dataIndex: 'name',
     key: 'name',
+    width: '60%',
+  },
+  {
+    title: 'カテゴリ',
+    dataIndex: 'category',
+    key: 'category',
+    width: '40%',
+
   },
 ]
 
@@ -35,34 +43,40 @@ const templateTaskDataColumn = [
     title: '名前',
     dataIndex: 'name',
     key: 'name',
+    width: '40%',
   },
   {
     title: 'カテゴリ',
     dataIndex: 'category',
     key: 'category',
+    width: '30%',
   },
   {
     title: 'マイルストーン',
     dataIndex: 'milestone',
     key: 'milestone',
+    width: '30%',
   },
 ]
 
 const taskListDataColumn = [
   {
-    title: 'JF名前',
+    title: 'JF名',
     dataIndex: 'jfName',
     key: 'JF Name',
+    width: '30%',
   },
   {
-    title: 'タスク名前',
+    title: 'タスク名',
     dataIndex: 'name',
     key: 'name',
+    width: '45%',
   },
   {
     title: 'タイム',
     dataIndex: 'time',
     key: 'time',
+    width: '25%',
   },
 ]
 
@@ -72,11 +86,13 @@ const Top = () => {
       title: '名前',
       dataIndex: 'name',
       key: 'key',
+      width: '60%',
     },
     {
       title: 'タイム',
       dataIndex: 'time',
       key: 'key',
+      width: '40%',
     },
   ]
 
@@ -86,7 +102,6 @@ const Top = () => {
   const taskDataItem = []
 
   const [memberData, setMemberData] = useState([])
-  const memberDataItem = []
 
   const [jobfairData, setJobfairData] = useState([])
   const jobfairDataItem = []
@@ -114,21 +129,22 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      setTaskData(response.data)
+      const tasksData = response.data.filter(
+        (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
+      )
+      setTaskData(tasksData)
 
       const data = await taskReviewer()
-      // console.log(data.data)
       setTaskReviewerData(data.data)
       setLoadingTask(false)
-      // console.log("s")
-      // console.log(data)
     }
 
     const getMember = async () => {
       setLoadingMember(true)
       const response = await members()
-      setMemberData(response.data)
+      const memberDetailList = response.data.map((member) => ({ key: member.id, name: member.name, category: member.categories.map((category) => category.category_name).join(',') }))
       setLoadingMember(false)
+      setMemberData(memberDetailList)
     }
     function sortTime(item1, item2) {
       const dateA = new Date(item1.start_date).getTime()
@@ -151,6 +167,7 @@ const Top = () => {
 
     const getTemplate = async () => {
       setLoadingTemplate(true)
+
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
@@ -160,6 +177,7 @@ const Top = () => {
           )
           categoriesName.forEach((categoryName) => {
             datas.push({
+              key: data.id,
               name: data.name,
               category: categoryName,
               milestone: data.milestone.name,
@@ -175,19 +193,18 @@ const Top = () => {
       setLoadingSchedule(true)
       let dataItem = []
       await getListSchedule().then((res) => {
-        dataItem = res.data.map((data) => ({ name: data.name }))
+        dataItem = res.data.map((data) => ({ key: data.id, name: data.name }))
       })
       setScheduleData(dataItem)
       setLoadingSchedule(false)
     }
 
-    getTask()
+    // getTask()
     getMember()
     getJobfair()
     getTemplate()
     getSchedule()
   }, [])
-
   jobfairData.forEach((jobfair) => {
     const jobfairItem = { key: '', name: '', time: '' }
     jobfairItem.key = jobfair.id
@@ -196,14 +213,26 @@ const Top = () => {
 
     jobfairDataItem.push(jobfairItem)
   })
+  // memberData.forEach((member) => {
+  //   // console.log(member)
+  //   const memberItem = { key: '', name: '', category: '' }
+  //   memberItem.key = member.id
+  //   memberItem.name = member.name
+  //   // const memberDetail = getMemberDetail(id).then()
+  //   // console.log(member.categories.map((category) => category.category_name).join(','))
+  //   // memberItem.category = member.categories.map((category) => category.category_name).join(',')
+  //   memberItem.category = 'ytsdfa'
+  //   memberDataItem.push(memberItem)
+  //   // console.log(memberDataItem)
+  // })
 
-  memberData.forEach((member) => {
-    const memberItem = { key: '', name: '' }
-    memberItem.key = member.id
-    memberItem.name = member.name
+  // memberData.forEach((member) => {
+  //   const memberItem = { key: '', name: '' }
+  //   memberItem.key = member.id
+  //   memberItem.name = member.name
 
-    memberDataItem.push(memberItem)
-  })
+  //   memberDataItem.push(memberItem)
+  // })
 
   taskData.forEach((task) => {
     const taskItem = { key: '', name: '', jfName: '', time: '', status: '', user_id: '' }
@@ -215,6 +244,7 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
+
   taskReviewerData.forEach((taskReviewerIt) => {
     const taskReviewerItem = { id: '' }
     taskReviewerItem.id = taskReviewerIt.id
@@ -247,8 +277,9 @@ const Top = () => {
                       <List
                         role={role}
                         key={2}
+                        id={2}
                         dataColumn={memListDataColumn}
-                        dataSource={memberDataItem}
+                        dataSource={memberData}
                         text="メンバ"
                         searchIcon
                         showTimeInput={false}
@@ -261,6 +292,7 @@ const Top = () => {
                       <List
                         role={role}
                         key={3}
+                        id={3}
                         dataColumn={jfScheduleDataColumn}
                         dataSource={scheduleData}
                         text="JFスケジュール"
@@ -275,6 +307,7 @@ const Top = () => {
                       <List
                         role={role}
                         key={4}
+                        id={4}
                         dataColumn={templateTaskDataColumn}
                         dataSource={templateData}
                         text="テンプレートタスク"

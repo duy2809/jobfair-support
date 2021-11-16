@@ -1,7 +1,9 @@
+/* eslint-disable import/extensions */
+/* eslint-disable import/no-unresolved */
 import React, { useState, useCallback, useEffect } from 'react'
 import { Form, Input, Button, notification, Select, Modal } from 'antd'
 import { useRouter } from 'next/router'
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
 import Layout from '../../../../layouts/OtherLayout'
 import './styles.scss'
 import { MemberApi } from '~/api/member'
@@ -9,25 +11,37 @@ import { CategoryApi } from '~/api/category'
 import Loading from '../../../../components/loading'
 import * as Extensions from '../../../../utils/extensions'
 
-const EditMember = ({ data }) => {
+const EditMember = () => {
   const [form] = Form.useForm()
   // const [isModalVisible, setIsModalVisible] = useState(false)
   const [isModalCancelVisible, setIsModalCancelVisible] = useState(false)
-  const [emailInput, setEmailInput] = useState(data.user.email)
-  const [nameInput, setNameInput] = useState(data.user.name)
+  const [emailInput, setEmailInput] = useState()
+  const [nameInput, setNameInput] = useState()
   const router = useRouter()
-  const [categories, setCategories] = useState(
-    data.categories.map((item) => item.id),
-  )
+  const [categories, setCategories] = useState()
   const [categoriesSystem, setCategoriesSystem] = useState([])
-  const [reqCategories, setReqCategories] = useState(
-    data.categories.map((item) => item.id),
-  )
+  const [reqCategories, setReqCategories] = useState()
   const [showExitPrompt, setShowExitPrompt] = useState(false)
   const [isLoading, setLoading] = useState(false)
 
   const { id } = router.query
-
+  useEffect(async () => {
+    const res = await MemberApi.getMemberDetail(id)
+    const dataRes = res.data
+    setEmailInput(dataRes.user.email)
+    setNameInput(dataRes.user.name)
+    setCategories(dataRes.categories.map((item) => item.id))
+    setReqCategories(dataRes.categories.map((item) => item.id))
+  }, [])
+  useEffect(() => {
+    form.setFieldsValue({
+      name: nameInput,
+      email: emailInput,
+      categories,
+    })
+    // setEmailInput(emailInput)
+    // setNameInput(nameInput)
+  }, [emailInput, nameInput, categories])
   const onValueNameChange = (e) => {
     setNameInput(e.target.value)
     setShowExitPrompt(true)
@@ -63,13 +77,13 @@ const EditMember = ({ data }) => {
       categories: reqCategories,
     })
       .then(() => {
-        router.push(`/member/${data.user.id}`)
+        router.push(`/member/${id}`)
         openNotificationSuccess()
       })
       .catch((error) => {
-        const errorMessage = error.response.data.errors.name[0]
+        // const errorMessage = error.response.data.errors.name[0]
         notification.error({
-          message: errorMessage,
+          message: 'メールは既に存在します。別のメールを入力してください',
           duration: 3,
         })
         return error
@@ -78,6 +92,15 @@ const EditMember = ({ data }) => {
         setLoading(false)
       })
   }
+  const onFinishFailed = () => {
+    // console.log(errorInfo)
+    // errorInfo.errorFields.forEach((error) => {
+    //   notification.error({
+    //     message: error.errors[0],
+    //     duration: 3,
+    //   })
+    // })
+  }
 
   // const handleCancel = () => {
   //   setIsModalVisible(false)
@@ -85,7 +108,7 @@ const EditMember = ({ data }) => {
 
   const handleClick = (e) => {
     e.preventDefault()
-    router.push(`/member/${data.user.id}`)
+    router.push(`/member/${id}`)
   }
 
   // const showModal = () => {
@@ -122,6 +145,7 @@ const EditMember = ({ data }) => {
 
   return (
     <div>
+
       <Loading loading={isLoading} overlay={isLoading} />
       <Layout>
         <Layout.Main>
@@ -131,6 +155,8 @@ const EditMember = ({ data }) => {
               colon={false}
               className="w-2/5"
               labelCol={{ span: 8 }}
+              onFinish={handleOk}
+              onFinishFailed={onFinishFailed}
               labelAlign="right"
               form={form}
               size="large"
@@ -149,7 +175,7 @@ const EditMember = ({ data }) => {
                   onChange={onValueNameChange}
                   type="name"
                   value={nameInput}
-                  defaultValue={nameInput}
+                  // defaultValue={nameInput}
                 />
               </Form.Item>
               <Form.Item
@@ -169,8 +195,8 @@ const EditMember = ({ data }) => {
               >
                 <Input
                   onChange={onValueEmailChange}
-                  type="email"
-                  defaultValue={emailInput}
+                  type="text"
+                  // defaultValue={emailInput}
                   value={emailInput}
                 />
               </Form.Item>
@@ -190,7 +216,7 @@ const EditMember = ({ data }) => {
               >
                 <Select
                   mode="multiple"
-                  defaultValue={categories}
+                  // defaultValue={categories}
                   onChange={handleChangeSelect}
                   placeholder="カテゴリ"
                   size="large"
@@ -198,9 +224,7 @@ const EditMember = ({ data }) => {
                 >
                   {categoriesSystem.map((item) => (
                     <Option key={item.id} value={item.id}>
-                      <p>
-                        {item.category_name}
-                      </p>
+                      <p>{item.category_name}</p>
                     </Option>
                   ))}
                 </Select>
@@ -229,7 +253,8 @@ const EditMember = ({ data }) => {
                     size="large"
                     className="ml-4"
                     type="primary"
-                    onClick={handleOk}
+                    htmlType="submit"
+                    // onClick={handleOk}
                   >
                     保存
                   </Button>
@@ -243,16 +268,17 @@ const EditMember = ({ data }) => {
   )
 }
 
-EditMember.getInitialProps = async (ctx) => {
-  const { id } = ctx.query
-  const res = await MemberApi.getMemberDetail(id)
-  const dataRes = res.data
-  return { data: dataRes }
-}
+// EditMember.getInitialProps = async (ctx) => {
+// const { id } = ctx.query
+// const res = await MemberApi.getMemberDetail(id)
+// const dataRes = res.data
+// console.log(dataRes)
+// return { data: dataRes }
+// }
 
-EditMember.propTypes = {
-  data: PropTypes.object.isRequired,
-}
+// EditMember.propTypes = {
+//   data: PropTypes.object.isRequired,
+// }
 
 EditMember.middleware = ['auth:superadmin']
 export default EditMember

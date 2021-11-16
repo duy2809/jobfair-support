@@ -174,7 +174,7 @@ function TaskDetail() {
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
-                {role === 'admin' || role === 'superadmin' ? (
+                {role === 'admin' ? (
                   <>
                     <EditTwoTone
                       className="border-none mx-1 text-2xl"
@@ -435,11 +435,11 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
-                        {reviewersList
+                        {reviewersList.length !== 0
                           ? reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
                           ))
-                          : null}
+                          : <li className="task__chil">None</li>}
                       </ul>
                     </div>
                   </div>

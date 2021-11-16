@@ -268,7 +268,12 @@ const EditMilestonePage = () => {
               <div className="grid grid-cols-6 grid-rows-1 ">
                 <div className="col-start-5 flex justify-end gap-x-4">
                   <Form.Item>
-                    <CancelEditMilestone prevNameInput={prevNameInput} prevTimeInput={prevTimeInput} curNameInput={nameInput} curTimeInput={timeInput} />
+                    <CancelEditMilestone
+                      prevNameInput={prevNameInput}
+                      prevTimeInput={prevTimeInput}
+                      curNameInput={nameInput}
+                      curTimeInput={timeInput}
+                    />
                   </Form.Item>
 
                   <Form.Item>

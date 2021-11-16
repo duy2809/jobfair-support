@@ -1,8 +1,10 @@
-import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
-import { Button, Col, Input, Modal, notification, Row, Select, Space, Table } from 'antd'
+import { DeleteTwoTone, SearchOutlined } from '@ant-design/icons'
+import { Col, Input, Modal, notification, Row, Select, Space, Table } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { deleteMileStone, getAllMileStone } from '~/api/milestone'
-import { webInit } from '~/api/web-init'
+import { deleteMileStone, getAllMileStone } from '../../api/milestone'
+import AddMilestone from './add-milestone'
+import EditMilestone from './edit-milestone'
+import { webInit } from '../../api/web-init'
 import { loadingIcon } from '../loading'
 import './styles.scss'
 
@@ -88,7 +90,7 @@ const MilestoneList = () => {
       setData(newData)
       setLoading(false)
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 
@@ -133,7 +135,7 @@ const MilestoneList = () => {
         window.location.href = `/milestones/${id}/edit`
       }
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 
@@ -163,9 +165,7 @@ const MilestoneList = () => {
       cancelText: 'いいえ',
     })
   }
-  const handleEdit = (idML) => {
-    window.location.href = `/milestones/${idML}/edit`
-  }
+
   const columns = [
     {
       title: 'マイルストーン一名',
@@ -188,12 +188,7 @@ const MilestoneList = () => {
       width: `${role === 'superadmin' ? '10%' : '0%'}`,
       render: (_text, record) => role === 'superadmin' && (
         <Space size="middle">
-          <EditTwoTone
-            id={record.id}
-            onClick={() => {
-              handleEdit(record.id)
-            }}
-          />
+          <EditMilestone record={record} reloadPage={fetchData} role={role} />
           <DeleteTwoTone className="cursor-default" />
 
           {/* <DeleteTwoTone
@@ -261,19 +256,7 @@ const MilestoneList = () => {
               value={searchValue}
               prefix={<SearchOutlined />}
             />
-            {role === 'superadmin' && (
-              <Button
-                size="large"
-                className="ant-btn ml-3"
-                style={{ letterSpacing: '-0.1em' }}
-                type="primary"
-                onClick={() => {
-                  window.location.href = '/milestones/add'
-                }}
-              >
-                追加
-              </Button>
-            )}
+            {role === 'superadmin' && (<AddMilestone reloadPage={fetchData} role={role} />)}
           </div>
         </Row>
 
