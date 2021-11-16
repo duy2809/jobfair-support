@@ -113,6 +113,8 @@ function TaskDetail() {
           name: data.schedule.jobfair.name,
         })
       }
+    }).catch(() => {
+      router.push('/error')
     })
   }
   const fetchBeforeTask = async () => {
@@ -129,6 +131,8 @@ function TaskDetail() {
   const fetchReviewersList = async () => {
     await reviewers(idTask).then((response) => {
       setReviewersList(response.data)
+    }).catch(() => {
+      router.push('/error')
     })
   }
   const modelDelete = () => {
