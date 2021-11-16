@@ -72,7 +72,7 @@ class ProfileController extends Controller
         $user = User::find($id);
         $user->update($request->all());
 
-        return response()->json(['message' => 'Updated successfully']);
+        return response()->json(['message' => 'Updated successfully'], 200);
     }
 
     public function updatePassword(Request $request, $id)
