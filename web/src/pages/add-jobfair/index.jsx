@@ -25,7 +25,7 @@ const index = () => {
   const [listSchedule, setlistSchedule] = useState([])
   const [listMilestone, setlistMilestone] = useState([])
   const [listTask, setlistTask] = useState([])
-  const [disableBtn, setdisableBtn] = useState(false)
+  // const [disableBtn, setdisableBtn] = useState(false)
   const [isFormChange, setIsFormChange] = useState(false)
   const [loading, setLoading] = useState(true)
   const [form] = Form.useForm()
@@ -142,20 +142,21 @@ const index = () => {
         number_of_companies: values.number_of_companies * 1.0,
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
       }
-      setdisableBtn(true)
+      // setdisableBtn(true)
 
       const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         setLoading(false)
         routeTo(`/jf-toppage/${response.data.id}`)
         saveNotification()
-      } else {
-        setdisableBtn(false)
       }
+      // else {
+      //   setdisableBtn(false)
+      // }
       return response
     } catch (error) {
       setLoading(false)
-      setdisableBtn(false)
+      // setdisableBtn(false)
       const errorResponse = JSON.parse(error.request.response)
       if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
         notification.error({
