@@ -218,19 +218,20 @@ class FileController extends Controller
             $document = Document::find($index);
             if (!$document->is_file) {
                 if ($path === '/') {
-                    $pathD = $path . $document->name;
+                    $pathD = $path.$document->name;
                 } else {
-                    $pathD = $path . '/';
+                    $pathD = $path.'/';
                     $pathD .= $document->name;
                 }
 
-                $term = $pathD . '/';
+                $term = $pathD.'/';
                 $term .= '%';
                 $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
 
                 if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0) {
                     return response(['message' => 'Subfolder and Subfile can not be deleted '], 400);
                 }
+
                 $result->delete();
             }
 
