@@ -92,6 +92,8 @@ const AddCategory = (props) => {
         type="primary"
         onClick={showModal}
         size="large"
+        className="ant-btn"
+        style={{ letterSpacing: '-0.1em' }}
       >
         <span>追加</span>
       </Button>
@@ -129,7 +131,9 @@ const AddCategory = (props) => {
                 validator(_, value) {
                   if (specialCharRegex.test(value)) {
                     setCheckSpace(true)
-                    return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
+                    return Promise.reject(
+                      new Error('カテゴリ名はスペースが含まれていません。'),
+                    )
                   }
                   return Promise.resolve()
                 },

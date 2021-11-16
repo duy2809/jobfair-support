@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Form, Input, Button, notification, Avatar } from 'antd'
 import cookies from 'axios/lib/helpers/cookies'
 import Otherlayout from '../../../layouts/OtherLayout'
@@ -28,7 +28,7 @@ const EditProfilePage = () => {
   const [isDisable, setIsDisable] = useState(false)
   const [pathName, setPathName] = useState()
   const [loading, setLoading] = useState(false)
-  // const router = useRouter()
+  const router = useRouter()
 
   webInit().then((res) => {
     const id = res.data.auth.user.id
@@ -93,15 +93,19 @@ const EditProfilePage = () => {
     setLoading(false)
   }, [])
 
-  const fetchData = async (term) => {
+  const fetchData = async (emailIn, nameIn) => {
     setLoading(true)
     const resId = await webInit()
     const id = resId.data.auth.user.id
     const resCur = await getProfile(id)
     const emailCur = resCur.data.email
+    const nameCur = resCur.data.name
     const res = await getAllProfile()
-    const data = res.data.map((item) => item.email)
-    const email = data.find((item) => item === term)
+    const dataEmail = res.data.map((item) => item.email)
+    const email = dataEmail.find((item) => item === emailIn)
+    const dataName = res.data.map((item) => item.name)
+    const name = dataName.find((item) => item === nameIn)
+    // alert(nameInput)
     if (email && email !== emailCur) {
       setIsDisable(true)
       form.setFields([
@@ -111,17 +115,27 @@ const EditProfilePage = () => {
         },
       ])
     }
+    if (name && name !== nameCur) {
+      setIsDisable(true)
+      form.setFields([
+        {
+          name: 'name',
+          errors: ['このユーザー名は既に存在しました。'],
+        },
+      ])
+    }
     setLoading(false)
   }
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData(emailInput)
-    }, 100)
+      fetchData(emailInput, nameInput)
+      // fetchData(nameInput)
+    }, 1000)
     return () => {
       clearTimeout(timer)
     }
-  }, [emailInput])
+  }, [emailInput, nameInput])
 
   const openNotificationSuccess = () => {
     // router.push('/profile')
@@ -129,10 +143,6 @@ const EditProfilePage = () => {
       message: '変更は正常に保存されました。',
       duration: 3,
     })
-    setTimeout(() => {
-      // router.push('/profile',null, { shallow: false, getServerSideProps:true })
-      window.location = '/profile/'
-    }, 2500)
   }
 
   const handleOk = async () => {
@@ -157,9 +167,13 @@ const EditProfilePage = () => {
         email: emailInput,
         chatwork_id: idChatWorkInput,
         avatar: avtPath,
+      }).then((res) => {
+        if (res.request.status === 200) {
+          router.push('/profile/')
+          setLoading(false)
+          openNotificationSuccess()
+        }
       })
-      openNotificationSuccess()
-      setLoading(false)
     }
   }
 

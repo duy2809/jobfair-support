@@ -8,12 +8,12 @@ import { ReactReduxContext } from 'react-redux'
 //   CheckCircleTwoTone,
 // } from '@ant-design/icons'
 import JfLayout from '../../layouts/layout-task'
-import NotificationsJf from '../../components/notifications-jf'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
 import { jftask } from '../../api/jf-toppage'
 // import SearchSugges from '../../components/search-sugges'
 import Loading from '../../components/loading'
+import RecentUpdate from '../../components/recentUpdate'
 
 function jftoppage() {
   const [listTask, setlistTask] = useState([])
@@ -46,10 +46,13 @@ function jftoppage() {
       <JfLayout id={idJf} bgr={1}>
         <JfLayout.Main>
           <div className="container">
-            <div className="flex justify-between">
-              <div className="title w-3/5">
+            <div className="flex justify-between items-start">
+              {/* <div className="title w-3/5">
                 <h3 className="title-h3">最近の更新</h3>
                 <NotificationsJf id={idJf} />
+              </div> */}
+              <div className="w-3/5">
+                <RecentUpdate JFid={idJf} />
               </div>
               <div className="flex flex-col w-1/2 justify-center">
                 {/* <div className="cha ...  w-11/12 ml-12">
