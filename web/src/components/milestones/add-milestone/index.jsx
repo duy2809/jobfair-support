@@ -47,9 +47,8 @@ const AddMilestone = (props) => {
         || !!form.getFieldsError().filter(({ errors }) => errors.length).length
         || errorUnique === true
       ) {
-        const name = nameInput
-        if (name !== '') {
-          getNameExitAdd(name).then((res) => {
+        if (nameInput !== '' && timeInput !== '') {
+          getNameExitAdd(nameInput).then((res) => {
             if (res.data.length !== 0) {
               form.setFields([
                 {
@@ -59,6 +58,23 @@ const AddMilestone = (props) => {
               ])
             }
           })
+        } else {
+          if (nameInput === '') {
+            form.setFields([
+              {
+                name: 'name',
+                errors: ['この項目は必須です。'],
+              },
+            ])
+          }
+          if (timeInput === '') {
+            form.setFields([
+              {
+                name: 'time',
+                errors: ['この項目は必須です。'],
+              },
+            ])
+          }
         }
       } else {
         setLoading(true)
