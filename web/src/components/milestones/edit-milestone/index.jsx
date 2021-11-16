@@ -91,10 +91,10 @@ const EditMilestone = (props) => {
               JSON.parse(error.response.request.response).errors.name[0]
               === 'The name has already been taken.'
             ) {
-              notification.error({
-                message: 'このマイルストーン名は存在しています',
-                duration: 3,
-              })
+              // notification.error({
+              //   message: 'このマイルストーン名は存在しています',
+              //   duration: 3,
+              // })
             }
           })
         setLoading(false)
@@ -190,11 +190,11 @@ const EditMilestone = (props) => {
       <EditTwoTone onClick={showModal} />
       <div>
         <Modal
-          title="マイルストーン追加"
+          title="マイルストーン編集"
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
-          okText="登録"
+          okText="保存"
           cancelText="キャンセル"
           okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
           centered

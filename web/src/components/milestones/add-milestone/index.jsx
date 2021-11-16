@@ -33,7 +33,7 @@ const AddMilestone = (props) => {
 
   const openNotificationSuccess = () => {
     notification.success({
-      message: '変更は正常に保存されました。',
+      message: '正常に保存されました。',
       duration: 3,
     })
     setReloadPage()
@@ -73,10 +73,10 @@ const AddMilestone = (props) => {
               JSON.parse(error.response.request.response).errors.name[0]
               === 'The name has already been taken.'
             ) {
-              notification.error({
-                message: 'このマイルストーン名は存在しています',
-                duration: 3,
-              })
+              // notification.error({
+              //   message: 'このマイルストーン名は存在しています',
+              //   duration: 3,
+              // })
             }
           })
         setLoading(false)
@@ -183,7 +183,7 @@ const AddMilestone = (props) => {
           size="large"
         >
           <Form.Item
-            label={<p className="font-bold">マイルストーン名</p>}
+            label={<span className="font-bold">マイルストーン名</span>}
             name="name"
             rules={[
               {
@@ -213,7 +213,7 @@ const AddMilestone = (props) => {
             />
           </Form.Item>
           <Form.Item
-            label={<p className="font-bold">期日</p>}
+            label={<span className="font-bold">期日</span>}
             name="time"
             rules={[
               {
