@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -43,15 +44,15 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $rules = [
-            'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        $validator->validate();
+        // $rules = [
+        //     'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/',
+        // ];
+        // $validator = Validator::make($request->all(), $rules);
+        // $validator->validate();
 
-        return Category::create($request->all());
+        return Category::create($request->validated());
     }
 
     /**
@@ -82,7 +83,6 @@ class CategoryController extends Controller
 
         return Category::find($id)->update($request->all());
     }
-
     /**
      * Remove the specified resource from storage.
      *

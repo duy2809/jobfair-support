@@ -6,12 +6,14 @@ import React, { useState } from 'react'
 import { Modal, Button, notification, Form, Input } from 'antd'
 import { addCategory, checkUniqueAdd } from '../../api/category'
 import Loading from '../loading'
+import * as Extensions from '~/utils/extensions'
+import './style.scss'
 
 const AddCategory = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [category, setCategory] = useState({})
   const [form] = Form.useForm()
-  const specialCharRegex = new RegExp('[ 　]')
+  const specialCharRegex = new RegExp('[\\s]')
   const [checkSpace, setCheckSpace] = useState(false)
   const [errorUnique, setErrorUnique] = useState(true)
   const role = props.role
@@ -35,7 +37,6 @@ const AddCategory = (props) => {
       duration: 3,
     })
     setReloadPage()
-    console.log('success')
   }
 
   const handleOk = () => {
@@ -46,8 +47,10 @@ const AddCategory = (props) => {
       })
         .then(() => openNotificationSuccess())
         .catch((error) => {
+          const errorResponse = JSON.parse(error.request.response)
+          console.log(errorResponse)
           notification.error({
-            message: 'このカテゴリ名は存在しています',
+            message: errorResponse.errors.category_name[0],
             duration: 3,
           })
         })
@@ -57,6 +60,7 @@ const AddCategory = (props) => {
 
   const handleCancel = () => {
     setIsModalVisible(false)
+    form.resetFields()
   }
 
   const onBlur = () => {
@@ -65,8 +69,6 @@ const AddCategory = (props) => {
       checkUniqueAdd(name).then((res) => {
         if (res.data.length !== 0) {
           setErrorUnique(true)
-          console.log('duplicated')
-          console.log(form.getFieldValue('name'))
           form.setFields([
             {
               name: 'name',
@@ -96,6 +98,7 @@ const AddCategory = (props) => {
         <span>追加</span>
       </Button>
       <Modal
+        className="add-category"
         title="カテゴリ追加"
         visible={isModalVisible}
         onOk={handleOk}
@@ -110,7 +113,7 @@ const AddCategory = (props) => {
           form={form}
           layout="horizontal"
           labelCol={{
-            span: 6,
+            span: 8,
           }}
           wrapperCol={{
             span: 16,
@@ -131,6 +134,7 @@ const AddCategory = (props) => {
                     setCheckSpace(true)
                     return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
                   }
+                 
                   return Promise.resolve()
                 },
               }),
@@ -141,7 +145,7 @@ const AddCategory = (props) => {
               placeholder="例: 2次面接練習"
               className="input-category"
               required="required"
-              style={{ width: '-webkit-fill-available', paddingLeft: 10 }}
+              style={{ width: '-webkit-fill-available', paddingLeft: 10, marginTop: -4 }}
               onChange={onValueNameChange}
               onBlur={onBlur}
             />
