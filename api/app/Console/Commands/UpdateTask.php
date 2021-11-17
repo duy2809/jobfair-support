@@ -2,8 +2,11 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\Task;
+use App\Models\User;
+use App\Notifications\TaskExpired;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Notification;
 
 class UpdateTask extends Command
 {
@@ -39,9 +42,13 @@ class UpdateTask extends Command
     public function handle()
     {
         $tasks = Task::where('status', '<>', '未完了')->get();
-
+        $user = User::where('role', 1)->get();
         foreach ($tasks as $task) {
             $task->whereDate('end_time', '<', now()->toDateString())->update(['status' => '未完了']);
+            Notification::send(
+                $task->users()->get(),
+                new TaskExpired($task, $user[0])
+            );
         }
     }
 }
