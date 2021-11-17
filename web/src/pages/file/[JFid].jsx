@@ -46,7 +46,6 @@ function File() {
   const [formEditFile] = Form.useForm()
   const [formEditFolder] = Form.useForm()
   const [role, setRole] = useState('')
-
   const onEditFileChange = () => {
     const nameFile = formEditFile.getFieldValue('name_file')
     const link = formEditFile.getFieldValue('link')
@@ -402,10 +401,12 @@ function File() {
       setLoading(true)
       const idArray = []
       data.forEach((element, index) => {
-        if (isChecked[index] && element.checkbox) idArray.push(element.key)
+        if (isChecked[index] && element.checkbox) {
+          idArray.push(element.key)
+        }
       })
+
       const res = await deleteDocument(JFid, { id: idArray })
-      // if(res.Status === 400)
       const result = res.data.map((element) => ({
         key: element.id,
         checkbox: user.get('id') === element.authorId || role !== 'member',
@@ -435,7 +436,7 @@ function File() {
     } catch {
       openNotification(
         'error',
-        'Không được xóa file của người khác!',
+        'このフォルダを削除する権限がないです!',
       )
       setIsModalDeleteVisible(false)
       setIsCheckAll(false)
