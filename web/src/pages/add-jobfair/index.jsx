@@ -157,20 +157,20 @@ const index = () => {
     } catch (error) {
       setLoading(false)
       // setdisableBtn(false)
-      const errorResponse = JSON.parse(error.request.response)
-      if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
-        notification.error({
-          duration: 3,
-          message: errorResponse.errors.name[0],
-          onClick: () => {},
-        })
-      } else {
-        notification.error({
-          duration: 3,
-          message: errorResponse.errors.name[0],
-          onClick: () => {},
-        })
-      }
+      // const errorResponse = JSON.parse(error.request.response)
+      // if (errorResponse.message.toLocaleLowerCase().includes('duplicate')) {
+      //   notification.error({
+      //     duration: 3,
+      //     message: errorResponse.errors.name[0],
+      //     onClick: () => {},
+      //   })
+      // } else {
+      //   notification.error({
+      //     duration: 3,
+      //     message: errorResponse.errors.name[0],
+      //     onClick: () => {},
+      //   })
+      // }
       return error
     }
   }
