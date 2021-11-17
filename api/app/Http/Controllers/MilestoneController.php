@@ -66,17 +66,18 @@ class MilestoneController extends Controller
     //use to get milestone with tasks
     public function getInfoMilestones($id)
     {
-        $schedule = Schedule::find($id);
+        // $schedule = Schedule::find($id);
 
-        return $schedule->milestones->map(function ($milestone) {
-            $templateTasksOfMilestone = $milestone->templateTasks;
-            $milestone['tasks'] = $templateTasksOfMilestone;
-            $templateTasksOfMilestone->map(function ($task) {
-                return $task->categories;
-            });
+        // return $schedule->milestones->map(function ($milestone) {
+        //     $templateTasksOfMilestone = $milestone->templateTasks;
+        //     $milestone['tasks'] = $templateTasksOfMilestone;
+        //     $templateTasksOfMilestone->map(function ($task) {
+        //         return $task->categories;
+        //     });
 
-            return $milestone;
-        });
+        //     return $milestone;
+        // });
+        return Schedule::with(['templateTasks', 'templateTasks.categories', 'milestones'])->find($id);
     }
 
     /**

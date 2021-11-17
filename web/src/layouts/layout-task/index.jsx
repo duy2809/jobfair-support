@@ -1,16 +1,15 @@
-import {
-  BarChartOutlined,
+import { BarChartOutlined,
   FileOutlined,
   FileProtectOutlined,
   HomeOutlined,
   MenuOutlined,
   TableOutlined,
-} from '@ant-design/icons'
-import { Layout, Menu, Avatar } from 'antd'
+  SearchOutlined } from '@ant-design/icons'
+import { Layout, Menu, Avatar, Input } from 'antd'
 import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { jfdata } from '../../api/jf-toppage'
 import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
@@ -25,6 +24,7 @@ const JfLayout = ({ children, id, bgr }) => {
     marginBottom: '0px',
   }
   const main = findSlot(JfLayout.Main, children)
+  const ref = useRef()
   const [startDate, setStartDate] = useState()
   const [numberOfStudents, setNumberOfStudents] = useState()
   const [numberOfCompanies, setNumberOfCompanies] = useState()
@@ -33,6 +33,12 @@ const JfLayout = ({ children, id, bgr }) => {
   const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(true)
   const [avatarAdmin, setAvatarAdmin] = useState(null)
+  const [show, setShow] = useState(false)
+  const [showSearchIcon, setShowSearchIcon] = useState(true)
+  const onClick = () => {
+    setShow(!show)
+    setShowSearchIcon(!showSearchIcon)
+  }
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
@@ -62,7 +68,26 @@ const JfLayout = ({ children, id, bgr }) => {
   useEffect(() => {
     fetchJF()
   }, [children])
+  useEffect(() => {
+    const onBodyClick = (event) => {
+      if (ref.current.contains(event.target)) {
+        console.log(ref.current, event.target)
+        return
+      }
+      console.log(ref)
 
+      setShow(false)
+      setShowSearchIcon(true)
+    }
+
+    document.body.addEventListener('click', onBodyClick, { capture: true })
+
+    return () => {
+      document.body.removeEventListener('click', onBodyClick, {
+        capture: true,
+      })
+    }
+  }, [])
   return (
     <div className="layout-task">
       <Navbar />
@@ -192,7 +217,7 @@ const JfLayout = ({ children, id, bgr }) => {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <div className="Jf__header px-5">
+          <div className="Jf__header px-10">
             <h1>{name}</h1>
             <div className="admin__jf">
               <span className="text-lg">{startDate ?? 'N/A'}</span>
@@ -222,6 +247,35 @@ const JfLayout = ({ children, id, bgr }) => {
                   />
                 )}
               </div>
+              <span className="queue-demo">
+                {showSearchIcon && (
+                  <a className="hv-icon" onClick={onClick}>
+                    <SearchOutlined
+                      style={{ marginLeft: '4px', fontSize: '30px' }}
+                    />
+                  </a>
+                )}
+
+                <span ref={ref}>
+                  {show ? (
+                    <Input
+                      // key="demo"
+                      style={{
+                        width: '200px',
+                        height: '40px',
+
+                      }}
+                      name="name"
+                      className="no-border"
+                      placeholder="タスク"
+                      // onChange={searchInput}
+                      bordered
+                      prefix={<SearchOutlined />}
+                      autoComplete="off"
+                    />
+                  ) : null}
+                </span>
+              </span>
             </div>
           </div>
           <Content className="site-layout-background">

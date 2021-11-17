@@ -40,7 +40,7 @@ class CommentCreated implements ShouldBroadcastNow
     {
         $listOldAssignees = [];
         $listNewAssignees = [];
-        if ($this->comment->old_assignees && $this->comment->new_assignees) {
+        if ($this->comment->old_assignees || $this->comment->new_assignees) {
             $listOldAssignees = explode(',', $this->comment->old_assignees);
             $listNewAssignees = explode(',', $this->comment->new_assignees);
         }
@@ -53,17 +53,17 @@ class CommentCreated implements ShouldBroadcastNow
         $listNewFollowingTasks = [];
         $listOldReviewers = [];
         $listNewReviewers = [];
-        if ($this->comment->old_previous_tasks && $this->comment->new_previous_tasks) {
+        if ($this->comment->old_previous_tasks || $this->comment->new_previous_tasks) {
             $listOldPreviousTasks = explode(',', $this->comment->old_previous_tasks);
             $listNewPreviousTasks = explode(',', $this->comment->new_previous_tasks);
         }
 
-        if ($this->comment->old_following_tasks && $this->comment->new_following_tasks) {
+        if ($this->comment->old_following_tasks || $this->comment->new_following_tasks) {
             $listOldFollowingTasks = explode(',', $this->comment->old_following_tasks);
             $listNewFollowingTasks = explode(',', $this->comment->new_following_tasks);
         }
 
-        if ($this->comment->old_reviewers && $this->comment->new_reviewers) {
+        if ($this->comment->old_reviewers || $this->comment->new_reviewers) {
             $listOldReviewers = explode(',', $this->comment->old_reviewers);
             $listNewReviewers = explode(',', $this->comment->new_reviewers);
         }

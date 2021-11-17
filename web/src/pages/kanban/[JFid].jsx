@@ -312,7 +312,10 @@ function KanBan() {
               {' '}
               (カンバン)
             </h1>
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext
+              onDragEnd={onDragEnd}
+              // style={{ height: '100vh' }}
+            >
               <div
                 style={{ display: 'flex', justifyContent: 'space-between' }}
               >
@@ -326,6 +329,7 @@ function KanBan() {
                       key={column.id}
                       column={column}
                       tasks={tasks}
+                      // style={{ height: '100vh' }}
                     />
                   )
                 })}

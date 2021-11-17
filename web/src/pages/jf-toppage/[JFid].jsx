@@ -11,7 +11,7 @@ import JfLayout from '../../layouts/layout-task'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
 import { jftask } from '../../api/jf-toppage'
-import SearchSugges from '../../components/search-sugges'
+// import SearchSugges from '../../components/search-sugges'
 import Loading from '../../components/loading'
 import RecentUpdate from '../../components/recentUpdate'
 
@@ -54,11 +54,11 @@ function jftoppage() {
               <div className="w-3/5">
                 <RecentUpdate JFid={idJf} />
               </div>
-              <div className="flex flex-col w-1/2 space-x-50 justify-center">
-                <div className="cha ...  w-11/12 ml-12">
+              <div className="flex flex-col w-1/2 justify-center">
+                {/* <div className="cha ...  w-11/12 ml-12">
                   <SearchSugges className="h-7" listTask={listTask} id={idJf} />
-                </div>
-                <div className="justify-center ... w-11/12 ml-12 mt-12">
+                </div> */}
+                <div className="justify-center ... w-11/12 ml-12">
                   <div className="status__global">
                     <h3>ステータス</h3>
                     <div className="status">
