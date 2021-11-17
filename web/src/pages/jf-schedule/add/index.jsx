@@ -153,7 +153,7 @@ function addJobfairSchedule() {
 
   const handleOk = () => {
     setVisible(false)
-    window.location.href = '/schedule'
+    router.push('/schedule')
   }
 
   return (

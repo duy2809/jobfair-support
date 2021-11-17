@@ -101,6 +101,10 @@ const AddMilestone = (props) => {
   }
 
   const handleCancel = () => {
+    form.setFieldsValue({
+      name: '',
+      time: '',
+    })
     setIsModalVisible(false)
   }
 
