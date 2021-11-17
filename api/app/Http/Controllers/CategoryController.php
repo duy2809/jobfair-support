@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -83,6 +83,7 @@ class CategoryController extends Controller
 
         return Category::find($id)->update($request->all());
     }
+
     /**
      * Remove the specified resource from storage.
      *

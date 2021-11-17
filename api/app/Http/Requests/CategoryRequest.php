@@ -24,9 +24,10 @@ class CategoryRequest extends FormRequest
      */
     public function rules()
     {
-        Validator::extend('without_spaces', function($attr, $value){
+        Validator::extend('without_spaces', function ($attr, $value) {
             return preg_match('/^\S*$/u', $value);
         });
+
         return [
             'category_name' => 'string|required|without_spaces|unique:categories,category_name',
         ];

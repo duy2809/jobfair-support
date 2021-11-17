@@ -48,11 +48,16 @@ const AddCategory = (props) => {
         .then(() => openNotificationSuccess())
         .catch((error) => {
           const errorResponse = JSON.parse(error.request.response)
-          console.log(errorResponse)
-          notification.error({
-            message: errorResponse.errors.category_name[0],
-            duration: 3,
-          })
+          // notification.error({
+          //   message: errorResponse.errors.category_name[0],
+          //   duration: 3,
+          // })
+          form.setFields([
+            {
+              name: 'name',
+              errors: [errorResponse.errors.category_name[0]],
+            },
+          ])
         })
       setLoading(false)
     }
@@ -63,22 +68,22 @@ const AddCategory = (props) => {
     form.resetFields()
   }
 
-  const onBlur = () => {
-    const name = category
-    if (name !== '') {
-      checkUniqueAdd(name).then((res) => {
-        if (res.data.length !== 0) {
-          setErrorUnique(true)
-          form.setFields([
-            {
-              name: 'name',
-              errors: ['このカテゴリ名は存在しています'],
-            },
-          ])
-        }
-      })
-    }
-  }
+  // const onBlur = () => {
+  //   const name = category
+  //   if (name !== '') {
+  //     checkUniqueAdd(name).then((res) => {
+  //       if (res.data.length !== 0) {
+  //         setErrorUnique(true)
+  //         form.setFields([
+  //           {
+  //             name: 'name',
+  //             errors: ['このカテゴリ名は存在しています'],
+  //           },
+  //         ])
+  //       }
+  //     })
+  //   }
+  // }
 
   const onValueNameChange = (e) => {
     setCheckSpace(false)
@@ -128,16 +133,16 @@ const AddCategory = (props) => {
                 required: true,
                 message: 'この項目は必須です。',
               },
-              () => ({
-                validator(_, value) {
-                  if (specialCharRegex.test(value)) {
-                    setCheckSpace(true)
-                    return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
-                  }
-                 
-                  return Promise.resolve()
-                },
-              }),
+              // () => ({
+              //   validator(_, value) {
+              //     if (specialCharRegex.test(value)) {
+              //       setCheckSpace(true)
+              //       return Promise.reject(new Error('カテゴリ名はスペースが含まれていません。'))
+              //     }
+
+              //     return Promise.resolve()
+              //   },
+              // }),
             ]}
           >
             <Input
@@ -147,7 +152,7 @@ const AddCategory = (props) => {
               required="required"
               style={{ width: '-webkit-fill-available', paddingLeft: 10, marginTop: -4 }}
               onChange={onValueNameChange}
-              onBlur={onBlur}
+              // onBlur={onBlur}
             />
           </Form.Item>
         </Form>
