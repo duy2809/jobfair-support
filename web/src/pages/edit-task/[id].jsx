@@ -1,35 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import {
-  Form,
-  Input,
-  Select,
-  Tag,
-  DatePicker,
-  Button,
-  notification,
-  Modal,
-  Tooltip,
-} from 'antd'
+import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import axios from 'axios'
 import JfLayout from '../../layouts/layout-task'
-import {
-  taskData,
-  beforeTask,
-  afterTask,
-  getUser,
-} from '../../api/task-detail'
+import { taskData, beforeTask, afterTask, getUserByCategory } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
-import {
-  editTask,
-  reviewers,
-  listReviewersSelectTag,
-} from '../../api/edit-task'
+import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
 
 function EditTask() {
@@ -190,9 +171,7 @@ function EditTask() {
     const { label, closable, onClose } = props
     const nameUser = form.getFieldValue('assignee')
     if (nameUser.length !== 0) {
-      document
-        .getElementById('error-user')
-        .setAttribute('hidden', 'text-red-600')
+      document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
       setAssign(true)
     }
     const onPreventMouseDown = (event) => {
@@ -208,15 +187,11 @@ function EditTask() {
           const nameUsers = form.getFieldValue('assignee')
           if (nameUsers.length === 0) {
             setAssign(false)
-            document
-              .getElementById('error-user')
-              .removeAttribute('hidden', 'text-red-600')
+            document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
           }
           if (nameUsers.length !== 0) {
             setAssign(true)
-            document
-              .getElementById('error-user')
-              .setAttribute('hidden', 'text-red-600')
+            document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
           }
         }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
@@ -267,9 +242,7 @@ function EditTask() {
     })
     if (e.target.value) {
       document.getElementById('validate_name').style.border = '1px solid #ffd803'
-      return document
-        .getElementById('error-msg')
-        .setAttribute('hidden', 'text-red-600')
+      return document.getElementById('error-msg').setAttribute('hidden', 'text-red-600')
     }
 
     document.getElementById('validate_name').style.border = '0.5px solid red'
@@ -313,9 +286,7 @@ function EditTask() {
         if (values.name === element.name) {
           checkName = true
           document.getElementById('validate_name').style.border = '1px solid red'
-          return document
-            .getElementById('error-msg')
-            .removeAttribute('hidden', 'text-red-600')
+          return document.getElementById('error-msg').removeAttribute('hidden', 'text-red-600')
         }
       }
     })
@@ -422,7 +393,9 @@ function EditTask() {
   const fetchListTask = async () => {
     await jftask(idJF)
       .then((response) => {
-        const notSelectedTask = response.data.schedule.tasks.filter((task) => task.name !== infoTask.name)
+        const notSelectedTask = response.data.schedule.tasks.filter(
+          (task) => task.name !== infoTask.name,
+        )
         setAllTask(notSelectedTask)
         setBeforeTaskNew(notSelectedTask)
         setafterTaskNew(notSelectedTask)
@@ -432,7 +405,7 @@ function EditTask() {
       })
   }
   const fetchListMember = async () => {
-    await getUser().then((response) => {
+    await getUserByCategory(infoTask.categories).then((response) => {
       setListUser(response.data)
     })
   }
@@ -520,16 +493,12 @@ function EditTask() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="eff">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -542,11 +511,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="レビュアー"
-                    name="reviewers"
-                    className="tag_a"
-                  >
+                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
                     <Select
                       showArrow
                       size="large"
@@ -554,11 +519,7 @@ function EditTask() {
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
                     >
-                      <Select.Option
-                        className="validate-user"
-                        key={undefined}
-                        value={undefined}
-                      >
+                      <Select.Option className="validate-user" key={undefined} value={undefined}>
                         None
                       </Select.Option>
 
@@ -646,11 +607,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="前のタスク"
-                    name="taskBefore"
-                    className="tag_a"
-                  >
+                  <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -667,11 +624,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="次のタスク"
-                    name="afterTask"
-                    className="tag_a"
-                  >
+                  <Form.Item label="次のタスク" name="afterTask" className="tag_a">
                     <Select
                       mode="multiple"
                       showArrow
@@ -688,12 +641,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="担当者"
-                    name="assignee"
-                    required
-                    className="multiples"
-                  >
+                  <Form.Item label="担当者" name="assignee" required className="multiples">
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
                         {listUser.map((element) => (
