@@ -67,8 +67,6 @@ const EditMilestone = (props) => {
 
   const handleOk = () => {
     if (role === 'superadmin') {
-      console.log('Handle OK running ...')
-      console.log(nameInput, timeInput, checkSpace, errorUnique)
       if (
         nameInput !== ''
         && timeInput !== ''
@@ -77,7 +75,6 @@ const EditMilestone = (props) => {
         && errorUnique === false
       ) {
         setLoading(true)
-        console.log('Check oke ending update ...')
         updateMilestone(props.record.id, {
           name: nameInput,
           period: timeInput,
@@ -99,11 +96,9 @@ const EditMilestone = (props) => {
           })
         setLoading(false)
       } else {
-        console.log('Check fail')
         const name = nameInput
         if (name !== '') {
           getNameExitEdit(props.record.id, name).then((res) => {
-            console.log('OK then')
             if (res.data.length !== 0) {
               setErrorUnique(true)
               form.setFields([
