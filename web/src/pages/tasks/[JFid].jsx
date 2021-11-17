@@ -227,7 +227,7 @@ function TaskList() {
     },
   })
   // columns of tables
-  const columns = role === 'superadmin'
+  const columns = role === 'admin'
     ? [
       {
         title: 'タスク名',
@@ -315,7 +315,7 @@ function TaskList() {
                     okText: 'はい',
                     cancelText: 'いいえ',
                     onOk: () => {
-                      setRowEdit(null)
+                      setRowEdit(record.id)
                       setIsEdit(false)
                     },
                   })
@@ -323,13 +323,13 @@ function TaskList() {
                   setRowEdit(record.id)
                 }
               }}
-              className="flex items-center"
+              className=""
             >
               { // eslint-disable-next-line consistent-return
                 managerDF.length > 0 ? managerDF.map((item) => {
                   if (item === managerDF[managerDF.length - 1]) {
                     return (
-                      <span className="flex items-center">
+                      <span className="">
 
                         <span>
                           {' '}
@@ -366,7 +366,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => role === 'superadmin' && (
+        render: (_text, record) => role === 'admin' && (
           <Space size="middle">
             <EditTwoTone
               id={record.id}
@@ -448,7 +448,7 @@ function TaskList() {
         fixed: 'left',
         onCell: handleRow,
         render: (managers) => (
-          <div className="flex items-center">
+          <div className="">
             {managers.length > 0 ? managers.join(', ') : ''}
           </div>
         ),
@@ -664,7 +664,7 @@ function TaskList() {
                     onChange={onSearch}
                     defaultValue={valueSearch}
                   />
-                  {role === 'superadmin' ? (
+                  {role === 'admin' ? (
                     <>
                       <Button
                         size="large"
