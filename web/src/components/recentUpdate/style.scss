@@ -23,4 +23,10 @@
   .ant-list-item-meta-description > a {
     color: #74d9df;
   }
+  .ant-list-split.ant-list-something-after-last-item
+    .ant-spin-container
+    > .ant-list-items
+    > .ant-list-item:last-child:hover {
+    border-bottom: 1px solid black;
+  }
 }

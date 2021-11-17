@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Divider, List, Avatar, Button, Typography } from 'antd'
+import { Divider, List, Avatar, Button, Typography, Tooltip } from 'antd'
 import React, { useEffect, useState } from 'react'
 import TimeAgo from 'react-timeago'
 import PropTypes from 'prop-types'
@@ -148,7 +148,7 @@ function RecentUpdate(props) {
                     <a href={`/task-detail/${item.task.id}`}>{item.task.name}</a>
                     <p>{item.content}</p>
                     {(item.old_name || item.new_name) && (
-                      <div className="flex">
+                      <div className="flex pr-4">
                         <div className="old__status flex">
                           <strong
                             className="text-right"
@@ -233,7 +233,7 @@ function RecentUpdate(props) {
                     )}
                     {(item.old_assignees.length > 0
                       || item.new_assignees.length > 0) && (
-                      <div className="flex">
+                      <div className="flex pr-4">
                         <div className="old__status flex">
                           <strong
                             className="text-right"
@@ -242,20 +242,60 @@ function RecentUpdate(props) {
                             担当者：
                           </strong>
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.old_assignees.join(', ')}
+                            {item.old_assignees.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                         &rArr;
                         <div className="new__status">
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.new_assignees.join(', ')}
+                            {item.new_assignees.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                       </div>
                     )}
                     {(item.old_previous_tasks.length > 0
                       || item.new_previous_tasks.length > 0) && (
-                      <div className="flex">
+                      <div className="flex pr-4">
                         <div className="old__status flex">
                           <strong
                             className="text-right"
@@ -264,13 +304,53 @@ function RecentUpdate(props) {
                             前のタスク：
                           </strong>
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.old_previous_tasks.join(', ')}
+                            {item.old_previous_tasks.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                         &rArr;
                         <div className="new__status">
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.new_previous_tasks.join(', ')}
+                            {item.new_previous_tasks.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                       </div>
@@ -278,7 +358,7 @@ function RecentUpdate(props) {
 
                     {(item.old_following_tasks.length > 0
                       || item.new_following_tasks.length > 0) && (
-                      <div className="flex">
+                      <div className="flex pr-4">
                         <div className="old__status flex">
                           <strong
                             className="text-right"
@@ -287,20 +367,60 @@ function RecentUpdate(props) {
                             次のタスク：
                           </strong>
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.old_following_tasks.join(', ')}
+                            {item.old_following_tasks.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                         &rArr;
                         <div className="new__status">
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.new_following_tasks.join(', ')}
+                            {item.new_following_tasks.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                       </div>
                     )}
                     {(item.old_reviewers.length > 0
                       || item.new_reviewers.length > 0) && (
-                      <div className="flex">
+                      <div className="flex pr-4">
                         <div className="old__status flex">
                           <strong
                             className="text-right"
@@ -309,13 +429,53 @@ function RecentUpdate(props) {
                             レビュアー：
                           </strong>
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.old_reviewers.join(', ')}
+                            {item.old_reviewers.map((el, index, arr) => (el.length > 20 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '20ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '20ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                         &rArr;
                         <div className="new__status">
                           <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {item.new_reviewers.join(', ')}
+                            {item.new_reviewers.map((el, index, arr) => (el.length > 25 ? (
+                              <Tooltip placement="top" title={el}>
+                                <span
+                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                  style={{ maxWidth: '25ch' }}
+                                >
+                                  {index < arr.length - 1 ? `${el}, ` : el}
+                                  &nbsp;
+                                </span>
+
+                              </Tooltip>
+                            ) : (
+                              <span
+                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                style={{ maxWidth: '25ch' }}
+                              >
+                                {index < arr.length - 1 ? `${el}, ` : el}
+                                &nbsp;
+                              </span>
+
+                            )))}
                           </Typography>
                         </div>
                       </div>
