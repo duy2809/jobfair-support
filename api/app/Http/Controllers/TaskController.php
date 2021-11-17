@@ -436,7 +436,11 @@ class TaskController extends Controller
                 }
 
                 $task->update($request->all());
-                if (!empty($request->beforeTasks)) {
+                if (empty($request->beforeTasks)) {
+                    $editedField['old_previous_tasks'] = '';
+                    $editedField['new_previous_tasks'] = '';
+                    $task->beforeTasks()->sync([]);
+                } else if (!empty($request->beforeTasks)) {
                     $oldBeforeTasks = $task->beforeTasks;
                     $newBeforeTasks = $request->beforeTasks;
                     $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -456,7 +460,11 @@ class TaskController extends Controller
                     }
                 }
 
-                if (!empty($request->afterTasks)) {
+                if (empty($request->afterTasks)) {
+                    $editedField['old_following_tasks'] = '';
+                    $editedField['new_following_tasks'] = '';
+                    $task->afterTasks()->sync([]);
+                } else if (!empty($request->afterTasks)) {
                     $oldAfterTasks = $task->afterTasks;
                     $newAfterTasks = $request->afterTasks;
                     $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
@@ -559,7 +567,11 @@ class TaskController extends Controller
                 }
 
                 $task->update($request->all());
-                if (!empty($request->beforeTasks)) {
+                if (empty($request->beforeTasks)) {
+                    $editedField['old_previous_tasks'] = '';
+                    $editedField['new_previous_tasks'] = '';
+                    $task->beforeTasks()->sync([]);
+                } else if (!empty($request->beforeTasks)) {
                     $oldBeforeTasks = $task->beforeTasks;
                     $newBeforeTasks = $request->beforeTasks;
                     $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -579,7 +591,11 @@ class TaskController extends Controller
                     }
                 }
 
-                if (!empty($request->afterTasks)) {
+                if (empty($request->afterTasks)) {
+                    $editedField['old_following_tasks'] = '';
+                    $editedField['new_following_tasks'] = '';
+                    $task->afterTasks()->sync([]);
+                } else if (!empty($request->afterTasks)) {
                     $oldAfterTasks = $task->afterTasks;
                     $newAfterTasks = $request->afterTasks;
                     $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
@@ -682,7 +698,11 @@ class TaskController extends Controller
             }
 
             $task->update($request->all());
-            if (!empty($request->beforeTasks)) {
+            if (empty($request->beforeTasks)) {
+                $editedField['old_previous_tasks'] = '';
+                $editedField['new_previous_tasks'] = '';
+                $task->beforeTasks()->sync([]);
+            } else if (!empty($request->beforeTasks)) {
                 $oldBeforeTasks = $task->beforeTasks;
                 $newBeforeTasks = $request->beforeTasks;
                 $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -702,7 +722,11 @@ class TaskController extends Controller
                 }
             }
 
-            if (!empty($request->afterTasks)) {
+            if (empty($request->afterTasks)) {
+                $editedField['old_following_tasks'] = '';
+                $editedField['new_following_tasks'] = '';
+                $task->afterTasks()->sync([]);
+            } else if (!empty($request->afterTasks)) {
                 $oldAfterTasks = $task->afterTasks;
                 $newAfterTasks = $request->afterTasks;
                 $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
