@@ -23,19 +23,27 @@ function ScheduleDetail() {
     setCurrentURL(window.location.href.toString())
     setID(router.query.id)
     getMilestone(router.query.id).then((res) => {
-      const milestoneCopy = res.data
+      const milestoneCopy = res.data.milestones
       milestoneCopy.forEach((element) => {
         if (element.name.length > 10) {
           element.wrapped = true
         }
-        element.tasks.forEach((task) => {
-          task.categories.forEach((category) => {
-            category.colorBorder = colors[category.id]
-          })
-          task.colorBorder = task.categories[0].colorBorder
-        })
+        element.tasks = []
+        // element.template_tasks.forEach((task) => {
+        //   task.categories.forEach((category) => {
+        //     category.colorBorder = colors[category.id]
+        //   })
+        //   task.colorBorder = task.categories[0].colorBorder
+        // })
       })
-
+      res.data.template_tasks.forEach((task) => {
+        task.categories.forEach((category) => {
+          category.colorBorder = colors[category.id]
+        })
+        task.colorBorder = task.categories[0].colorBorder
+        const index = milestoneCopy.findIndex((e) => e.id === task.milestone_id)
+        milestoneCopy[index].tasks.push(task)
+      })
       setMilestone(milestoneCopy)
     })
   }, [currentURL])
