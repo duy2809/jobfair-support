@@ -253,12 +253,7 @@ const index = () => {
 
     return Promise.resolve()
   }
-  const isDayAndUnitValidator = (_, value) => {
-    if (value === undefined) {
-      return Promise.reject()
-    }
-    return Promise.resolve()
-  }
+  const isDayAndUnitValidator = () => Promise.resolve()
   const categoryValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -423,7 +418,11 @@ const index = () => {
                           }}
                           layout="horizontal"
                           colon={false}
-                          initialValues={{ defaultInputValue: 0 }}
+                          initialValues={{
+                            defaultInputValue: 0,
+                            isDay: [isDayData[0].name, isDayData[0].id],
+                            unit: [unitData[0].name, unitData[0].id],
+                          }}
                           onFinish={chosePreview ? onPreview : onFinishSuccess}
                           onFinishFailed={onFinishFailed}
                         >
@@ -646,7 +645,7 @@ const index = () => {
 
                               {/* Kōsū - effort  */}
                               <Form.Item label="工数" required={!isPreview}>
-                                <Space className="space-items-special flex justify-between ">
+                                <Space className="space-items-special flex justify-between " style={{ display: isPreview ? 'none' : '' }}>
                                   <div className="w-1/2 max-w-xs flex-grow ">
                                     <Form.Item
                                       noStyle
@@ -659,7 +658,6 @@ const index = () => {
                                       ]}
                                     >
                                       <Input
-                                        className="h-1/2"
                                         style={{
                                           padding: '10px',
                                           width: '180%',
@@ -679,11 +677,6 @@ const index = () => {
                                       noStyle
                                       name="isDay"
                                       required={!isPreview}
-                                      rules={[
-                                        {
-                                          validator: isDayAndUnitValidator,
-                                        },
-                                      ]}
                                     >
                                       <Select
                                         className="special-selector w-100 "
@@ -694,6 +687,7 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
+
                                       >
                                         {isDayData.map((element) => (
                                           <Select.Option
@@ -733,6 +727,7 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
+                                        value={[unitData[0].name, unitData[0].id]}
                                       >
                                         {unitData.map((element) => (
                                           <Select.Option
