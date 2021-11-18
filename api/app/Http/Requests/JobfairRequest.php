@@ -35,7 +35,7 @@ class JobfairRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.unique' => 'ユーザーが使用されているJF名を入力した',
+            'name.unique' => 'この名前はすでに存在します',
         ];
     }
 }
