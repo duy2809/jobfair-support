@@ -178,8 +178,8 @@ const MilestoneList = () => {
       dataIndex: 'period',
       width: `${role === 'superadmin' ? '30%' : '50%'}`,
       render: (period) => {
-        const { numOfDays, type } = period
-        return <a>{convertPeriod(numOfDays, type)}</a>
+        const { numOfDays } = period
+        return <a>{`${numOfDays}日後`}</a>
       },
     },
     {
