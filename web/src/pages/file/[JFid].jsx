@@ -468,7 +468,7 @@ function File() {
                 </div>
                 <div className="w-full">
                   <div className="h-24 grid grid-cols-3 table-top border-t border-r border-l border-black rounded-t-md">
-                    <div className="flex flex-col justify-center gap-2 pl-20 items-start col-span-2">
+                    <div className="flex flex-col justify-center gap-2 pl-5 items-start col-span-2">
                       <Checkbox
                         className="w-100"
                         checked={isCheckAll}
@@ -546,18 +546,19 @@ function File() {
                         <Form
                           form={formEditFile}
                           onValuesChange={onEditFileChange}
-                          layout="vertical"
-                          size="large"
+                          layout="horizontal"
                           labelCol={{
-                            span: 4,
+                            span: 6,
                           }}
                           wrapperCol={{
                             span: 16,
                           }}
+                          name="basic"
+                          size="large"
                         >
 
                           <Form.Item
-                            label={<p className="font-bold text-right">名前</p>}
+                            label={<p className="font-bold mr-3">名前</p>}
                             name="name_file"
                             rules={[
                               {
@@ -570,7 +571,7 @@ function File() {
                           </Form.Item>
 
                           <Form.Item
-                            label={<p className="font-bold text-right">リンク</p>}
+                            label={<p className="font-bold mr-1">リンク</p>}
                             name="link"
                             rules={[
                               {
@@ -602,7 +603,7 @@ function File() {
                           name="basic"
                         >
                           <Form.Item
-                            label={<p>名前</p>}
+                            label={<p className="font-bold mr-1">名前</p>}
                             name="name_folder"
                             rules={[
                               {
@@ -657,7 +658,7 @@ function File() {
               </div>
               <div className="md:col-span-2 flex flex-col">
                 <div className="pt-12">
-                  <h2 className="font-bold">最近更新されたファイル</h2>
+                  <h3 className="font-bold mb-1">最近更新されたファイル</h3>
                   <div className="h-60 recently mt-1 border border-black rounded-md flex flex-col justify-start">
                     {recentUpdated.map((el, index) => (
                       <>
@@ -688,19 +689,19 @@ function File() {
                           </div>
                           <div className="py-2 flex flex-row items-center gap-2">
                             <Row>
-                              <Col span={5}>
+                              <Col span={6}>
                                 <TimeAgo date={el.updated_at} formatter={formatter} />
                               </Col>
                               <Col span={1}>
                                 <span>/</span>
                               </Col>
 
-                              {el.updater.length > 20 ? (
-                                <Col span={11}>
+                              {el.updater.length > 16 ? (
+                                <Col span={9}>
                                   <Tooltip placement="top" title={el.updater}>
                                     <span
                                       className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                      style={{ maxWidth: '20ch' }}
+                                      style={{ maxWidth: '19ch' }}
                                     >
                                       {el.updater}
                                     </span>
@@ -710,7 +711,7 @@ function File() {
                                 <Col span={11}>
                                   <span
                                     className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                    style={{ maxWidth: '20ch' }}
+                                    style={{ maxWidth: '19ch' }}
                                   >
                                     {el.updater}
                                   </span>
@@ -727,7 +728,7 @@ function File() {
                   </div>
                 </div>
                 <div className="mt-5">
-                  <h2 className="font-bold">ファイルを検索</h2>
+                  <h3 className="mb-1 font-bold">ファイルを検索</h3>
                   <div className="search p-3 border border-black rounded-md">
                     <Search />
                   </div>

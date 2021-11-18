@@ -68,9 +68,11 @@
     align-items: center;
     width: 100%;
   }
-
- 
+  .ant-form-vertical .ant-form-item {
+    flex-direction: row ;
+  }
+  
 }
-.ant-form-vertical .ant-form-item {
-  flex-direction: row ;
+.ant-form-item-label > label::after {
+  display: none;
 }
