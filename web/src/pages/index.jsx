@@ -10,7 +10,6 @@ import Loading from '../components/loading'
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [isDisableOk, setDisableOk] = useState(true)
-  const [isSpace, setIsSpace] = useState(false)
   const [, forceUpdate] = useState({})
   const [form] = Form.useForm()
   const [form2] = Form.useForm()
