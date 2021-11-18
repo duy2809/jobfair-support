@@ -23,7 +23,7 @@ const initState = fromJS({
 })
 
 const loading = (state) => state.set('loadStatus', enumsStatus.LOADING)
-const loadSuccess = (state) => state.set('loadStatus', enumsStatus.SUCCESS)
+const loadSuccess = (state, action) => state.set('loadStatus', enumsStatus.SUCCESS).set('status', fromJS(action.payload))
 const loadFail = (state) => state.set('loadStatus', enumsStatus.FAIL)
 const storeData = (state, action) => state.set('status', fromJS(action.payload))
 
@@ -35,7 +35,7 @@ const reducer = handleActions(
     [types.STORE_SIDEBAR_STATUS]: storeData,
     [types.CLEAR_STORE]: storeData,
   },
-  initState,
+  initState
 )
 
 export default reducer

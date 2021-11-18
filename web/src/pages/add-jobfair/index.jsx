@@ -549,7 +549,6 @@ const index = () => {
                             className="ant-btn"
                             onClick={cancelConfirmModle}
                             disabled={disableBtn}
-                            loading={loading}
                           >
                             キャンセル
                           </Button>
@@ -559,7 +558,6 @@ const index = () => {
                             type="primary"
                             htmlType="submit"
                             disabled={disableBtn}
-                            loading={loading}
                             style={{ letterSpacing: '-1px' }}
                           >
                             登録

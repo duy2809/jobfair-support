@@ -75,7 +75,7 @@ export default function Navbar() {
   return (
     <div
       className="flex items-center justify-between border-2 navbar select-none shadow-md relative"
-      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '70px' }}
+      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '80px' }}
     >
       <div className="flex">
         <div style={{ width: '13.5rem', paddingLeft: '3px' }}>

@@ -10,6 +10,8 @@ const storeData = createAction(types.STORE_SIDEBAR_STATUS)
 const clearStore = createAction(types.CLEAR_STORE)
 export const actions = {
   load,
+  loadSuccess,
+  loadFail,
   storeData,
   clearStore,
 }

@@ -95,6 +95,7 @@ const EditCategory = (props) => {
   }
 
   const handleCancel = () => {
+    form.resetFields()
     setIsModalVisible(false)
   }
 

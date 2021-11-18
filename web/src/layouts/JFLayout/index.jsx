@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Layout, Menu } from 'antd'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -12,6 +12,9 @@ import {
   FileOutlined,
   MenuOutlined,
 } from '@ant-design/icons'
+import { ReactReduxContext, useSelector } from 'react-redux'
+import { sidebarSelectors } from '../../store/modules/sidebar'
+import actions from '../../store/modules/sidebar/types'
 import { findSlot } from '../../utils/pages'
 import Navbar from '../../components/navbar'
 import './style.scss'
@@ -22,13 +25,21 @@ const JfLayout = ({ children, bgr }) => {
     borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
+  const [id, setIdJf] = useState('')
+  const { store } = useContext(ReactReduxContext)
+  const sidebarStatus = useSelector((state) => sidebarSelectors.status(state).toJS())
+
   const main = findSlot(JfLayout.Main, children)
   const { Sider, Content } = Layout
-  const [collapsed, Setcollapsed] = useState(false)
+  const [collapsed, Setcollapsed] = useState(sidebarStatus.collapsed)
   const toggleCollapsed = () => {
+    const payload = { ...sidebarStatus, collapsed: !collapsed }
+    store.dispatch({
+      type: actions.STORE_SIDEBAR_STATUS,
+      payload,
+    })
     Setcollapsed(!collapsed)
   }
-  const [id, setIdJf] = useState('')
   useEffect(() => {
     setIdJf(localStorage.getItem('id-jf'))
   }, [children])
