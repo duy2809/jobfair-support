@@ -4,7 +4,7 @@ import { Button, Divider, Form, Input, Modal, notification, Select, Tag, Tooltip
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
-import { taskData } from '../../api/task-detail'
+import { taskData, getUserByCategory } from '../../api/task-detail'
 import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
 import MarkDownView from '../markDownView'
@@ -12,13 +12,13 @@ import Comment from './Comment'
 import MyEditor from './Editor'
 import './styles.scss'
 
-function index({ id, statusProp, assigneeProp, listMemberAssignee, parentCallback }) {
+function index({ id, statusProp, assigneeProp, category, parentCallback }) {
   const [visible, setVisible] = useState(false)
   const [previewing, setPreviewing] = useState(false)
   const [editing, setEditing] = useState(false)
   const [show, setShow] = useState(true)
   const [form] = Form.useForm()
-  // const [listUser, setListUser] = useState([])
+  const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
   const [editingComment, setEditingComment] = useState({})
@@ -71,13 +71,14 @@ function index({ id, statusProp, assigneeProp, listMemberAssignee, parentCallbac
     parentCallback(data)
   }, [])
   const fetchListMember = async () => {
-    // await getUser()
-    //   .then((response) => {
-    //     setListUser(response.data)
-    //   })
-    //   .catch((error) => {
-    //     console.log(error)
-    //   })
+    try {
+      const response = await getUserByCategory(category)
+      if (response.data) {
+        setListUser(response.data)
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const fetchTaskData = async () => {
@@ -101,7 +102,7 @@ function index({ id, statusProp, assigneeProp, listMemberAssignee, parentCallbac
     return () => {
       store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
     }
-  }, [])
+  }, [category])
 
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
 
@@ -349,7 +350,7 @@ function index({ id, statusProp, assigneeProp, listMemberAssignee, parentCallbac
                     >
                       {assign ? (
                         <Select mode="multiple" showArrow tagRender={tagRender}>
-                          {listMemberAssignee.map((element) => (
+                          {listUser.map((element) => (
                             <Select.Option
                               className="validate-user"
                               key={element.id}
@@ -369,7 +370,7 @@ function index({ id, statusProp, assigneeProp, listMemberAssignee, parentCallbac
                           style={{ width: '100%', border: '1px solid red', borderRadius: 6 }}
                           className="multiples"
                         >
-                          {listMemberAssignee.map((element) => (
+                          {listUser.map((element) => (
                             <Select.Option
                               className="validate-user"
                               key={element.id}
