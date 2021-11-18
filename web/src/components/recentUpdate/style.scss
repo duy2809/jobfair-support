@@ -1,0 +1,32 @@
+.recent-update {
+  .ant-list-split:hover .ant-list-item:hover {
+    border: 1px solid black;
+  }
+  .ant-list-split .ant-list-item {
+    border: 1px solid transparent;
+    padding: 1rem;
+    border-radius: 1rem;
+  }
+  .ant-list {
+    border: 1px solid black;
+    border-radius: 0.2rem;
+    padding: 1.5rem;
+  }
+  .ant-list-item-meta-title > a:hover {
+    font-weight: bold;
+    color: black;
+  }
+  .ant-list-item-meta-title > a {
+    font-weight: bold;
+    color: black;
+  }
+  .ant-list-item-meta-description > a {
+    color: #74d9df;
+  }
+  .ant-list-split.ant-list-something-after-last-item
+    .ant-spin-container
+    > .ant-list-items
+    > .ant-list-item:last-child:hover {
+    border-bottom: 1px solid black;
+  }
+}

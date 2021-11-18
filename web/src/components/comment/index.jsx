@@ -4,7 +4,7 @@ import { Button, Divider, Form, Input, Modal, notification, Select, Tag, Tooltip
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { addComment, getComments, updateComment } from '../../api/comment'
-import { getUser, taskData } from '../../api/task-detail'
+import { taskData, getUserByCategory } from '../../api/task-detail'
 import { commentSelectors } from '../../store/modules/comment'
 import actions from '../../store/modules/comment/types'
 import MarkDownView from '../markDownView'
@@ -12,7 +12,7 @@ import Comment from './Comment'
 import MyEditor from './Editor'
 import './styles.scss'
 
-function index({ id, statusProp, assigneeProp, parentCallback }) {
+function index({ id, statusProp, assigneeProp, category, parentCallback }) {
   const [visible, setVisible] = useState(false)
   const [previewing, setPreviewing] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -71,13 +71,14 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
     parentCallback(data)
   }, [])
   const fetchListMember = async () => {
-    await getUser()
-      .then((response) => {
+    try {
+      const response = await getUserByCategory(category)
+      if (response.data) {
         setListUser(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      }
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   const fetchTaskData = async () => {
@@ -101,7 +102,7 @@ function index({ id, statusProp, assigneeProp, parentCallback }) {
     return () => {
       store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
     }
-  }, [])
+  }, [category])
 
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
 

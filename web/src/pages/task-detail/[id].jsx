@@ -1,10 +1,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
@@ -113,6 +109,8 @@ function TaskDetail() {
           name: data.schedule.jobfair.name,
         })
       }
+    }).catch(() => {
+      router.push('/error')
     })
   }
   const fetchBeforeTask = async () => {
@@ -129,6 +127,8 @@ function TaskDetail() {
   const fetchReviewersList = async () => {
     await reviewers(idTask).then((response) => {
       setReviewersList(response.data)
+    }).catch(() => {
+      router.push('/error')
     })
   }
   const modelDelete = () => {
@@ -431,11 +431,13 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
-                        {reviewersList.length !== 0
-                          ? reviewersList.map((item) => (
+                        {reviewersList.length !== 0 ? (
+                          reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
                           ))
-                          : <li className="task__chil">None</li>}
+                        ) : (
+                          <li className="task__chil">None</li>
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -451,10 +453,9 @@ function TaskDetail() {
               id={idTask}
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
-              taskInfo={infoTask}
+              category={infoTask.categories}
               parentCallback={getChildProps}
             />
-            {/* <Comment id={idTask} /> */}
           </div>
         </JfLayout.Main>
       </JfLayout>

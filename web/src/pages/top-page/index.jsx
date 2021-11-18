@@ -10,6 +10,7 @@ import { ListScheduleApi } from '../../api/schedule'
 import Layout from '../../layouts/OtherLayout'
 // import TemplateTaskSubTable from '../../components/TemplateTaskSubTable'
 import TaskSubTable from '../../components/TaskSubTable'
+import RecentUpdate from '../../components/recentUpdate'
 
 const { getListSchedule } = ListScheduleApi
 
@@ -129,10 +130,10 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      const tasksData = response.data.filter(
-        (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
-      )
-      setTaskData(tasksData)
+      // const tasksData = response.data.filter(
+      //   (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
+      // )
+      setTaskData(response.data)
 
       const data = await taskReviewer()
       setTaskReviewerData(data.data)
@@ -199,7 +200,7 @@ const Top = () => {
       setLoadingSchedule(false)
     }
 
-    // getTask()
+    getTask()
     getMember()
     getJobfair()
     getTemplate()
@@ -244,7 +245,6 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
-
   taskReviewerData.forEach((taskReviewerIt) => {
     const taskReviewerItem = { id: '' }
     taskReviewerItem.id = taskReviewerIt.id
@@ -256,7 +256,7 @@ const Top = () => {
       <Layout.Main>
         <div>
           <div>
-            <Row>
+            <Row gutter={[50, 50]}>
               <Col span={12}>
                 <ListJfToppage
                   className="my-3"
@@ -341,7 +341,9 @@ const Top = () => {
                 }
 
               </Col>
-              <Col span={12} />
+              <Col span={12}>
+                <RecentUpdate JFid="all" />
+              </Col>
             </Row>
           </div>
         </div>
