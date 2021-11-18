@@ -11,8 +11,10 @@ import {
   Tooltip,
   Form,
   Input,
+  Row,
+  Col,
 } from 'antd'
-import { FolderFilled, FileFilled } from '@ant-design/icons'
+import { FolderFilled, ExclamationCircleOutlined, FileFilled } from '@ant-design/icons'
 import './style.scss'
 import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
@@ -34,7 +36,6 @@ function File() {
   const formatter = buildFormatter(frenchStrings)
   const [disableBtnEdit, setDisableBtnEdit] = useState(true)
   const [disableBtnDelete, setDisableBtnDelete] = useState(true)
-  const [isModalDeleteVisible, setIsModalDeleteVisible] = useState(false)
   const [isModalEditFileVisible, setIsModalEditFileVisible] = useState(false)
   const [isModalEditFolderVisible, setIsModalEditFolderVisible] = useState(false)
   const [directory, setDirectory] = useState(['ファイル'])
@@ -274,9 +275,6 @@ function File() {
       ])
     }
   }, [directory])
-  const onBtnDeleteClick = () => {
-    setIsModalDeleteVisible(true)
-  }
   const onBtnEditClick = () => {
     if (data[currentRowIndex].is_file) {
       setIsModalEditFileVisible(true)
@@ -430,7 +428,6 @@ function File() {
           ...result,
         ])
       } else setData(result)
-      setIsModalDeleteVisible(false)
       setIsCheckAll(false)
       setLoading(false)
     } catch {
@@ -438,7 +435,6 @@ function File() {
         'error',
         'このフォルダを削除する権限がないです!',
       )
-      setIsModalDeleteVisible(false)
       setIsCheckAll(false)
       setLoading(false)
     }
@@ -551,10 +547,17 @@ function File() {
                           form={formEditFile}
                           onValuesChange={onEditFileChange}
                           layout="vertical"
-                          name="basic"
+                          size="large"
+                          labelCol={{
+                            span: 4,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
                         >
+
                           <Form.Item
-                            label={<p>名前</p>}
+                            label={<p className="font-bold text-right">名前</p>}
                             name="name_file"
                             rules={[
                               {
@@ -565,8 +568,9 @@ function File() {
                           >
                             <Input type="text" size="large" placeholder="新しいファイル名" />
                           </Form.Item>
+
                           <Form.Item
-                            label={<p>リンク</p>}
+                            label={<p className="font-bold text-right">リンク</p>}
                             name="link"
                             rules={[
                               {
@@ -595,12 +599,6 @@ function File() {
                           form={formEditFolder}
                           onValuesChange={onChangeDisableEditFolder}
                           layout="horizontal"
-                          labelCol={{
-                            span: 6,
-                          }}
-                          wrapperCol={{
-                            span: 16,
-                          }}
                           name="basic"
                         >
                           <Form.Item
@@ -621,23 +619,23 @@ function File() {
                         type="primary"
                         className="w-14 md:w-24"
                         disabled={disableBtnDelete}
-                        onClick={onBtnDeleteClick}
+                        onClick={() => {
+                          Modal.confirm({
+                            title: 'ファイルとフォルダを削除してもよろしいですか?',
+                            icon: <ExclamationCircleOutlined />,
+                            content: '',
+                            onOk: async () => {
+                              handleOkDelete()
+                            },
+                            onCancel: () => {},
+                            centered: true,
+                            okText: 'はい',
+                            cancelText: 'いいえ',
+                          })
+                        }}
                       >
                         削除
                       </Button>
-                      <Modal
-                        // title="ファイルとフォルダを削除してもよろしいですか?"
-                        visible={isModalDeleteVisible}
-                        centered
-                        onOk={handleOkDelete}
-                        onCancel={() => {
-                          setIsModalDeleteVisible(false)
-                        }}
-                        cancelText="いいえ"
-                        okText="はい"
-                      >
-                        <p>ファイルとフォルダを削除してもよろしいですか?</p>
-                      </Modal>
                     </div>
                   </div>
                   <Table
@@ -668,9 +666,9 @@ function File() {
                             index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
                           }`}
                         >
-                          <div className="flex flex-row items-center">
+                          <div className="flex items-center">
                             <FileFilled className="mr-2 " />
-                            {el.name.length > 20 ? (
+                            {el.name.length > 10 ? (
                               <Tooltip placement="top" title={el.name}>
                                 <span
                                   className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
@@ -689,25 +687,39 @@ function File() {
                             )}
                           </div>
                           <div className="py-2 flex flex-row items-center gap-2">
-                            <TimeAgo date={el.updated_at} formatter={formatter} />
-                            <span>/</span>
-                            {el.updater.length > 20 ? (
-                              <Tooltip placement="top" title={el.updater}>
-                                <span
-                                  className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                  style={{ maxWidth: '20ch' }}
-                                >
-                                  {el.updater}
-                                </span>
-                              </Tooltip>
-                            ) : (
-                              <span
-                                className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
-                                style={{ maxWidth: '20ch' }}
-                              >
-                                {el.updater}
-                              </span>
-                            )}
+                            <Row>
+                              <Col span={5}>
+                                <TimeAgo date={el.updated_at} formatter={formatter} />
+                              </Col>
+                              <Col span={1}>
+                                <span>/</span>
+                              </Col>
+
+                              {el.updater.length > 20 ? (
+                                <Col span={11}>
+                                  <Tooltip placement="top" title={el.updater}>
+                                    <span
+                                      className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                      style={{ maxWidth: '20ch' }}
+                                    >
+                                      {el.updater}
+                                    </span>
+                                  </Tooltip>
+                                </Col>
+                              ) : (
+                                <Col span={11}>
+                                  <span
+                                    className="text-sm inline-block whitespace-nowrap overflow-hidden overflow-ellipsis"
+                                    style={{ maxWidth: '20ch' }}
+                                  >
+                                    {el.updater}
+                                  </span>
+                                </Col>
+
+                              )}
+
+                            </Row>
+
                           </div>
                         </div>
                       </>
