@@ -303,5 +303,5 @@ function templatetTaskDt() {
     </div>
   )
 }
-templatetTaskDt.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+templatetTaskDt.middleware = ['auth:superadmin', 'auth:member']
 export default templatetTaskDt

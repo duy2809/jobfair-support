@@ -286,5 +286,5 @@ function ScheduleList() {
   )
 }
 
-ScheduleList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+ScheduleList.middleware = ['auth:superadmin', 'auth:member']
 export default ScheduleList

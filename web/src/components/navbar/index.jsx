@@ -7,6 +7,7 @@ import './styles.scss'
 import { logout } from '../../api/authenticate'
 import Notification from './notification'
 import { getAvatar } from '../../api/profile'
+import { LOAD_SUCCESS } from '../../store/modules/auth'
 
 export default function Navbar() {
   const { store } = useContext(ReactReduxContext)
@@ -33,6 +34,7 @@ export default function Navbar() {
     try {
       const response = await logout()
       if (response.request.status === 200) {
+        store.dispatch({ type: LOAD_SUCCESS, payload: null })
         window.location = '/'
       }
     } catch (error) {

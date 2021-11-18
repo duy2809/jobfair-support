@@ -279,5 +279,5 @@ function TaskList() {
   )
 }
 
-TaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TaskList.middleware = ['auth:superadmin', 'auth:member']
 export default TaskList

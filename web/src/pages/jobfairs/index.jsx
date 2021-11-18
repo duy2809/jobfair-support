@@ -465,5 +465,5 @@ function JFList() {
     </OtherLayout>
   )
 }
-JFList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+JFList.middleware = ['auth:superadmin', 'auth:member']
 export default JFList

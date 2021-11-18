@@ -105,5 +105,5 @@ function ScheduleDetailGeneral() {
     </div>
   )
 }
-ScheduleDetailGeneral.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+ScheduleDetailGeneral.middleware = ['auth:superadmin', 'auth:member']
 export default ScheduleDetailGeneral
