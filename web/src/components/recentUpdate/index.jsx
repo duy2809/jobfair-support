@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Divider, List, Avatar, Button, Typography, Tooltip } from 'antd'
+import { Divider, List, Avatar, Button, Typography, Tooltip, Card } from 'antd'
 import React, { useEffect, useState } from 'react'
 import TimeAgo from 'react-timeago'
 import PropTypes from 'prop-types'
@@ -106,10 +106,11 @@ function RecentUpdate(props) {
     </div>
   )
   return (
-    <div className="recent-update">
-      <h1 className="mt-8">最近の更新</h1>
+    <Card className="recent-update" bordered={false}>
+      <h1 className="">最近の更新</h1>
       <List
-        className="my-3"
+        className=""
+        style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '5px' }}
         itemLayout="horizontal"
         loadMore={loadMore}
         dataSource={list}
@@ -506,7 +507,7 @@ function RecentUpdate(props) {
             </List.Item>
           )}
         /> */}
-    </div>
+    </Card>
   )
 }
 RecentUpdate.propTypes = {

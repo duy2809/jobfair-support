@@ -10,6 +10,7 @@ import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import { jfdata } from '../../api/jf-toppage'
 import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
@@ -18,6 +19,7 @@ import './style.scss'
 import { getAvatar } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
+  const router = useRouter()
   const styles = {
     background: 'white',
     borderLeft: '3px solid #ffd803',
@@ -38,6 +40,11 @@ const JfLayout = ({ children, id, bgr }) => {
   const onClick = () => {
     setShow(!show)
     setShowSearchIcon(!showSearchIcon)
+  }
+  const onEnter = (e) => {
+    if (e.key === 'Enter') {
+      router.push({ pathname: `/tasks/${id}`, query: { name: e.target.value } })
+    }
   }
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
@@ -71,10 +78,10 @@ const JfLayout = ({ children, id, bgr }) => {
   useEffect(() => {
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
-        console.log(ref.current, event.target)
+        // console.log(ref.current, event.target)
         return
       }
-      console.log(ref)
+      // console.log(ref)
 
       setShow(false)
       setShowSearchIcon(true)
@@ -272,6 +279,7 @@ const JfLayout = ({ children, id, bgr }) => {
                       bordered
                       prefix={<SearchOutlined />}
                       autoComplete="off"
+                      onKeyPress={onEnter}
                     />
                   ) : null}
                 </span>
