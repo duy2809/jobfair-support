@@ -26,6 +26,12 @@ const LoginPage = () => {
   }, [])
 
   /* eslint-disable no-template-curly-in-string */
+  const validatorPass = (_, value) => {
+    if (value.indexOf(' ') >= 0) {
+      return Promise.reject(new Error('半角英数と記号のみを使用して入力してください。例：123example@!'))
+    }
+    return Promise.resolve()
+  }
   const validateMessages = {
     required: 'この項目は必須です。',
     types: {
@@ -147,6 +153,9 @@ const LoginPage = () => {
                 rules={[
                   { required: true },
                   { type: 'string', min: 8, max: 24 },
+                  {
+                    validator: validatorPass,
+                  },
                 ]}
               >
                 <Input.Password
