@@ -453,7 +453,7 @@ function TaskDetail() {
               id={idTask}
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
-              listMemberAssignee={listMemberAssignee}
+              category={infoTask.categories}
               parentCallback={getChildProps}
             />
           </div>
