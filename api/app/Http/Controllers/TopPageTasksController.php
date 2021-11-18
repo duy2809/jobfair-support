@@ -13,15 +13,16 @@ class TopPageTasksController extends Controller
         $taskName = $request->input('task-name') === null ? '' : $request->input('task-name');
         $startTime = $request->input('start-time') === null ? '' : $request->input('start-time');
         $jobfairName = $request->input('jobfair-name') === null ? '' : $request->input('jobfair-name');
-        $tasks = User::findOrFail($user->id)->tasks->sortBy('start_time')->values();
+        $tasks = $user->tasks->values();
+        $tasks = $tasks->concat($user->reviewTasks->values())->sortBy('start_time')->unique();
         // dd($tasks);
         $tasks->each(function ($task) {
             $task->jobfair = $task->schedule->jobfair;
         });
         $result = array_filter($tasks->all(), function ($task) use ($taskName, $startTime, $jobfairName) {
             return str_contains($task->name, $taskName)
-             && str_contains($task->start_time, $startTime)
-             && str_contains($task->jobfair, $jobfairName);
+            && str_contains($task->start_time, $startTime)
+            && str_contains($task->jobfair, $jobfairName);
         });
         if ($taskName === '' && $startTime === '' && $jobfairName === '') {
             return response()->json(array_values($result));
@@ -43,8 +44,8 @@ class TopPageTasksController extends Controller
         });
         $result = array_filter($tasks->all(), function ($task) use ($taskName, $startTime, $jobfairName) {
             return str_contains($task->name, $taskName)
-             && str_contains($task->start_time, $startTime)
-             && str_contains($task->jobfair, $jobfairName);
+            && str_contains($task->start_time, $startTime)
+            && str_contains($task->jobfair, $jobfairName);
         });
         if ($taskName === '' && $startTime === '' && $jobfairName === '') {
             return response()->json(array_values($result));
