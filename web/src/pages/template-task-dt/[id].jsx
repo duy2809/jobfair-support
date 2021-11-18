@@ -204,8 +204,8 @@ function templatetTaskDt() {
               </div>
 
               <div className="grid grid-cols-2 mx-16 mt-5">
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
+                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
                     前のタスク
                     {' '}
                   </p>
@@ -247,8 +247,8 @@ function templatetTaskDt() {
                     </>
                   )}
                 </div>
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
+                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
                     次のタスク
                   </p>
                   {afterTasks.length > 0 ? (

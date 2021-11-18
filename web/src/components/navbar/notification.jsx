@@ -80,7 +80,7 @@ export default function Notification() {
             userid = item.data.user.id
             url = `/task-detail/${item.data.task.id}`
           } else if (item.type === 'App\\Notifications\\TaskExpired') {
-            action = `タスク${item.task.name}が完了期限を過ぎました。`
+            action = `タスク${item.data.task.name}が完了期限を過ぎました。`
             userid = item.data.user.id
             url = `/task-detail/${item.data.task.id}`
           }

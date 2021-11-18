@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -43,15 +44,15 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $rules = [
-            'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/',
-        ];
-        $validator = Validator::make($request->all(), $rules);
-        $validator->validate();
+        // $rules = [
+        //     'category_name' => 'required|max:255|unique:categories,category_name|regex:/^[^\s]*$/',
+        // ];
+        // $validator = Validator::make($request->all(), $rules);
+        // $validator->validate();
 
-        return Category::create($request->all());
+        return Category::create($request->validated());
     }
 
     /**

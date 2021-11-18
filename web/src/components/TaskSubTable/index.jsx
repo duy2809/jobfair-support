@@ -124,6 +124,7 @@ const TaskSubTable = ({
     )
   }, [dataSource])
   useEffect(() => {
+    console.log(filter)
     let datas = [...list]
     if (filter) {
       // if (filter.name) {
@@ -133,10 +134,10 @@ const TaskSubTable = ({
       // }
       if (filter.status) {
         datas = datas.filter(
-          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase()) !== -1,
+          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase().replace(/\s/g, '')) !== -1,
         )
       }
-      if (filter.reviewer_task) {
+      if (filter.reviewer_task.length > 0) {
         datas = datas.filter(
           (data) => filter.reviewer_task.includes(data.key) === true,
         )
@@ -417,8 +418,10 @@ const TaskSubTable = ({
                   <Button
                     name="status"
                     onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '中 断' ? 'option-active' : ''
-                    }`}
+                    className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
+                    }
+                    `}
+                    style={{ letterSpacing: '-1px' }}
                   >
                     中断
                   </Button>

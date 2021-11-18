@@ -226,7 +226,13 @@ class FileController extends Controller
 
                 $term = $pathD.'/';
                 $term .= '%';
-                Document::where('path', 'LIKE', $term)->orWhere('path', $pathD)->delete();
+                $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
+
+                if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0) {
+                    return response(['message' => 'Subfolder and Subfile can not be deleted '], 400);
+                }
+
+                $result->delete();
             }
 
             Document::destroy($index);
