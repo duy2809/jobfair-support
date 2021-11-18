@@ -41,13 +41,21 @@ class UpdateTask extends Command
      */
     public function handle()
     {
-        $tasks = Task::where('status', '<>', '未完了')->get();
-        $user = User::where('role', 1)->get();
-        foreach ($tasks as $task) {
-            $task->whereDate('end_time', '<', now()->toDateString())->update(['status' => '未完了']);
+        $tasks = Task::where('status', '<>', '未完了')->whereDate('end_time', '<', now()->toDateString());
+        $taskToNotify = $tasks->get();
+        $user = User::where('role', 1)->first();
+        $tasks->update(['status' => '未完了']);
+        foreach ($taskToNotify as $task) {
+            $users = $task->users->concat($task->reviewers)->unique();
+
             Notification::send(
-                $task->users()->get(),
-                new TaskExpired($task, $user[0])
+                $users,
+                new TaskExpired($task, $user)
+            );
+            echo $users->pluck('id');
+            Notification::send(
+                $task->schedule->jobfair->user,
+                new TaskExpired($task, $user)
             );
         }
     }
