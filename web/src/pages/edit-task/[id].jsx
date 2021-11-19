@@ -8,6 +8,7 @@ import axios from 'axios'
 import JfLayout from '../../layouts/layout-task'
 import { taskData, beforeTask, afterTask, getUserByCategory } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
+// import { addUserToChannel} from '../../api/slack'
 import * as Extensions from '../../utils/extensions'
 import { webInit } from '../../api/web-init'
 import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
@@ -331,6 +332,11 @@ function EditTask() {
 
         await editTask(idTask, data)
           .then(() => {
+            // const dataUserToChannel = {
+            //   assignee: data.user_id,
+            //   JFid: idJF
+            // }
+            // addUserToChannel(dataUserToChannel)
             router.push(`/task-detail/${idTask}`)
             saveNotification()
           })
