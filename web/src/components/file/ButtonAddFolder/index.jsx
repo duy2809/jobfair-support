@@ -3,6 +3,7 @@ import { Button, Modal, Form, Input, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { addDocument } from '../../../api/file'
+import './style.scss'
 
 export default function ButtonAddFolder(props) {
   const [isDisableFolder, setIsDisableFolder] = useState(true)
@@ -128,14 +129,15 @@ export default function ButtonAddFolder(props) {
           wrapperCol={{
             span: 16,
           }}
+          className="add"
           name="basic"
           colon={false}
         >
           <Form.Item
             label={(
-              <p style={{ margin: 0 }} className="font-bold">
+              <span className="font-bold mr-3">
                 名前
-              </p>
+              </span>
             )}
             name="name_folder"
             rules={[
