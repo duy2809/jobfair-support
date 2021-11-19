@@ -127,12 +127,12 @@ class ScheduleController extends Controller
 
     public function getMilestones($id)
     {
-        return Schedule::with('milestones:id,name')->find($id, ['id']);
+        return Schedule::with('milestones:id,name')->findOrFail($id, ['id']);
     }
 
     public function getTemplateTasks($id)
     {
-        return Schedule::with('templateTasks:id,name')->find($id, ['id']);
+        return Schedule::with('templateTasks:id,name')->findOrFail($id, ['id']);
     }
 
     public function search(Request $request)
@@ -449,11 +449,7 @@ class ScheduleController extends Controller
 
     public function getGanttChart($id)
     {
-        $schedule = Schedule::find($id);
-        if (!$schedule) {
-            return response('Not found', 404);
-        }
-
+        $schedule = Schedule::findOrFail($id);
         $milestones = $schedule->milestones;
         $templateTasks = $schedule->templateTasks()->with('categories');
         $tasksWithOrderIndex = [];

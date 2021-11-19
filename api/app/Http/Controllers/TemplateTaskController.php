@@ -30,12 +30,12 @@ class TemplateTaskController extends Controller
             'schedule.tasks' => function ($q) {
                 $q->select('template_task_id', 'schedule_id');
             },
-        ])->find($id);
+        ])->findOrFail($id);
 
         $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
-                                      ->with(['categories:id,category_name', 'milestone:id,name'])
-                                      ->orderBy('template_tasks.id', 'DESC')
-                                      ->get(['id', 'name', 'milestone_id']);
+            ->with(['categories:id,category_name', 'milestone:id,name'])
+            ->orderBy('template_tasks.id', 'DESC')
+            ->get(['id', 'name', 'milestone_id']);
 
         return response()->json($templateTask);
     }
@@ -49,12 +49,12 @@ class TemplateTaskController extends Controller
     public function store(TemplateTaskRequest $request)
     {
         $newTemplateTask = TemplateTask::create([
-            'name' => $request->name,
+            'name'                  => $request->name,
             'description_of_detail' => $request->description_of_detail,
-            'milestone_id' => $request->milestone_id,
-            'is_day' => $request->is_day,
-            'unit' => $request->unit,
-            'effort' => $request->effort,
+            'milestone_id'          => $request->milestone_id,
+            'is_day'                => $request->is_day,
+            'unit'                  => $request->unit,
+            'effort'                => $request->effort,
         ]);
         $newTemplateTask->categories()->attach($request->category_id);
         if (!empty($request->beforeTasks)) {
@@ -88,7 +88,8 @@ class TemplateTaskController extends Controller
      */
     public function show($id)
     {
-        $templateTask = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])->find($id);
+        $templateTask = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])
+            ->findOrFail($id);
 
         return response()->json($templateTask);
     }
@@ -102,7 +103,7 @@ class TemplateTaskController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $templateTask = TemplateTask::find($id);
+        $templateTask = TemplateTask::findOrFail($id);
         $check = false;
         $existTemp = TemplateTask::whereRaw('BINARY `name`= ?', [$request->name])->first();
         if (isset($existTemp)) {
@@ -133,7 +134,7 @@ class TemplateTaskController extends Controller
      */
     public function destroy($id)
     {
-        $templateTasks = TemplateTask::find($id);
+        $templateTasks = TemplateTask::findOrFail($id);
         $templateTasks->categories()->detach();
         $templateTasks->beforeTasks()->detach();
         $templateTasks->afterTasks()->detach();
@@ -151,14 +152,14 @@ class TemplateTaskController extends Controller
 
     public function getBeforeTasks($id)
     {
-        $beforeTasks = TemplateTask::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+        $beforeTasks = TemplateTask::with('beforeTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($beforeTasks);
     }
 
     public function getAfterTasks($id)
     {
-        $afterTasks = TemplateTask::with('afterTasks:id,name')->find($id, ['id', 'name']);
+        $afterTasks = TemplateTask::with('afterTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($afterTasks);
     }

@@ -107,25 +107,32 @@ function File() {
                 }
               }
               queryPath += `${record.name}`
-              const res = await getPath({
-                params: {
-                  jfId: JFid,
-                  path: queryPath,
-                },
-              })
+              try {
+                const res = await getPath({
+                  params: {
+                    jfId: JFid,
+                    path: queryPath,
+                  },
+                })
 
-              const result = res.data.map((element) => ({
-                key: element.id,
-                checkbox: user.get('id') === element.authorId || role !== 'member',
-                is_file: element.is_file,
-                name: element.name,
-                updater: element.updaterName,
-                updated_at: element.updated_at,
-                link: element.link,
-              }))
-              setData(result)
-              setIsCheckAll(false)
-              setDirectory([...directory, record.name])
+                const result = res.data.map((element) => ({
+                  key: element.id,
+                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                  is_file: element.is_file,
+                  name: element.name,
+                  updater: element.updaterName,
+                  updated_at: element.updated_at,
+                  link: element.link,
+                }))
+                setData(result)
+                setIsCheckAll(false)
+                setDirectory([...directory, record.name])
+              } catch (error) {
+                if (error.response.status === 404) {
+                  router.push('/404')
+                }
+                setLoading(false)
+              }
             } else {
               let queryPath = ''
               for (let i = 0; i < directory.length - 1; i += 1) {
@@ -137,25 +144,31 @@ function File() {
                   queryPath += directory[i]
                 }
               }
-              const res = await getPath({
-                params: {
-                  jfId: JFid,
-                  path: queryPath,
-                },
-              })
+              try {
+                const res = await getPath({
+                  params: {
+                    jfId: JFid,
+                    path: queryPath,
+                  },
+                })
 
-              const result = res.data.map((element) => ({
-                key: element.id,
-                checkbox: user.get('id') === element.authorId || role !== 'member',
-                is_file: element.is_file,
-                name: element.name,
-                updater: element.updaterName,
-                updated_at: element.updated_at,
-                link: element.link,
-              }))
-              setData(result)
-              setIsCheckAll(false)
-              setDirectory(directory.slice(0, directory.length - 1))
+                const result = res.data.map((element) => ({
+                  key: element.id,
+                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                  is_file: element.is_file,
+                  name: element.name,
+                  updater: element.updaterName,
+                  updated_at: element.updated_at,
+                  link: element.link,
+                }))
+                setData(result)
+                setIsCheckAll(false)
+                setDirectory(directory.slice(0, directory.length - 1))
+              } catch (error) {
+                if (error.response.status === 404) {
+                  router.push('/404')
+                }
+              }
             }
             setLoading(false)
           }}
@@ -209,29 +222,36 @@ function File() {
   useEffect(async () => {
     getRole()
     setLoading(true)
-    let res = await getRootPathFile(JFid)
-    let result = res.data.map((element) => ({
-      key: element.id,
-      checkbox: user.get('id') === element.authorId || role !== 'member',
-      is_file: element.is_file,
-      name: element.name,
-      updater: element.updaterName,
-      updated_at: element.updated_at,
-      link: element.link,
-    }))
-    setData(result)
-    res = await getLatest(JFid)
-    result = res.data.map((element) => ({
-      key: element.id,
-      checkbox: true,
-      is_file: element.is_file,
-      name: element.name,
-      updater: element.updaterName,
-      updated_at: element.updated_at,
-      link: element.link,
-    }))
-    setRecentUpdated(result)
-    setLoading(false)
+    try {
+      let res = await getRootPathFile(JFid)
+      let result = res.data.map((element) => ({
+        key: element.id,
+        checkbox: user.get('id') === element.authorId || role !== 'member',
+        is_file: element.is_file,
+        name: element.name,
+        updater: element.updaterName,
+        updated_at: element.updated_at,
+        link: element.link,
+      }))
+      setData(result)
+      res = await getLatest(JFid)
+      result = res.data.map((element) => ({
+        key: element.id,
+        checkbox: true,
+        is_file: element.is_file,
+        name: element.name,
+        updater: element.updaterName,
+        updated_at: element.updated_at,
+        link: element.link,
+      }))
+      setRecentUpdated(result)
+      setLoading(false)
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+      setLoading(false)
+    }
   }, [role])
   useEffect(() => {
     const temp = []
@@ -344,6 +364,11 @@ function File() {
       } else setData(result)
       setIsModalEditFileVisible(false)
       setIsCheckAll(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+      setIsModalEditFileVisible(false)
     })
   }
   const handleEditFolderOk = () => {
@@ -392,6 +417,11 @@ function File() {
       } else setData(result)
       setIsModalEditFolderVisible(false)
       setIsCheckAll(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+      setIsModalEditFolderVisible(false)
     })
   }
   const handleOkDelete = async () => {
@@ -430,11 +460,15 @@ function File() {
       } else setData(result)
       setIsCheckAll(false)
       setLoading(false)
-    } catch {
-      openNotification(
-        'error',
-        'このフォルダを削除する権限がないです!',
-      )
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else {
+        openNotification(
+          'error',
+          'このフォルダを削除する権限がないです!',
+        )
+      }
       setIsCheckAll(false)
       setLoading(false)
     }
@@ -495,25 +529,32 @@ function File() {
                                   queryPath += directory[i]
                                 }
                               }
-                              const res = await getPath({
-                                params: {
-                                  jfId: JFid,
-                                  path: queryPath,
-                                },
-                              })
-                              const result = res.data.map((element) => ({
-                                key: element.id,
-                                checkbox: user.get('id') === element.authorId || role !== 'member',
-                                is_file: element.is_file,
-                                name: element.name,
-                                updater: element.updaterName,
-                                updated_at: element.updated_at,
-                                link: element.link,
-                              }))
-                              setData(result)
-                              setIsCheckAll(false)
-                              setDirectory(directory.slice(0, index + 1))
-                              setLoading(false)
+                              try {
+                                const res = await getPath({
+                                  params: {
+                                    jfId: JFid,
+                                    path: queryPath,
+                                  },
+                                })
+                                const result = res.data.map((element) => ({
+                                  key: element.id,
+                                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                                  is_file: element.is_file,
+                                  name: element.name,
+                                  updater: element.updaterName,
+                                  updated_at: element.updated_at,
+                                  link: element.link,
+                                }))
+                                setData(result)
+                                setIsCheckAll(false)
+                                setDirectory(directory.slice(0, index + 1))
+                                setLoading(false)
+                              } catch (error) {
+                                if (error.response.status === 404) {
+                                  router.push('/404')
+                                }
+                                setLoading(false)
+                              }
                             }}
                             className="underline text-xl cursor-pointer"
                           >
