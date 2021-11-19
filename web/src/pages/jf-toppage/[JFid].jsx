@@ -66,15 +66,16 @@ function jftoppage() {
                       <ChartStatus task={listTask} id={idJf} />
                     </div>
                   </Card>
-                </div>
-                <Card bordered={false} className="justify-center ... w-11/12 ml-12 mt-8">
-                  <div className="status__global">
-                    <h1>マイルストーン</h1>
-                    <div className="status">
-                      <ChartMilestone id={idJf} />
+                  <Card bordered={false} className="justify-center ... mt-8">
+                    <div className="status__global">
+                      <h1>マイルストーン</h1>
+                      <div className="status">
+                        <ChartMilestone id={idJf} />
+                      </div>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </div>
+
               </div>
             </div>
           </div>

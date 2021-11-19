@@ -177,7 +177,7 @@ const ListJfToppage = ({
     getTask()
   }
   return (
-    <div className="toppage-jf-list" ref={ref}>
+    <div className="toppage-jf-list" ref={ref} bordered={false}>
       <div
         style={{
           display: 'flex',
