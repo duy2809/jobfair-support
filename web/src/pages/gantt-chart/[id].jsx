@@ -17,7 +17,7 @@ const GanttChart = dynamic(
 )
 // const chartMethod = dynamic(import('~/components/gantt-chart/Gantt'), { ssr: false })
 
-export default function index() {
+function index() {
   const [status, setStatus] = useState('0')
   const [loading, setLoading] = useState(true)
   const [tasks, setTask] = useState({ data: [], links: [] })
@@ -313,3 +313,6 @@ export default function index() {
     </JfLayout>
   )
 }
+
+index.middleware = ['auth:superadmin', 'auth:member']
+export default index

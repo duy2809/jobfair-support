@@ -351,5 +351,5 @@ const Top = () => {
     </Layout>
   )
 }
-Top.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+Top.middleware = ['auth:superadmin', 'auth:member']
 export default Top

@@ -100,7 +100,7 @@ function ScheduleGantt({ id }) {
       // row 0: title => no data
       let startIndex = 1
       for (let i = 0; i < categoryId; i += 1) {
-        startIndex += categories[i].numberOfTasks
+        startIndex += categories[i]?.numberOfTasks
       }
       return startIndex
     }
@@ -122,9 +122,9 @@ function ScheduleGantt({ id }) {
         if (task.categoryId == null) {
           obj.children = 'カテゴリ名'
         } else if (rowIndex) {
-          obj.children = categories[task.categoryId - 1].name
+          obj.children = categories[task.categoryId - 1]?.name
           const startRowIndex = getStartRowIndex(task.categoryId - 1)
-          const rowSpan = categories[task.categoryId - 1].numberOfTasks
+          const rowSpan = categories[task.categoryId - 1]?.numberOfTasks
           if (rowIndex === startRowIndex) {
             obj.props.rowSpan = rowSpan
             obj.props.className = `bg-category-${task.categoryId}`

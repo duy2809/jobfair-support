@@ -95,5 +95,5 @@ function MemberDetailPage() {
   )
 }
 
-MemberDetailPage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+MemberDetailPage.middleware = ['auth:superadmin', 'auth:member']
 export default MemberDetailPage

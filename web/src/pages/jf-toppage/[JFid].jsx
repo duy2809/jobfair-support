@@ -82,5 +82,5 @@ function jftoppage() {
     </div>
   )
 }
-jftoppage.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+jftoppage.middleware = ['auth:superadmin', 'auth:member']
 export default jftoppage

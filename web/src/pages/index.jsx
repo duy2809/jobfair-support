@@ -67,8 +67,10 @@ const LoginPage = () => {
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
         if (preURL == null) {
           router.push('/top-page')
+          setLoading(false)
         } else {
           router.push(preURL)
+          setLoading(false)
         }
         openNotification('success', '正常にログインしました')
       }

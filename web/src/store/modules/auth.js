@@ -39,9 +39,9 @@ export function* sagas() {
 
 // Reducers
 const handleLoadSuccess = (state, action) => {
-  if (action.payload.role === 1) {
+  if (action.payload?.role === 1) {
     action.payload.role = 'superadmin'
-  } else if (action.payload.role === 2) {
+  } else if (action.payload?.role === 2) {
     action.payload.role = 'member'
   }
 
