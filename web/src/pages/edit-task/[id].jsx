@@ -359,7 +359,7 @@ function EditTask() {
         content: '',
         centered: true,
         onOk: () => {
-          router.push(`/tasks/${idJF}`)
+          router.push(`/task-detail/${idTask}`)
         },
 
         onCancel: () => {},
