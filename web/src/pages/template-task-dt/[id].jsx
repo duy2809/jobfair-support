@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip, Tag } from 'antd'
+import { Button, Modal, notification, Tooltip } from 'antd'
 import {
   ExclamationCircleOutlined,
   EditTwoTone,
@@ -204,38 +204,27 @@ function templatetTaskDt() {
               </div>
 
               <div className="grid grid-cols-2 mx-16 mt-5">
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
+                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
                     前のタスク
                     {' '}
                   </p>
                   {beforeTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-2"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5">
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li className="task__chil">
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/template-task-dt/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/template-task-dt/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
@@ -247,37 +236,26 @@ function templatetTaskDt() {
                     </>
                   )}
                 </div>
-                <div className="col-span-1 mx-8 grid grid-cols-3 items-center">
-                  <p className="layber col-span-1 mx-5 text-right font-bold">
+                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
+                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
                     次のタスク
                   </p>
                   {afterTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-2"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5">
                         {afterTasks
                           ? afterTasks.map((item) => (
-                            <li className="task__chil">
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/template-task-dt/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/template-task-dt/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
@@ -303,5 +281,5 @@ function templatetTaskDt() {
     </div>
   )
 }
-templatetTaskDt.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+templatetTaskDt.middleware = ['auth:superadmin', 'auth:member']
 export default templatetTaskDt

@@ -9,11 +9,11 @@ import {
   Divider,
   Row,
   Col,
+  Modal,
 } from 'antd'
 import { ScheduleOutlined, FlagOutlined } from '@ant-design/icons'
 import _ from 'lodash'
 import List from '../../../components/jf-schedule-edit-list'
-import CancelBtn from '../../../components/jf-schedule-cancel-button'
 import Layout from '../../../layouts/OtherLayout'
 import './styles.scss'
 import {
@@ -31,6 +31,7 @@ function addJobfairSchedule() {
   const [addedMilestonesList, setAddedMilestonesList] = useState([])
   const [addedTemplateTaskList, setAddedTemplateTaskList] = useState([])
   const [nameInput, setNameInput] = useState('')
+  const [visible, setVisible] = useState(false)
 
   useEffect(async () => {
     await getMilestonesList()
@@ -70,25 +71,23 @@ function addJobfairSchedule() {
     }
     await postCheckExistName(dataSend)
       .then(async ({ data }) => {
-        if (data === 'exist') {
-          openNotification('error', 'このJFスケジュール名は存在しています。')
-        } else {
+        if (data !== 'exist') {
           await postData(dataSend)
             .then((res) => {
               if (res.status === 200) {
                 router.push('/schedule')
-                openNotification('success', '変更は正常に保存されました。')
+                openNotification('success', '正常に登録されました。')
               }
             })
         }
       })
   }
 
-  const onFinishFailed = (errorInfo) => {
-    const { errorFields } = errorInfo
-    errorFields.forEach((itemError) => {
-      itemError.errors.forEach((error) => openNotification('error', error))
-    })
+  const onFinishFailed = () => {
+    // const { errorFields } = errorInfo
+    // errorFields.forEach((itemError) => {
+    //   itemError.errors.forEach((error) => openNotification('error', error))
+    // })
   }
 
   const onDeleteTemplateTask = (id) => {
@@ -151,6 +150,11 @@ function addJobfairSchedule() {
   }
 
   const dataList = milestonesList.filter((milestone) => addedMilestonesList.includes(milestone.id))
+
+  const handleOk = () => {
+    setVisible(false)
+    router.push('/schedule')
+  }
 
   return (
     <Layout>
@@ -249,7 +253,41 @@ function addJobfairSchedule() {
 
             <Form.Item>
               <div className="mt-5 flex justify-end">
-                <CancelBtn />
+                <>
+                  <Button
+                    size="large"
+                    onClick={() => { setVisible(true) }}
+                    className="w-32"
+                  >
+                    キャンセル
+                  </Button>
+                  <Modal
+                    centered
+                    visible={visible}
+                    title="JFスケジュール登録"
+                    onOk={handleOk}
+                    onCancel={() => { setVisible(false) }}
+                    footer={[
+                      <Button
+                        size="large"
+                        key="back"
+                        onClick={() => { setVisible(false) }}
+                      >
+                        いいえ
+                      </Button>,
+                      <Button
+                        size="large"
+                        key="submit"
+                        type="primary"
+                        onClick={handleOk}
+                      >
+                        はい
+                      </Button>,
+                    ]}
+                  >
+                    <p>変更内容が保存されません。よろしいですか？</p>
+                  </Modal>
+                </>
                 <Button type="primary" htmlType="submit" className="ml-3">
                   登録
                 </Button>

@@ -26,6 +26,18 @@ const LoginPage = () => {
   }, [])
 
   /* eslint-disable no-template-curly-in-string */
+  const validatorPass = (_, value) => {
+    if (value.indexOf(' ') >= 0) {
+      return Promise.reject(new Error('半角英数と記号のみを使用して入力してください。例：123example@!'))
+    }
+    if (value.length > 0 && (value.length < 8 || value.length > 24)) {
+      return Promise.reject(new Error('パスワードは8文字以上24文字以下で入力してください。'))
+    }
+    if (value.length === 0) {
+      return Promise.reject(new Error('この項目は必須です。'))
+    }
+    return Promise.resolve()
+  }
   const validateMessages = {
     required: 'この項目は必須です。',
     types: {
@@ -55,8 +67,10 @@ const LoginPage = () => {
         store.dispatch({ type: LOAD_SUCCESS, payload: auth })
         if (preURL == null) {
           router.push('/top-page')
+          setLoading(false)
         } else {
           router.push(preURL)
+          setLoading(false)
         }
         openNotification('success', '正常にログインしました')
       }
@@ -145,8 +159,9 @@ const LoginPage = () => {
                 label={<p className="font-bold">パスワード</p>}
                 name="password"
                 rules={[
-                  { required: true },
-                  { type: 'string', min: 8, max: 24 },
+                  {
+                    validator: validatorPass,
+                  },
                 ]}
               >
                 <Input.Password

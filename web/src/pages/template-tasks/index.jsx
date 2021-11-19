@@ -306,13 +306,13 @@ function TemplateTaskList() {
                         <>
                           <h6 className="mb-1" style={{ fontWeight: 700 }}>カテゴリ</h6>
 
-                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
+                          <Select size="large" style={{ width: '300px' }} className="w-1/4" placeholder="カテゴリ" allowClear="true" onChange={handleSelectCategory}>
                             {optionCategory}
                           </Select>
 
                           <h6 className="mb-1 mt-2" style={{ fontWeight: 700 }}>マイルストーン </h6>
 
-                          <Select style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
+                          <Select size="large" style={{ width: '300px' }} className="w-1/4" placeholder="マイルストーン" allowClear="true" onChange={handlSelectMilestone}>
                             {optionMilestone}
                           </Select>
 
@@ -380,5 +380,5 @@ function TemplateTaskList() {
     </OtherLayout>
   )
 }
-TemplateTaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TemplateTaskList.middleware = ['auth:superadmin', 'auth:member']
 export default TemplateTaskList

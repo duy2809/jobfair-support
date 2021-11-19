@@ -34,8 +34,8 @@ class MilestoneController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|regex:/^[^\s]*$/|unique:milestones,name',
-            'period' => 'required|numeric|min:0|max:3000',
+            'name'    => 'required|regex:/^[^\s]*$/|unique:milestones,name',
+            'period'  => 'required|numeric|min:0|max:3000',
             'is_week' => 'required|numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
@@ -60,23 +60,24 @@ class MilestoneController extends Controller
         ], $rules);
         $validator->validate();
 
-        return Milestone::find($id);
+        return Milestone::findOrFail($id);
     }
 
     //use to get milestone with tasks
     public function getInfoMilestones($id)
     {
-        $schedule = Schedule::find($id);
+        // $schedule = Schedule::find($id);
 
-        return $schedule->milestones->map(function ($milestone) {
-            $templateTasksOfMilestone = $milestone->templateTasks;
-            $milestone['tasks'] = $templateTasksOfMilestone;
-            $templateTasksOfMilestone->map(function ($task) {
-                return $task->categories;
-            });
+        // return $schedule->milestones->map(function ($milestone) {
+        //     $templateTasksOfMilestone = $milestone->templateTasks;
+        //     $milestone['tasks'] = $templateTasksOfMilestone;
+        //     $templateTasksOfMilestone->map(function ($task) {
+        //         return $task->categories;
+        //     });
 
-            return $milestone;
-        });
+        //     return $milestone;
+        // });
+        return Schedule::with(['templateTasks', 'templateTasks.categories', 'milestones'])->findOrFail($id);
     }
 
     /**
@@ -89,17 +90,17 @@ class MilestoneController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'regex:/^[^\s]*$/',
-            'name' => [
+            'name'    => 'regex:/^[^\s]*$/',
+            'name'    => [
                 Rule::unique('milestones')->whereNot('id', $id),
             ],
-            'period' => 'numeric|min:0|max:3000',
+            'period'  => 'numeric|min:0|max:3000',
             'is_week' => 'numeric|min:0|max:1',
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
 
-        return Milestone::find($id)->update($request->all());
+        return Milestone::findOrFail($id)->update($request->all());
     }
 
     /**
@@ -110,7 +111,7 @@ class MilestoneController extends Controller
      */
     public function destroy($id)
     {
-        Milestone::destroy($id);
+        Milestone::findOrFail($id)->delete();
 
         return response()->json([
             'success' => 'Record has been deleted successfully!',

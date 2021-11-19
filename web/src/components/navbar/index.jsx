@@ -4,13 +4,15 @@ import { Menu, Dropdown, Avatar } from 'antd'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import './styles.scss'
+import { useRouter } from 'next/router'
 import { logout } from '../../api/authenticate'
 import Notification from './notification'
 import { getAvatar } from '../../api/profile'
+import { LOAD_SUCCESS } from '../../store/modules/auth'
 
 export default function Navbar() {
   const { store } = useContext(ReactReduxContext)
-
+  const router = useRouter()
   const [user, setUser] = useState(null)
   const [avatarUser, setAvatarUser] = useState('')
   useEffect(async () => {
@@ -33,11 +35,20 @@ export default function Navbar() {
     try {
       const response = await logout()
       if (response.request.status === 200) {
-        window.location = '/'
+        store.dispatch({ type: LOAD_SUCCESS, payload: {} })
+        if ('caches' in window) {
+          caches.keys().then((names) => {
+            // Delete all the cache files
+            names.forEach((name) => {
+              caches.delete(name)
+            })
+          })
+        }
+        router.push('/')
       }
     } catch (error) {
       if (error.request.status === 400) {
-        console.log(error)
+        router.push('/error')
       }
     }
   }
@@ -75,7 +86,7 @@ export default function Navbar() {
   return (
     <div
       className="flex items-center justify-between border-2 navbar select-none shadow-md relative"
-      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '70px' }}
+      style={{ padding: '0 2.75rem 0px 0', zIndex: '1000', height: '80px' }}
     >
       <div className="flex">
         <div style={{ width: '13.5rem', paddingLeft: '3px' }}>

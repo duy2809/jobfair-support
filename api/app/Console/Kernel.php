@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      *
      * @var array
      */
-    protected $commands = [];
+    protected $commands = [
+        \App\Console\Commands\UpdateTask::class,
+    ];
 
     /**
      * Define the application's command schedule.
@@ -22,7 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('task:update')->daily();
+        $schedule->command('notification:delete')->daily();
     }
 
     /**

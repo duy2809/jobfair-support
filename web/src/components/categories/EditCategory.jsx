@@ -85,16 +85,18 @@ const EditCategory = (props) => {
           openNotificationSuccess()
         })
         .catch((error) => {
-          notification.error({
-            message: 'このカテゴリ名は存在しています',
-            duration: 3,
-          })
+          // notification.error({
+          //   message: 'このカテゴリ名は存在しています',
+          //   duration: 3,
+          // })
+          console.log(error)
         })
       setLoading(false)
     }
   }
 
   const handleCancel = () => {
+    form.resetFields()
     setIsModalVisible(false)
   }
 

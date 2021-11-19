@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\Broadcasting\CommentCreated;
 use App\Models\Comment;
+use App\Models\Jobfair;
 use App\Models\Task;
 use App\Models\User;
 use App\Notifications\TaskCreated;
@@ -217,7 +218,7 @@ class CommentController extends Controller
                 $query->where('is_created_task', false)->latest('updated_at')->offset($request->start)->take($request->count)->get();
             },
             'comments.user:id,name,avatar',
-        ])->find($id, ['id', 'name']);
+        ])->findOrFail($id, ['id', 'name']);
 
         $result = $data->comments->map(function ($comment) {
             $listOldAssignees = [];
@@ -303,6 +304,7 @@ class CommentController extends Controller
         // ])->find($id, ['id', 'name']);
         $comments = collect([]);
         if ($JFid !== 'all') {
+            Jobfair::findOrFail($JFid);
             $comments = Comment::whereHas('task', function ($query) use ($JFid) {
                 $query->whereHas('schedule', function ($query) use ($JFid) {
                     $query->where('jobfair_id', $JFid);
@@ -406,7 +408,7 @@ class CommentController extends Controller
             return response()->json(['message' => 'Fail to update'], 500);
         }
 
-        $comment = Comment::find($id);
+        $comment = Comment::findOrFail($id);
 
         return response()->json($comment, 200);
 

@@ -3,6 +3,7 @@ import { Button, Modal, Form, Input, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { addDocument } from '../../../api/file'
+import './style.scss'
 
 export default function ButtonAddFile(props) {
   const [isDisableFile, setIsDisableFile] = useState(true)
@@ -139,10 +140,11 @@ export default function ButtonAddFile(props) {
           }}
           colon={false}
           name="basic"
+          className="add"
         >
           <Form.Item
             label={
-              <p style={{ margin: 0 }} className="font-bold">名前</p>
+              <span style={{ marginBottom: 0 }} className="font-bold mr-3">名前</span>
             }
             name="name_file"
             rules={[
@@ -160,7 +162,7 @@ export default function ButtonAddFile(props) {
           </Form.Item>
           <Form.Item
             label={
-              <p style={{ margin: 0 }} className="font-bold">リンク</p>
+              <span style={{ marginBottom: 0 }} className="font-bold mr-3">リンク</span>
             }
             name="link"
             rules={[

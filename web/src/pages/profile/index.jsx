@@ -138,5 +138,5 @@ const Profile = () => {
     </>
   )
 }
-Profile.middleware = ['auth:superadmin', 'auth:admin', 'auth']
+Profile.middleware = ['auth:superadmin', 'auth:member']
 export default Profile

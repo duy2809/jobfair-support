@@ -169,6 +169,24 @@ const EditMember = () => {
                     message: 'この項目は必須です',
                     required: true,
                   },
+                  () => ({
+                    validator(_, value) {
+                      if (/[0-9]/.test(value)) {
+                        return Promise.reject(
+                          new Error('数字を入力しないでください。'),
+                        )
+                      }
+                      if (
+                        /[?!@#$%^&*()_+\-=[\]{};':"\\/|,<>]/.test(value)
+                      ) {
+                        return Promise.reject(
+                          new Error('特殊文字を入力しないでください。'),
+                        )
+                      }
+
+                      return Promise.resolve()
+                    },
+                  }),
                 ]}
               >
                 <Input

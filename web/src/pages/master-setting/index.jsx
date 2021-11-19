@@ -6,8 +6,8 @@ import OtherLayout from '../../layouts/OtherLayout'
 import './style.scss'
 
 const { TabPane } = Tabs
-const changeTabs = (key) => {
-  console.log(key)
+const changeTabs = () => {
+  // console.log(key)
 }
 function index() {
   return (
@@ -29,4 +29,5 @@ function index() {
   )
 }
 
+index.middleware = ['auth:superadmin']
 export default index

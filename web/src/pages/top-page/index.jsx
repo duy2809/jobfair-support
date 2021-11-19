@@ -130,10 +130,10 @@ const Top = () => {
     const getTask = async () => {
       setLoadingTask(true)
       const response = await tasks()
-      const tasksData = response.data.filter(
-        (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
-      )
-      setTaskData(tasksData)
+      // const tasksData = response.data.filter(
+      //   (data) => data.status.indexOf('完了') === -1 && data.status.indexOf('中断') === -1,
+      // )
+      setTaskData(response.data)
 
       const data = await taskReviewer()
       setTaskReviewerData(data.data)
@@ -200,7 +200,7 @@ const Top = () => {
       setLoadingSchedule(false)
     }
 
-    // getTask()
+    getTask()
     getMember()
     getJobfair()
     getTemplate()
@@ -245,7 +245,6 @@ const Top = () => {
     taskItem.user_id = task.user_id
     taskDataItem.push(taskItem)
   })
-
   taskReviewerData.forEach((taskReviewerIt) => {
     const taskReviewerItem = { id: '' }
     taskReviewerItem.id = taskReviewerIt.id
@@ -352,5 +351,5 @@ const Top = () => {
     </Layout>
   )
 }
-Top.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+Top.middleware = ['auth:superadmin', 'auth:member']
 export default Top
