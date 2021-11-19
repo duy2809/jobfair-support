@@ -17,7 +17,7 @@ import { jftask } from '../../api/jf-toppage'
 import { addUserToChannel } from '../../api/slack'
 
 // eslint-disable-next-line react/prop-types
-export default function EditUserAssignee({ record, setRowEdit, setManagerDF, managerDF, setIsEdit, JFid }) {
+export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit, JFid }) {
   // eslint-disable-next-line react/prop-types
   const router = useRouter()
   const [memberCategory, setMemberCategory] = useState()
