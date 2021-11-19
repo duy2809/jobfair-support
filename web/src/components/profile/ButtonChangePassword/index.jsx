@@ -134,9 +134,8 @@ const ButtonChangePassword = () => {
             }
             name="password"
             rules={[
-              {
-                validator: validatorPass,
-              },
+              { required: true },
+              { type: 'string', min: 8, max: 24 },
             ]}
           >
             <Input.Password placeholder="新しいパスワードを入力してください。" />
