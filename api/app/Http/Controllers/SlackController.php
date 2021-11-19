@@ -35,11 +35,16 @@ class SlackController extends Controller
 
     public function addUserToChannel(Request $request)
     {
+<<<<<<< HEAD
         $channelid = Jobfair::where('id', '=', $request->JFid)->get(['channel_id']);
+=======
+        $channel_id = Jobfair::where('id', '=', $request->JFid)->get(['channel_id']);
+>>>>>>> push slack api
 
         $listMember = $request->assignee;
 
         foreach ($listMember as $member) {
+<<<<<<< HEAD
             $slackid = User::where('id', '=', $member)->get(['chatwork_id']);
             $response = Http::withHeaders([
                 'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
@@ -51,16 +56,35 @@ class SlackController extends Controller
         }
 
         
+=======
+            $slack_id = User::where('id', '=', $member)->get(['chatwork_id']);
+            $response = Http::withHeaders([
+                'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
+            ])->post('https://slack.com/api/conversations.invite', [
+                'channel' => $channel_id[0]->channel_id,
+                'users' => $slack_id[0]->chatwork_id,
+            ]);
+        }
+
+        // return response()->json(['message' => 'Successfully'], 200);
+        return response()->json(['message' => $channel_id]);
+>>>>>>> push slack api
     }
 
     public function addAdminToChannel(Request $request)
     {
+<<<<<<< HEAD
         $channelid = Jobfair::where('name', '=', $request->JFName)->get(['channel_id']);
         $slackid = User::where('id', '=', $request->admin_id)->get('chatwork_id');
+=======
+        $channel_id = Jobfair::where('name', '=', $request->JFName)->get(['channel_id']);
+        $slack_id = User::where('id', '=', $request->admin_id)->get('chatwork_id');
+>>>>>>> push slack api
 
         $response = Http::withHeaders([
             'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
         ])->post('https://slack.com/api/conversations.invite', [
+<<<<<<< HEAD
             'channel' => $channelid[0]->channel_id,
             'users' => $slackid[0]->chatwork_id,
         ]);
@@ -68,3 +92,12 @@ class SlackController extends Controller
         return $response;
     }
 }
+=======
+            'channel' => $channel_id[0]->channel_id,
+            'users' => $slack_id[0]->chatwork_id,
+        ]);
+
+        return $channel_id;
+    }
+}
+>>>>>>> push slack api
