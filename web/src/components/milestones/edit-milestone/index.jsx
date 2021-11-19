@@ -67,8 +67,6 @@ const EditMilestone = (props) => {
 
   const handleOk = () => {
     if (role === 'superadmin') {
-      console.log('Handle OK running ...')
-      console.log(nameInput, timeInput, checkSpace, errorUnique)
       if (
         nameInput !== ''
         && timeInput !== ''
@@ -77,7 +75,6 @@ const EditMilestone = (props) => {
         && errorUnique === false
       ) {
         setLoading(true)
-        console.log('Check oke ending update ...')
         updateMilestone(props.record.id, {
           name: nameInput,
           period: timeInput,
@@ -91,19 +88,17 @@ const EditMilestone = (props) => {
               JSON.parse(error.response.request.response).errors.name[0]
               === 'The name has already been taken.'
             ) {
-              notification.error({
-                message: 'このマイルストーン名は存在しています',
-                duration: 3,
-              })
+              // notification.error({
+              //   message: 'このマイルストーン名は存在しています',
+              //   duration: 3,
+              // })
             }
           })
         setLoading(false)
       } else {
-        console.log('Check fail')
         const name = nameInput
         if (name !== '') {
           getNameExitEdit(props.record.id, name).then((res) => {
-            console.log('OK then')
             if (res.data.length !== 0) {
               setErrorUnique(true)
               form.setFields([
@@ -190,11 +185,11 @@ const EditMilestone = (props) => {
       <EditTwoTone onClick={showModal} />
       <div>
         <Modal
-          title="マイルストーン追加"
+          title="マイルストーン編集"
           visible={isModalVisible}
           onOk={handleOk}
           onCancel={handleCancel}
-          okText="登録"
+          okText="保存"
           cancelText="キャンセル"
           okButtonProps={{ style: { letterSpacing: '-0.1em' } }}
           centered
