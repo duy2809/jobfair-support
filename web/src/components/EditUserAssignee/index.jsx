@@ -12,9 +12,10 @@ import {
 } from '@ant-design/icons'
 import { getCategorys } from '../../api/edit-task'
 import { updateManagerTask } from '../../api/task-detail'
+import { addUserToChannel } from '../../api/slack'
 
 // eslint-disable-next-line react/prop-types
-export default function EditUserAssignee({ record, setRowEdit, setManagerDF, managerDF, setIsEdit }) {
+export default function EditUserAssignee({ record, setRowEdit, setManagerDF, managerDF, setIsEdit, JFid }) {
   // eslint-disable-next-line react/prop-types
   const [memberCategory, setMemberCategory] = useState()
   const [AllMemberAS, setAllMemberAs] = useState()
@@ -82,6 +83,11 @@ export default function EditUserAssignee({ record, setRowEdit, setManagerDF, man
       assignee: newData,
     }
     await updateManagerTask(record.idtask, data).then(() => {
+      const dataUserToChannel = {
+        assignee: newData,
+        JFid,
+      }
+      addUserToChannel(dataUserToChannel)
       saveEditNotification()
     })
   }

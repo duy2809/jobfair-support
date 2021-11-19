@@ -299,6 +299,7 @@ function TaskList() {
                 setManagerDF={setManagerDF}
                 setRowEdit={setRowEdit}
                 record={record}
+                JFid={router.query.JFid}
               />
             )
           }
