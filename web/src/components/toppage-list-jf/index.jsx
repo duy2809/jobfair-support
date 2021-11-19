@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Table, Input, DatePicker, Tooltip } from 'antd'
+import { Table, Input, DatePicker, Tooltip, Card } from 'antd'
 import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -182,7 +182,7 @@ const ListJfToppage = ({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          marginBottom: '10px',
+          marginBottom: '20px',
           height: '40px',
         }}
       >
@@ -299,7 +299,7 @@ const ListJfToppage = ({
           </div>
 
           {/* Table data */}
-          <div>
+          <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
             <Table
               pagination={false}
               dataSource={list.length >= 5
@@ -308,7 +308,7 @@ const ListJfToppage = ({
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
-          </div>
+          </Card>
         </div>
       ) : null}
     </div>

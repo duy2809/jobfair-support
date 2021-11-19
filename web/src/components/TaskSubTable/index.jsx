@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip, Tag } from 'antd'
+import { Button, Table, Input, DatePicker, Tooltip, Tag, Card } from 'antd'
 import {
   SearchOutlined,
   DownOutlined,
@@ -431,7 +431,7 @@ const TaskSubTable = ({
           </div>
 
           {/* Table data */}
-          <div>
+          <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
             <Table
               scroll={{ y: 280, x: 240 }}
               pagination={false}
@@ -439,7 +439,7 @@ const TaskSubTable = ({
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
-          </div>
+          </Card>
         </div>
       ) : null}
     </div>
