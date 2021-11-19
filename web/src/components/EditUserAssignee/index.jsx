@@ -14,8 +14,10 @@ import {
 import { getCategorys } from '../../api/edit-task'
 import { updateManagerTask } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
+import { addUserToChannel } from '../../api/slack'
+
 // eslint-disable-next-line react/prop-types
-export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit }) {
+export default function EditUserAssignee({ record, setRowEdit, setManagerDF, managerDF, setIsEdit, JFid }) {
   // eslint-disable-next-line react/prop-types
   const router = useRouter()
   const [memberCategory, setMemberCategory] = useState()
@@ -83,6 +85,11 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
     }
     setLoading(true)
     await updateManagerTask(record.idtask, data).then(() => {
+      const dataUserToChannel = {
+        assignee: newData,
+        JFid,
+      }
+      addUserToChannel(dataUserToChannel)
       saveEditNotification()
     })
     await jftask(router.query.JFid).then((response) => {
