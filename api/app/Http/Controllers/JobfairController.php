@@ -23,7 +23,7 @@ class JobfairController extends Controller
     {
         foreach ($templateSchedule->templateTasks as $templateTask) {
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -36,7 +36,7 @@ class JobfairController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
             $input['schedule_id'] = $newSchedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -63,8 +63,8 @@ class JobfairController extends Controller
      */
     public function store(JobfairRequest $request)
     {
+        $templateSchedule = Schedule::findOrFail($request->schedule_id);
         $jobfair = Jobfair::create($request->validated());
-        $templateSchedule = Schedule::find($request->schedule_id);
         $newSchedule = Schedule::create($templateSchedule->toArray());
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
         $newSchedule->milestones()->attach($templateSchedule->milestones);
@@ -95,7 +95,7 @@ class JobfairController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $jobfair = Jobfair::find($id);
+        $jobfair = Jobfair::findOrFail($id);
 
         if ($request->schedule_id !== 'none') {
             $schedule = Schedule::where('jobfair_id', '=', $id)->first();
@@ -139,7 +139,7 @@ class JobfairController extends Controller
      */
     public function destroy($id)
     {
-        Jobfair::destroy($id);
+        Jobfair::findOrFail($id)->delete();
         $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
             ->select('jobfairs.*', 'users.name as admin')
             ->orderBy('jobfairs.updated_at', 'DESC')
@@ -150,7 +150,7 @@ class JobfairController extends Controller
 
     public function getMilestones($id)
     {
-        $scheduleId = Jobfair::find($id)->schedule;
+        $scheduleId = Jobfair::findOrFail($id)->schedule;
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
             'schedule.milestones:id,name,period',
@@ -171,7 +171,7 @@ class JobfairController extends Controller
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
                     ->orderBy('tasks.id', 'ASC');
             },
-        ])->find($id, ['id']);
+        ])->findOrFail($id, ['id']);
 
         return response()->json($tasks);
     }
@@ -184,7 +184,7 @@ class JobfairController extends Controller
                 ->orderBy('tasks.updated_at', 'DESC')
                 ->take(30);
         },
-        ])->find($id, ['id']);
+        ])->findOrFail($id, ['id']);
 
         return response()->json($tasks);
     }
@@ -194,9 +194,9 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
                 $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
-                    ->where('tasks.name', 'LIKE', '%' . $request->name . '%');
+                    ->where('tasks.name', 'LIKE', '%'.$request->name.'%');
             },
-        ])->find($id, ['id']);
+        ])->findOrFail($id, ['id']);
 
         return response()->json($tasks);
     }

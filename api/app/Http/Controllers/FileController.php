@@ -41,6 +41,7 @@ class FileController extends Controller
     public function getLatest($id)
     {
         Jobfair::findOrFail($id);
+
         return DB::table('documents')
             ->addSelect([
                 'authorName' => User::select('name')
@@ -223,13 +224,13 @@ class FileController extends Controller
             $document = Document::findOrFail($index);
             if (!$document->is_file) {
                 if ($path === '/') {
-                    $pathD = $path . $document->name;
+                    $pathD = $path.$document->name;
                 } else {
-                    $pathD = $path . '/';
+                    $pathD = $path.'/';
                     $pathD .= $document->name;
                 }
 
-                $term = $pathD . '/';
+                $term = $pathD.'/';
                 $term .= '%';
                 $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
 
@@ -261,7 +262,6 @@ class FileController extends Controller
 
     public function getMember()
     {
-
         return User::all();
     }
 }

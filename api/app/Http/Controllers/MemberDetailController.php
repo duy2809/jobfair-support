@@ -41,12 +41,12 @@ class MemberDetailController extends Controller
         // }
 
         // $user->categories = $categories;
-        return User::find($id)->load('categories')->load('schedules.jobfair');
+        return User::findOrFail($id)->load('categories')->load('schedules.jobfair');
     }
 
     public function deleteMember($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         if ($user->role !== 1) {
             DB::table('list_members')->where('user_id', $id)->delete();
             DB::table('tasks')->where('user_id', $id)->update(['user_id' => null]);

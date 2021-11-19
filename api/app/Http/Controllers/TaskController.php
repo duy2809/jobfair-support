@@ -76,7 +76,7 @@ class TaskController extends Controller
         //     $result->merge($temp);
         // }
         // return $result;
-        $jobfair = Jobfair::find($id);
+        $jobfair = Jobfair::findOrFail($id);
         $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
             return [
                 'jobfairName'           => $jobfair->name,
@@ -135,7 +135,7 @@ class TaskController extends Controller
      */
     public function store(Request $request, $id)
     {
-        $jobfair = Jobfair::find($id);
+        $jobfair = Jobfair::findOrFail($id);
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $idTemplateTask = $request->data;
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
@@ -180,7 +180,7 @@ class TaskController extends Controller
 
     public function updateTask(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $status = [
             '未着手',
             '進行中',
@@ -314,7 +314,7 @@ class TaskController extends Controller
             'users:id,name',
             'schedule.jobfair:id,name,jobfair_admin_id',
             'templateTask:id,effort,is_day,unit',
-        ])->find($id);
+        ])->findOrFail($id);
 
         return response()->json($task);
     }
@@ -339,7 +339,7 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $ad = $task->schedule->jobfair->user->id;
         $request->validate([
             'user_id'               => 'exists:users,id',
@@ -790,7 +790,7 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $task->categories()->detach();
         $task->beforeTasks()->detach();
         $task->afterTasks()->detach();
@@ -801,12 +801,12 @@ class TaskController extends Controller
 
     public function getReviewers($id)
     {
-        return Task::find($id)->reviewers;
+        return Task::findOrFail($id)->reviewers;
     }
 
     public function getListReviewers($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
         $ad = $task->schedule->jobfair->user->id;
         $listReviewers = [];
         foreach (User::all() as $user) {
@@ -821,14 +821,14 @@ class TaskController extends Controller
 
     public function getBeforeTasks($id)
     {
-        $beforeTasks = Task::with('beforeTasks:id,name')->find($id, ['id', 'name']);
+        $beforeTasks = Task::with('beforeTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($beforeTasks);
     }
 
     public function getAfterTasks($id)
     {
-        $afterTasks = Task::with('afterTasks:id,name')->find($id, ['id', 'name']);
+        $afterTasks = Task::with('afterTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($afterTasks);
     }
@@ -839,7 +839,7 @@ class TaskController extends Controller
             'schedule.tasks' => function ($q) {
                 $q->select('template_task_id', 'schedule_id');
             },
-        ])->find($id);
+        ])->findOrFail($id);
 
         $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
             ->with(['categories:id,category_name', 'milestone:id,name'])->get(['id', 'name', 'milestone_id']);
@@ -849,12 +849,12 @@ class TaskController extends Controller
 
     public function checkAssignee($taskID, $userID)
     {
-        return Task::find($taskID)->users->pluck('id')->contains($userID);
+        return Task::findOrFail($taskID)->users->pluck('id')->contains($userID);
     }
 
     public function getUserSameCategory($id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
 
         $user = User::whereHas('categories', function (Builder $query) use ($task) {
             $query->whereIn('categories.id', $task->categories()->pluck('id'));
@@ -865,7 +865,7 @@ class TaskController extends Controller
 
     public function updateManagerTask(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = Task::findOrFail($id);
 
         if ($request->has('assignee')) {
             $listMember = $request->assignee;
