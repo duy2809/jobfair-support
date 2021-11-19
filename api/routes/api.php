@@ -125,7 +125,7 @@ Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController
 Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
-Route::get('/{JFid}/member', 'FileController@getMember');
+Route::get('/file/member', 'FileController@getMember');
 Route::get('/file/{id}/getLatest', 'FileController@getLatest');
 Route::get('/file/getPath', 'FileController@getPath');
 Route::post('/file/{jfId}/delArray', 'FileController@destroyArrayOfDocument');

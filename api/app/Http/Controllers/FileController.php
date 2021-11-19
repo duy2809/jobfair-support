@@ -19,6 +19,7 @@ class FileController extends Controller
      */
     public function index($jfId)
     {
+        Jobfair::findOrFail($jfId);
         $files = DB::table('documents')
             ->addSelect([
                 'authorName' => User::select('name')
@@ -39,6 +40,7 @@ class FileController extends Controller
 
     public function getLatest($id)
     {
+        Jobfair::findOrFail($id);
         return DB::table('documents')
             ->addSelect([
                 'authorName' => User::select('name')
@@ -65,6 +67,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         {
+            Jobfair::findOrFail($request->document_id);
             $rules = [
                 'name' => [
                     'required',
@@ -105,12 +108,13 @@ class FileController extends Controller
      */
     public function show($id)
     {
-        return Document::find($id);
+        return Document::findOrFail($id);
     }
 
     //  Display files and folder in specific folder.
     public function getPath(Request $request)
     {
+        Jobfair::findOrFail($request->jfID);
         $data = DB::table('documents')
             ->select('*')
             ->addSelect([
@@ -132,6 +136,7 @@ class FileController extends Controller
 
     public function search(Request $request)
     {
+        Jobfair::findOrFail($request->jfID);
         $query = Document::query();
         if ($request->has('name')) {
             $query->where('name', 'LIKE', "%$request->name%");
@@ -169,7 +174,7 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $document = Document::find($id);
+        $document = Document::findOrFail($id);
         $rules = [
             'name' => Rule::unique('documents')->where('path', $document->path)
                 ->where('document_id', $document->document_id)
@@ -208,23 +213,23 @@ class FileController extends Controller
      */
     public function destroy($id)
     {
-        return Document::destroy($id);
+        return Document::findOrFail($id)->delete();
     }
 
     public function destroyArrayOfDocument(Request $request, $id)
     {
         $path = Document::where('id', $request->id[0])->first()->path;
         foreach ($request->id as $index) {
-            $document = Document::find($index);
+            $document = Document::findOrFail($index);
             if (!$document->is_file) {
                 if ($path === '/') {
-                    $pathD = $path.$document->name;
+                    $pathD = $path . $document->name;
                 } else {
-                    $pathD = $path.'/';
+                    $pathD = $path . '/';
                     $pathD .= $document->name;
                 }
 
-                $term = $pathD.'/';
+                $term = $pathD . '/';
                 $term .= '%';
                 $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
 
@@ -254,10 +259,9 @@ class FileController extends Controller
             ->get();
     }
 
-    public function getMember($id)
+    public function getMember()
     {
-        $jobfair = Jobfair::find($id);
 
-        return User::where('role', 1)->orWhere('id', $jobfair->user->id)->orWhereIn('id', $jobfair->schedule->users->pluck('id'))->get();
+        return User::all();
     }
 }
