@@ -49,17 +49,9 @@ x-application-env: &application-env
   PHP_FPM.{{ key }}: "{{ phpfpm[key] }}"
   {% endfor %}
 
-volumes:
-  jobfair-uploads:
-    external: true
-
-x-php-storages:
-  - &jobfair-uploads
-    type: volume
-    source: jobfair-uploads
-    target: /srv/jfs/storage/uploads
-    volume:
-      nocopy: true
+x-application-volumes: &application-volumes
+  volumes:
+    - {{ data_dir }}/jfs/storage:/srv/jfs/storage/app
 
 x-healthcheck-bootstrap-file: &healthcheck-bootstrap-file
   test: ["CMD", "test", "-f", "/srv/jfs/bootstrap/app.php"]
@@ -87,8 +79,7 @@ services:
   api:
     image: "{{ apiserver_image }}"
     environment: *application-env
-    volumes:
-      - *jobfair-uploads
+    <<: *application-volumes
     networks:
       - default
       - traefik
@@ -105,8 +96,7 @@ services:
     image: "{{ cli_image }}"
     command: worker
     environment: *application-env
-    volumes:
-      - *jobfair-uploads
+    <<: *application-volumes
     deploy:
       replicas: {{ worker.replica_count | int }}
 
@@ -114,8 +104,7 @@ services:
     image: "{{ cli_image }}"
     command: cron
     environment: *application-env
-    volumes:
-      - *jobfair-uploads
+    <<: *application-volumes
 
   echo-server:
     image: sunasteriskrnd/laravel-echo-server:1.6
@@ -151,6 +140,20 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "{{ mariadb.random_root_password }}"
     volumes:
       - {{ data_dir }}/jfs/mariadb:/var/lib/mysql
+
+  db-backup:
+    image: sunasteriskrnd/db-backup:latest
+    restart: always
+    volumes:
+      - {{ data_dir }}/jfs/db-backup:/data/backup
+    environment:
+      DB_TYPE: mariadb
+      DB_HOST: mariadb
+      DB_DATABASE: "{{ mariadb.database }}"
+      DB_USER: "{{ mariadb.username }}"
+      DB_PASSWORD: "{{ mariadb.password }}"
+      DB_BACKUP_MAX_FILES: "7"
+      DB_BACKUP_MAX_DAYS: "7"
 
 networks:
   traefik:
