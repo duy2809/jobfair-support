@@ -41,7 +41,8 @@ class UpdateTask extends Command
      */
     public function handle()
     {
-        $tasks = Task::where('status', '<>', '未完了')->whereDate('end_time', '<', now()->toDateString());
+        $tasks = Task::whereNotIn('status', ['未完了', '完了', '中断'])
+            ->whereDate('end_time', '<', now()->toDateString());
         $taskToNotify = $tasks->get();
         $user = User::where('role', 1)->first();
         $tasks->update(['status' => '未完了']);
