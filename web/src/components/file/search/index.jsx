@@ -172,16 +172,16 @@ export default function Search() {
         // onFinishFailed={onFinishFailed}
         colon={false}
       >
-        <Form.Item label={<p className="font-bold pt-2">名前</p>} name="name">
+        <Form.Item label={<p className="font-bold mr-3">名前</p>} name="name">
           <Input placeholder="名前を入力" size="large" />
         </Form.Item>
-        <Form.Item label={<p className="font-bold pt-2">更新日</p>} name="start_date">
+        <Form.Item label={<p className="font-bold mr-3">更新日</p>} name="start_date">
           <DatePicker size="large" style={{ width: ' 100% ' }} />
         </Form.Item>
         <Form.Item label=" " name="end_date" colon={false}>
           <DatePicker size="large" style={{ width: ' 100% ' }} />
         </Form.Item>
-        <Form.Item label={<p className="font-bold pt-2">更新者</p>} name="updater">
+        <Form.Item label={<p className="font-bold mr-3">更新者</p>} name="updater">
           <Select
             size="large"
             placeholder="更新者を選択"

@@ -21,6 +21,7 @@
     - name: traefik:2.3
     - name: redis:alpine
     - name: mariadb:10
+    - name: sunasteriskrnd/db-backup:latest
     - name: "{{ webserver_image }}"
     - name: "{{ apiserver_image }}"
     - name: "{{ cli_image }}"
@@ -44,6 +45,9 @@
       owner: "999"
       group: "0"
     - path: jfs/redis
+      owner: "999"
+      group: "0"
+    - path: jfs/db-backup
       owner: "999"
       group: "0"
     - path: traefik/logs

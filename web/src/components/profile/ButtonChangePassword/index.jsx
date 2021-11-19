@@ -75,7 +75,18 @@ const ButtonChangePassword = () => {
     }
     setIsDisableOk(false)
   }
-
+  const validatorPass = (_, value) => {
+    if (value.indexOf(' ') >= 0) {
+      return Promise.reject(new Error('半角英数と記号のみを使用して入力してください。例：123example@!'))
+    }
+    if (value.length > 0 && (value.length < 8 || value.length > 24)) {
+      return Promise.reject(new Error('パスワードは8文字以上24文字以下で入力してください。'))
+    }
+    if (value.length === 0) {
+      return Promise.reject(new Error('この項目は必須です。'))
+    }
+    return Promise.resolve()
+  }
   return (
     <div>
       <Button type="primary" shape="round" size="large" onClick={() => setIsModalVisible(true)}>
@@ -108,7 +119,11 @@ const ButtonChangePassword = () => {
               <p className="font-bold">現在のパスワード</p>
             }
             name="current_password"
-            rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
+            rules={[
+              {
+                validator: validatorPass,
+              },
+            ]}
           >
             <Input.Password placeholder="現在のパスワードを入力してください。" />
           </Form.Item>
@@ -118,7 +133,10 @@ const ButtonChangePassword = () => {
               <p className="font-bold">新しいパスワード</p>
             }
             name="password"
-            rules={[{ required: true }, { type: 'string', min: 8, max: 24 }]}
+            rules={[
+              { required: true },
+              { type: 'string', min: 8, max: 24 },
+            ]}
           >
             <Input.Password placeholder="新しいパスワードを入力してください。" />
           </Form.Item>

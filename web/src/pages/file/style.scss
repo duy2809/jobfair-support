@@ -1,10 +1,11 @@
 .File {
-  .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  .ant-form-item-label
+    > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
     font-family: inherit;
-    font-size: 20px
+    font-size: 20px;
   }
 
-  .ant-table-thead>tr>* {
+  .ant-table-thead > tr > * {
     font-weight: 700;
   }
 
@@ -52,11 +53,26 @@
   .file-add {
     .ant-btn {
       display: flex;
-      justify-self: center;
+      align-items: center;
     }
 
     p {
       margin: auto;
+      margin-bottom: 0;
     }
   }
+  .cursor-pointer span > svg {
+    margin-top: 0;
+  }
+  .ant-row {
+    align-items: center;
+    width: 100%;
+  }
+  .ant-form-vertical .ant-form-item {
+    flex-direction: row ;
+  }
+  
+}
+.ant-form-item-label > label::after {
+  display: none;
 }

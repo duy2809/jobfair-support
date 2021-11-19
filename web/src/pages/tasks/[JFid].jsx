@@ -290,15 +290,14 @@ function TaskList() {
         dataIndex: 'managers',
         fixed: 'left',
         render: (managers, record) => {
-          const [managerDF, setManagerDF] = useState(managers)
           if (rowEdit === record.id) {
             return (
               <EditUserAssignee
                 setIsEdit={setIsEdit}
-                managerDF={managerDF}
-                setManagerDF={setManagerDF}
                 setRowEdit={setRowEdit}
                 record={record}
+                loadTableData={loadTableData}
+                setLoading={setLoading}
               />
             )
           }
@@ -326,8 +325,8 @@ function TaskList() {
               className=""
             >
               { // eslint-disable-next-line consistent-return
-                managerDF.length > 0 ? managerDF.map((item) => {
-                  if (item === managerDF[managerDF.length - 1]) {
+                managers.length > 0 ? managers.map((item) => {
+                  if (item === managers[managers.length - 1]) {
                     return (
                       <span className="">
 
@@ -339,7 +338,7 @@ function TaskList() {
                       </span>
                     )
                   }
-                  if (item !== managerDF[managerDF.length - 1]) {
+                  if (item !== managers[managers.length - 1]) {
                     return (
                       <>
                         <span style={{ paddingRight: '3px' }}>
