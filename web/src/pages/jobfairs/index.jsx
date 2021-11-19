@@ -376,6 +376,7 @@ function JFList() {
         size="large"
         inputReadOnly="true"
         placeholder="開始日"
+        style={{width:'300px'}}
         onChange={FilterStartDate}
         format="YYYY/MM/DD"
         dateRender={(current) => {
