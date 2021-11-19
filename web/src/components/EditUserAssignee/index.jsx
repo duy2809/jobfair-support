@@ -7,15 +7,17 @@ import {
   Tag,
 } from 'antd'
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { getCategorys } from '../../api/edit-task'
 import { updateManagerTask } from '../../api/task-detail'
-
+import { jftask } from '../../api/jf-toppage'
 // eslint-disable-next-line react/prop-types
-export default function EditUserAssignee({ record, setRowEdit, setManagerDF, managerDF, setIsEdit }) {
+export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit }) {
   // eslint-disable-next-line react/prop-types
+  const router = useRouter()
   const [memberCategory, setMemberCategory] = useState()
   const [AllMemberAS, setAllMemberAs] = useState()
   const [valueMember, setValueMember] = useState(record.managers)
@@ -37,7 +39,7 @@ export default function EditUserAssignee({ record, setRowEdit, setManagerDF, man
         }
       })
       // eslint-disable-next-line react/prop-types
-      const data = dataUser.filter((e) => !managerDF.includes(e.name))
+      const data = dataUser.filter((e) => !record.managers.includes(e.name))
       setMemberCategory(data)
     })
   }
@@ -70,8 +72,6 @@ export default function EditUserAssignee({ record, setRowEdit, setManagerDF, man
 
   const handleSave = async () => {
     const newData = []
-
-    setManagerDF(valueMember)
     // eslint-disable-next-line array-callback-return
     AllMemberAS.map((item) => {
       if (valueMember.includes(item.name)) {
@@ -81,9 +81,14 @@ export default function EditUserAssignee({ record, setRowEdit, setManagerDF, man
     const data = {
       assignee: newData,
     }
+    setLoading(true)
     await updateManagerTask(record.idtask, data).then(() => {
       saveEditNotification()
     })
+    await jftask(router.query.JFid).then((response) => {
+      loadTableData(response)
+    })
+    setLoading(false)
   }
   useEffect(() => {
     fetchCTGR()
@@ -98,7 +103,7 @@ export default function EditUserAssignee({ record, setRowEdit, setManagerDF, man
             setIsEdit(true)
           }}
           style={{ width: '100%' }}
-          defaultValue={managerDF}
+          defaultValue={record.managers}
           showArrow
           // eslint-disable-next-line react/jsx-no-bind
           tagRender={tagRender}
