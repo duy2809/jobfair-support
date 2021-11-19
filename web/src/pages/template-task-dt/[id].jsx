@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import './style.scss'
 import { useRouter } from 'next/router'
-import { Button, Modal, notification, Tooltip, Tag } from 'antd'
+import { Button, Modal, notification, Tooltip } from 'antd'
 import {
   ExclamationCircleOutlined,
   EditTwoTone,
@@ -211,31 +211,20 @@ function templatetTaskDt() {
                   </p>
                   {beforeTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-2"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5">
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li className="task__chil">
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/template-task-dt/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/template-task-dt/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
@@ -253,31 +242,20 @@ function templatetTaskDt() {
                   </p>
                   {afterTasks.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-2"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5">
                         {afterTasks
                           ? afterTasks.map((item) => (
-                            <li className="task__chil">
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/template-task-dt/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/template-task-dt/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
