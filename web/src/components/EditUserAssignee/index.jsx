@@ -89,6 +89,8 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
       loadTableData(response)
     })
     setLoading(false)
+    setRowEdit(null)
+    setIsEdit(false)
   }
   useEffect(() => {
     fetchCTGR()
@@ -144,8 +146,6 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
           <Button
             onClick={() => {
               handleSave()
-              setRowEdit(null)
-              setIsEdit(false)
             }}
             style={{ height: '30px', padding: '0 15px', zIndex: '99999' }}
             size="small"
