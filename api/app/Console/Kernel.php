@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('task:update')->daily();
+        $schedule->command('notification:delete')->daily();
     }
 
     /**
