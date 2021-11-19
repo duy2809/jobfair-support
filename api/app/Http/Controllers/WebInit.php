@@ -23,7 +23,7 @@ class WebInit extends Controller
 
     protected function getAuth(Request $request)
     {
-        $user = $request->user();
+        $user = auth()->user();
         if (!$user) {
             return null;
         }
