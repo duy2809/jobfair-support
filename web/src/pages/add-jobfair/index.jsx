@@ -149,6 +149,7 @@ const index = () => {
       if (response.status < 299) {
         const channelname = data.name.toLowerCase()
         await createChannel(channelname).then((res) => {
+          // alert(res.data.ok)
           if (res.data.ok === true) {
             updateChannelId(data.name, res.data.channel.id).then((respo) => {
               if (respo.request.status === 200) {

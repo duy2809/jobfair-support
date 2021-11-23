@@ -11,15 +11,16 @@ class SlackController extends Controller
 {
     public function createChannel($name)
     {
+        $name = str_replace(' ', '-', $name);
         try {
-            Http::withHeaders([
-                'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
+            $slack_token = env('SLACK_TOKEN');
+
+            return Http::withHeaders([
+                'authorization' => "Bearer {$slack_token}",
             ])->post('https://slack.com/api/conversations.create', [
                 'name' => $name,
                 'is_private' => 'true',
             ]);
-
-            return response()->json(['message' => 'Successfully'], 200);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th], 400);
         }
@@ -47,9 +48,11 @@ class SlackController extends Controller
 
         foreach ($listMember as $member) {
             $slackid = User::where('id', '=', $member)->get(['chatwork_id']);
+            $slack_token = env('SLACK_TOKEN');
+
             try {
                 Http::withHeaders([
-                    'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
+                    'authorization' => "Bearer {$slack_token}",
                 ])->post('https://slack.com/api/conversations.invite', [
                     'channel' => $channelid[0]->channel_id,
                     'users' => $slackid[0]->chatwork_id,
@@ -64,10 +67,11 @@ class SlackController extends Controller
     {
         $channelid = Jobfair::where('name', '=', $request->JFName)->get(['channel_id']);
         $slackid = User::where('id', '=', $request->admin_id)->get('chatwork_id');
+        $slack_token = env('SLACK_TOKEN');
 
         try {
             Http::withHeaders([
-                'authorization' => 'Bearer xoxb-2753810695392-2730240722530-i11hc2kUM839dLvvR1ZXdhd8',
+                'authorization' => "Bearer {$slack_token}",
             ])->post('https://slack.com/api/conversations.invite', [
                 'channel' => $channelid[0]->channel_id,
                 'users' => $slackid[0]->chatwork_id,
