@@ -11,12 +11,12 @@ class SlackController extends Controller
 {
     public function createChannel($name)
     {
-        $name = str_replace(' ', '-', $name);
+        $name = str_replace([' ', '　'], '-', $name);
         try {
-            $slack_token = env('SLACK_TOKEN');
+            $slacktoken = config('slack_token');
 
             return Http::withHeaders([
-                'authorization' => "Bearer {$slack_token}",
+                'authorization' => "Bearer {$slacktoken}",
             ])->post('https://slack.com/api/conversations.create', [
                 'name' => $name,
                 'is_private' => 'true',
@@ -48,11 +48,11 @@ class SlackController extends Controller
 
         foreach ($listMember as $member) {
             $slackid = User::where('id', '=', $member)->get(['chatwork_id']);
-            $slack_token = env('SLACK_TOKEN');
+            $slacktoken = config('slack_token');
 
             try {
                 Http::withHeaders([
-                    'authorization' => "Bearer {$slack_token}",
+                    'authorization' => "Bearer {$slacktoken}",
                 ])->post('https://slack.com/api/conversations.invite', [
                     'channel' => $channelid[0]->channel_id,
                     'users' => $slackid[0]->chatwork_id,
@@ -67,11 +67,11 @@ class SlackController extends Controller
     {
         $channelid = Jobfair::where('name', '=', $request->JFName)->get(['channel_id']);
         $slackid = User::where('id', '=', $request->admin_id)->get('chatwork_id');
-        $slack_token = env('SLACK_TOKEN');
+        $slacktoken = config('slack_token');
 
         try {
             Http::withHeaders([
-                'authorization' => "Bearer {$slack_token}",
+                'authorization' => "Bearer {$slacktoken}",
             ])->post('https://slack.com/api/conversations.invite', [
                 'channel' => $channelid[0]->channel_id,
                 'users' => $slackid[0]->chatwork_id,
