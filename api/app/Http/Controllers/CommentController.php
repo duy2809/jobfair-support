@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Notification;
 
 class CommentController extends Controller
 {
-    // TODO: Authorization
-
     /**
      * Display a listing of the resource.
      *

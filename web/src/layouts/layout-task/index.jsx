@@ -11,10 +11,8 @@ import { Layout, Menu, Avatar, Input } from 'antd'
 import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState, useRef, useContext } from 'react'
-import { ReactReduxContext, useSelector } from 'react-redux'
-import { sidebarSelectors } from '../../store/modules/sidebar'
-import actions from '../../store/modules/sidebar/types'
+import React, { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import { jfdata } from '../../api/jf-toppage'
 import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
@@ -23,14 +21,12 @@ import './style.scss'
 import { getAvatar } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
+  const router = useRouter()
   const styles = {
     background: 'white',
     borderLeft: '3px solid #ffd803',
     marginBottom: '0px',
   }
-  const { store } = useContext(ReactReduxContext)
-  const sidebarStatus = useSelector((state) => sidebarSelectors.status(state).toJS())
-
   const main = findSlot(JfLayout.Main, children)
   const ref = useRef()
   const [startDate, setStartDate] = useState()
@@ -39,7 +35,7 @@ const JfLayout = ({ children, id, bgr }) => {
   const [AdminId, setAdminId] = useState()
   const [name, setName] = useState('')
   const { Sider, Content } = Layout
-  const [collapsed, Setcollapsed] = useState(sidebarStatus.collapsed)
+  const [collapsed, Setcollapsed] = useState(true)
   const [avatarAdmin, setAvatarAdmin] = useState(null)
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState(true)
@@ -47,15 +43,14 @@ const JfLayout = ({ children, id, bgr }) => {
     setShow(!show)
     setShowSearchIcon(!showSearchIcon)
   }
+  const onEnter = (e) => {
+    if (e.key === 'Enter') {
+      router.push({ pathname: `/tasks/${id}`, query: { name: e.target.value } })
+    }
+  }
   const toggleCollapsed = () => {
-    const payload = { ...sidebarStatus, collapsed: !collapsed }
-    store.dispatch({
-      type: actions.STORE_SIDEBAR_STATUS,
-      payload,
-    })
     Setcollapsed(!collapsed)
   }
-
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
@@ -85,10 +80,10 @@ const JfLayout = ({ children, id, bgr }) => {
   useEffect(() => {
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
-        console.log(ref.current, event.target)
+        // console.log(ref.current, event.target)
         return
       }
-      console.log(ref)
+      // console.log(ref)
 
       setShow(false)
       setShowSearchIcon(true)
@@ -244,6 +239,7 @@ const JfLayout = ({ children, id, bgr }) => {
                       bordered
                       prefix={<SearchOutlined />}
                       autoComplete="off"
+                      onKeyPress={onEnter}
                     />
                   ) : null}
                 </span>
