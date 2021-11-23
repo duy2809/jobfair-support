@@ -1,15 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-// use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\InviteMemberController;
-use App\Http\Controllers\JobfairController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
-use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\TemplateTaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,15 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-//TODO: middleware authorization
-
 Route::get('/web-init', WebInit::class);
 
-Route::resource('/jobfair', 'JobfairController');
-
-// add jf route start
-
 // jobfair
+Route::resource('/jobfair', 'JobfairController')->except([
+    'store',
+    'update',
+    'destroy',
+]);
 
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -44,12 +36,17 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
+// Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
+Route::post('/is-jf-existed', ['JobfairController@checkNameExisted']);
 Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
 
-Route::resource('/schedules', 'ScheduleController');
+Route::resource('/schedules', 'ScheduleController')->except([
+    'store',
+    'update',
+    'destroy',
+]);
 Route::get('jf-schedules/all-milestones', 'ScheduleController@getAllMilestones');
 Route::get('jf-schedules/all-template-tasks', 'ScheduleController@getAllTemplateTasks');
 Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkScheduleNameExist');
@@ -62,7 +59,7 @@ Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTask
 Route::prefix('schedule')->group(function () {
     Route::get('/', 'ScheduleController@getAll');
     Route::get('/search', 'ScheduleController@search');
-    Route::get('/{id}/gantt', [ScheduleController::class, 'getGanttChart']);
+    Route::get('/{id}/gantt', 'ScheduleController@getGanttChart');
 });
 
 Route::delete('/schedules/{id}', 'ScheduleController@destroy');
@@ -71,7 +68,6 @@ Route::get('/admins', 'AdminController@index');
 
 //milestone
 
-Route::resource('/milestone', MilestoneController::class);
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 //milestone controller
 Route::get('/milestones/{id}/list', 'MilestoneController@getInfoMilestones');
@@ -86,22 +82,25 @@ Route::prefix('member')->group(function () {
 
 // login, logout
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/preURL', [AuthController::class, 'preURL']);
-Route::post('/logout', [AuthController::class, 'logout']);
-Route::post('/reset-password', [ResetPasswordController::class, 'handleRequest']);
-Route::post('/update-password', [ResetPasswordController::class, 'updatePassword']);
+Route::post('/login', 'AuthController@login');
+Route::get('/preURL', 'AuthController@preURL');
+Route::post('/logout', 'AuthController@logout');
+Route::post('/reset-password', 'ResetPasswordController@handleRequest');
+Route::post('/update-password', 'ResetPasswordController@updatePassword');
 
 //template-task
-Route::resource('/template-tasks', 'TemplateTaskController');
+Route::resource('/template-tasks', 'TemplateTaskController')->except([
+    'store',
+    'update',
+    'destroy',
+]);
 Route::get('/template-task-not-added/{id}', 'TemplateTaskController@getTemplateTaskNotAdded');
 Route::get('/categories-template-tasks', 'TemplateTaskController@getCategoriesTasks');
 Route::get('/before-template-tasks/{id}', 'TemplateTaskController@getBeforeTasks');
 Route::get('/after-template-tasks/{id}', 'TemplateTaskController@getAfterTasks');
-Route::post('/is-template-task-existed', [TemplateTaskController::class, 'checkNameExisted']);
+Route::post('/is-template-task-existed', 'TemplateTaskController@checkNameExisted');
 
 //category
-Route::apiResource('/category', CategoryController::class);
 Route::get('/category/find/{key}', [\App\Http\Controllers\CategoryController::class, 'search']);
 Route::get('/category/checkDuplicate/{name}', [\App\Http\Controllers\CategoryController::class, 'checkDuplicate']);
 Route::get('/category/checkUniqueEdit/{id}/{name}', [\App\Http\Controllers\CategoryController::class, 'checkUniqueEdit']);
@@ -121,8 +120,6 @@ Route::get('/avatar/{id}', [App\Http\Controllers\ProfileController::class, 'avat
 
 Route::get('/check-unique-edit/{id}/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueEdit']);
 Route::get('/check-unique-add/{name}', [App\Http\Controllers\MilestoneController::class, 'checkUniqueAdd']);
-
-Route::post('/invite-member', [InviteMemberController::class, 'handleRequest']);
 
 // file
 Route::get('/file/member', 'FileController@getMember');
@@ -170,7 +167,7 @@ Route::prefix('/top-page')->group(function () {
     Route::get('/task-reviewer', [TopPageTasksController::class, 'taskReviewer']);
     Route::get('/tasks', [TopPageTasksController::class, 'tasks']);
     Route::get('/user/{id}/jobfair', [TopPageTasksController::class, 'getTaskList']);
-    Route::get('/jobfairs', [JobfairController::class, 'index']);
+    Route::get('/jobfairs', ['JobfairController@index']);
     Route::get('/members', [MemberController::class, 'index']);
 });
 
