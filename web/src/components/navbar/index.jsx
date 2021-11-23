@@ -14,9 +14,12 @@ export default function Navbar() {
   const { store } = useContext(ReactReduxContext)
   const router = useRouter()
   const [user, setUser] = useState(null)
+  const [role, setRole] = useState()
   const [avatarUser, setAvatarUser] = useState('')
+
   useEffect(async () => {
     setUser(store.getState().get('auth').get('user'))
+    setRole(store.getState().get('auth').get('user').get('role'))
     if (user) {
       const id = user.get('id')
       await getAvatar(id)
@@ -31,6 +34,7 @@ export default function Navbar() {
         .catch(() => setAvatarUser(null))
     }
   }, [user])
+
   const handleLogout = async () => {
     try {
       const response = await logout()
@@ -64,11 +68,13 @@ export default function Navbar() {
           スケジュール
         </a>
       </Menu.Item>
-      <Menu.Item key="2">
-        <a href="/master-setting" className="text-base">
-          マスター設定
-        </a>
-      </Menu.Item>
+      {role === 'superadmin' && (
+        <Menu.Item key="2">
+          <a href="/master-setting" className="text-base">
+            マスター設定
+          </a>
+        </Menu.Item>
+      )}
     </Menu>
   )
 
