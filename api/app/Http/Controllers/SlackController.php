@@ -13,7 +13,7 @@ class SlackController extends Controller
     {
         $name = str_replace([' ', '　'], '-', $name);
         try {
-            $slacktoken = config('slack_token');
+            $slacktoken = config('app.slack_token');
 
             return Http::withHeaders([
                 'authorization' => "Bearer {$slacktoken}",
@@ -48,7 +48,7 @@ class SlackController extends Controller
 
         foreach ($listMember as $member) {
             $slackid = User::where('id', '=', $member)->get(['chatwork_id']);
-            $slacktoken = config('slack_token');
+            $slacktoken = config('app.slack_token');
 
             try {
                 Http::withHeaders([
@@ -67,7 +67,7 @@ class SlackController extends Controller
     {
         $channelid = Jobfair::where('name', '=', $request->JFName)->get(['channel_id']);
         $slackid = User::where('id', '=', $request->admin_id)->get('chatwork_id');
-        $slacktoken = config('slack_token');
+        $slacktoken = config('app.slack_token');
 
         try {
             Http::withHeaders([

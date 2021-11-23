@@ -120,10 +120,9 @@ return [
      */
 
     'key'             => env('APP_KEY'),
-    'slack_token'     => env('SlACK_TOKEN'),
 
     'cipher'          => 'AES-256-CBC',
-
+    'slack_token'     => env('SLACK_TOKEN'),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
