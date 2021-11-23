@@ -30,6 +30,11 @@ const index = () => {
   const [loading, setLoading] = useState(true)
   const [form] = Form.useForm()
   const router = useRouter()
+  // route function handle all route in this page.
+  const routeTo = async (url) => {
+    router.prefetch(url)
+    router.push(url)
+  }
 
   // check if all input is empty.
   const checkIsFormInputEmpty = () => {
@@ -63,7 +68,10 @@ const index = () => {
         setlistSchedule(Array.from(schedules.data))
         return null
       } catch (error) {
-        return Error(error.toString())
+        if (error.response.status === 404) {
+          routeTo('/404')
+        } else return Error(error.toString())
+        return null
       }
     }
     fetchAPI()
@@ -86,11 +94,6 @@ const index = () => {
     if (inputRef) {
       form.setFieldsValue(dummyObject)
     }
-  }
-  // route function handle all route in this page.
-  const routeTo = async (url) => {
-    router.prefetch(url)
-    router.push(url)
   }
 
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
@@ -168,26 +171,41 @@ const index = () => {
       //   notification.error({
       //     duration: 3,
       //     message: errorResponse.errors.name[0],
-      //     onClick: () => {},
+      //     onClick: () => {}eEb,
       //   })
       // }
+      if (error.response.status === 404) {
+        routeTo('/404')
+      }
       return error
     }
   }
   /* handle jobfair schedule selector change .  */
   // call api get milestone  when selector change schedule.
   const getMilestone = async (id) => {
-    const milestones = await addJFAPI.getMilestone(id)
-    if (milestones.data.milestones) {
-      setlistMilestone(Array.from(milestones.data.milestones))
+    try {
+      const milestones = await addJFAPI.getMilestone(id)
+      if (milestones.data.milestones) {
+        setlistMilestone(Array.from(milestones.data.milestones))
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        routeTo('/404')
+      }
     }
   }
 
   // call api get milestone  when selector change schedule
   const getTask = async (id) => {
-    const tasks = await addJFAPI.getTaskList(id)
-    if (tasks.data.template_tasks) {
-      setlistTask(Array.from(tasks.data.template_tasks))
+    try {
+      const tasks = await addJFAPI.getTaskList(id)
+      if (tasks.data.template_tasks) {
+        setlistTask(Array.from(tasks.data.template_tasks))
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        routeTo('/404')
+      }
     }
   }
 
@@ -212,6 +230,9 @@ const index = () => {
       }
       return false
     } catch (error) {
+      if (error.response.status === 404) {
+        routeTo('/404')
+      }
       return error
     }
   }

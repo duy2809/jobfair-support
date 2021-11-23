@@ -115,12 +115,18 @@ function index() {
           const data = generateTask(resTasks)
           setJobfairStartDate(new Date(jobfair.start_date))
           setTask({ ...data, ...link })
-          console.log({ ...data, ...link })
           setLoading(false)
+        }).catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
         })
         return []
       } catch (error) {
         setLoading(false)
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         return error
       }
     }

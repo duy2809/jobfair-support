@@ -85,6 +85,10 @@ function MemberList() {
         const { data } = res
         setMembers(data)
         setFilterData(data)
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
       .finally(() => {
         setDataLoading(false)
@@ -132,7 +136,9 @@ function MemberList() {
         window.location.href = `/member/${id}/edit`
       }
     } catch (error) {
-      console.error(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
   const handleCancel = () => {

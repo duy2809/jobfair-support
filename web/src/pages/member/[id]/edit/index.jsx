@@ -26,12 +26,18 @@ const EditMember = () => {
 
   const { id } = router.query
   useEffect(async () => {
-    const res = await MemberApi.getMemberDetail(id)
-    const dataRes = res.data
-    setEmailInput(dataRes.user.email)
-    setNameInput(dataRes.user.name)
-    setCategories(dataRes.categories.map((item) => item.id))
-    setReqCategories(dataRes.categories.map((item) => item.id))
+    try {
+      const res = await MemberApi.getMemberDetail(id)
+      const dataRes = res.data
+      setEmailInput(dataRes.user.email)
+      setNameInput(dataRes.user.name)
+      setCategories(dataRes.categories.map((item) => item.id))
+      setReqCategories(dataRes.categories.map((item) => item.id))
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
   }, [])
   useEffect(() => {
     form.setFieldsValue({
@@ -55,6 +61,10 @@ const EditMember = () => {
   const fetchData = useCallback(() => {
     CategoryApi.getFullCategories().then((res) => {
       setCategoriesSystem(res.data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   })
 
@@ -82,10 +92,15 @@ const EditMember = () => {
       })
       .catch((error) => {
         // const errorMessage = error.response.data.errors.name[0]
-        notification.error({
-          message: 'メールは既に存在します。別のメールを入力してください',
-          duration: 3,
-        })
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else {
+          notification.error({
+            message: 'メールは既に存在します。別のメールを入力してください',
+            duration: 3,
+          })
+          return error
+        }
         return error
       })
       .finally(() => {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Input, Button, Select, Modal, notification } from 'antd'
+import { useRouter } from 'next/router'
 import OtherLayout from '../../../layouts/OtherLayout'
 import { addMilestone, getNameExitAdd } from '../../../api/milestone'
 import './style.scss'
@@ -13,7 +14,7 @@ const AddMilestonePage = () => {
   const [nameInput, setNameInput] = useState('')
   const [timeInput, setTimeInput] = useState('')
   const [errorUnique, setErrorUnique] = useState(false)
-
+  const router = useRouter()
   const { Option } = Select
 
   function toHalfWidth(fullWidthStr) {
@@ -38,6 +39,9 @@ const AddMilestonePage = () => {
     })
       .then(() => openNotificationSuccess())
       .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         if (
           JSON.parse(error.response.request.response).errors.name[0]
           === 'The name has already been taken.'
@@ -68,6 +72,10 @@ const AddMilestonePage = () => {
               },
             ])
           }
+        }).catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
         })
       }
     } else {
@@ -88,6 +96,10 @@ const AddMilestonePage = () => {
               errors: ['このマイルストーン名は存在しています。'],
             },
           ])
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
     }

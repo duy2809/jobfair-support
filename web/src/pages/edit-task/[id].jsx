@@ -56,18 +56,21 @@ function EditTask() {
         }
       })
       .catch((err) => {
-        console.log(err)
+        if (err.response.status === 404) {
+          router.push('/404')
+        }
       })
 
     await listReviewersSelectTag(idTask)
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data)
           setReviewersSelectTag(response.data)
         }
       })
       .catch((err) => {
-        console.log(err)
+        if (err.response.status === 404) {
+          router.push('/404')
+        }
       })
 
     await taskData(idTask).then((response) => {
@@ -107,6 +110,10 @@ function EditTask() {
           detail: data.description_of_detail,
           reviewers: listReviewers.length === 0 ? ['None'] : listReviewers,
         })
+      }
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
       }
     })
   }
@@ -335,13 +342,18 @@ function EditTask() {
             saveNotification()
           })
           .catch((error) => {
-            console.log(error)
-            forbidNotification()
             setdisableBtn(false)
+            if (error.response.status === 404) {
+              router.push('/404')
+            }
+            forbidNotification()
           })
         // setdisableBtn(true)
       } catch (error) {
         setdisableBtn(false)
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         return error
       }
     }
@@ -377,6 +389,10 @@ function EditTask() {
       form.setFieldsValue({
         taskBefore: listbfTask,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const fetchafterTask = async () => {
@@ -388,6 +404,10 @@ function EditTask() {
       form.setFieldsValue({
         afterTask: listatTask,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const fetchListTask = async () => {
@@ -401,12 +421,18 @@ function EditTask() {
         setafterTaskNew(notSelectedTask)
       })
       .catch((err) => {
-        console.log(err)
+        if (err.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
   const fetchListMember = async () => {
     await getUserByCategory(infoTask.categories).then((response) => {
       setListUser(response.data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   useEffect(() => {

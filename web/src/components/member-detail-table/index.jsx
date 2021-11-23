@@ -67,7 +67,11 @@ class MemberDetailTable extends React.Component {
           )),
         })
       })
-      // .catch((error) => console.log(error))
+      .catch((error) => {
+        if (error.response.status === 404) {
+          window.location.href = '/404'
+        }
+      })
   }
 
   setID(id) {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Space, Button, Row, Col, Input, Select, notification, Modal, Tooltip, Empty } from 'antd'
 import { DeleteTwoTone, EditTwoTone, SearchOutlined } from '@ant-design/icons'
+import { useRouter } from 'next/router'
 import { getAllMileStone, deleteMileStone } from '~/api/milestone'
 import OtherLayout from '../../layouts/OtherLayout'
 import { webInit } from '../../api/web-init'
@@ -19,6 +20,7 @@ const MilestonePage = () => {
     delete: false,
     edit: false,
   })
+  const router = useRouter()
 
   webInit().then((res) => {
     setRole(res.data.auth.user.role)
@@ -88,7 +90,9 @@ const MilestonePage = () => {
       setData(newData)
       setLoading(false)
     } catch (error) {
-      console.error(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 
@@ -133,7 +137,9 @@ const MilestonePage = () => {
         window.location.href = `/milestones/${id}/edit`
       }
     } catch (error) {
-      console.error(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 

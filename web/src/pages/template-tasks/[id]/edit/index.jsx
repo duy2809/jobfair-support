@@ -67,6 +67,10 @@ const EditTemplateTaskPage = () => {
       setBeforeTaskNew(data)
       setafterTaskNew(data)
       setAllTask(data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const fetchTemplateTask = async (id) => {
@@ -101,18 +105,30 @@ const EditTemplateTaskPage = () => {
         unit,
         is_day: isDayData[res.data.is_day].name,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
   const fetchCategoryData = async () => {
     await getCategoryData().then((res) => {
       setCategoryData(res.data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
   const fetchMilestoneData = async () => {
     await getMilestoneData().then((res) => {
       setMilestoneData(res.data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -123,6 +139,10 @@ const EditTemplateTaskPage = () => {
       form.setFieldsValue({
         taskBefore: value,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -133,6 +153,10 @@ const EditTemplateTaskPage = () => {
       form.setFieldsValue({
         afterTask: value,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const openNotificationSuccess = () => {
@@ -198,6 +222,9 @@ const EditTemplateTaskPage = () => {
         }, 1000)
       })
       .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
           notification.error({
             message: 'このテンプレートタスク名は存在しています',

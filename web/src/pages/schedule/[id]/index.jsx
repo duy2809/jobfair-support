@@ -25,6 +25,10 @@ function ScheduleDetailGeneral() {
     setID(router.query.id)
     getSchedule(router.query.id).then((res) => {
       setScheduleName(res.data.name)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
     setUser(store.getState().get('auth').get('user'))
     if (user) {
@@ -48,7 +52,10 @@ function ScheduleDetailGeneral() {
           duration: 3,
         })
       })
-      .catch(() => {
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',

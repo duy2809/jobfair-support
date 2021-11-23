@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Table, Typography } from 'antd'
+import { useRouter } from 'next/router'
 import { ListScheduleApi } from '~/api/schedule'
 import './style.scss'
 import colors from './_colors'
@@ -12,6 +13,7 @@ function ScheduleGantt({ id }) {
   const [milestones, setMilestones] = useState([])
   const [categories, setCategories] = useState([])
   const taskWidth = 200
+  const router = useRouter()
   const taskHeader = {
     task: {
       id: null,
@@ -52,7 +54,9 @@ function ScheduleGantt({ id }) {
       const data = [taskHeader, ...response.data.tasks]
       setTasks(formatTask(data))
     } catch (error) {
-      console.log(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }, [])
 

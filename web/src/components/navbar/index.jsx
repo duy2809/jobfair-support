@@ -28,7 +28,11 @@ export default function Navbar() {
             setAvatarUser(link)
           }
         })
-        .catch(() => setAvatarUser(null))
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          } else setAvatarUser(null)
+        })
     }
   }, [user])
   const handleLogout = async () => {
