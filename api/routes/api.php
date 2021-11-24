@@ -25,6 +25,8 @@ Route::resource('/jobfair', 'JobfairController')->except([
     'update',
     'destroy',
 ]);
+Route::resource('/milestone', MilestoneController::class)->only(['index']);
+Route::apiResource('/category', CategoryController::class)->only(['index']);
 
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -36,8 +38,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-// Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
-Route::post('/is-jf-existed', ['JobfairController@checkNameExisted']);
+Route::post('/is-jf-existed', 'JobfairController@checkNameExisted');
 Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
