@@ -29,5 +29,5 @@ Route::resource('/schedules', 'ScheduleController')->only([
     'update',
     'destroy',
 ]);
-Route::resource('/milestone', MilestoneController::class);
-Route::apiResource('/category', CategoryController::class);
+Route::resource('/milestone', MilestoneController::class)->except(['index']);
+Route::apiResource('/category', CategoryController::class)->except(['index']);

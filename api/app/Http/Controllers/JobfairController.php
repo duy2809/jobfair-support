@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('isAdminJobfair');
+    }
+
     /**
      * Display a listing of the resource.
      *
