@@ -330,7 +330,7 @@ const Top = () => {
                       dataColumn={taskListDataColumn}
                       dataSource={taskDataItem}
                       taskReviewerList={taskReviewerList}
-                      text="タスク一覧"
+                      text="自分のタスク"
                       searchIcon
                       showTimeInput={false}
                       routeToAdd="/add-template-task"
@@ -351,5 +351,5 @@ const Top = () => {
     </Layout>
   )
 }
-Top.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+Top.middleware = ['auth:superadmin', 'auth:member']
 export default Top
