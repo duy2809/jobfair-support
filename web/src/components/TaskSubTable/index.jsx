@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip, Tag, Card, Row, Col } from 'antd'
+import { Button, Table, Input, DatePicker, Tooltip, Tag, Card } from 'antd'
 import {
   SearchOutlined,
   DownOutlined,
