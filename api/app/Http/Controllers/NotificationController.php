@@ -23,7 +23,7 @@ class NotificationController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         return $user->notifications;
     }
@@ -47,7 +47,7 @@ class NotificationController extends Controller
      */
     public function update($id)
     {
-        $date = Notification::find($id);
+        $date = Notification::findOrFail($id);
         $date->read_at = \Carbon\Carbon::now();
         $date->save();
     }
@@ -62,11 +62,7 @@ class NotificationController extends Controller
     {
         // return Notification::where('id', $id)->get();
         // return response()->json(['message' => 'Successed']);
-        $noti = Notification::find($id);
-        if (!$noti) {
-            return response()->json();
-        }
-
+        $noti = Notification::findOrFail($id);
         $noti->delete();
 
         return response()->json(null);
@@ -75,14 +71,14 @@ class NotificationController extends Controller
 
     public function showUnread($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         return $user->unreadNotifications;
     }
 
     public function updateAllRead($id)
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         foreach ($user->unreadNotifications as $notification) {
             $notification->markAsRead();

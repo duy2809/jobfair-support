@@ -1,6 +1,7 @@
 .status {
     width: 100%;
-    border: 1px solid #2d334a;
+    // border: 1px solid #2d334a;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     padding: 30px 20px;
     border-radius: 10px;
     margin-bottom: 30px;
@@ -47,16 +48,15 @@
         align-items: center;
         width: 100%;
         justify-content: space-between;
-        margin: 20px 15px 0 15px;
+        margin: 20px 0px 0 0px;
         .stt__If {
             margin: 0 2px;
             .new__if {
                 text-align: center;
                 margin-bottom: 5px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-left: 10px;
+                // display: flex;
+                // align-items: center;
+                // justify-content: space-between;
             }
             span{
                 padding: 5px 25px ;

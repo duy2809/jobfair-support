@@ -116,6 +116,7 @@ function TaskList() {
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
+      // console.log(valueSearch, router.query)
       const taskNameParameter = router.query.name.toLowerCase()
       const filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
       setTemperaryData(filteredData)

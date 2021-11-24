@@ -380,5 +380,5 @@ function TemplateTaskList() {
     </OtherLayout>
   )
 }
-TemplateTaskList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+TemplateTaskList.middleware = ['auth:superadmin', 'auth:member']
 export default TemplateTaskList

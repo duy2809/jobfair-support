@@ -154,7 +154,7 @@ export default function Search() {
     setIsModalVisible(false)
   }
   useEffect(async () => {
-    const res = await getMember(JFid)
+    const res = await getMember()
     setMember(res.data)
   }, [])
   return (

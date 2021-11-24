@@ -322,5 +322,5 @@ function MemberList() {
   )
 }
 
-MemberList.middleware = ['auth:superadmin', 'auth:admin', 'auth:member']
+MemberList.middleware = ['auth:superadmin', 'auth:member']
 export default MemberList

@@ -63,7 +63,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        return Category::find($id);
+        return Category::findOrFail($id);
     }
 
     /**
@@ -81,7 +81,7 @@ class CategoryController extends Controller
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
 
-        return Category::find($id)->update($request->all());
+        return Category::findOrFail($id)->update($request->all());
     }
 
     /**
@@ -92,7 +92,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        return Category::destroy($id);
+        return Category::findOrFail($id)->delete();
     }
 
     public function checkDuplicate($name)

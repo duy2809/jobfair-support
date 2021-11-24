@@ -37,13 +37,13 @@ class ProfileController extends Controller
         ], $rules);
         $validator->validate();
 
-        return User::find($id);
+        return User::findOrFail($id);
     }
 
     public function avatar($id)
     {
         // return Storage::download(Auth::user()->avatar,'avatar');
-        $avatar = User::find($id)->avatar;
+        $avatar = User::findOrFail($id)->avatar;
         if (strcmp($avatar, 'images/avatars/default.jpg') === 0) {
             return null;
         }
@@ -63,13 +63,13 @@ class ProfileController extends Controller
     public function updateUserInfo(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|string',
+            'name'  => 'required|string',
             'email' => 'required|email|unique:users,email,'.$id,
         ];
 
         $validator = Validator::make($request->all(), $rules);
         $validator->validated();
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->update($request->all());
 
         return response()->json(['message' => 'Updated successfully'], 200);
@@ -79,11 +79,11 @@ class ProfileController extends Controller
     {
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:8|max:24',
+            'password'         => 'required|string|min:8|max:24',
             'comfirm_password' => 'required|string|same:password',
         ]);
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         if (!Hash::check($request->current_password, $user->password)) {
             return response()->json(['message' => 'Current password incorrect']);
         }
@@ -98,7 +98,7 @@ class ProfileController extends Controller
     public function updateAvatar(Request $request, $id)
     {
         if ($request->hasFile('avatar')) {
-            $user = User::find($id);
+            $user = User::findOrFail($id);
 
             $rules = [
                 'avatar' => 'required|mimes:jpg,png|max:4096',
@@ -129,6 +129,6 @@ class ProfileController extends Controller
      */
     public function destroy($id)
     {
-        return User::destroy($id);
+        return User::findOrFail($id)->delete();
     }
 }
