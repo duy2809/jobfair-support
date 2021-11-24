@@ -330,7 +330,7 @@ const Top = () => {
                       dataColumn={taskListDataColumn}
                       dataSource={taskDataItem}
                       taskReviewerList={taskReviewerList}
-                      text="タスク一覧"
+                      text="自分のタスク"
                       searchIcon
                       showTimeInput={false}
                       routeToAdd="/add-template-task"
