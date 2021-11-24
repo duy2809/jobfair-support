@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\Role;
 use App\Models\Jobfair;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 
-class WebInit extends Controller
+class WebInit extends BaseController
 {
     /**
      * Handle the incoming request.
