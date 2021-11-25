@@ -107,10 +107,16 @@ function TemplateTaskList() {
     })
   }
   const deletetpl = async (id) => {
-    const newList = temperaryData.filter((x) => x.idTemplateTask !== id)
-    setTemperaryData(newList)
-    await deleteTptt(id)
-    saveNotification()
+    try {
+      const newList = temperaryData.filter((x) => x.idTemplateTask !== id)
+      setTemperaryData(newList)
+      await deleteTptt(id)
+      saveNotification()
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
   }
   const modelDelete = (id) => {
     Modal.confirm({
@@ -226,20 +232,27 @@ function TemplateTaskList() {
   useEffect(async () => {
     setLoading(true)
     initPagination()
-    await getTaskList().then((response) => {
-      addDataOfTable(response)
-    })
-    await getAllMileStone().then((response) => {
-      addOptionMilestone(response)
-    })
-    await webInit().then((response) => {
-      setUsers(response.data.auth.user.role)
-    })
-      .catch((error) => Error(error.toString()))
-    setLoading(false)
-    await getCategories().then((response) => {
-      addOptionCategory(response)
-    })
+    try {
+      await getTaskList().then((response) => {
+        addDataOfTable(response)
+      })
+      await getAllMileStone().then((response) => {
+        addOptionMilestone(response)
+      })
+      await webInit().then((response) => {
+        setUsers(response.data.auth.user.role)
+      })
+        .catch((error) => Error(error.toString()))
+      setLoading(false)
+      await getCategories().then((response) => {
+        addOptionCategory(response)
+      })
+    } catch (error) {
+      setLoading(false)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
   }, [])
 
   // Search data on Table

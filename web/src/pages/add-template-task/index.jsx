@@ -42,6 +42,11 @@ const index = () => {
   const [form] = Form.useForm()
   // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
   const router = useRouter()
+  // route function handle all route in this page.
+  const routeTo = async (url) => {
+    router.prefetch(url)
+    router.push(url)
+  }
   const unitData = [
     { id: 'students', name: '学生数' },
     { id: 'companies', name: '企業数' },
@@ -105,7 +110,10 @@ const index = () => {
         setPreTasks(tasks.data)
         return null
       } catch (error) {
-        return Error(error.toString())
+        if (error.response.status === 404) {
+          routeTo('/404')
+        } else return Error(error.toString())
+        return null
       }
     }
     fetchAPI()
@@ -125,14 +133,6 @@ const index = () => {
     if (inputRef) {
       form.setFieldsValue(dummyObject)
     }
-  }
-  // route function handle all route in this page.
-  const routeTo = async (url) => {
-    // await router.prefetch(url)
-    // await router.push(url)
-
-    router.prefetch(url)
-    router.push(url)
   }
 
   /* Handle 2 form event when user click  キャンセル button or  登録 button */
@@ -213,6 +213,9 @@ const index = () => {
         }
         return response
       } catch (error) {
+        if (error.response.status === 404) {
+          routeTo('/404')
+        }
         const isDuplicate = JSON.parse(error.request.response).message
         if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
           notification.error({
@@ -337,6 +340,9 @@ const index = () => {
       }
       return null
     } catch (error) {
+      if (error.response.status === 404) {
+        routeTo('/404')
+      }
       return null
     }
   }

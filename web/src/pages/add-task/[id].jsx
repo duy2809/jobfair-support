@@ -20,6 +20,11 @@ function index() {
   const [category, setCategory] = useState('')
   const [milestone, setMilestone] = useState('')
   const [valueSearch, setValueSearch] = useState('')
+  // route function handle all route in this page.
+  const routeTo = async (url) => {
+    router.prefetch(url)
+    router.push(url)
+  }
   // add data of table
   const addDataOfTable = (response) => {
     const data = []
@@ -53,7 +58,10 @@ function index() {
         setLoading(false)
         return null
       } catch (error) {
-        return Error('内容が登録されません。よろしいですか？')
+        if (error.response.status === 404) {
+          routeTo('/404')
+        } else return Error('内容が登録されません。よろしいですか？')
+        return null
       }
     }
     fetchAPI()
@@ -132,14 +140,6 @@ function index() {
       setTemplateTaskSelect(selectedRowKeys)
     },
   }
-  // route function handle all route in this page.
-  const routeTo = async (url) => {
-    // await router.prefetch(url)
-    // await router.push(url)
-
-    router.prefetch(url)
-    router.push(url)
-  }
 
   const cancelConfirmModle = () => {
     if (!templateTaskSelect.length) {
@@ -180,6 +180,9 @@ function index() {
         }
         return response
       } catch (error) {
+        if (error.response.status === 404) {
+          routeTo('/404')
+        }
         return error
       }
     }

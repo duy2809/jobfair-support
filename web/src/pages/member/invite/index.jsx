@@ -97,6 +97,9 @@ function InviteMember() {
       if (error.request.status === 400) {
         document.getElementById('errorEmail').removeAttribute('hidden')
       }
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
     setLoading(false)
   }

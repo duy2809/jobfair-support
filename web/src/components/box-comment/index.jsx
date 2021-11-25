@@ -3,6 +3,7 @@ import { Button, Form, Input, Select, Tag, Tooltip } from 'antd'
 import 'antd/dist/antd.css'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { getUser, taskData } from '../../api/task-detail'
 import { addComment } from '../../api/comment'
 import BoxComment from './editor'
@@ -15,6 +16,7 @@ const index = ({ id }) => {
   const [listUser, setListUser] = useState([])
   const [assign, setAssign] = useState(true)
   const [value, setValue] = useState('')
+  const router = useRouter()
 
   // Modal
   const showBox = () => {
@@ -33,7 +35,9 @@ const index = ({ id }) => {
         setListUser(response.data)
       })
       .catch((error) => {
-        console.log(error)
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
 
@@ -43,6 +47,10 @@ const index = ({ id }) => {
         // assignee: listmember,
         status: response.data.status,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -99,9 +107,15 @@ const index = ({ id }) => {
       status,
       description: 'Task Description',
     }
-    const response = await addComment(newComment)
-    if (response.status === 200 || response.status === 201) {
-      console.log(response.data)
+    try {
+      const response = await addComment(newComment)
+      if (response.status === 200 || response.status === 201) {
+        console.log(response.data)
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
   const typing = (e) => {

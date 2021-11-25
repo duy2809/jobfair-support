@@ -38,12 +38,20 @@ function addJobfairSchedule() {
       .then(({ data }) => {
         setMilestonesList(data)
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
     await getTemplateTaskList()
       .then(({ data }) => {
         setTemplateTaskList(data)
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }, [])
 
   const openNotification = (type, message, description) => {
@@ -78,7 +86,15 @@ function addJobfairSchedule() {
                 router.push('/schedule')
                 openNotification('success', '正常に登録されました。')
               }
+            }).catch((error) => {
+              if (error.response.status === 404) {
+                router.push('/404')
+              }
             })
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
   }
@@ -145,6 +161,10 @@ function addJobfairSchedule() {
               errors: ['このJFスケジュール名は存在しています。'],
             },
           ])
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
   }

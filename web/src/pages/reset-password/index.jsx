@@ -49,6 +49,9 @@ const ResetPage = () => {
       if (error.request.status === 400) {
         openNotification('error', 'パスワードを正常に変更しません')
       }
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
     setLoading(false)
   }

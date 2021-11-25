@@ -7,15 +7,21 @@ import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import { useScrollBy } from 'react-use-window-scroll'
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { listupdate } from '../../api/jf-toppage'
 
 const formatter = buildFormatter(frenchStrings)
 
 const NotificationsJf = ({ id }) => {
   const [posts, setPost] = useState([])
+  const router = useRouter()
   const fetchTasks = async () => {
     await listupdate(id).then((response) => {
       setPost(response.data.schedule.tasks)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const [tp, setTop] = useState(100)

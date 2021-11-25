@@ -2,6 +2,7 @@ import { FolderAddFilled } from '@ant-design/icons'
 import { Button, Modal, Form, Input, notification } from 'antd'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import { addDocument } from '../../../api/file'
 import './style.scss'
 
@@ -10,7 +11,7 @@ export default function ButtonAddFolder(props) {
   const [nameFolder, setNameFolder] = useState('')
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [form] = Form.useForm()
-
+  const router = useRouter()
   const setNull = () => {
     setNameFolder('')
     form.setFieldsValue({ name_folder: '' })
@@ -52,49 +53,57 @@ export default function ButtonAddFolder(props) {
       }
     }
 
-    const res = await addDocument({
-      name: nameFolder,
-      path: queryPath,
-      is_file: 0,
-      link: '',
-      document_id: props.documentId,
-    })
-    if (res.data.name) {
-      if (res.data.name[0] === 'The name has already been taken.') {
-        setIsDisableFolder(true)
-        form.setFields([
-          {
-            name: 'name_folder',
-            errors: ['このファイル名は既に使用されています。'],
-          },
-        ])
+    try {
+      const res = await addDocument({
+        name: nameFolder,
+        path: queryPath,
+        is_file: 0,
+        link: '',
+        document_id: props.documentId,
+      })
+      if (res.data.name) {
+        if (res.data.name[0] === 'The name has already been taken.') {
+          setIsDisableFolder(true)
+          form.setFields([
+            {
+              name: 'name_folder',
+              errors: ['このファイル名は既に使用されています。'],
+            },
+          ])
+        }
+      } else {
+        const result = res.data.map((element) => ({
+          key: element.id,
+          checkbox: props.updater.get('id') === element.authorId || props.role !== 'member',
+          is_file: element.is_file,
+          name: element.name,
+          updater: element.updaterName,
+          updated_at: element.updated_at,
+          link: element.link,
+        }))
+        if (props.path.length > 1) {
+          props.setData([
+            {
+              key: -1,
+              name: '..',
+              checkbox: false,
+              is_file: false,
+              updater: '',
+              updated_at: '',
+              link: '',
+            },
+            ...result,
+          ])
+        } else props.setData(result)
+        props.setIsCheckAll(false)
+        openNotificationSuccess()
+        setNull()
       }
-    } else {
-      const result = res.data.map((element) => ({
-        key: element.id,
-        checkbox: props.updater.get('id') === element.authorId || props.role !== 'member',
-        is_file: element.is_file,
-        name: element.name,
-        updater: element.updaterName,
-        updated_at: element.updated_at,
-        link: element.link,
-      }))
-      if (props.path.length > 1) {
-        props.setData([
-          {
-            key: -1,
-            name: '..',
-            checkbox: false,
-            is_file: false,
-            updater: '',
-            updated_at: '',
-            link: '',
-          },
-          ...result,
-        ])
-      } else props.setData(result)
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
       props.setIsCheckAll(false)
-      openNotificationSuccess()
       setNull()
     }
   }

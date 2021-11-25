@@ -31,6 +31,10 @@ function MemberDetailPage() {
   const deletetpl = async () => {
     await deleteMember(idMember).then(() => {
       Router.push('/member/')
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 

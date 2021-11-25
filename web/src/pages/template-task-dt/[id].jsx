@@ -42,6 +42,10 @@ function templatetTaskDt() {
         setIsDay(response.data.is_day)
         setUnit(response.data.unit)
         setDes(response.data.description_of_detail)
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
 
@@ -50,12 +54,20 @@ function templatetTaskDt() {
     await beforeTask(idTplt)
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
   const fetchafterTask = async () => {
     await afterTask(idTplt)
       .then((response) => {
         setAfterTasks(response.data.after_tasks)
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
 
@@ -71,6 +83,10 @@ function templatetTaskDt() {
       .then(async () => {
         router.push('/template-tasks')
         saveNotification()
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   }
   const modelDelete = () => {
