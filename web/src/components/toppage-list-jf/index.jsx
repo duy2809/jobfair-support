@@ -9,7 +9,6 @@ import './style.scss'
 // const { Search } = Input;
 
 const ListJfToppage = ({
-
   routeToAdd,
   role,
   searchIcon,
@@ -94,7 +93,7 @@ const ListJfToppage = ({
     }
   }, [])
   useEffect(() => {
-    let datas = [...list]
+    let datas = [...dataSource]
     if (filter) {
       if (filter.name) {
         datas = datas.filter(
