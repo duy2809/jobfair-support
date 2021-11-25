@@ -133,33 +133,34 @@ const ListJfToppage = ({
 
   const searchInput = (e, dateString = '') => {
     if (!dateString) {
-      if (e.target.name === 'name') {
-        setFilter({ ...filter, name: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, name: '' })
-          setList(dataSource)
+      if (dateString === '') {
+        setFilter({ ...filter, date: '' })
+        setList(dataSource)
+      } else {
+        if (e.target.name === 'name') {
+          setFilter({ ...filter, name: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, name: '' })
+            setList(dataSource)
+          }
         }
-      }
-      if (e.target.name === 'milestone') {
-        setFilter({ ...filter, milestone: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, milestone: '' })
-          setList(dataSource)
+        if (e.target.name === 'milestone') {
+          setFilter({ ...filter, milestone: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, milestone: '' })
+            setList(dataSource)
+          }
         }
-      }
-      if (e.target.name === 'category') {
-        setFilter({ ...filter, category: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, category: '' })
-          setList(dataSource)
+        if (e.target.name === 'category') {
+          setFilter({ ...filter, category: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, category: '' })
+            setList(dataSource)
+          }
         }
       }
     } else {
       setFilter({ ...filter, date: dateString })
-      if (dateString === '') {
-        setFilter({ ...filter, date: '' })
-        setList(dataSource)
-      }
     }
   }
   const searchByJobfairName = (e) => {
