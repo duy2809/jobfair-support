@@ -46,6 +46,10 @@ const EditMilestonePage = () => {
         time: res.data.period,
       })
       setLoading(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }, [id])
 
@@ -93,6 +97,9 @@ const EditMilestonePage = () => {
         openNotificationSuccess()
       })
       .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         if (
           JSON.parse(error.response.request.response).errors.name[0]
           === 'The name has already been taken.'
@@ -128,6 +135,10 @@ const EditMilestonePage = () => {
               },
             ])
           }
+        }).catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
         })
       }
     }
@@ -145,6 +156,10 @@ const EditMilestonePage = () => {
               errors: ['このマイルストーン名は存在しています。'],
             },
           ])
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
     }

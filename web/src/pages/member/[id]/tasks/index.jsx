@@ -126,8 +126,11 @@ function TaskList() {
         setTasks(data)
         setLoading(false)
       })
-      .catch(() => {
+      .catch((error) => {
         setLoading(false)
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
   })
 

@@ -1,4 +1,5 @@
 import { Form, Modal, Button, Input, notification } from 'antd'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { updatePassword } from '../../../api/profile'
 import { webInit } from '../../../api/web-init'
@@ -9,6 +10,7 @@ const ButtonChangePassword = () => {
   const [isDisableOk, setIsDisableOk] = useState(true)
   const [isPasswordOkLoading, setIsPasswordOkLoading] = useState(false)
   const [form] = Form.useForm()
+  const router = useRouter()
 
   const validateMessages = {
     required: 'この項目は必須です。',
@@ -52,6 +54,10 @@ const ButtonChangePassword = () => {
           setIsPasswordOkLoading(false)
           openNotification('success', 'パスワードを正常に変更しました。')
           form.setFieldsValue({ current_password: '', password: '', confirm_password: '' })
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
     })

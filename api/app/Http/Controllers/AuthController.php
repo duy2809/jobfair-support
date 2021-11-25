@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Jobfair;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /**
      * Handle an authentication attempt.

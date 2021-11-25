@@ -116,6 +116,7 @@ function TaskList() {
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
+      // console.log(valueSearch, router.query)
       const taskNameParameter = router.query.name.toLowerCase()
       const filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
       setTemperaryData(filteredData)
@@ -165,7 +166,9 @@ function TaskList() {
         saveNotification()
       })
     } catch (error) {
-      Error(error.toString())
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else Error(error.toString())
     }
 
     setLoading(false)
@@ -467,16 +470,21 @@ function TaskList() {
     setLoading(true)
     getRole()
     initPagination()
-    await jftask(router.query.JFid).then((response) => {
-      loadTableData(response)
-    })
-    setLoading(false)
-    await getCategories().then((response) => {
-      loadCategoryOptions(response)
-    })
-    await getAllMileStone().then((response) => {
-      loadMilestoneOptions(response)
-    })
+    try {
+      await jftask(router.query.JFid).then((response) => {
+        loadTableData(response)
+      })
+      await getCategories().then((response) => {
+        loadCategoryOptions(response)
+      })
+      await getAllMileStone().then((response) => {
+        loadMilestoneOptions(response)
+      })
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
     setLoading(false)
   }, [role])
   // Search data on Table

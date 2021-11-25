@@ -127,7 +127,9 @@ function JFList() {
             openNotificationSuccess()
           })
         } catch (error) {
-          Error(error.toString())
+          if (error.response.status === 404) {
+            router.push('/404')
+          } else Error(error.toString())
         }
         setLoading(false)
       },
@@ -250,12 +252,20 @@ function JFList() {
     initPagination()
     await getJFList().then((response) => {
       addDataOfTable(response)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
     await webInit()
       .then((response) => {
         setUsers(response.data.auth.user.role)
       })
-      .catch((error) => Error(error.toString()))
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else Error(error.toString())
+      })
     setLoading(false)
   }, [])
 

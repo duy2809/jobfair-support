@@ -45,6 +45,10 @@ function ScheduleDetail() {
         milestoneCopy[index].tasks.push(task)
       })
       setMilestone(milestoneCopy)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }, [currentURL])
 

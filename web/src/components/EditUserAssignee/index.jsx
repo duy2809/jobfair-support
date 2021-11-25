@@ -82,15 +82,24 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
       assignee: newData,
     }
     setLoading(true)
-    await updateManagerTask(record.idtask, data).then(() => {
-      saveEditNotification()
-    })
-    await jftask(router.query.JFid).then((response) => {
-      loadTableData(response)
-    })
-    setLoading(false)
-    setRowEdit(null)
-    setIsEdit(false)
+    try {
+      await updateManagerTask(record.idtask, data).then(() => {
+        saveEditNotification()
+      })
+      await jftask(router.query.JFid).then((response) => {
+        loadTableData(response)
+      })
+      setLoading(false)
+      setRowEdit(null)
+      setIsEdit(false)
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+      setLoading(false)
+      setRowEdit(null)
+      setIsEdit(false)
+    }
   }
   useEffect(() => {
     fetchCTGR()

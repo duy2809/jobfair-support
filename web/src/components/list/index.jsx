@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Table, Input, DatePicker, Tooltip } from 'antd'
+import { Table, Input, DatePicker, Tooltip, Card } from 'antd'
 import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -322,7 +322,7 @@ const List = ({
           </div>
 
           {/* Table data */}
-          <div>
+          <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }}>
             <Table
               pagination={false}
               dataSource={
@@ -333,7 +333,7 @@ const List = ({
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
-          </div>
+          </Card>
         </div>
       ) : null}
     </div>

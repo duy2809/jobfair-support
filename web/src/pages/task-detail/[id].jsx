@@ -56,7 +56,10 @@ function TaskDetail() {
         saveNotification()
         setLoading(false)
       })
-      .catch(() => {
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         setLoading(false)
       })
   }
@@ -102,33 +105,44 @@ function TaskDetail() {
           description_of_detail: data.description_of_detail,
         })
         setTaskStatus(data.status)
-        console.log(data.users)
         setListMemberAssignee(data.users)
         setInfoJF({
           id: data.schedule.jobfair.id,
           name: data.schedule.jobfair.name,
         })
       }
-    }).catch(() => {
-      router.push('/error')
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else router.push('/error')
     })
   }
   const fetchBeforeTask = async () => {
     await beforeTask(idTask).then((response) => {
       setBeforeTask(response.data.before_tasks)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const fetchAfterTask = async () => {
     await afterTask(idTask).then((response) => {
       setAfterTasks(response.data.after_tasks)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
     await reviewers(idTask).then((response) => {
       setReviewersList(response.data)
-    }).catch(() => {
-      router.push('/error')
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else router.push('/error')
     })
   }
   const modelDelete = () => {

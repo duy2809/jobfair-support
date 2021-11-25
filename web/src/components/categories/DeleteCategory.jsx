@@ -4,12 +4,14 @@
 import { Modal, Space, notification } from 'antd'
 import { ExclamationCircleOutlined, DeleteTwoTone } from '@ant-design/icons'
 
+import { useRouter } from 'next/router'
 import { deleteCategory } from '../../api/category'
 
 const { confirm } = Modal
 
 const DeleteCategory = (props) => {
   const role = props.role
+  const router = useRouter()
   const setReloadPage = () => {
     props.reloadPage()
   }
@@ -32,9 +34,14 @@ const DeleteCategory = (props) => {
       centered: true,
       onOk() {
         if (role === 'superadmin') {
-          console.log('OK')
-          deleteCategory(props.record.id)
-          openNotificationSuccess()
+          try {
+            deleteCategory(props.record.id)
+            openNotificationSuccess()
+          } catch (error) {
+            if (error.response.status === 404) {
+              router.push('/404')
+            }
+          }
         }
       },
       onCancel() {

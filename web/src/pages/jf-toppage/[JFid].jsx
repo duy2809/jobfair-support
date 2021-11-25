@@ -7,6 +7,7 @@ import { ReactReduxContext } from 'react-redux'
 //   ExclamationCircleOutlined,
 //   CheckCircleTwoTone,
 // } from '@ant-design/icons'
+import { Card } from 'antd'
 import JfLayout from '../../layouts/layout-task'
 import ChartStatus from '../../components/chart-status'
 import ChartMilestone from '../../components/chart-milestone'
@@ -28,6 +29,10 @@ function jftoppage() {
     await jftask(idJf).then((response) => {
       setlistTask(response.data.schedule.tasks)
       setLoading(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -59,21 +64,22 @@ function jftoppage() {
                   <SearchSugges className="h-7" listTask={listTask} id={idJf} />
                 </div> */}
                 <div className="justify-center ... w-11/12 ml-12">
-                  <div className="status__global">
-                    <h3>ステータス</h3>
+                  <Card bordered={false} className="status__global">
+                    <h1>ステータス</h1>
                     <div className="status">
                       <ChartStatus task={listTask} id={idJf} />
                     </div>
-                  </div>
-                </div>
-                <div className="justify-center ... w-11/12 ml-12 mt-8">
-                  <div className="status__global">
-                    <h3>マイルストーン</h3>
-                    <div className="status">
-                      <ChartMilestone id={idJf} />
+                  </Card>
+                  <Card bordered={false} className="justify-center ... mt-8">
+                    <div className="status__global">
+                      <h1>マイルストーン</h1>
+                      <div className="status">
+                        <ChartMilestone id={idJf} />
+                      </div>
                     </div>
-                  </div>
+                  </Card>
                 </div>
+
               </div>
             </div>
           </div>

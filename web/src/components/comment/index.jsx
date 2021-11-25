@@ -3,6 +3,7 @@ import { Button, Divider, Form, Input, Modal, notification, Select, Tag, Tooltip
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
 import { addComment, getComments, updateComment } from '../../api/comment'
 import { taskData, getUserByCategory } from '../../api/task-detail'
 import { commentSelectors } from '../../store/modules/comment'
@@ -23,6 +24,7 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
   const [value, setValue] = useState('')
   const [editingComment, setEditingComment] = useState({})
   const { store } = useContext(ReactReduxContext)
+  const router = useRouter()
 
   const INIT_COMMENTS_NUM = 5
   const MORE_COMMENTS_NUM = 10
@@ -44,7 +46,9 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
         }
       }
     } catch (error) {
-      console.log(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
   const clearForm = () => {
@@ -77,7 +81,9 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
         setListUser(response.data)
       }
     } catch (err) {
-      console.log(err)
+      if (err.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 
@@ -86,6 +92,10 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
       form.setFieldsValue({
         status: response.data.status,
       })
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -191,7 +201,10 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
       }
       return newComment
     } catch (error) {
-      return error
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else return error
+      return null
     }
   }
 
@@ -221,7 +234,6 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
 
     const { status, assignee } = form.getFieldsValue()
     const newComment = { ...editingComment, content: value, status, assignee }
-    console.log(newComment)
     try {
       const response = await updateComment(newComment.id, newComment)
       if (response.status === 200) {
@@ -246,13 +258,9 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
         return newComments
       }
     } catch (error) {
-      notification.open({
-        icon: <ExclamationCircleTwoTone twoToneColor="red" />,
-        duration: 3,
-        message: '更新しました!',
-        onClick: () => {},
-      })
-      return error
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
     return newComment
   }

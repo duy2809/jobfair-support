@@ -94,6 +94,10 @@ function ScheduleList() {
         const { data } = res
         setSchedules(data)
         setFilterSchedules(data)
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       })
       .finally(() => {
         setDataLoading(false)
@@ -137,7 +141,10 @@ function ScheduleList() {
       .then(() => {
         saveNotification()
       })
-      .catch(() => {
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         notification.error({
           message: '失敗',
           description: '削除に失敗しました',
