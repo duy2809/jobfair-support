@@ -14,7 +14,11 @@ import {
   Row,
   Col,
 } from 'antd'
-import { FolderFilled, ExclamationCircleOutlined, FileFilled } from '@ant-design/icons'
+import {
+  FolderFilled,
+  ExclamationCircleOutlined,
+  FileFilled,
+} from '@ant-design/icons'
 import './style.scss'
 import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
@@ -22,7 +26,13 @@ import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import { ReactReduxContext } from 'react-redux'
 import Search from '../../components/file/search'
 import JfLayout from '../../layouts/layout-task'
-import { getLatest, getRootPathFile, deleteDocument, editDocument, getPath } from '../../api/file'
+import {
+  getLatest,
+  getRootPathFile,
+  deleteDocument,
+  editDocument,
+  getPath,
+} from '../../api/file'
 import ButtonAddFile from '../../components/file/ButtonAddFile'
 import ButtonAddFolder from '../../components/file/ButtonAddFolder'
 import Loading from '../../components/loading'
@@ -117,7 +127,8 @@ function File() {
 
                 const result = res.data.map((element) => ({
                   key: element.id,
-                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                  checkbox:
+                    user.get('id') === element.authorId || role !== 'member',
                   is_file: element.is_file,
                   name: element.name,
                   updater: element.updaterName,
@@ -154,7 +165,8 @@ function File() {
 
                 const result = res.data.map((element) => ({
                   key: element.id,
-                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                  checkbox:
+                    user.get('id') === element.authorId || role !== 'member',
                   is_file: element.is_file,
                   name: element.name,
                   updater: element.updaterName,
@@ -174,7 +186,11 @@ function File() {
           }}
           className="cursor-pointer flex flex-row items-center"
         >
-          {record.is_file ? <FileFilled className="mr-3" /> : <FolderFilled className="mr-3" />}
+          {record.is_file ? (
+            <FileFilled className="mr-3" />
+          ) : (
+            <FolderFilled className="mr-3" />
+          )}
           {name.length > 20 ? (
             <Tooltip placement="top" title={name}>
               <span
@@ -322,107 +338,111 @@ function File() {
     editDocument(data[currentRowIndex].key, {
       name: nameInput,
       link: linkInput,
-    }).then((res) => {
-      if (res.data.name) {
-        if (res.data.name[0] === 'The name has already been taken.') {
-          formEditFile.setFields([
-            {
-              name: 'name_file',
-              errors: ['このファイル名は既に使用されています。'],
-            },
-          ])
-          setIsDisableEditFile(true)
-          return
-        }
-      }
-      notification.success({
-        message: '成功に編集しました。',
-        duration: 3,
-      })
-      const result = res.data.map((element) => ({
-        key: element.id,
-        checkbox: user.get('id') === element.authorId || role !== 'member',
-        is_file: element.is_file,
-        name: element.name,
-        updater: element.updaterName,
-        updated_at: element.updated_at,
-        link: element.link,
-      }))
-      if (directory.length > 1) {
-        setData([
-          {
-            key: -1,
-            name: '..',
-            checkbox: false,
-            is_file: false,
-            updater: '',
-            updated_at: '',
-            link: '',
-          },
-          ...result,
-        ])
-      } else setData(result)
-      setIsModalEditFileVisible(false)
-      setIsCheckAll(false)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-      setIsModalEditFileVisible(false)
     })
+      .then((res) => {
+        if (res.data.name) {
+          if (res.data.name[0] === 'The name has already been taken.') {
+            formEditFile.setFields([
+              {
+                name: 'name_file',
+                errors: ['このファイル名は既に使用されています。'],
+              },
+            ])
+            setIsDisableEditFile(true)
+            return
+          }
+        }
+        notification.success({
+          message: '成功に編集しました。',
+          duration: 3,
+        })
+        const result = res.data.map((element) => ({
+          key: element.id,
+          checkbox: user.get('id') === element.authorId || role !== 'member',
+          is_file: element.is_file,
+          name: element.name,
+          updater: element.updaterName,
+          updated_at: element.updated_at,
+          link: element.link,
+        }))
+        if (directory.length > 1) {
+          setData([
+            {
+              key: -1,
+              name: '..',
+              checkbox: false,
+              is_file: false,
+              updater: '',
+              updated_at: '',
+              link: '',
+            },
+            ...result,
+          ])
+        } else setData(result)
+        setIsModalEditFileVisible(false)
+        setIsCheckAll(false)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+        setIsModalEditFileVisible(false)
+      })
   }
   const handleEditFolderOk = () => {
     const nameInput = formEditFolder.getFieldValue('name_folder')
     editDocument(data[currentRowIndex].key, {
       name: nameInput,
-    }).then((res) => {
-      if (res.data.name) {
-        if (res.data.name[0] === 'The name has already been taken.') {
-          formEditFolder.setFields([
-            {
-              name: 'name_folder',
-              errors: ['このフォルダ名は既に使用されています。'],
-            },
-          ])
-          setIsDisableEditFolder(true)
-          return
-        }
-      }
-      notification.success({
-        message: '成功に編集しました。',
-        duration: 3,
-      })
-      const result = res.data.map((element) => ({
-        key: element.id,
-        checkbox: user.get('id') === element.authorId || role !== 'member',
-        is_file: element.is_file,
-        name: element.name,
-        updater: element.updaterName,
-        updated_at: element.updated_at,
-        link: element.link,
-      }))
-      if (directory.length > 1) {
-        setData([
-          {
-            key: -1,
-            name: '..',
-            checkbox: false,
-            is_file: false,
-            updater: '',
-            updated_at: '',
-            link: '',
-          },
-          ...result,
-        ])
-      } else setData(result)
-      setIsModalEditFolderVisible(false)
-      setIsCheckAll(false)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-      setIsModalEditFolderVisible(false)
     })
+      .then((res) => {
+        if (res.data.name) {
+          if (res.data.name[0] === 'The name has already been taken.') {
+            formEditFolder.setFields([
+              {
+                name: 'name_folder',
+                errors: ['このフォルダ名は既に使用されています。'],
+              },
+            ])
+            setIsDisableEditFolder(true)
+            return
+          }
+        }
+        notification.success({
+          message: '成功に編集しました。',
+          duration: 3,
+        })
+        const result = res.data.map((element) => ({
+          key: element.id,
+          checkbox: user.get('id') === element.authorId || role !== 'member',
+          is_file: element.is_file,
+          name: element.name,
+          updater: element.updaterName,
+          updated_at: element.updated_at,
+          link: element.link,
+        }))
+        if (directory.length > 1) {
+          setData([
+            {
+              key: -1,
+              name: '..',
+              checkbox: false,
+              is_file: false,
+              updater: '',
+              updated_at: '',
+              link: '',
+            },
+            ...result,
+          ])
+        } else setData(result)
+        setIsModalEditFolderVisible(false)
+        setIsCheckAll(false)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+        setIsModalEditFolderVisible(false)
+      })
   }
   const handleOkDelete = async () => {
     try {
@@ -466,7 +486,7 @@ function File() {
       } else {
         openNotification(
           'error',
-          'このフォルダを削除する権限がないです!',
+          'このファイルとフォルダを削除する権限がないです!',
         )
       }
       setIsCheckAll(false)
@@ -538,7 +558,9 @@ function File() {
                                 })
                                 const result = res.data.map((element) => ({
                                   key: element.id,
-                                  checkbox: user.get('id') === element.authorId || role !== 'member',
+                                  checkbox:
+                                    user.get('id') === element.authorId
+                                    || role !== 'member',
                                   is_file: element.is_file,
                                   name: element.name,
                                   updater: element.updaterName,
@@ -573,7 +595,7 @@ function File() {
                         編集
                       </Button>
                       <Modal
-                        title="新しいファイル"
+                        title="ファイル編集"
                         okText="保存"
                         cancelText="キャンセル"
                         centered
@@ -597,9 +619,8 @@ function File() {
                           name="basic"
                           size="large"
                         >
-
                           <Form.Item
-                            label={<p className="font-bold mr-3">名前</p>}
+                            label={<span className="font-bold mr-3">名前</span>}
                             name="name_file"
                             rules={[
                               {
@@ -608,11 +629,17 @@ function File() {
                               },
                             ]}
                           >
-                            <Input type="text" size="large" placeholder="新しいファイル名" />
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="新しいファイル名"
+                            />
                           </Form.Item>
 
                           <Form.Item
-                            label={<p className="font-bold mr-1">リンク</p>}
+                            label={
+                              <span className="font-bold mr-3">リンク</span>
+                            }
                             name="link"
                             rules={[
                               {
@@ -621,12 +648,16 @@ function File() {
                               },
                             ]}
                           >
-                            <Input type="text" size="large" placeholder="グーグルドライブリンク" />
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="グーグルドライブリンク"
+                            />
                           </Form.Item>
                         </Form>
                       </Modal>
                       <Modal
-                        title="新しいフォルダ"
+                        title="フォルダ編集"
                         okText="保存"
                         cancelText="キャンセル"
                         centered
@@ -641,10 +672,24 @@ function File() {
                           form={formEditFolder}
                           onValuesChange={onChangeDisableEditFolder}
                           layout="horizontal"
+                          labelCol={{
+                            span: 6,
+                          }}
+                          wrapperCol={{
+                            span: 16,
+                          }}
+                          size="large"
                           name="basic"
                         >
                           <Form.Item
-                            label={<p className="font-bold mr-1">名前</p>}
+                            label={(
+                              <span
+                                style={{ marginBottom: 0 }}
+                                className="font-bold mr-3"
+                              >
+                                名前
+                              </span>
+                            )}
                             name="name_folder"
                             rules={[
                               {
@@ -653,7 +698,11 @@ function File() {
                               },
                             ]}
                           >
-                            <Input type="text" size="large" placeholder="新しいフォルダ名" />
+                            <Input
+                              type="text"
+                              size="large"
+                              placeholder="新しいフォルダ名"
+                            />
                           </Form.Item>
                         </Form>
                       </Modal>
@@ -663,7 +712,8 @@ function File() {
                         disabled={disableBtnDelete}
                         onClick={() => {
                           Modal.confirm({
-                            title: 'ファイルとフォルダを削除してもよろしいですか?',
+                            title:
+                              'ファイルとフォルダを削除してもよろしいですか?',
                             icon: <ExclamationCircleOutlined />,
                             content: '',
                             onOk: async () => {
@@ -705,7 +755,9 @@ function File() {
                       <>
                         <div
                           className={`my-2 px-6 ${
-                            index !== recentUpdated.length - 1 ? 'border-b border-black' : ''
+                            index !== recentUpdated.length - 1
+                              ? 'border-b border-black'
+                              : ''
                           }`}
                         >
                           <div className="flex items-center">
@@ -731,7 +783,10 @@ function File() {
                           <div className="py-2 flex flex-row items-center gap-2">
                             <Row>
                               <Col span={6}>
-                                <TimeAgo date={el.updated_at} formatter={formatter} />
+                                <TimeAgo
+                                  date={el.updated_at}
+                                  formatter={formatter}
+                                />
                               </Col>
                               <Col span={1}>
                                 <span>/</span>
@@ -757,11 +812,8 @@ function File() {
                                     {el.updater}
                                   </span>
                                 </Col>
-
                               )}
-
                             </Row>
-
                           </div>
                         </div>
                       </>
