@@ -790,20 +790,20 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.getInitialProps = async (ctx) => {
-//   const taskId = parseInt(ctx.query.id, 10)
-//   const userId = ctx.store.getState().get('auth').get('user').get('id')
-//   if (userId) {
-//     try {
-//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
-//         params: { userId, taskId },
-//       })
-//     } catch (err) {
-//       ctx.res?.writeHead(302, { Location: '/error' })
-//       ctx.res?.end()
-//     }
-//   }
-//   return {}
-// }
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
 EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
