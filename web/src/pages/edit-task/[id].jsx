@@ -48,6 +48,7 @@ function EditTask() {
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
   const [reviewersSelectTag, setReviewersSelectTag] = useState([])
+  const [countUserAs, setCountUserAs] = useState(null)
   const fetchTaskData = async () => {
     await reviewers(idTask)
       .then((response) => {
@@ -99,6 +100,7 @@ function EditTask() {
         reviewersData.forEach((element) => {
           listReviewers.push(element.name)
         })
+        setCountUserAs(listmember)
         form.setFieldsValue({
           name: data.name,
           category: data.categories[0].category_name,
@@ -108,7 +110,7 @@ function EditTask() {
           start_time: moment(data.start_time.split('-').join('/'), dateFormat),
           end_time: moment(data.end_time.split('-').join('/'), dateFormat),
           detail: data.description_of_detail,
-          reviewers: listReviewers.length === 0 ? ['None'] : listReviewers,
+          reviewers: listReviewers.length === 0 ? ['なし'] : listReviewers,
         })
       }
     }).catch((error) => {
@@ -177,9 +179,18 @@ function EditTask() {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
     const nameUser = form.getFieldValue('assignee')
+    setCountUserAs(nameUser)
+    if (nameUser.length < 2) {
+      form.setFieldsValue({
+        reviewers: ['なし'],
+      })
+    }
     if (nameUser.length !== 0) {
       document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
       setAssign(true)
+      form.setFieldsValue({
+
+      })
     }
     const onPreventMouseDown = (event) => {
       event.preventDefault()
@@ -194,6 +205,7 @@ function EditTask() {
           const nameUsers = form.getFieldValue('assignee')
           if (nameUsers.length === 0) {
             setAssign(false)
+            setCountUserAs(null)
             document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
           }
           if (nameUsers.length !== 0) {
@@ -284,7 +296,13 @@ function EditTask() {
       message: 'Method not allowed',
     })
   }
-
+  const openNotification = (type, message, description) => {
+    notification[type]({
+      message,
+      description,
+      duration: 2.5,
+    })
+  }
   const onFinishSuccess = async (values) => {
     let checkName = false
     // eslint-disable-next-line consistent-return
@@ -334,21 +352,26 @@ function EditTask() {
           status: values.status,
           reviewers: reviewersSelected,
         }
-        setdisableBtn(true)
-
-        await editTask(idTask, data)
-          .then(() => {
-            router.push(`/task-detail/${idTask}`)
-            saveNotification()
-          })
-          .catch((error) => {
-            setdisableBtn(false)
-            if (error.response.status === 404) {
-              router.push('/404')
-            }
-            forbidNotification()
-          })
-        // setdisableBtn(true)
+        if (countUserAs.length > 1 && reviewersSelected.length === 0) {
+          openNotification(
+            'error',
+            '複数の担当者を選択する場合にはレビュアーを選択してください',
+          )
+        } else {
+          setdisableBtn(true)
+          await editTask(idTask, data)
+            .then(() => {
+              router.push(`/task-detail/${idTask}`)
+              saveNotification()
+            })
+            .catch((error) => {
+              setdisableBtn(false)
+              if (error.response.status === 404) {
+                router.push('/404')
+              }
+              forbidNotification()
+            })
+        }
       } catch (error) {
         setdisableBtn(false)
         if (error.response.status === 404) {
@@ -421,7 +444,7 @@ function EditTask() {
         setafterTaskNew(notSelectedTask)
       })
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response.status === 404 && idJF) {
           router.push('/404')
         }
       })
@@ -537,7 +560,12 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
+                  <Form.Item
+                    label="レビュアー"
+                    name="reviewers"
+                    className="tag_a"
+                  >
+
                     <Select
                       showArrow
                       size="large"
@@ -545,10 +573,6 @@ function EditTask() {
                       style={{ width: '100%' }}
                       onChange={onReviewersChange}
                     >
-                      <Select.Option className="validate-user" key={undefined} value={undefined}>
-                        None
-                      </Select.Option>
-
                       {reviewersSelectTag.map((element) => (
                         <Select.Option
                           className="validate-user"
@@ -559,6 +583,7 @@ function EditTask() {
                         </Select.Option>
                       ))}
                     </Select>
+
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
