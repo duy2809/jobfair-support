@@ -18,7 +18,6 @@ import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 import Loading from '../../components/loading'
 import './style.scss'
-import { createChannel, updateChannelId, addAdminToChannel } from '../../api/slack'
 
 const index = () => {
   // page state.
@@ -150,21 +149,6 @@ const index = () => {
 
       const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
-        const channelname = data.name.toLowerCase()
-        await createChannel(channelname).then((res) => {
-          // alert(res.data.ok)
-          if (res.data.ok === true) {
-            updateChannelId(data.name, res.data.channel.id).then((respo) => {
-              if (respo.request.status === 200) {
-                const dataUserToChannel = {
-                  admin_id: data.jobfair_admin_id,
-                  JFName: data.name,
-                }
-                addAdminToChannel(dataUserToChannel)
-              }
-            })
-          }
-        })
         setLoading(false)
         routeTo(`/jf-toppage/${response.data.id}`)
         saveNotification()

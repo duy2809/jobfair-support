@@ -302,7 +302,6 @@ function TaskList() {
                 record={record}
                 loadTableData={loadTableData}
                 setLoading={setLoading}
-                JFid={router.query.JFid}
               />
             )
           }

@@ -14,10 +14,8 @@ import {
 import { getCategorys } from '../../api/edit-task'
 import { updateManagerTask } from '../../api/task-detail'
 import { jftask } from '../../api/jf-toppage'
-import { addUserToChannel } from '../../api/slack'
-
 // eslint-disable-next-line react/prop-types
-export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit, JFid }) {
+export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit }) {
   // eslint-disable-next-line react/prop-types
   const router = useRouter()
   const [memberCategory, setMemberCategory] = useState()
