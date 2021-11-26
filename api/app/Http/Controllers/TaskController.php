@@ -312,7 +312,7 @@ class TaskController extends Controller
                     $url = config('app.url');
                     $listUserId = implode('>,<@', $slackId);
                     $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                    $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                    $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
                 }
             }
         }
@@ -754,7 +754,7 @@ class TaskController extends Controller
                         $url = config('app.url');
                         $listUserId = implode('>,<@', $slackId);
                         $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                        $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                        $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
                     }
                 }
             }
@@ -984,7 +984,7 @@ class TaskController extends Controller
                     $url = config('app.url');
                     $listUserId = implode('>,<@', $slackId);
                     $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                    $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                    $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
                 }
 
                 //comment history

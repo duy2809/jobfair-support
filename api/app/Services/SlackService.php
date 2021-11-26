@@ -70,7 +70,7 @@ class SlackService
         }
     }
 
-    public function createChannelBot($JfName, $channelId)
+    public function createChannelBot($jfName, $channelId)
     {
         $slacktoken = config('app.slack_token');
 
@@ -80,7 +80,7 @@ class SlackService
             ])->post('https://slack.com/api/chat.postMessage', [
                 'channel' => $channelId,
                 'as_user' => 'U02MG72M8FL',
-                'text' => "こちらはJobfair {$JfName}の情報交換を行うためのチャンネルです",
+                'text' => "こちらはJobfair {$jfName}の情報交換を行うためのチャンネルです",
             ]);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th], 400);
