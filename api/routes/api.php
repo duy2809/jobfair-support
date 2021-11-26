@@ -183,3 +183,9 @@ Route::get('/show-more-comment/{id}', 'CommentController@showMore');
 Route::get('/jobfair-comment/{JFid}', 'CommentController@showMoreInJobfair');
 Route::delete('/comment/{id}', 'CommentController@destroy');
 Route::post('/comment/{id}', 'CommentController@update');
+
+//Slack
+Route::get('/createchannel/{name}', 'SlackController@createChannel');
+Route::get('/updatechannelid/{name}/{channelid}', 'SlackController@updateChannelId');
+Route::post('/add-user-to-channel', 'SlackController@addUserToChannel');
+Route::post('/add-admin-to-channel', 'SlackController@addAdminToChannel');
