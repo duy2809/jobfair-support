@@ -94,6 +94,8 @@ class JobfairController extends Controller
         $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
 
         return $jobfair;
+        // return response()->json(['message' => $response], 200);
+
     }
 
     /**
