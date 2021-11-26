@@ -14,9 +14,12 @@ use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
-    public function __construct()
+    protected $slack;
+
+    public function __construct(\App\Services\SlackService $slack)
     {
         $this->middleware('auth')->except('isAdminJobfair');
+        $this->slack = $slack;
     }
 
     /**
@@ -74,6 +77,19 @@ class JobfairController extends Controller
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
+
+        //Slack
+        $channelname = strtolower($jobfair->name);
+        $response = $this->slack->createChannel($channelname);
+        $res = json_decode($response);
+        if ($res->ok === true) {
+            $jobfair->channel_id = $res->channel->id;
+            $jobfair->save();
+            $slackid = User::where('id', '=', $jobfair->jobfair_admin_id)->get(['chatwork_id']);
+            $dataAdminToChannel = [$jobfair->channel_id, $slackid[0]->chatwork_id];
+            $this->slack->addAdminToChannel($dataAdminToChannel);
+            $test = $this->slack->createChannelBot($jobfair->name, $res->channel->id);
+        }
 
         $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
 

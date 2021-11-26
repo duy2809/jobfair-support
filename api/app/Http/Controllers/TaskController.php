@@ -19,6 +19,13 @@ use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
+    protected $slack;
+
+    public function __construct(\App\Services\SlackService $slack)
+    {
+        $this->slack = $slack;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -286,14 +293,28 @@ class TaskController extends Controller
                 // notification for new assignees
                 $newAssignees = array_diff($listMember, $listOldMember);
                 $listId = [];
+                $slackId = [];
                 foreach ($newAssignees as $newAssignee) {
                     $listId[] = $newAssignee;
+                    $slackId[] = User::where('id', '=', $newAssignee)->get(['chatwork_id']);
                 }
 
                 Notification::send(
                     User::whereIn('id', $listId)->get(),
                     new TaskCreated($task, auth()->user())
                 );
+                //Slack
+                if ($listId !== []) {
+                    $jobfairId = $task->schedule->jobfair->id;
+                    $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
+                    $listSlackId = implode(' ,', $slackId);
+                    $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                    $url = config('app.url');
+                    $listUserId = implode('>,<@', $slackId);
+                    $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                    $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                }
+
             }
         }
 
@@ -686,14 +707,28 @@ class TaskController extends Controller
                     // notification for new assignees
                     $newAssignees = array_diff($listMember, $listOldMember);
                     $listId = [];
+                    $slackId = [];
                     foreach ($newAssignees as $newAssignee) {
                         $listId[] = $newAssignee;
+                        $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id']);
+                        $slackId[] = $slack[0]->chatwork_id;
                     }
 
                     Notification::send(
                         User::whereIn('id', $listId)->get(),
                         new TaskCreated($task, auth()->user())
                     );
+                    //Slack
+                    if ($listId !== []) {
+                        $jobfairId = $task->schedule->jobfair->id;
+                        $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
+                        $listSlackId = implode(' ,', $slackId);
+                        $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                        $url = config('app.url');
+                        $listUserId = implode('>,<@', $slackId);
+                        $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                        $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                    }
                 }
             }
 
@@ -902,14 +937,28 @@ class TaskController extends Controller
                 // notification for new assignees
                 $newAssignees = array_diff($listMember, $listOldMember);
                 $listId = [];
+                $slackId = [];
                 foreach ($newAssignees as $newAssignee) {
                     $listId[] = $newAssignee;
+                    $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id']);
+                    $slackId[] = $slack[0]->chatwork_id;
                 }
 
                 Notification::send(
                     User::whereIn('id', $listId)->get(),
                     new TaskCreated($task, auth()->user())
                 );
+                //Slack
+                if ($listId !== []) {
+                    $jobfairId = $task->schedule->jobfair->id;
+                    $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
+                    $listSlackId = implode(' ,', $slackId);
+                    $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                    $url = config('app.url');
+                    $listUserId = implode('>,<@', $slackId);
+                    $text = "<@{$listUserId}>\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                    $response = $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                }
 
                 //comment history
                 $comment = Comment::create([
