@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { getJobfairComment } from '../../api/comment'
 import './style.scss'
 import CommentChannel from '../../libs/echo/channels/comment-channel'
@@ -15,6 +16,8 @@ function RecentUpdate(props) {
   // const [loading, setLoading] = useState(false)
   const [start, setStart] = useState(0)
   const [list, setList] = useState([])
+
+  const router = useRouter()
 
   const changeFormat = (date) => {
     const temp = new Date(date)
@@ -45,15 +48,17 @@ function RecentUpdate(props) {
     setList([])
     getJobfairComment(props.JFid, start, 5).then((response) => {
       addData(response.data)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
     new CommentChannel()
       .listen((data) => {
         setList((prev) => {
           let newList = [...prev]
           if (props.JFid === 'all' || data.jobfair_id.toString() === props.JFid.toString()) {
-            console.log([data, ...newList])
             newList = [data, ...newList]
-            console.log(newList)
 
             let currentDate = ''
             newList.forEach((element) => {
@@ -92,7 +97,11 @@ function RecentUpdate(props) {
     await getJobfairComment(props.JFid, start + 5, 5).then((response) => {
       addData(response.data)
     })
-    setStart(start + 5)
+    setStart(start + 5).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    })
   }
   const loadMore = (
     <div

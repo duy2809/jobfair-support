@@ -8,6 +8,7 @@ import {
 import { Avatar, Button, Divider, Modal, notification, Popover, Typography } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
+import { useRouter } from 'next/router'
 import React, { useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import * as deleteCommentAPI from '../../api/comment'
@@ -23,6 +24,7 @@ function Comment(props) {
   const [commentOverflow, setCommentOverflow] = useState(false)
   const { store } = useContext(ReactReduxContext)
   const [userId, setUserId] = useState(1)
+  const router = useRouter()
   // const classNames = (...classes) => classes.filter(Boolean).join(' ')
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
@@ -62,7 +64,10 @@ function Comment(props) {
       }
       return comments
     } catch (error) {
-      return error
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else return error
+      return null
     }
   }
   const onDeleteClick = () => {

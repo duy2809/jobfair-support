@@ -61,7 +61,10 @@ function TaskDetail() {
         saveNotification()
         setLoading(false)
       })
-      .catch(() => {
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
         setLoading(false)
       })
   }
@@ -108,7 +111,6 @@ function TaskDetail() {
             description_of_detail: data.description_of_detail,
           })
           setTaskStatus(data.status)
-          console.log(data.users)
           setListMemberAssignee(data.users)
           setInfoJF({
             id: data.schedule.jobfair.id,
@@ -116,19 +118,33 @@ function TaskDetail() {
           })
         }
       })
-      .catch(() => {
-        router.push('/error')
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else router.push('/error')
       })
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask).then((response) => {
-      setBeforeTask(response.data.before_tasks)
-    })
+    await beforeTask(idTask)
+      .then((response) => {
+        setBeforeTask(response.data.before_tasks)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const fetchAfterTask = async () => {
-    await afterTask(idTask).then((response) => {
-      setAfterTasks(response.data.after_tasks)
-    })
+    await afterTask(idTask)
+      .then((response) => {
+        setAfterTasks(response.data.after_tasks)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
@@ -136,8 +152,10 @@ function TaskDetail() {
       .then((response) => {
         setReviewersList(response.data)
       })
-      .catch(() => {
-        router.push('/error')
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else router.push('/error')
       })
   }
   const modelDelete = () => {
@@ -432,29 +450,27 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-2 mx-4">
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          reviewersList.map((item) => (
+              {reviewersList.length !== 0 && (
+                <div className="grid grid-cols-2 mx-4">
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
-                        ) : (
-                          <li className="task__chil">None</li>
-                        )}
-                      </ul>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div className=" mx-12 mt-5">
                 <p className="font-bold">詳細</p>
-                <div className=" mx-10 h-44 demo-infinite-container">
+                <div className=" mx-10  demo-infinite-container">
                   <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                 </div>
               </div>

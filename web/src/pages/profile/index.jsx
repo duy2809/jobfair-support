@@ -24,22 +24,28 @@ const Profile = () => {
     setUser(store.getState().get('auth').get('user'))
     if (user) {
       const id = user.get('id')
-      await getProfile(id).then((response) => {
-        setNameUser(response.data.name)
-        setChatWorkIdUser(response.data.chatwork_id)
-        setEmailUser(response.data.email)
-      })
-      await getAvatar(id)
-        .then((res) => {
-          if (!res.data) {
-            setAvatarUser(null)
-          } else {
-            const link = `../../api/avatar/${id}`
-            setAvatarUser(link)
-          }
+      try {
+        await getProfile(id).then((response) => {
+          setNameUser(response.data.name)
+          setChatWorkIdUser(response.data.chatwork_id)
+          setEmailUser(response.data.email)
         })
-        .catch(() => setAvatarUser(null))
-      setLoading(false)
+        await getAvatar(id)
+          .then((res) => {
+            if (!res.data) {
+              setAvatarUser(null)
+            } else {
+              const link = `../../api/avatar/${id}`
+              setAvatarUser(link)
+            }
+          })
+          .catch(() => setAvatarUser(null))
+        setLoading(false)
+      } catch (error) {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      }
     }
   }, [user])
 

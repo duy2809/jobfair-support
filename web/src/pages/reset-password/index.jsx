@@ -49,6 +49,9 @@ const ResetPage = () => {
       if (error.request.status === 400) {
         openNotification('error', 'パスワードを正常に変更しません')
       }
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
     setLoading(false)
   }
@@ -64,7 +67,7 @@ const ResetPage = () => {
         <Layout.Main>
           <div className="h-screen flex flex-col items-center bg-white pt-32">
             <img src="/images/logo.png" alt="logo" className="w-48" />
-            <p className="text-3xl my-8">ログインパスワード変更</p>
+            <p className="text-3xl my-8">パスワード変更</p>
             <Form
               form={form}
               name="reset_password"

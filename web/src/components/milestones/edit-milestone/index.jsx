@@ -5,6 +5,7 @@ import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
 import { Modal, notification, Form, Input, Select } from 'antd'
 import { EditTwoTone } from '@ant-design/icons'
+import { useRouter } from 'next/router'
 import {
   updateMilestone,
   getNameExitEdit,
@@ -25,6 +26,7 @@ const EditMilestone = (props) => {
   const role = props.role
   const [loading, setLoading] = useState(false)
   const { Option } = Select
+  const router = useRouter()
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -44,6 +46,10 @@ const EditMilestone = (props) => {
         time: res.data.period,
       })
       setLoading(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }, [])
 
@@ -92,6 +98,8 @@ const EditMilestone = (props) => {
               //   message: 'このマイルストーン名は存在しています',
               //   duration: 3,
               // })
+            } else if (error.response.status === 404) {
+              router.push('/404')
             }
           })
         setLoading(false)
@@ -107,6 +115,10 @@ const EditMilestone = (props) => {
                   errors: ['このマイルストーン名は存在しています。'],
                 },
               ])
+            }
+          }).catch((error) => {
+            if (error.response.status === 404) {
+              router.push('/404')
             }
           })
         }
@@ -130,6 +142,10 @@ const EditMilestone = (props) => {
               errors: ['このマイルストーン名は存在しています。'],
             },
           ])
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
     }

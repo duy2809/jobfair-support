@@ -7,6 +7,7 @@ import './styles.scss'
 import { ReactReduxContext } from 'react-redux'
 import TimeAgo from 'react-timeago'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
+import { useRouter } from 'next/router'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import NotificationChannel from '../../libs/echo/channels/notification-channel'
 import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
@@ -24,6 +25,7 @@ export default function Notification() {
   const [checkUpdate, setCheckUpdate] = useState(0)
   const [dataNoti, setDataNoti] = useState([])
   const formatter = buildFormatter(frenchStrings)
+  const router = useRouter()
 
   const fetchData = async () => {
     setLoading(true)
@@ -95,7 +97,9 @@ export default function Notification() {
         setLoading(false)
       }
     } catch (err) {
-      console.error(err)
+      if (err.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 
@@ -192,6 +196,10 @@ export default function Notification() {
         return
       }
       setDeleteNoti(deleteNotiCheck + 1)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -201,6 +209,10 @@ export default function Notification() {
         return
       }
       setCheckUpdate(checkUpdate + 1)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
@@ -211,11 +223,15 @@ export default function Notification() {
       }
       setCheckUpdate(checkUpdate + 1)
       setUnReadLength(0)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 
   const handlerClick = (url) => {
-    window.location.href = url
+    router.push(url)
   }
 
   // const convertDate = (date) => {

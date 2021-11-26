@@ -47,8 +47,14 @@ function KanBan() {
   const currentUserId = store.getState().get('auth').get('user').get('id')
 
   const getJf = async () => {
-    const { data } = await getJobfair(idJf * 1, currentUserId)
-    setIsAdminJobfair(data)
+    try {
+      const { data } = await getJobfair(idJf * 1, currentUserId)
+      setIsAdminJobfair(data)
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
     // if (data.length > 0) {
     //   setIsControllable(true)
     // }
@@ -154,7 +160,9 @@ function KanBan() {
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)
-      console.error(error)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 
@@ -189,7 +197,11 @@ function KanBan() {
       }
     })
 
-    const isAssignee = await checkAssignee(taskID, currentUserId)
+    const isAssignee = await checkAssignee(taskID, currentUserId).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    })
     if (isAdminJobfair.length === 0 && isAssignee.data === ''
     ) {
       return
@@ -254,8 +266,14 @@ function KanBan() {
     if (destination.droppableId !== '中断') {
       finishTaskIds.forEach(async (taskId) => {
         if (typeof taskId === 'string') {
-          await updateTask(taskId * 1, { status: destination.droppableId })
-          await fetchData()
+          try {
+            await updateTask(taskId * 1, { status: destination.droppableId })
+            await fetchData()
+          } catch (error) {
+            if (error.response.status === 404) {
+              router.push('/404')
+            }
+          }
         }
       })
     }
@@ -271,11 +289,17 @@ function KanBan() {
     setTask(newState)
   }
   const resolved = async () => {
-    await updateTask(id, { memo, status: '中断' })
-    await fetchData()
-    setMemo('')
-    setId('')
-    setVisible(false)
+    try {
+      await updateTask(id, { memo, status: '中断' })
+      await fetchData()
+      setMemo('')
+      setId('')
+      setVisible(false)
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
   }
 
   const rejected = () => {

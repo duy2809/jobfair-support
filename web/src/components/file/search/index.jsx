@@ -123,29 +123,35 @@ export default function Search() {
         updaterId: updaterIdInput,
       }
     }
-    const res = await searchFile({
-      params: argument,
-    })
-    if (res.data) {
-      const result = res.data.map((element) => ({
-        key: element.id,
-        checkbox: false,
-        is_file: element.is_file,
-        name: element.name,
-        updater: element.updaterName,
-        updated_at: element.updated_at,
-        link: element.link,
-        path: element.path,
-      }))
-      setData(result)
+    try {
+      const res = await searchFile({
+        params: argument,
+      })
+      if (res.data) {
+        const result = res.data.map((element) => ({
+          key: element.id,
+          checkbox: false,
+          is_file: element.is_file,
+          name: element.name,
+          updater: element.updaterName,
+          updated_at: element.updated_at,
+          link: element.link,
+          path: element.path,
+        }))
+        setData(result)
+      }
+      setIsModalVisible(true)
+      form.setFieldsValue({
+        name: '',
+        start_date: '',
+        end_date: '',
+        updater: '',
+      })
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
-    setIsModalVisible(true)
-    form.setFieldsValue({
-      name: '',
-      start_date: '',
-      end_date: '',
-      updater: '',
-    })
   }
   // const onFinishFailed = () => {
   //   console.log(1)

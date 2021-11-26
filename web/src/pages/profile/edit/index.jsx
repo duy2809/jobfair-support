@@ -49,20 +49,28 @@ const EditProfilePage = () => {
     const formData = new FormData()
     formData.append('avatar', image)
 
-    const res = await webInit()
-    const id = res.data.auth.user.id
-    const { data } = await axios.post(
-      `/profile/${id}/update_avatar`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'X-XSRF-TOKEN': cookies.read('XSRF-TOKEN'),
+    try {
+      const res = await webInit()
+      const id = res.data.auth.user.id
+      const { data } = await axios.post(
+        `/profile/${id}/update_avatar`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-XSRF-TOKEN': cookies.read('XSRF-TOKEN'),
+          },
         },
-      },
-    )
-    setLoading(false)
-    return data
+      )
+      setLoading(false)
+      return data
+    } catch (error) {
+      setLoading(false)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+      return null
+    }
   }
 
   useEffect(() => {
@@ -77,54 +85,69 @@ const EditProfilePage = () => {
 
   useEffect(async () => {
     setLoading(true)
-    const resId = await webInit()
-    const id = resId.data.auth.user.id
-    const result = await getProfile(id)
-    const data = result.data
-    setNameInput(data.name)
-    setIdChatWordInput(data.chatwork_id)
-    setEmailInput(data.email)
-    setPathName(data.avatar)
-    form.setFieldsValue({
-      name: data.name,
-      chatwork: data.chatwork_id,
-      email: data.email,
-    })
-    setLoading(false)
+    try {
+      const resId = await webInit()
+      const id = resId.data.auth.user.id
+      const result = await getProfile(id)
+      const data = result.data
+      setNameInput(data.name)
+      setIdChatWordInput(data.chatwork_id)
+      setEmailInput(data.email)
+      setPathName(data.avatar)
+      form.setFieldsValue({
+        name: data.name,
+        chatwork: data.chatwork_id,
+        email: data.email,
+      })
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
+    }
   }, [])
 
   const fetchData = async (emailIn, nameIn) => {
     setLoading(true)
-    const resId = await webInit()
-    const id = resId.data.auth.user.id
-    const resCur = await getProfile(id)
-    const emailCur = resCur.data.email
-    const nameCur = resCur.data.name
-    const res = await getAllProfile()
-    const dataEmail = res.data.map((item) => item.email)
-    const email = dataEmail.find((item) => item === emailIn)
-    const dataName = res.data.map((item) => item.name)
-    const name = dataName.find((item) => item === nameIn)
-    // alert(nameInput)
-    if (email && email !== emailCur) {
-      setIsDisable(true)
-      form.setFields([
-        {
-          name: 'email',
-          errors: ['このメールは既に存在しました。'],
-        },
-      ])
+    try {
+      const resId = await webInit()
+      const id = resId.data.auth.user.id
+      const resCur = await getProfile(id)
+      const emailCur = resCur.data.email
+      const nameCur = resCur.data.name
+      const res = await getAllProfile()
+      const dataEmail = res.data.map((item) => item.email)
+      const email = dataEmail.find((item) => item === emailIn)
+      const dataName = res.data.map((item) => item.name)
+      const name = dataName.find((item) => item === nameIn)
+      // alert(nameInput)
+      if (email && email !== emailCur) {
+        setIsDisable(true)
+        form.setFields([
+          {
+            name: 'email',
+            errors: ['このメールは既に存在しました。'],
+          },
+        ])
+      }
+      if (name && name !== nameCur) {
+        setIsDisable(true)
+        form.setFields([
+          {
+            name: 'name',
+            errors: ['このユーザー名は既に存在しました。'],
+          },
+        ])
+      }
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
-    if (name && name !== nameCur) {
-      setIsDisable(true)
-      form.setFields([
-        {
-          name: 'name',
-          errors: ['このユーザー名は既に存在しました。'],
-        },
-      ])
-    }
-    setLoading(false)
   }
 
   useEffect(() => {
@@ -172,6 +195,11 @@ const EditProfilePage = () => {
           router.push('/profile/')
           setLoading(false)
           openNotificationSuccess()
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          setLoading(false)
+          router.push('/404')
         }
       })
     }

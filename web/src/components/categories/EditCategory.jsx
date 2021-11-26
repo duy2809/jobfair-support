@@ -4,6 +4,7 @@
 import 'antd/dist/antd.css'
 import React, { useState, useEffect } from 'react'
 import { Modal, Form, notification, Input } from 'antd'
+import { useRouter } from 'next/router'
 import { EditTwoTone } from '@ant-design/icons'
 import { updateCategory, getCategories, checkUniqueEdit } from '../../api/category'
 import Loading from '../loading'
@@ -16,6 +17,7 @@ const EditCategory = (props) => {
   const specialCharRegex = new RegExp('[ 　]')
   const role = props.role
   const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -29,6 +31,10 @@ const EditCategory = (props) => {
         name: res.data.name,
       })
       setLoading(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }, [])
 
@@ -57,6 +63,10 @@ const EditCategory = (props) => {
               errors: ['このカテゴリ名は存在しています'],
             },
           ])
+        }
+      }).catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
         }
       })
     }
@@ -89,7 +99,9 @@ const EditCategory = (props) => {
           //   message: 'このカテゴリ名は存在しています',
           //   duration: 3,
           // })
-          console.log(error)
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
         })
       setLoading(false)
     }

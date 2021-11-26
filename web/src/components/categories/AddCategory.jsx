@@ -4,6 +4,7 @@
 import 'antd/dist/antd.css'
 import React, { useState } from 'react'
 import { Modal, Button, notification, Form, Input } from 'antd'
+import { useRouter } from 'next/router'
 import { addCategory, checkUniqueAdd } from '../../api/category'
 import Loading from '../loading'
 import * as Extensions from '~/utils/extensions'
@@ -18,6 +19,7 @@ const AddCategory = (props) => {
   const [errorUnique, setErrorUnique] = useState(true)
   const role = props.role
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   function toHalfWidth(fullWidthStr) {
     return fullWidthStr.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xfee0))
@@ -47,17 +49,21 @@ const AddCategory = (props) => {
       })
         .then(() => openNotificationSuccess())
         .catch((error) => {
-          const errorResponse = JSON.parse(error.request.response)
-          // notification.error({
-          //   message: errorResponse.errors.category_name[0],
-          //   duration: 3,
-          // })
-          form.setFields([
-            {
-              name: 'name',
-              errors: [errorResponse.errors.category_name[0]],
-            },
-          ])
+          if (error.response.status === 404) {
+            router.push('/404')
+          } else {
+            const errorResponse = JSON.parse(error.request.response)
+            // notification.error({
+            //   message: errorResponse.errors.category_name[0],
+            //   duration: 3,
+            // })
+            form.setFields([
+              {
+                name: 'name',
+                errors: [errorResponse.errors.category_name[0]],
+              },
+            ])
+          }
         })
       setLoading(false)
     }

@@ -29,6 +29,10 @@ function jftoppage() {
     await jftask(idJf).then((response) => {
       setlistTask(response.data.schedule.tasks)
       setLoading(false)
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     })
   }
 

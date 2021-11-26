@@ -52,17 +52,29 @@ const index = () => {
     return true
   }
   const getMilestone = async (id) => {
-    const milestones = await editApi.getMilestone(id)
-    if (milestones.data.milestones) {
-      setlistMilestone(Array.from(milestones.data.milestones))
+    try {
+      const milestones = await editApi.getMilestone(id)
+      if (milestones.data.milestones) {
+        setlistMilestone(Array.from(milestones.data.milestones))
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
 
   const getTempateTask = async (id) => {
-    const schedule = await editApi.getTemplateTaskList(id)
-    const taskList = schedule.data.template_tasks.map((task) => task.name)
-    if (taskList) {
-      setlistTask(Array.from(taskList))
+    try {
+      const schedule = await editApi.getTemplateTaskList(id)
+      const taskList = schedule.data.template_tasks.map((task) => task.name)
+      if (taskList) {
+        setlistTask(Array.from(taskList))
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
     }
   }
   useEffect(() => {
@@ -98,7 +110,10 @@ const index = () => {
         // Extensions.unSaveChangeConfirm(true)
         return null
       } catch (error) {
-        return Error(error.toString())
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else return Error(error.toString())
+        return null
       }
     }
     fetchAPI()
@@ -194,12 +209,18 @@ const index = () => {
             saveNotification()
           }
         })
-        .catch(() => {
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
           setDisableBtn(false)
         })
     } catch (error) {
       setLoading(false)
       setDisableBtn(false)
+      if (error.response.status === 404) {
+        router.push('/404')
+      }
       const isDuplicate = JSON.parse(error.request.response).message
       if (isDuplicate.toLocaleLowerCase().includes('duplicate')) {
         notification.error({

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip, Tag, Card } from 'antd'
+import { Button, Table, Input, Tooltip, Tag } from 'antd'
 import {
   SearchOutlined,
   DownOutlined,
@@ -16,7 +16,6 @@ import './style.scss'
 const TaskSubTable = ({
   searchIcon,
   text,
-  showTimeInput,
   taskReviewerList,
   dataColumn,
   dataSource,
@@ -32,11 +31,6 @@ const TaskSubTable = ({
   const [list, setList] = useState([])
   const [optionStatus, setOptionStatus] = useState('すべて')
   const [optionReviewer, setOptionReviewer] = useState('すべて')
-
-  // const [searchNameValue, setSearchNameValue] = useState('')
-  // const [searchDateValue, setSearchDateValue] = useState('')
-  // const [tasks, setTasks] = useState([])
-
   const [filter, setFilter] = useState(() => ({
     name: '',
     date: '',
@@ -61,13 +55,8 @@ const TaskSubTable = ({
     return `/task-detail/${id}`
   }
   useEffect(() => {
-    // console.log(filter)
     setList(dataSource)
     const today = new Date()
-    // const currentDate = `${today.getFullYear()}-${
-    //   today.getMonth() + 1
-    // }-${today.getDate()}`
-
     dataSource.map((data) => {
       if (data.status === '中断') {
         data.time = '中断'
@@ -81,10 +70,8 @@ const TaskSubTable = ({
 
       return null
     })
-    // console.log(dataSource)
     setNewDataColumn(
       dataColumn.map((dataItem) => {
-        // console.log(taskReviewerList)
         if (dataItem.title === 'タスク名') {
           dataItem.render = (row) => (
             <>
@@ -100,48 +87,50 @@ const TaskSubTable = ({
           )
         }
         if (dataItem.title === 'タイム') {
-          dataItem.render = (row) => dataSource.map((dataLine) => {
+          dataItem.render = (row) => {
             let color = ''
-            if (dataLine.time.indexOf('中断') > -1) {
+            if (row.indexOf('中断') !== -1) {
               color = 'geekblue'
-            } else if (dataLine.time.indexOf('日遅くれ') > -1) {
+            } else if (row.indexOf('日遅くれ') !== -1) {
               color = 'volcano'
-            } else if (dataLine.time.indexOf('後') > -1) {
+            } else if (row.indexOf('後') !== -1) {
               color = 'green'
             }
-            if (dataLine.time === row) {
-              return (
-                <Tag color={color} key={dataLine.time}>
-                  {dataLine.time}
-                </Tag>
-              )
-            }
-            return null
-          })
+            return (
+              <Tag color={color} key={row}>
+                {row}
+              </Tag>
+            )
+          }
         }
         return dataItem
       }),
     )
   }, [dataSource])
   useEffect(() => {
-    console.log(filter)
     let datas = [...list]
     if (filter) {
-      // if (filter.name) {
-      //   datas = datas.filter(
-      //     (data) => data.name.toLowerCase().indexOf(filter.name.toLowerCase()) !== -1,
-      //   )
-      // }
-      if (filter.status) {
+      if (filter.status === '進行中') {
         datas = datas.filter(
-          (data) => data.status.toLowerCase().indexOf(filter.status.toLowerCase().replace(/\s/g, '')) !== -1,
+          (data) => data.time.indexOf('後') !== -1,
+        )
+      } else if (filter.status === '今まで') {
+        datas = datas.filter(
+          (data) => data.time.indexOf('今') !== -1,
+        )
+      } else if (filter.status === '期限きれ') {
+        datas = datas.filter(
+          (data) => data.time.indexOf('日遅くれ') !== -1,
+        )
+      } else if (filter.status === '中断') {
+        datas = datas.filter(
+          (data) => data.time.indexOf('中断') !== -1,
         )
       }
       if (filter.reviewer_task.length > 0) {
         datas = datas.filter(
           (data) => filter.reviewer_task.includes(data.key) === true,
         )
-        // console.log(datas)
       }
       if (filter.date) {
         if (dataColumn[1].dataIndex === 'type') filter.date = filter.date.replace('-', '/')
@@ -184,7 +173,6 @@ const TaskSubTable = ({
     setOptionStatus(value.target.innerText)
     if (value.target.innerText === 'すべて') setFilter({ ...filter, status: '' })
     else setFilter({ ...filter, status: value.target.innerText })
-    // console.log(filter)
     setList(dataSource)
   }
   function onlyUnique(value, index, self) {
@@ -193,7 +181,6 @@ const TaskSubTable = ({
   const handleSelectReviewer = (value) => {
     filter.reviewer_task = []
     const tempTask = []
-    // console.log(dataSource)
     setOptionReviewer(value.target.innerText)
     if (value.target.innerText === 'すべて') {
       dataSource.forEach((item) => {
@@ -226,12 +213,6 @@ const TaskSubTable = ({
           (data) => data.name.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1,
         )
         setList(datas)
-
-        // setFilter({ ...filter, name: e.target.value })
-        // if (e.target.value === '') {
-        //   setFilter({ ...filter, name: '' })
-        //   setList(dataSource)
-        // }
       }
     } else {
       setFilter({ ...filter, date: dateString })
@@ -247,7 +228,7 @@ const TaskSubTable = ({
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          marginBottom: '10px',
+          marginTop: '36px',
         }}
       >
         <div>
@@ -262,11 +243,12 @@ const TaskSubTable = ({
           >
             <span>
               {showTable ? (
+                <UpOutlined style={{ fontSize: '25px', marginRight: '5px' }} />
+
+              ) : (
                 <DownOutlined
                   style={{ fontSize: '25px', marginRight: '5px' }}
                 />
-              ) : (
-                <UpOutlined style={{ fontSize: '25px', marginRight: '5px' }} />
               )}
             </span>
             {text}
@@ -318,128 +300,104 @@ const TaskSubTable = ({
       {showTable ? (
         <div
           style={{
-            display: 'grid',
-            gridTemplateRows: '30% 75%',
-            height: '480px',
             backgroundColor: 'white',
             border: '1px solid white',
             borderRadius: '10px',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-            }}
-          >
-            <div className="flex items-center justify-end px-2">
-              {showTimeInput && (
-                <div className="flex items-center justify-end px-2">
-                  <div>
-                    <DatePicker
-                      name="date"
-                      size="large"
-                      placeholder="タイム"
-                      format="YYYY/MM/DD"
-                      onChange={searchInput}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="flex items-center justify-end px-5">
+            <div className="w-full items-center">
+              <div className=" my-2 flex items-center">
 
-            <div className="flex items-center justify-end px-5">
-              <div className="text-xl w-full items-center">
-                <div className="flex items-center">
-                  <div className="my-2 mr-2 ml-5">
-                    <b>役割</b>
-                  </div>
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
-                    }`}
-                  >
-                    すべて
-                  </Button>
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
-                    }`}
-                  >
-                    担当者
-                  </Button>
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
-                      ? 'option-active' : ''
-                    }`}
-                  >
-                    レビュアー
-                  </Button>
-                </div>
-                <div className="flex items-center">
-                  <div className="my-5 mr-2">
-                    <b>期限日</b>
-                  </div>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
-                    }`}
-                  >
-                    すべて
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
-                    }`}
-                  >
-                    進行中
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
-                    }`}
-                  >
-                    今まで
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
-                    }`}
-                  >
-                    期限きれ
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
-                    }
+                <span style={{ marginRight: '14px', fontWeight: '600', whiteSpace: 'nowrap' }}>役割</span>
+
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
+                  }`}
+                >
+                  すべて
+                </Button>
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
+                  }`}
+                >
+                  担当者
+                </Button>
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
+                    ? 'option-active' : ''
+                  }`}
+                >
+                  レビュアー
+                </Button>
+
+              </div>
+              <div className="flex items-center">
+
+                <span style={{ fontWeight: '600', whiteSpace: 'nowrap' }}>期限日</span>
+
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
+                  }`}
+                >
+                  すべて
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
+                  }`}
+                >
+                  進行中
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
+                  }`}
+                >
+                  今まで
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
+                  }`}
+                >
+                  期限きれ
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
+                  }
                     `}
-                    style={{ letterSpacing: '-1px' }}
-                  >
-                    中断
-                  </Button>
-                </div>
+                  style={{ letterSpacing: '-1px' }}
+                >
+                  <span> 中断 </span>
+                </Button>
               </div>
             </div>
           </div>
 
           {/* Table data */}
-          <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
+          <div style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
             <Table
-              scroll={{ y: 280, x: 240 }}
+              scroll={{ y: 645, x: 243 }}
               pagination={false}
               dataSource={list.reverse()}
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
-          </Card>
+          </div>
         </div>
       ) : null}
     </div>
@@ -450,7 +408,6 @@ TaskSubTable.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   taskReviewerList: PropTypes.array.isRequired,
-  showTimeInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,

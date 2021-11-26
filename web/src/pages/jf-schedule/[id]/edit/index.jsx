@@ -49,17 +49,29 @@ function editJobfairSchedule() {
           jfschedule_name: data.name,
         })
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
     await getMilestonesList()
       .then(({ data }) => {
         setMilestonesList(data)
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
     await getTemplateTaskList()
       .then(({ data }) => {
         setTemplateTaskList(data)
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
     await getAddedMilestonesList(id)
       .then(({ data }) => {
         const arr = []
@@ -71,7 +83,11 @@ function editJobfairSchedule() {
           milestone_select: arr,
         })
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
     await getAddedTemplateTaskList(id)
       .then(({ data }) => {
         const arr = []
@@ -80,7 +96,11 @@ function editJobfairSchedule() {
         })
         setAddedTemplateTaskList(arr)
       })
-      .catch()
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }, [])
 
   const openNotification = (type, message, description) => {
@@ -129,6 +149,9 @@ function editJobfairSchedule() {
             }
           })
             .catch((error) => {
+              if (error.response.status === 404) {
+                router.push('/404')
+              }
               if (error.response.data.errors.addedMilestones) {
                 openNotification('error', error.response.data.errors.addedMilestones[0])
               } else if (error.response.data.errors.addedTemplateTasks) {
@@ -137,7 +160,11 @@ function editJobfairSchedule() {
             })
         }
       })
-        .catch()
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
+        })
     } else {
       putData(id, dataSend).then((res) => {
         if (res.status === 200) {
@@ -147,6 +174,9 @@ function editJobfairSchedule() {
         }
       })
         .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
           if (error.response.data.errors.addedMilestones) {
             openNotification('error', error.response.data.errors.addedMilestones[0])
           } else if (error.response.data.errors.addedTemplateTasks) {
@@ -214,7 +244,11 @@ function editJobfairSchedule() {
             ])
           }
         })
-        .catch()
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
+        })
     }
   }
   // const showModal = () => {

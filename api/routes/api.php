@@ -25,6 +25,8 @@ Route::resource('/jobfair', 'JobfairController')->except([
     'update',
     'destroy',
 ]);
+Route::resource('/milestone', MilestoneController::class)->only(['index']);
+Route::apiResource('/category', CategoryController::class)->only(['index']);
 
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
@@ -36,8 +38,7 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
 });
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
-// Route::post('/is-jf-existed', [JobfairController::class, 'checkNameExisted']);
-Route::post('/is-jf-existed', ['JobfairController@checkNameExisted']);
+Route::post('/is-jf-existed', 'JobfairController@checkNameExisted');
 Route::get('/is-admin-jobfair', 'JobfairController@isAdminJobfair');
 
 // schedule
@@ -158,7 +159,6 @@ Route::get('/isAssignee/{taskID}/{userID}', 'TaskController@checkAssignee');
 Route::get('/task/{id}/reviewers', 'TaskController@getReviewers');
 Route::get('/task/{id}/list-reviewers', 'TaskController@getListReviewers');
 Route::get('/is-admin-task', 'TaskController@checkRole');
-Route::put('/updateTaskDescription', [TaskController::class, 'updateTaskDescription']);
 
 Route::get('/getusersamecategory/{id}', 'TaskController@getUserSameCategory');
 Route::put('/updatemanager/{id}', 'TaskController@updateManagerTask');

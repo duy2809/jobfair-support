@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth')->except('isAdminJobfair');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -214,6 +219,6 @@ class JobfairController extends Controller
             return response('Access granted', 200);
         }
 
-        abort(409, 'Permission denied');
+        abort(403, 'Permission denied');
     }
 }
