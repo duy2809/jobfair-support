@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip, Tag, Card } from 'antd'
+import { Button, Table, Input, Tooltip, Tag } from 'antd'
 import {
   SearchOutlined,
   DownOutlined,
@@ -16,7 +16,6 @@ import './style.scss'
 const TaskSubTable = ({
   searchIcon,
   text,
-  showTimeInput,
   taskReviewerList,
   dataColumn,
   dataSource,

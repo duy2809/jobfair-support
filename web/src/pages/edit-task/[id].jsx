@@ -642,31 +642,6 @@ function EditTask() {
                 </div>
 
                 <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="ステータス"
-                    name="status"
-                    required
-                    rules={[
-                      {
-                        validator: TaskNameValidator,
-                      },
-                    ]}
-                  >
-                    <Select
-                      size="large"
-                      onChange={() => {
-                        setIsEdit(true)
-                      }}
-                      className="addJF-selector"
-                      placeholder="ステータス"
-                    >
-                      {listStatus.map((element) => (
-                        <Select.Option value={element}>{element}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className="col-span-1 mx-2 mb-2">
                   <Form.Item label="担当者" name="assignee" required className="multiples">
                     {assign ? (
                       <Select mode="multiple" showArrow tagRender={tagRenderr}>
@@ -717,6 +692,31 @@ function EditTask() {
                       </span>
                     </div>
                   </div>
+                </div>
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item
+                    label="ステータス"
+                    name="status"
+                    required
+                    rules={[
+                      {
+                        validator: TaskNameValidator,
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      className="addJF-selector"
+                      placeholder="ステータス"
+                    >
+                      {listStatus.map((element) => (
+                        <Select.Option value={element}>{element}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
                 </div>
                 <div style={countUserAs && countUserAs.length < 2 ? { display: 'none' } : { display: 'block' }} className="col-span-1 mx-2 mb-2">
                   <Form.Item
