@@ -203,7 +203,7 @@ const AddMilestone = (props) => {
           size="large"
         >
           <Form.Item
-            label={<span className="font-bold">マイルストーン名</span>}
+            label={<span className="font-bold mr-3">マイルストーン名</span>}
             name="name"
             rules={[
               {
@@ -233,7 +233,7 @@ const AddMilestone = (props) => {
             />
           </Form.Item>
           <Form.Item
-            label={<span className="font-bold">期日</span>}
+            label={<span className="font-bold mr-3">期日</span>}
             name="time"
             rules={[
               {
