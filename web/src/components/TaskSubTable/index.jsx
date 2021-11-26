@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Table, Input, DatePicker, Tooltip, Tag, Card } from 'antd'
+import { Button, Table, Input, Tooltip, Tag } from 'antd'
 import {
   SearchOutlined,
   DownOutlined,
@@ -16,7 +16,6 @@ import './style.scss'
 const TaskSubTable = ({
   searchIcon,
   text,
-  showTimeInput,
   taskReviewerList,
   dataColumn,
   dataSource,
@@ -301,129 +300,104 @@ const TaskSubTable = ({
       {showTable ? (
         <div
           style={{
-            display: 'grid',
-            gridTemplateRows: '30% 75%',
-            height: '480px',
             backgroundColor: 'white',
             border: '1px solid white',
             borderRadius: '10px',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-            }}
-          >
-            <div className="flex items-center justify-end px-2">
-              {showTimeInput && (
-                <div className="flex items-center justify-end px-2">
-                  <div>
-                    <DatePicker
-                      name="date"
-                      size="large"
-                      placeholder="タイム"
-                      format="YYYY/MM/DD"
-                      onChange={searchInput}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
+          <div className="flex items-center justify-end px-5">
+            <div className="w-full items-center">
+              <div className=" my-2 flex items-center">
 
-            <div className="flex items-center justify-end px-5">
-              <div className="w-full items-center">
-                <div className=" my-2 flex items-center">
+                <span style={{ marginRight: '14px', fontWeight: '600', whiteSpace: 'nowrap' }}>役割</span>
 
-                  <span style={{ marginRight: '14px', fontWeight: '600', whiteSpace: 'nowrap' }}>役割</span>
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
+                  }`}
+                >
+                  すべて
+                </Button>
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
+                  }`}
+                >
+                  担当者
+                </Button>
+                <Button
+                  name="reviewer"
+                  onClick={handleSelectReviewer}
+                  className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
+                    ? 'option-active' : ''
+                  }`}
+                >
+                  レビュアー
+                </Button>
 
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === 'すべて' ? 'option-active' : ''
-                    }`}
-                  >
-                    すべて
-                  </Button>
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === '担当者' ? 'option-active' : ''
-                    }`}
-                  >
-                    担当者
-                  </Button>
-                  <Button
-                    name="reviewer"
-                    onClick={handleSelectReviewer}
-                    className={`border-0 mx-4 ${optionReviewer === 'レビュアー'
-                      ? 'option-active' : ''
-                    }`}
-                  >
-                    レビュアー
-                  </Button>
+              </div>
+              <div className="flex items-center">
 
-                </div>
-                <div className="flex items-center">
+                <span style={{ fontWeight: '600', whiteSpace: 'nowrap' }}>期限日</span>
 
-                  <span style={{ fontWeight: '600', whiteSpace: 'nowrap' }}>期限日</span>
-
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
-                    }`}
-                  >
-                    すべて
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
-                    }`}
-                  >
-                    進行中
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
-                    }`}
-                  >
-                    今まで
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
-                    }`}
-                  >
-                    期限きれ
-                  </Button>
-                  <Button
-                    name="status"
-                    onClick={handleSelectStatus}
-                    className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
-                    }
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
+                  }`}
+                >
+                  すべて
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
+                  }`}
+                >
+                  進行中
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '今まで' ? 'option-active' : ''
+                  }`}
+                >
+                  今まで
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
+                  }`}
+                >
+                  期限きれ
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
+                  }
                     `}
-                    style={{ letterSpacing: '-1px' }}
-                  >
-                    <span> 中断 </span>
-                  </Button>
-                </div>
+                  style={{ letterSpacing: '-1px' }}
+                >
+                  <span> 中断 </span>
+                </Button>
               </div>
             </div>
           </div>
 
           {/* Table data */}
-          <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
+          <div style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px', marginTop: '10px' }}>
             <Table
-              scroll={{ y: 645, x: 240 }}
+              scroll={{ y: 645, x: 243 }}
               pagination={false}
               dataSource={list.reverse()}
               columns={newDataColumn}
               loading={{ spinning: isLoading, indicator: loadingIcon }}
             />
-          </Card>
+          </div>
         </div>
       ) : null}
     </div>
@@ -434,7 +408,6 @@ TaskSubTable.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   taskReviewerList: PropTypes.array.isRequired,
-  showTimeInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
