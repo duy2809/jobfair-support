@@ -163,6 +163,7 @@ function TaskList() {
       await deleteTask(id).then(() => {
         const newList = temperaryData.filter((item) => item.idtask !== id)
         setTemperaryData(newList)
+        setOriginalData(newList)
         saveNotification()
       })
     } catch (error) {

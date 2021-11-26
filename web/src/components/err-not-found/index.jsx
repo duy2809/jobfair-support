@@ -4,13 +4,13 @@ import { RollbackOutlined } from '@ant-design/icons'
 
 export default function ErrorNotFound() {
   return (
-    <div className="flex items-center justify-center mt-24">
+    <div className="flex items-center justify-center" style={{ height: '75vh' }}>
       <div className="flex items-center gap-x-8">
         <div
         // className='bg-red-500'
           style={{
-            width: '300px',
-            height: '300px',
+            width: '200px',
+            height: '200px',
           }}
         >
           <img src="logo.png" alt="logo" width="300" height="300" />
@@ -24,7 +24,9 @@ export default function ErrorNotFound() {
           <h1>指定されたページは存在しません。</h1>
           <p className="mb-5">
             大変申し訳ございませんが、
+            <br />
             お探しのページは移動もしくは削除された可能性があります。
+            <br />
             アドレスを確認してください。
           </p>
           <div className="flex items-center gap-x-2">
