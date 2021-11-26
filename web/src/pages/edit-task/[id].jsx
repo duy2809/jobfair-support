@@ -559,58 +559,7 @@ function EditTask() {
                     </div>
                   </Form.Item>
                 </div>
-                <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="レビュアー"
-                    name="reviewers"
-                    className="tag_a"
-                  >
 
-                    <Select
-                      showArrow
-                      size="large"
-                      tagRender={tagRender}
-                      style={{ width: '100%' }}
-                      onChange={onReviewersChange}
-                    >
-                      {reviewersSelectTag.map((element) => (
-                        <Select.Option
-                          className="validate-user"
-                          key={element.id}
-                          value={element.id}
-                        >
-                          {element.name}
-                        </Select.Option>
-                      ))}
-                    </Select>
-
-                  </Form.Item>
-                </div>
-                <div className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="ステータス"
-                    name="status"
-                    required
-                    rules={[
-                      {
-                        validator: TaskNameValidator,
-                      },
-                    ]}
-                  >
-                    <Select
-                      size="large"
-                      onChange={() => {
-                        setIsEdit(true)
-                      }}
-                      className="addJF-selector"
-                      placeholder="ステータス"
-                    >
-                      {listStatus.map((element) => (
-                        <Select.Option value={element}>{element}</Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
                 <div className="col-span-1 mx-2 mb-2">
                   <Form.Item
                     name="start_time"
@@ -691,6 +640,32 @@ function EditTask() {
                     </Select>
                   </Form.Item>
                 </div>
+
+                <div className="col-span-1 mx-2 mb-2">
+                  <Form.Item
+                    label="ステータス"
+                    name="status"
+                    required
+                    rules={[
+                      {
+                        validator: TaskNameValidator,
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      onChange={() => {
+                        setIsEdit(true)
+                      }}
+                      className="addJF-selector"
+                      placeholder="ステータス"
+                    >
+                      {listStatus.map((element) => (
+                        <Select.Option value={element}>{element}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </div>
                 <div className="col-span-1 mx-2 mb-2">
                   <Form.Item label="担当者" name="assignee" required className="multiples">
                     {assign ? (
@@ -743,6 +718,33 @@ function EditTask() {
                     </div>
                   </div>
                 </div>
+                <div style={countUserAs && countUserAs.length < 2 ? { display: 'none' } : { display: 'block' }} className="col-span-1 mx-2 mb-2">
+                  <Form.Item
+                    label="レビュアー"
+                    name="reviewers"
+                    className="tag_a"
+                  >
+
+                    <Select
+                      showArrow
+                      size="large"
+                      tagRender={tagRender}
+                      style={{ width: '100%', transition: '0' }}
+                      onChange={onReviewersChange}
+                    >
+                      {reviewersSelectTag.map((element) => (
+                        <Select.Option
+                          className="validate-user"
+                          key={element.id}
+                          value={element.id}
+                        >
+                          {element.name}
+                        </Select.Option>
+                      ))}
+                    </Select>
+
+                  </Form.Item>
+                </div>
                 <div className="col-span-2 mx-2 mb-2">
                   <Form.Item name="detail">
                     <TextArea
@@ -754,6 +756,7 @@ function EditTask() {
                     />
                   </Form.Item>
                 </div>
+
               </div>
               <div className="flex justify-end mr-2">
                 <Form.Item label=" " className=" ">
@@ -787,20 +790,20 @@ function EditTask() {
     </div>
   )
 }
-EditTask.getInitialProps = async (ctx) => {
-  const taskId = parseInt(ctx.query.id, 10)
-  const userId = ctx.store.getState().get('auth').get('user').get('id')
-  if (userId) {
-    try {
-      await axios.get(`${ctx.serverURL}/is-admin-task`, {
-        params: { userId, taskId },
-      })
-    } catch (err) {
-      ctx.res?.writeHead(302, { Location: '/error' })
-      ctx.res?.end()
-    }
-  }
-  return {}
-}
+// EditTask.getInitialProps = async (ctx) => {
+//   const taskId = parseInt(ctx.query.id, 10)
+//   const userId = ctx.store.getState().get('auth').get('user').get('id')
+//   if (userId) {
+//     try {
+//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
+//         params: { userId, taskId },
+//       })
+//     } catch (err) {
+//       ctx.res?.writeHead(302, { Location: '/error' })
+//       ctx.res?.end()
+//     }
+//   }
+//   return {}
+// }
 EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
