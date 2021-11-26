@@ -408,7 +408,6 @@ TaskSubTable.propTypes = {
   searchIcon: PropTypes.bool.isRequired,
   text: PropTypes.string.isRequired,
   taskReviewerList: PropTypes.array.isRequired,
-  showTimeInput: PropTypes.bool.isRequired,
   dataColumn: PropTypes.array.isRequired,
   dataSource: PropTypes.array.isRequired,
   route: PropTypes.string.isRequired,
