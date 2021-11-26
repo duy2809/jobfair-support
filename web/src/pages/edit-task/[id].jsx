@@ -88,6 +88,7 @@ function EditTask() {
           unit: data.template_task.unit,
           description_of_detail: data.description_of_detail,
         })
+        console.log(data.schedule.jobfair.id)
         setIdJF(data.schedule.jobfair.id)
         // eslint-disable-next-line no-use-before-define
         fetchListTask()
@@ -411,20 +412,22 @@ function EditTask() {
     })
   }
   const fetchListTask = async () => {
-    await jftask(idJF)
-      .then((response) => {
-        const notSelectedTask = response.data.schedule.tasks.filter(
-          (task) => task.name !== infoTask.name,
-        )
-        setAllTask(notSelectedTask)
-        setBeforeTaskNew(notSelectedTask)
-        setafterTaskNew(notSelectedTask)
-      })
-      .catch((err) => {
-        if (err.response.status === 404) {
-          router.push('/404')
-        }
-      })
+    if (idJF) {
+      await jftask(idJF)
+        .then((response) => {
+          const notSelectedTask = response.data.schedule.tasks.filter(
+            (task) => task.name !== infoTask.name,
+          )
+          setAllTask(notSelectedTask)
+          setBeforeTaskNew(notSelectedTask)
+          setafterTaskNew(notSelectedTask)
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            router.push('/404')
+          }
+        })
+    }
   }
   const fetchListMember = async () => {
     await getUserByCategory(infoTask.categories).then((response) => {
@@ -440,7 +443,9 @@ function EditTask() {
     fetchBeforeTask()
     fetchafterTask()
     getDataUser()
-    fetchListTask()
+    if (idJF) {
+      fetchListTask()
+    }
     fetchListMember()
     setLoading(false)
   }, [idJF])

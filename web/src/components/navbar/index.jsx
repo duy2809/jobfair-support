@@ -13,13 +13,12 @@ import { LOAD_SUCCESS } from '../../store/modules/auth'
 export default function Navbar() {
   const { store } = useContext(ReactReduxContext)
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [role, setRole] = useState()
+
   const [avatarUser, setAvatarUser] = useState('')
 
+  const user = store.getState().get('auth').get('user')
+  const role = store.getState().get('auth').get('user').get('role')
   useEffect(async () => {
-    setUser(store.getState().get('auth').get('user'))
-    setRole(store.getState().get('auth').get('user').get('role'))
     if (user) {
       const id = user.get('id')
       await getAvatar(id)
@@ -27,6 +26,7 @@ export default function Navbar() {
           if (!res.data) {
             setAvatarUser(null)
           } else {
+            console.log(id)
             const link = `../../api/avatar/${id}`
             setAvatarUser(link)
           }
@@ -37,7 +37,7 @@ export default function Navbar() {
           } else setAvatarUser(null)
         })
     }
-  }, [user])
+  }, [])
 
   const handleLogout = async () => {
     try {

@@ -59,6 +59,12 @@ class MilestoneController extends Controller
             'id' => $id,
         ], $rules);
         $validator->validate();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         return Milestone::findOrFail($id);
     }
@@ -77,6 +83,13 @@ class MilestoneController extends Controller
 
         //     return $milestone;
         // });
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::with(['templateTasks', 'templateTasks.categories', 'milestones'])->findOrFail($id);
     }
 
@@ -99,6 +112,12 @@ class MilestoneController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         return Milestone::findOrFail($id)->update($request->all());
     }
@@ -111,6 +130,13 @@ class MilestoneController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         Milestone::findOrFail($id)->delete();
 
         return response()->json([

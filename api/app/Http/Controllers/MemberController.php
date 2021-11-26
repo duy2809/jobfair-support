@@ -47,11 +47,18 @@ class MemberController extends Controller
 
     public function showMember($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $user = User::findOrFail($id);
         $categories = $user->categories;
 
         return [
-            'user' => $user,
+            'user'       => $user,
             'categories' => $categories,
         ];
     }
@@ -59,12 +66,25 @@ class MemberController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|min:3|max:50',
+            'name'  => 'required|min:3|max:50',
             'email' => 'required|min:10|max:100',
             'email' => Rule::unique('users')->ignore($id)->where('email', request('email')),
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
@@ -79,6 +99,13 @@ class MemberController extends Controller
 
     public function getTaskByID(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return User::findOrFail($id)->tasks;
     }
 
