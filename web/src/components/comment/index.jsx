@@ -41,10 +41,13 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
               commentArray,
             },
           })
+        } else {
+          console.log(response.data)
         }
       }
+      return commentArray
     } catch (error) {
-      console.log(error)
+      return error
     }
   }
   const clearForm = () => {
@@ -149,12 +152,10 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
       // TODO: change task description
       const comment = {
         task_id: id,
-        body: value.replace(/\\s/g, ' ') ?? '',
+        body: value.replace(/\\s/g, ' ').trim() ?? '',
         assignee: JSON.stringify(assignee),
         status,
       }
-      console.log()
-
       if (!(comment.body || comment.assignee || comment.status)) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -165,7 +166,6 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
       }
       const response = await addComment(comment)
       const newComment = response.data
-      // window.scrollTo({ top: '0', left: '0', behavior: 'smooth' })
       if (response.status === 200) {
         if (newComment) {
           console.log(newComment)
@@ -286,7 +286,7 @@ function index({ id, statusProp, assigneeProp, category, parentCallback }) {
         {visible && (
           <div className="box ">
             <Modal
-              title="Basic Modal"
+              title="プレビュー"
               centered
               visible={previewing}
               onOk={() => {

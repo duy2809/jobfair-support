@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import './style.scss'
-import { useRouter } from 'next/router'
-import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
 import moment from 'moment'
-import axios from 'axios'
-import JfLayout from '../../layouts/layout-task'
-import { taskData, beforeTask, afterTask, getUserByCategory } from '../../api/task-detail'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { editTask, listReviewersSelectTag, reviewers } from '../../api/edit-task'
 import { jftask } from '../../api/jf-toppage'
-import * as Extensions from '../../utils/extensions'
+import { afterTask, beforeTask, getUserByCategory, taskData } from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
+import JfLayout from '../../layouts/layout-task'
+import * as Extensions from '../../utils/extensions'
+import './style.scss'
 
 function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
@@ -73,6 +72,7 @@ function EditTask() {
     await taskData(idTask).then((response) => {
       if (response.status === 200) {
         const data = response.data
+        console.log(data)
         setInfoTask({
           name: data.name,
           categories: data.categories[0].category_name,
@@ -96,6 +96,7 @@ function EditTask() {
         reviewersData.forEach((element) => {
           listReviewers.push(element.name)
         })
+        console.log(data.description_of_detail)
         form.setFieldsValue({
           name: data.name,
           category: data.categories[0].category_name,
@@ -736,20 +737,20 @@ function EditTask() {
     </div>
   )
 }
-EditTask.getInitialProps = async (ctx) => {
-  const taskId = parseInt(ctx.query.id, 10)
-  const userId = ctx.store.getState().get('auth').get('user').get('id')
-  if (userId) {
-    try {
-      await axios.get(`${ctx.serverURL}/is-admin-task`, {
-        params: { userId, taskId },
-      })
-    } catch (err) {
-      ctx.res?.writeHead(302, { Location: '/error' })
-      ctx.res?.end()
-    }
-  }
-  return {}
-}
-EditTask.middleware = ['auth:superadmin', 'auth:member']
+// EditTask.getInitialProps = async (ctx) => {
+//   const taskId = parseInt(ctx.query.id, 10)
+//   const userId = ctx.store.getState().get('auth').get('user').get('id')
+//   if (userId) {
+//     try {
+//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
+//         params: { userId, taskId },
+//       })
+//     } catch (err) {
+//       ctx.res?.writeHead(302, { Location: '/error' })
+//       ctx.res?.end()
+//     }
+//   }
+//   return {}
+// }
+// EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask

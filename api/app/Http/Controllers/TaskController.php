@@ -924,4 +924,16 @@ class TaskController extends Controller
 
         return response()->json(['message' => 'Edit Successfully'], 200);
     }
+
+    public function updateTaskDescription(Request $request, $id)
+    {
+        $task = Task::findOrFail($id);
+        if ($request->has('description_of_detail')) {
+            $task->update($request->description_of_detail);
+            // if ($request->description_of_detail !== $task->description_of_detail) {
+            //     $editedField['old_description'] = $task->description_of_detail;
+            //     $editedField['new_description'] = $request->description_of_detail;
+            // }
+        }
+    }
 }

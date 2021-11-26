@@ -214,6 +214,6 @@ class JobfairController extends Controller
             return response('Access granted', 200);
         }
 
-        abort(403, 'Permission denied');
+        abort(409, 'Permission denied');
     }
 }
