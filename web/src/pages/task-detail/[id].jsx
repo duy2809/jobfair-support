@@ -437,26 +437,26 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-              <div className="grid grid-cols-2 mx-4">
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          reviewersList.map((item) => (
+              {reviewersList.length !== 0 ? (
+                <div className="grid grid-cols-2 mx-4">
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+
+                          {reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))
-                        ) : (
-                          <li className="task__chil">None</li>
-                        )}
-                      </ul>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (<div />)}
+
               <div className="mx-12 mt-5">
                 <div className=" mx-10 des demo-infinite-container">
                   <MarkDownView source={infoTask.description_of_detail} />
