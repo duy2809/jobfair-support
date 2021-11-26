@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Modal, Select } from "antd";
 import {
@@ -6,9 +6,18 @@ import {
 } from "@ant-design/icons";
 import { updateStatusMember } from "../../../api/task-detail";
 function Status(props) {
-  const listStatus = ["未着手", "進行中", "リビュエー待ち"]
+  const [listStatus, setListStatus]  = useState([]);
   const [oldStatus, setOldStatus] = useState(props.status)
   var newStatus;
+  useEffect(() => {
+    if (props.roleTask === 'jfadmin') {
+      setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
+    } else if (props.roleTask == 'reviewer') {
+      setListStatus(['進行中', 'リビュエー待ち',　'完了', '中断', '未完了'])
+    }　else {
+      setListStatus(['未着手', '進行中', 'リビュエー待ち'])
+    }
+  }, [props.roleTask])
   const handleChange = (value) => {
     newStatus = value;
     console.log(newStatus)
@@ -57,6 +66,7 @@ function Status(props) {
             background: "#5EB5A6",
             color: "#fff",
           }}
+          className=" stt item__right"
         >
           <EditOutlined />
           {`${oldStatus}`}
@@ -69,6 +79,7 @@ function Status(props) {
             background: "#A1AF2F",
             color: "#fff",
           }}
+          className=" stt item__right"
         >
           <EditOutlined size='small'/>
           {`${oldStatus}`}&nbsp;&nbsp;
@@ -120,5 +131,6 @@ Status.propTypes = {
   jobfair_id: PropTypes.number,
   task_id: PropTypes.number,
   set_task_status: PropTypes.func,
+  roleTask: PropTypes.string,
 };
 export default Status;
