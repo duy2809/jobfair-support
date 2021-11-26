@@ -88,14 +88,12 @@ class JobfairController extends Controller
             $slackid = User::where('id', '=', $jobfair->jobfair_admin_id)->get(['chatwork_id']);
             $dataAdminToChannel = [$jobfair->channel_id, $slackid[0]->chatwork_id];
             $this->slack->addAdminToChannel($dataAdminToChannel);
-            $test = $this->slack->createChannelBot($jobfair->name, $res->channel->id);
+            $this->slack->createChannelBot($jobfair->name, $res->channel->id);
         }
 
         $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
 
         return $jobfair;
-        // return response()->json(['message' => $response], 200);
-
     }
 
     /**
