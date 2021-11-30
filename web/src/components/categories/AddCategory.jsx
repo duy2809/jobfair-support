@@ -126,7 +126,7 @@ const AddCategory = (props) => {
           form={form}
           layout="horizontal"
           labelCol={{
-            span: 8,
+            span: 6,
           }}
           wrapperCol={{
             span: 16,
@@ -134,7 +134,7 @@ const AddCategory = (props) => {
           colon={false}
         >
           <Form.Item
-            label={<span className="font-bold">カテゴリ名</span>}
+            label={<span className="font-bold mr-3">カテゴリ名</span>}
             name="name"
             rules={[
               {

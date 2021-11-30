@@ -19,6 +19,13 @@ class FileController extends Controller
      */
     public function index($jfId)
     {
+        $arr = str_split($jfId);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         Jobfair::findOrFail($jfId);
         $files = DB::table('documents')
             ->addSelect([
@@ -40,6 +47,13 @@ class FileController extends Controller
 
     public function getLatest($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         Jobfair::findOrFail($id);
 
         return DB::table('documents')
@@ -68,6 +82,13 @@ class FileController extends Controller
     public function store(Request $request)
     {
         {
+            $arr = str_split($request->document_id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
             Jobfair::findOrFail($request->document_id);
             $rules = [
                 'name' => [
@@ -109,13 +130,27 @@ class FileController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Document::findOrFail($id);
     }
 
     //  Display files and folder in specific folder.
     public function getPath(Request $request)
     {
-        Jobfair::findOrFail($request->jfID);
+        $arr = str_split($request->jfId);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        Jobfair::findOrFail($request->jfId);
         $data = DB::table('documents')
             ->select('*')
             ->addSelect([
@@ -137,7 +172,14 @@ class FileController extends Controller
 
     public function search(Request $request)
     {
-        Jobfair::findOrFail($request->jfID);
+        $arr = str_split($request->jfId);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        Jobfair::findOrFail($request->jfId);
         $query = Document::query();
         if ($request->has('name')) {
             $query->where('name', 'LIKE', "%$request->name%");
@@ -175,6 +217,13 @@ class FileController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $document = Document::findOrFail($id);
         $rules = [
             'name' => Rule::unique('documents')->where('path', $document->path)
@@ -214,6 +263,13 @@ class FileController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Document::findOrFail($id)->delete();
     }
 
@@ -221,6 +277,13 @@ class FileController extends Controller
     {
         $path = Document::where('id', $request->id[0])->first()->path;
         foreach ($request->id as $index) {
+            $arr = str_split($index);
+            foreach ($arr as $char) {
+                if ($char < '0' || $char > '9') {
+                    return response(['message' => 'invalid id'], 404);
+                }
+            }
+
             $document = Document::findOrFail($index);
             if (!$document->is_file) {
                 if ($path === '/') {

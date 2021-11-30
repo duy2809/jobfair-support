@@ -132,11 +132,10 @@ const ListJfToppage = ({
   }
 
   const searchInput = (e, dateString = '') => {
-    if (!dateString) {
-      if (dateString === '') {
-        setFilter({ ...filter, date: '' })
-        setList(dataSource)
-      } else {
+    if (dateString === '') {
+      setFilter({ ...filter, date: '' })
+      setList(dataSource)
+      if (e !== null) {
         if (e.target.name === 'name') {
           setFilter({ ...filter, name: e.target.value })
           if (e.target.value === '') {
@@ -240,6 +239,7 @@ const ListJfToppage = ({
                   className="no-border"
                   placeholder="名前"
                   onChange={searchInput}
+                  defaultValue={filter.name}
                   bordered
                   prefix={<SearchOutlined />}
                 />

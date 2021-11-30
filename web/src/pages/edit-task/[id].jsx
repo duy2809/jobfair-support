@@ -77,7 +77,6 @@ function EditTask() {
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
-          console.log(data)
           setInfoTask({
             name: data.name,
             categories: data.categories[0].category_name,
@@ -435,20 +434,22 @@ function EditTask() {
       })
   }
   const fetchListTask = async () => {
-    await jftask(idJF)
-      .then((response) => {
-        const notSelectedTask = response.data.schedule.tasks.filter(
-          (task) => task.name !== infoTask.name,
-        )
-        setAllTask(notSelectedTask)
-        setBeforeTaskNew(notSelectedTask)
-        setafterTaskNew(notSelectedTask)
-      })
-      .catch((err) => {
-        if (err.response.status === 404 && idJF) {
-          router.push('/404')
-        }
-      })
+    if (idJF) {
+      await jftask(idJF)
+        .then((response) => {
+          const notSelectedTask = response.data.schedule.tasks.filter(
+            (task) => task.name !== infoTask.name,
+          )
+          setAllTask(notSelectedTask)
+          setBeforeTaskNew(notSelectedTask)
+          setafterTaskNew(notSelectedTask)
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            router.push('/404')
+          }
+        })
+    }
   }
   const fetchListMember = async () => {
     await getUserByCategory(infoTask.categories)
@@ -466,7 +467,9 @@ function EditTask() {
     fetchBeforeTask()
     fetchafterTask()
     getDataUser()
-    fetchListTask()
+    if (idJF) {
+      fetchListTask()
+    }
     fetchListMember()
     setLoading(false)
   }, [idJF])

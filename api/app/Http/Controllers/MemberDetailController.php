@@ -39,6 +39,12 @@ class MemberDetailController extends Controller
         //         }
         //     }
         // }
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         // $user->categories = $categories;
         return User::findOrFail($id)->load('categories')->load('schedules.jobfair');
@@ -46,6 +52,13 @@ class MemberDetailController extends Controller
 
     public function deleteMember($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $user = User::findOrFail($id);
         if ($user->role !== 1) {
             DB::table('list_members')->where('user_id', $id)->delete();
