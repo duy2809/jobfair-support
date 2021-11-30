@@ -36,6 +36,12 @@ class ProfileController extends Controller
             'id' => $id,
         ], $rules);
         $validator->validate();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         return User::findOrFail($id);
     }
@@ -43,6 +49,13 @@ class ProfileController extends Controller
     public function avatar($id)
     {
         // return Storage::download(Auth::user()->avatar,'avatar');
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $avatar = User::findOrFail($id)->avatar;
         if (strcmp($avatar, 'images/avatars/default.jpg') === 0) {
             return null;
@@ -69,6 +82,13 @@ class ProfileController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         $validator->validated();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $user = User::findOrFail($id);
         $user->update($request->all());
 
@@ -82,6 +102,12 @@ class ProfileController extends Controller
             'password'         => 'required|string|min:8|max:24',
             'comfirm_password' => 'required|string|same:password',
         ]);
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         $user = User::findOrFail($id);
         if (!Hash::check($request->current_password, $user->password)) {
@@ -98,6 +124,13 @@ class ProfileController extends Controller
     public function updateAvatar(Request $request, $id)
     {
         if ($request->hasFile('avatar')) {
+            $arr = str_split($id);
+            foreach ($arr as $char) {
+                if ($char < '0' || $char > '9') {
+                    return response(['message' => 'invalid id'], 404);
+                }
+            }
+
             $user = User::findOrFail($id);
 
             $rules = [
@@ -129,6 +162,13 @@ class ProfileController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return User::findOrFail($id)->delete();
     }
 }

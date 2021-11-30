@@ -43,6 +43,7 @@ function File() {
 
   const router = useRouter()
   const JFid = router.query.JFid
+  console.log(JFid)
   const formatter = buildFormatter(frenchStrings)
   const [disableBtnEdit, setDisableBtnEdit] = useState(true)
   const [disableBtnDelete, setDisableBtnDelete] = useState(true)

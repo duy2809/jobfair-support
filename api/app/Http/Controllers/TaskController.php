@@ -30,6 +30,13 @@ class TaskController extends Controller
 
     public function checkRole(Request $request)
     {
+        $arr = str_split($request->input('taskId'));
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($request->input('taskId'));
         $adminId = $task->schedule->jobfair->jobfair_admin_id;
         if ($adminId === intval($request->input('userId'))) {
@@ -76,6 +83,13 @@ class TaskController extends Controller
         //     $result->merge($temp);
         // }
         // return $result;
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $jobfair = Jobfair::findOrFail($id);
         $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
             return [
@@ -135,6 +149,13 @@ class TaskController extends Controller
      */
     public function store(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $jobfair = Jobfair::findOrFail($id);
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $idTemplateTask = $request->data;
@@ -180,6 +201,13 @@ class TaskController extends Controller
 
     public function updateTask(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
         $status = [
             '未着手',
@@ -308,6 +336,13 @@ class TaskController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::with([
             'milestone:id,name',
             'categories:id,category_name',
@@ -339,6 +374,13 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
         $ad = $task->schedule->jobfair->user->id;
         $request->validate([
@@ -790,6 +832,13 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
         $task->categories()->detach();
         $task->beforeTasks()->detach();
@@ -801,11 +850,25 @@ class TaskController extends Controller
 
     public function getReviewers($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Task::findOrFail($id)->reviewers;
     }
 
     public function getListReviewers($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
         $ad = $task->schedule->jobfair->user->id;
         $listReviewers = [];
@@ -821,6 +884,13 @@ class TaskController extends Controller
 
     public function getBeforeTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $beforeTasks = Task::with('beforeTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($beforeTasks);
@@ -828,6 +898,13 @@ class TaskController extends Controller
 
     public function getAfterTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $afterTasks = Task::with('afterTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($afterTasks);
@@ -835,6 +912,13 @@ class TaskController extends Controller
 
     public function getTemplateTaskNotAdd($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Jobfair::with([
             'schedule.tasks' => function ($q) {
                 $q->select('template_task_id', 'schedule_id');
@@ -849,11 +933,25 @@ class TaskController extends Controller
 
     public function checkAssignee($taskID, $userID)
     {
+        $arr = str_split($taskID);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Task::findOrFail($taskID)->users->pluck('id')->contains($userID);
     }
 
     public function getUserSameCategory($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
 
         $user = User::whereHas('categories', function (Builder $query) use ($task) {
@@ -865,6 +963,13 @@ class TaskController extends Controller
 
     public function updateManagerTask(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Task::findOrFail($id);
 
         if ($request->has('assignee')) {

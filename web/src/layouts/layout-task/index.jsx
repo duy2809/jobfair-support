@@ -61,7 +61,7 @@ const JfLayout = ({ children, id, bgr }) => {
         setAdminId(response.data.jobfair_admin_id)
       })
       if (AdminId) {
-        await getAvatar(id)
+        await getAvatar(AdminId)
           .then((res) => {
             if (!res.data) {
               setAvatarAdmin(null)

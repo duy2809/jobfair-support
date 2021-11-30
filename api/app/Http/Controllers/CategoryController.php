@@ -63,6 +63,13 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Category::findOrFail($id);
     }
 
@@ -80,6 +87,12 @@ class CategoryController extends Controller
         ];
         $validator = Validator::make($request->all(), $rules);
         $validator->validate();
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
 
         return Category::findOrFail($id)->update($request->all());
     }
@@ -92,6 +105,13 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Category::findOrFail($id)->delete();
     }
 
