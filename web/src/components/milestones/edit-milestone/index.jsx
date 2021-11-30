@@ -223,7 +223,7 @@ const EditMilestone = (props) => {
             size="large"
           >
             <Form.Item
-              label={<p className="font-bold">マイルストーン名</p>}
+              label={<span className="font-bold mr-3">マイルストーン名</span>}
               name="name"
               rules={[
                 {
@@ -253,7 +253,7 @@ const EditMilestone = (props) => {
               />
             </Form.Item>
             <Form.Item
-              label={<p className="font-bold">期日</p>}
+              label={<span className="font-bold mr-3">期日</span>}
               name="time"
               rules={[
                 {
