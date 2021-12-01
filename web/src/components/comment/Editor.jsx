@@ -172,7 +172,6 @@ function index(props) {
         <p className="text-xs italic text-[#888888]"># for hashtag</p>
       </div>
       <Editor
-        placeholder="Write here. Type [ ] to add a todo ..."
         editorState={editorState}
         toolbarClassName=""
         mention={mention}

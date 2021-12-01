@@ -9,7 +9,6 @@ import './style.scss'
 // const { Search } = Input;
 
 const ListJfToppage = ({
-
   routeToAdd,
   role,
   searchIcon,
@@ -94,7 +93,7 @@ const ListJfToppage = ({
     }
   }, [])
   useEffect(() => {
-    let datas = [...list]
+    let datas = [...dataSource]
     if (filter) {
       if (filter.name) {
         datas = datas.filter(
@@ -133,34 +132,34 @@ const ListJfToppage = ({
   }
 
   const searchInput = (e, dateString = '') => {
-    if (!dateString) {
-      if (e.target.name === 'name') {
-        setFilter({ ...filter, name: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, name: '' })
-          setList(dataSource)
+    if (dateString === '') {
+      setFilter({ ...filter, date: '' })
+      setList(dataSource)
+      if (e !== null) {
+        if (e.target.name === 'name') {
+          setFilter({ ...filter, name: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, name: '' })
+            setList(dataSource)
+          }
         }
-      }
-      if (e.target.name === 'milestone') {
-        setFilter({ ...filter, milestone: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, milestone: '' })
-          setList(dataSource)
+        if (e.target.name === 'milestone') {
+          setFilter({ ...filter, milestone: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, milestone: '' })
+            setList(dataSource)
+          }
         }
-      }
-      if (e.target.name === 'category') {
-        setFilter({ ...filter, category: e.target.value })
-        if (e.target.value === '') {
-          setFilter({ ...filter, category: '' })
-          setList(dataSource)
+        if (e.target.name === 'category') {
+          setFilter({ ...filter, category: e.target.value })
+          if (e.target.value === '') {
+            setFilter({ ...filter, category: '' })
+            setList(dataSource)
+          }
         }
       }
     } else {
       setFilter({ ...filter, date: dateString })
-      if (dateString === '') {
-        setFilter({ ...filter, date: '' })
-        setList(dataSource)
-      }
     }
   }
   const searchByJobfairName = (e) => {
@@ -238,8 +237,9 @@ const ListJfToppage = ({
                   // key="demo"
                   name="name"
                   className="no-border"
-                  placeholder="名前"
+                  placeholder="ジョブフェア名"
                   onChange={searchInput}
+                  defaultValue={filter.name}
                   bordered
                   prefix={<SearchOutlined />}
                 />

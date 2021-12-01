@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import './style.scss'
-import { useRouter } from 'next/router'
-import { Form, Input, Select, Tag, DatePicker, Button, notification, Modal, Tooltip } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
 import moment from 'moment'
-import axios from 'axios'
-import JfLayout from '../../layouts/layout-task'
-import { taskData, beforeTask, afterTask, getUserByCategory } from '../../api/task-detail'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
+import { editTask, listReviewersSelectTag, reviewers } from '../../api/edit-task'
 import { jftask } from '../../api/jf-toppage'
-import * as Extensions from '../../utils/extensions'
+import { afterTask, beforeTask, getUserByCategory, taskData } from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
-import { editTask, reviewers, listReviewersSelectTag } from '../../api/edit-task'
 import Loading from '../../components/loading'
+import JfLayout from '../../layouts/layout-task'
+import * as Extensions from '../../utils/extensions'
+import './style.scss'
 
 function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
@@ -74,50 +73,52 @@ function EditTask() {
         }
       })
 
-    await taskData(idTask).then((response) => {
-      if (response.status === 200) {
-        const data = response.data
-        setInfoTask({
-          name: data.name,
-          categories: data.categories[0].category_name,
-          milestone: data.milestone.name,
-          status: data.status,
-          start_time: data.start_time,
-          end_time: data.end_time,
-          effort: data.template_task.effort,
-          is_day: data.template_task.is_day,
-          unit: data.template_task.unit,
-          description_of_detail: data.description_of_detail,
-        })
-        setIdJF(data.schedule.jobfair.id)
-        // eslint-disable-next-line no-use-before-define
-        fetchListTask()
-        const listmember = []
-        data.users.forEach((element) => {
-          listmember.push(element.name)
-        })
-        const listReviewers = []
-        reviewersData.forEach((element) => {
-          listReviewers.push(element.name)
-        })
-        setCountUserAs(listmember)
-        form.setFieldsValue({
-          name: data.name,
-          category: data.categories[0].category_name,
-          milestone: data.milestone.name,
-          assignee: listmember,
-          status: data.status,
-          start_time: moment(data.start_time.split('-').join('/'), dateFormat),
-          end_time: moment(data.end_time.split('-').join('/'), dateFormat),
-          detail: data.description_of_detail,
-          reviewers: listReviewers.length === 0 ? ['なし'] : listReviewers,
-        })
-      }
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await taskData(idTask)
+      .then((response) => {
+        if (response.status === 200) {
+          const data = response.data
+          setInfoTask({
+            name: data.name,
+            categories: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            status: data.status,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            effort: data.template_task.effort,
+            is_day: data.template_task.is_day,
+            unit: data.template_task.unit,
+            description_of_detail: data.description_of_detail,
+          })
+          setIdJF(data.schedule.jobfair.id)
+          // eslint-disable-next-line no-use-before-define
+          fetchListTask()
+          const listmember = []
+          data.users.forEach((element) => {
+            listmember.push(element.name)
+          })
+          const listReviewers = []
+          reviewersData.forEach((element) => {
+            listReviewers.push(element.name)
+          })
+          setCountUserAs(listmember)
+          form.setFieldsValue({
+            name: data.name,
+            category: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            assignee: listmember,
+            status: data.status,
+            start_time: moment(data.start_time.split('-').join('/'), dateFormat),
+            end_time: moment(data.end_time.split('-').join('/'), dateFormat),
+            detail: data.description_of_detail,
+            reviewers: listReviewers.length === 0 ? ['なし'] : listReviewers,
+          })
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const startDayValidator = (_, value) => {
     if (!value) {
@@ -188,9 +189,7 @@ function EditTask() {
     if (nameUser.length !== 0) {
       document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
       setAssign(true)
-      form.setFieldsValue({
-
-      })
+      form.setFieldsValue({})
     }
     const onPreventMouseDown = (event) => {
       event.preventDefault()
@@ -353,10 +352,7 @@ function EditTask() {
           reviewers: reviewersSelected,
         }
         if (countUserAs.length > 1 && reviewersSelected.length === 0) {
-          openNotification(
-            'error',
-            '複数の担当者を選択する場合にはレビュアーを選択してください',
-          )
+          openNotification('error', '複数の担当者を選択する場合にはレビュアーを選択してください')
         } else {
           setdisableBtn(true)
           await editTask(idTask, data)
@@ -404,66 +400,76 @@ function EditTask() {
     }
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask).then((response) => {
-      const listbfTask = []
-      response.data.before_tasks.forEach((element) => {
-        listbfTask.push(element.name)
-      })
-      form.setFieldsValue({
-        taskBefore: listbfTask,
-      })
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
-  }
-  const fetchafterTask = async () => {
-    await afterTask(idTask).then((response) => {
-      const listatTask = []
-      response.data.after_tasks.forEach((element) => {
-        listatTask.push(element.name)
-      })
-      form.setFieldsValue({
-        afterTask: listatTask,
-      })
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
-  }
-  const fetchListTask = async () => {
-    await jftask(idJF)
+    await beforeTask(idTask)
       .then((response) => {
-        const notSelectedTask = response.data.schedule.tasks.filter(
-          (task) => task.name !== infoTask.name,
-        )
-        setAllTask(notSelectedTask)
-        setBeforeTaskNew(notSelectedTask)
-        setafterTaskNew(notSelectedTask)
+        const listbfTask = []
+        response.data.before_tasks.forEach((element) => {
+          listbfTask.push(element.name)
+        })
+        form.setFieldsValue({
+          taskBefore: listbfTask,
+        })
       })
-      .catch((err) => {
-        if (err.response.status === 404 && idJF) {
+      .catch((error) => {
+        if (error.response.status === 404) {
           router.push('/404')
         }
       })
   }
+  const fetchafterTask = async () => {
+    await afterTask(idTask)
+      .then((response) => {
+        const listatTask = []
+        response.data.after_tasks.forEach((element) => {
+          listatTask.push(element.name)
+        })
+        form.setFieldsValue({
+          afterTask: listatTask,
+        })
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
+  }
+  const fetchListTask = async () => {
+    if (idJF) {
+      await jftask(idJF)
+        .then((response) => {
+          const notSelectedTask = response.data.schedule.tasks.filter(
+            (task) => task.name !== infoTask.name,
+          )
+          setAllTask(notSelectedTask)
+          setBeforeTaskNew(notSelectedTask)
+          setafterTaskNew(notSelectedTask)
+        })
+        .catch((err) => {
+          if (err.response.status === 404) {
+            router.push('/404')
+          }
+        })
+    }
+  }
   const fetchListMember = async () => {
-    await getUserByCategory(infoTask.categories).then((response) => {
-      setListUser(response.data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await getUserByCategory(infoTask.categories)
+      .then((response) => {
+        setListUser(response.data)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
     fetchafterTask()
     getDataUser()
-    fetchListTask()
+    if (idJF) {
+      fetchListTask()
+    }
     fetchListMember()
     setLoading(false)
   }, [idJF])
@@ -718,13 +724,15 @@ function EditTask() {
                     </Select>
                   </Form.Item>
                 </div>
-                <div style={countUserAs && countUserAs.length < 2 ? { display: 'none' } : { display: 'block' }} className="col-span-1 mx-2 mb-2">
-                  <Form.Item
-                    label="レビュアー"
-                    name="reviewers"
-                    className="tag_a"
-                  >
-
+                <div
+                  style={
+                    countUserAs && countUserAs.length < 2
+                      ? { display: 'none' }
+                      : { display: 'block' }
+                  }
+                  className="col-span-1 mx-2 mb-2"
+                >
+                  <Form.Item label="レビュアー" name="reviewers" className="tag_a">
                     <Select
                       showArrow
                       size="large"
@@ -742,7 +750,6 @@ function EditTask() {
                         </Select.Option>
                       ))}
                     </Select>
-
                   </Form.Item>
                 </div>
                 <div className="col-span-2 mx-2 mb-2">
@@ -756,7 +763,6 @@ function EditTask() {
                     />
                   </Form.Item>
                 </div>
-
               </div>
               <div className="flex justify-end mr-2">
                 <Form.Item label=" " className=" ">
@@ -790,20 +796,20 @@ function EditTask() {
     </div>
   )
 }
-EditTask.getInitialProps = async (ctx) => {
-  const taskId = parseInt(ctx.query.id, 10)
-  const userId = ctx.store.getState().get('auth').get('user').get('id')
-  if (userId) {
-    try {
-      await axios.get(`${ctx.serverURL}/is-admin-task`, {
-        params: { userId, taskId },
-      })
-    } catch (err) {
-      ctx.res?.writeHead(302, { Location: '/error' })
-      ctx.res?.end()
-    }
-  }
-  return {}
-}
-EditTask.middleware = ['auth:superadmin', 'auth:member']
+// EditTask.getInitialProps = async (ctx) => {
+//   const taskId = parseInt(ctx.query.id, 10)
+//   const userId = ctx.store.getState().get('auth').get('user').get('id')
+//   if (userId) {
+//     try {
+//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
+//         params: { userId, taskId },
+//       })
+//     } catch (err) {
+//       ctx.res?.writeHead(302, { Location: '/error' })
+//       ctx.res?.end()
+//     }
+//   }
+//   return {}
+// }
+// EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask

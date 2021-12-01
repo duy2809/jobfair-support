@@ -67,17 +67,7 @@
         ]
       }
     ],
-    "react/jsx-indent": [
-      "error",
-      2,
-      {
-        "checkAttributes": true
-      }
-    ],
-    "react/jsx-indent-props": [
-      "error",
-      2
-    ],
+    "react/jsx-indent": "off",
     "react/jsx-no-bind": "warn",
     "react/jsx-props-no-spreading": "off",
     "jsx-a11y/anchor-is-valid": "off",

@@ -211,6 +211,13 @@ class CommentController extends Controller
                 'count' => 'required|numeric',
             ]
         );
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $data = Task::with([
             'comments' => function ($query) use ($request) {
                 $query->where('is_created_task', false)->latest('updated_at')->offset($request->start)->take($request->count)->get();
@@ -302,6 +309,13 @@ class CommentController extends Controller
         // ])->find($id, ['id', 'name']);
         $comments = collect([]);
         if ($JFid !== 'all') {
+            $arr = str_split($JFid);
+            foreach ($arr as $char) {
+                if ($char < '0' || $char > '9') {
+                    return response(['message' => 'invalid id'], 404);
+                }
+            }
+
             Jobfair::findOrFail($JFid);
             $comments = Comment::whereHas('task', function ($query) use ($JFid) {
                 $query->whereHas('schedule', function ($query) use ($JFid) {
@@ -398,12 +412,26 @@ class CommentController extends Controller
         $request->validate([
             'content' => 'string',
         ]);
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         if (
             !Comment::findOrFail($id)->update([
                 'body' => $request->content,
             ])
         ) {
             return response()->json(['message' => 'Fail to update'], 500);
+        }
+
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
         }
 
         $comment = Comment::findOrFail($id);
@@ -436,6 +464,13 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Comment::findOrFail($id)->delete();
     }
 }

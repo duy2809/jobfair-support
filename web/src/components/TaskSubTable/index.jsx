@@ -287,7 +287,7 @@ const TaskSubTable = ({
                   // key="demo"
                   name="name"
                   className="no-border"
-                  placeholder="タスク名前"
+                  placeholder="タスク名"
                   onChange={searchInput}
                   bordered
                   prefix={<SearchOutlined />}

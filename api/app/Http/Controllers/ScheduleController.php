@@ -72,6 +72,13 @@ class ScheduleController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::findOrFail($id);
     }
 
@@ -87,11 +94,25 @@ class ScheduleController extends Controller
 
     public function getAddedMilestones($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::findOrFail($id)->milestones;
     }
 
     public function getAddedTemplateTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::findOrFail($id)->templateTasks;
     }
 
@@ -109,6 +130,13 @@ class ScheduleController extends Controller
      */
     public function update(ScheduleRequest $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $schedule = Schedule::findOrFail($id);
         $schedule->name = $request->name;
         $schedule->save();
@@ -127,11 +155,25 @@ class ScheduleController extends Controller
 
     public function getMilestones($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::with('milestones:id,name')->findOrFail($id, ['id']);
     }
 
     public function getTemplateTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Schedule::with('templateTasks:id,name')->findOrFail($id, ['id']);
     }
 
@@ -272,7 +314,7 @@ class ScheduleController extends Controller
      * Order tasks by relation then push end tasks to result
      * @param  Array $tasks
      * @param  Array $orderedList
-     * @param  Array $endTasks - 1 or more tasks with same start date
+     * @param  Array $endTasks - 1 || more tasks with same start date
      * @return Array
      */
     public static function orderTasks($tasks, $endTasks, $orderedList)
@@ -449,6 +491,13 @@ class ScheduleController extends Controller
 
     public function getGanttChart($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $schedule = Schedule::findOrFail($id);
         $milestones = $schedule->milestones;
         $templateTasks = $schedule->templateTasks()->with('categories');
@@ -472,6 +521,13 @@ class ScheduleController extends Controller
             DB::table('tasks')->where('schedule_id', $id)->update(['schedule_id' => null]);
             DB::table('list_members')->where('schedule_id', $id)->delete();
             DB::table('schedule_template_task')->where('schedule_id', $id)->delete();
+            $arr = str_split($id);
+            foreach ($arr as $char) {
+                if ($char < '0' || $char > '9') {
+                    return response(['message' => 'invalid id'], 404);
+                }
+            }
+
             Schedule::findOrFail($id)->delete();
         } catch (Exception $e) {
             report($e);
