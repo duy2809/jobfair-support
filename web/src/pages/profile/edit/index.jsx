@@ -299,6 +299,7 @@ const EditProfilePage = () => {
                   <Form
                     form={form}
                     name="basic"
+                    size="large"
                     labelCol={{
                       span: 8,
                     }}
@@ -309,7 +310,7 @@ const EditProfilePage = () => {
                     colon={false}
                   >
                     <Form.Item
-                      label={<p className="font-bold">ユーザー名</p>}
+                      label={<span className="font-bold mr-3">ユーザー名</span>}
                       name="name"
                       rules={[
                         {
@@ -347,7 +348,7 @@ const EditProfilePage = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label={<p className="font-bold">チャットワークID</p>}
+                      label={<span className="font-bold mr-3">チャットワークID</span>}
                       name="chatwork"
                       rules={[
                         {
@@ -384,7 +385,7 @@ const EditProfilePage = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label={<p className="font-bold">メール</p>}
+                      label={<span className="font-bold mr-3">メール</span>}
                       name="email"
                       rules={[
                         {
