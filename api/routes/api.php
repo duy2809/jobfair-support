@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
-use App\Http\Controllers\ResetPasswordController;
-use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TopPageTasksController;

@@ -140,6 +140,27 @@ function Comment(props) {
                     </div>
                   )}
                 </div>
+                {/* status member change */}
+                <div className="">
+                  {props.comment.new_member_status?.length > 0 && (
+                    <div className="flex">
+                      <div className="old__status flex">
+                        <p className="text-right" style={{ minWidth: '90px' }}>
+                          {props.comment.member_name}のステータスを編集：
+                        </p>
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.old_member_status}
+                        </Typography>
+                      </div>
+                      &rArr;
+                      <div className="new__status">
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.new_member_status}
+                        </Typography>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {/* assignees changed */}
                 <div className="">
                   {props.comment.new_assignees?.length !== 0

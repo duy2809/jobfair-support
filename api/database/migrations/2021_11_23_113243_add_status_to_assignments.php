@@ -26,7 +26,7 @@ class AddStatusToAssignments extends Migration
     public function down()
     {
         Schema::table('assignments', function (Blueprint $table) {
-            //
+            $table->dropColumn(['status']);
         });
     }
 }

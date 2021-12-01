@@ -476,7 +476,6 @@ function TaskDetail() {
                                 <li key={item.id} className="task__chil">
                                   {`${item.name}`}
                                   {/* {roleTask ===
-=
                                     `taskMember${item.pivot.user_id}` ||
                                   roleTask === "jfadmin" ||
                                   roleTask === "reviewer" ? (
