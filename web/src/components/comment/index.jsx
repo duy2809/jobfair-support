@@ -2,7 +2,7 @@ import {
   CheckCircleTwoTone,
   EditOutlined,
   ExclamationCircleTwoTone,
-} from "@ant-design/icons";
+} from '@ant-design/icons'
 import {
   Button,
   Divider,
@@ -13,7 +13,7 @@ import {
   Select,
   Tag,
   Tooltip,
-} from "antd";
+} from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, {
   memo,
@@ -21,17 +21,17 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { ReactReduxContext, useSelector } from "react-redux";
-import { useRouter } from "next/router";
-import { addComment, getComments, updateComment } from "../../api/comment";
-import { taskData, getUserByCategory } from "../../api/task-detail";
-import { commentSelectors } from "../../store/modules/comment";
-import actions from "../../store/modules/comment/types";
-import MarkDownView from "../markDownView";
-import Comment from "./Comment";
-import MyEditor from "./Editor";
-import "./styles.scss";
+} from 'react'
+import { ReactReduxContext, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import { addComment, getComments, updateComment } from '../../api/comment'
+import { taskData, getUserByCategory } from '../../api/task-detail'
+import { commentSelectors } from '../../store/modules/comment'
+import actions from '../../store/modules/comment/types'
+import MarkDownView from '../markDownView'
+import Comment from './Comment'
+import MyEditor from './Editor'
+import './styles.scss'
 
 function index({
   id,
@@ -41,28 +41,26 @@ function index({
   parentCallback,
   roleTask,
 }) {
-  const [visible, setVisible] = useState(false);
-  const [previewing, setPreviewing] = useState(false);
-  const [editing, setEditing] = useState(false);
-  const [show, setShow] = useState(true);
-  const [form] = Form.useForm();
-  const [listUser, setListUser] = useState([]);
-  const [assign, setAssign] = useState(true);
-  const [value, setValue] = useState("");
-  const [editingComment, setEditingComment] = useState({});
-  const { store } = useContext(ReactReduxContext);
-  const router = useRouter();
+  const [visible, setVisible] = useState(false)
+  const [previewing, setPreviewing] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [show, setShow] = useState(true)
+  const [form] = Form.useForm()
+  const [listUser, setListUser] = useState([])
+  const [assign, setAssign] = useState(true)
+  const [value, setValue] = useState('')
+  const [editingComment, setEditingComment] = useState({})
+  const { store } = useContext(ReactReduxContext)
+  const router = useRouter()
   const idUser = store.getState().get('auth').get('user').get('id')
-  const INIT_COMMENTS_NUM = 5;
-  const MORE_COMMENTS_NUM = 10;
+  const INIT_COMMENTS_NUM = 5
+  const MORE_COMMENTS_NUM = 10
 
-  const commentArray = useSelector((state) =>
-    commentSelectors.comments(state).toJS()
-  );
+  const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
 
   const getMoreComments = async (start, count) => {
     try {
-      const response = await getComments(id, start, count);
+      const response = await getComments(id, start, count)
       if (response.status === 200) {
         if (response.data.length > 0) {
           store.dispatch({
@@ -71,112 +69,110 @@ function index({
               params: [id, start, count],
               commentArray,
             },
-          });
+          })
         }
       }
       return commentArray
     } catch (error) {
-      if (error.response.status === 404) {
-        router.push("/404");
-      }
+      return error
     }
-  };
+  }
   const clearForm = () => {
-    form.resetFields();
-    setEditing(false);
-    setValue("");
-  };
+    form.resetFields()
+    setEditing(false)
+    setValue('')
+  }
   // Modal
   const showBox = () => {
-    clearForm();
-    setVisible(true);
-    setShow(false);
-  };
+    clearForm()
+    setVisible(true)
+    setShow(false)
+  }
 
   const closeBox = () => {
-    clearForm();
-    setVisible(false);
-    setShow(true);
-  };
+    clearForm()
+    setVisible(false)
+    setShow(true)
+  }
   const openPreview = () => {
-    setPreviewing(true);
-  };
+    setPreviewing(true)
+  }
   const pushData2Parent = useCallback((data) => {
-    parentCallback(data);
-  }, []);
+    parentCallback(data)
+  }, [])
   const fetchListMember = async () => {
     try {
-      const response = await getUserByCategory(category);
+      const response = await getUserByCategory(category)
       if (response.data) {
-        setListUser(response.data);
+        setListUser(response.data)
       }
     } catch (err) {
       if (err.response.status === 404) {
-        router.push("/404");
+        router.push('/404')
       }
     }
-  };
+  }
 
   const fetchTaskData = async () => {
     await taskData(id)
       .then((response) => {
         form.setFieldsValue({
           status: response.data.status,
-        });
+        })
       })
       .catch((error) => {
         if (error.response.status === 404) {
-          router.push("/404");
+          router.push('/404')
         }
-      });
-  };
-  const [listStatus, setListStatus] = useState([]);
+      })
+  }
+  const [listStatus, setListStatus] = useState([])
   useEffect(() => {
     // new CommentChannel()
     //   .onOutput((data) => {
     //     console.log('log' + data)
     //   })
     //   .listen()
-    if (roleTask === "jfadmin") {
-      setListStatus(["進行中", "リビュエー待ち", "完了", "中断", "未完了"]);
-    } else if (roleTask === "reviewer") {
-      setListStatus(["進行中", "リビュエー待ち", "完了", "中断", "未完了"]);
+    if (roleTask === 'jfadmin') {
+      setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
+    } else if (roleTask === 'reviewer') {
+      setListStatus(['進行中', 'リビュエー待ち', '完了', '中断', '未完了'])
     } else {
-      setListStatus(["未着手", "進行中", "リビュエー待ち"]);
+      setListStatus(['未着手', '進行中', 'リビュエー待ち'])
     }
-    fetchListMember();
-    fetchTaskData();
-    getMoreComments(0, INIT_COMMENTS_NUM);
+    fetchListMember()
+    fetchTaskData()
+    getMoreComments(0, INIT_COMMENTS_NUM)
     return () => {
-      store.dispatch({ type: actions.CLEAR_STORE, payload: [] });
-    };
-  }, [category, roleTask]);
+      store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
+    }
+  }, [category, roleTask])
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
-    const { label, closable, onClose } = props;
-    const nameUser = form.getFieldValue("assignee");
+    const { label, closable, onClose } = props
+    const nameUser = form.getFieldValue('assignee')
     if (nameUser.length !== 0) {
-      setAssign(true);
+      setAssign(true)
     }
     const onPreventMouseDown = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-    };
+      event.preventDefault()
+      event.stopPropagation()
+    }
     return (
       <Tag
         onMouseDown={onPreventMouseDown}
         closable={closable}
         onClose={() => {
-          onClose();
-          const nameUsers = form.getFieldValue("assignee");
+          onClose()
+          const nameUsers = form.getFieldValue('assignee')
           if (nameUsers.length === 0) {
-            setAssign(false);
+            setAssign(false)
           }
           if (nameUsers.length !== 0) {
-            setAssign(true);
+            setAssign(true)
           }
         }}
-        style={{ padding: "7px" }}
+        style={{ padding: '7px' }}
       >
         <Tooltip title={label}>
           <span className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden">
@@ -184,68 +180,75 @@ function index({
           </span>
         </Tooltip>
       </Tag>
-    );
-  };
+    )
+  }
 
   const onFormSummit = async () => {
     try {
-      const { memberStatus, status, assignee } = form.getFieldsValue();
+      const { memberStatus, status, assignee } = form.getFieldsValue()
 
       // TODO: change task description
       const comment = {
         task_id: id,
-        body: value.replace(/\\s/g, " ") ?? "",
+        body: value.replace(/\\s/g, ' ') ?? '',
         assignee: JSON.stringify(assignee),
         status,
         memberStatus,
-      };
-      console.log();
+      }
+      console.log()
 
-      if (!(comment.body || comment.assignee || comment.status || comment.memberStatus)) {
+      if (
+        !(
+          comment.body
+          || comment.assignee
+          || comment.status
+          || comment.memberStatus
+        )
+      ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
           duration: 3,
-          message: "更新しました!",
+          message: '更新しました!',
           onClick: () => {},
-        });
+        })
       }
       const response = await addComment(comment)
       const newComment = response.data
       if (response.status === 200) {
         if (newComment) {
-          console.log(newComment);
+          console.log(newComment)
           if (newComment.new_assignees || newComment.new_status) {
             pushData2Parent({
-              new_assignees: newComment.new_assignees ?? "",
-              new_status: newComment.new_status ?? "",
-            });
+              new_assignees: newComment.new_assignees ?? '',
+              new_status: newComment.new_status ?? '',
+            })
           }
           store.dispatch({
             type: actions.ADD_COMMENT,
             payload: [...commentArray, newComment],
-          });
-          form.resetFields();
-          setValue("");
+          })
+          form.resetFields()
+          setValue('')
           return notification.open({
             icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
             duration: 3,
-            message: "正常に登録されました。",
+            message: '正常に登録されました。',
             onClick: () => {},
-          });
+          })
         }
       }
-      return newComment;
+      return newComment
     } catch (error) {
       if (error.response.status === 404) {
-        router.push("/404");
-      } else return error;
-      return null;
+        router.push('/404')
+      } else return error
+      return null
     }
-  };
+  }
 
   const typing = (data) => {
-    setValue(data);
-  };
+    setValue(data)
+  }
 
   const callBack = (childState) => {
     const copyState = {}
@@ -261,53 +264,51 @@ function index({
       detail: commentContent,
       assignee: assigneeProp,
       status: statusProp,
-    });
-  };
+    })
+  }
 
   const onDoneEditing = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const { status, assignee } = form.getFieldsValue();
-    const newComment = { ...editingComment, content: value, status, assignee };
+    const { status, assignee } = form.getFieldsValue()
+    const newComment = { ...editingComment, content: value, status, assignee }
     try {
-      const response = await updateComment(newComment.id, newComment);
+      const response = await updateComment(newComment.id, newComment)
       if (response.status === 200) {
         const newComments = commentArray.map((comment) => {
           if (comment.id === newComment.id) {
-            return newComment;
+            return newComment
           }
-          return comment;
-        });
+          return comment
+        })
         store.dispatch({
           type: actions.EDIT_COMMENT,
           payload: newComments,
-        });
+        })
         notification.open({
           icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
           duration: 3,
-          message: "更新しました!",
+          message: '更新しました!',
           onClick: () => {},
-        });
-        setEditing(false);
-        form.resetFields();
-        return newComments;
+        })
+        setEditing(false)
+        form.resetFields()
+        return newComments
       }
     } catch (error) {
       if (error.response.status === 404) {
-        router.push("/404");
+        router.push('/404')
       }
     }
-    return newComment;
-  };
+    return newComment
+  }
 
   return (
     <div className="comment my-10 px-10 ">
       <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
       <div className="flex justify-center items-center ">
         <Button
-          onClick={() =>
-            getMoreComments(commentArray.length, MORE_COMMENTS_NUM)
-          }
+          onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
         >
           コメントをもっと見る
         </Button>
@@ -335,7 +336,7 @@ function index({
             <div
               className="btn w-1/4 text-center"
               onClick={showBox}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: 'pointer' }}
             >
               <EditOutlined className="ml-3 " />
               <span>ステータス変更</span>
@@ -349,17 +350,17 @@ function index({
               centered
               visible={previewing}
               onOk={() => {
-                setPreviewing(false);
+                setPreviewing(false)
               }}
               onCancel={() => {
-                setPreviewing(false);
+                setPreviewing(false)
               }}
               footer={[
                 <Button
                   key="submit"
                   type="primary"
                   onClick={() => {
-                    setPreviewing(false);
+                    setPreviewing(false)
                   }}
                 >
                   OK
@@ -367,7 +368,7 @@ function index({
               ]}
               // onCancel={() => {}}
             >
-              <MarkDownView source={value.replace(/\\s/g, "")} />
+              <MarkDownView source={value.replace(/\\s/g, '')} />
             </Modal>
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
               <div className="pos flex items-start justify-evenly ">
@@ -375,7 +376,7 @@ function index({
                   <Form.Item
                     label=""
                     className="block mx-7"
-                    style={{ display: "block" }}
+                    style={{ display: 'block' }}
                     name="detail"
                     // onChange={typing}
                   >
@@ -387,8 +388,7 @@ function index({
                 <div className="pos-right w-4/12 ">
                   {/* selector */}
                   <div className="h-full xl:mb-1">
-                    {roleTask ===
-                    `taskMember${idUser}` ? (
+                    {roleTask === `taskMember${idUser}` ? (
                       <Form.Item
                         label={<p className="font-bold">ステータス</p>}
                         name="memberStatus"
@@ -415,9 +415,7 @@ function index({
                           size="large"
                           defaultValue=""
                           className="addJF-selector"
-                          disabled={
-                            roleTask !== "jfadmin" ? true : false
-                          }
+                          disabled={roleTask !== 'jfadmin'}
                           placeholder="ステータス"
                         >
                           {listStatus.map((element) => (
@@ -434,15 +432,18 @@ function index({
                       className="multiples"
                     >
                       {assign ? (
-                        <Select mode="multiple" showArrow tagRender={tagRender} disabled={
-                          roleTask !== "jfadmin" ? true : false
-                        }>
+                        <Select
+                          mode="multiple"
+                          showArrow
+                          tagRender={tagRender}
+                          disabled={roleTask !== 'jfadmin'}
+                        >
                           {listUser.map((element) => (
                             <Select.Option
                               className="validate-user"
                               key={element.id}
                               disabled={
-                                roleTask !== "jfadmin" ? true : { editing }
+                                roleTask !== 'jfadmin' ? true : { editing }
                               }
                               value={element.id}
                             >
@@ -454,13 +455,11 @@ function index({
                         <Select
                           mode="multiple"
                           showArrow
-                          disabled={
-                            roleTask !== "jfadmin" ? true : false
-                          }
+                          disabled={roleTask !== 'jfadmin'}
                           tagRender={tagRender}
                           style={{
-                            width: "100%",
-                            border: "1px solid red",
+                            width: '100%',
+                            border: '1px solid red',
                             borderRadius: 6,
                           }}
                           className="multiples"
@@ -470,7 +469,7 @@ function index({
                               className="validate-user"
                               key={element.id}
                               disabled={
-                                roleTask !== "jfadmin" ? true : { editing }
+                                roleTask !== 'jfadmin' ? true : { editing }
                               }
                               value={element.id}
                             >
@@ -506,7 +505,7 @@ function index({
                           <Button
                             type="primary"
                             className="edit_brn "
-                            style={{ letterSpacing: "-1px" }}
+                            style={{ letterSpacing: '-1px' }}
                             onClick={onDoneEditing}
                           >
                             <span>編集</span>
@@ -516,7 +515,7 @@ function index({
                             type="primary"
                             htmlType="submit"
                             className="button_save "
-                            style={{ letterSpacing: "-1px" }}
+                            style={{ letterSpacing: '-1px' }}
                           >
                             <span>追加</span>
                           </Button>
@@ -531,9 +530,9 @@ function index({
         )}
       </div>
     </div>
-  );
+  )
 }
 
-index.propTypes = {};
+index.propTypes = {}
 
-export default memo(index);
+export default memo(index)

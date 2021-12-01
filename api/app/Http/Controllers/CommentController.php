@@ -61,6 +61,7 @@ class CommentController extends Controller
                 $isUpdatedTask = true;
             }
         }
+
         if ($request->has('memberStatus')) {
             $memberStatus = $request->memberStatus;
             $assignment = Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->get();
@@ -72,6 +73,7 @@ class CommentController extends Controller
                 $isUpdatedTask = true;
             }
         }
+
         if ($request->has('description')) {
             if ($request->description !== $task->description_of_detail) {
                 $input['old_description'] = $task->description_of_detail;

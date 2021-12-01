@@ -146,7 +146,8 @@ function Comment(props) {
                     <div className="flex">
                       <div className="old__status flex">
                         <p className="text-right" style={{ minWidth: '90px' }}>
-                          {props.comment.member_name}のステータスを編集：
+                          {props.comment.member_name}
+のステータスを編集：
                         </p>
                         <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
                           {props.comment.old_member_status}

@@ -11,13 +11,8 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import {
-  afterTask,
-  beforeTask,
-  deleteTask,
-  taskData,
-  getRoleTask,
-} from '~/api/task-detail'
+import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
 import JfLayout from '~/layouts/layout-task'
@@ -60,6 +55,7 @@ function TaskDetail() {
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [temp, setTemp] = useState()
   const [action, setAction] = useState('normal')
+
   const [infoJF, setInfoJF] = useState({
     id: null,
     name: '',
@@ -84,8 +80,8 @@ function TaskDetail() {
         setLoading(false)
       })
   }
+
   const getChildProps1 = useCallback((childState) => {
-    console.log(childState)
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
@@ -104,6 +100,7 @@ function TaskDetail() {
     if (copyState.new_member_status !== '') {
       setTemp(copyState.new_member_status)
       setAction(copyState.action)
+
     }
   }, [])
   const getRole = (id) => {
