@@ -2,6 +2,8 @@
 /* eslint-disable import/extensions */
 import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
+// import Editt from './editor'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
@@ -10,9 +12,12 @@ import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
 import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
-import MarkDownView from '../../components/markDownView'
 import './style.scss'
 
+const StackEditor = dynamic(
+  () => import('../../components/stackeditor').then((mod) => mod.default),
+  { ssr: false },
+)
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
@@ -87,63 +92,71 @@ function TaskDetail() {
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
-    await taskData(idTask).then((response) => {
-      if (response.status === 200) {
-        const data = response.data
-        getRole(data.schedule.jobfair.jobfair_admin_id)
-        setInfoTask({
-          id: data.id,
-          name: data.name,
-          categories: data.categories[0].category_name,
-          milestone: data.milestone.name,
-          status: data.status,
-          start_time: data.start_time,
-          end_time: data.end_time,
-          effort: data.template_task.effort,
-          is_day: data.template_task.is_day,
-          unit: data.template_task.unit,
-          description_of_detail: data.description_of_detail,
-        })
-        setTaskStatus(data.status)
-        setListMemberAssignee(data.users)
-        setInfoJF({
-          id: data.schedule.jobfair.id,
-          name: data.schedule.jobfair.name,
-        })
-      }
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      } else router.push('/error')
-    })
+    await taskData(idTask)
+      .then((response) => {
+        if (response.status === 200) {
+          const data = response.data
+          getRole(data.schedule.jobfair.jobfair_admin_id)
+          setInfoTask({
+            id: data.id,
+            name: data.name,
+            categories: data.categories[0].category_name,
+            milestone: data.milestone.name,
+            status: data.status,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            effort: data.template_task.effort,
+            is_day: data.template_task.is_day,
+            unit: data.template_task.unit,
+            description_of_detail: data.description_of_detail,
+          })
+          setTaskStatus(data.status)
+          setListMemberAssignee(data.users)
+          setInfoJF({
+            id: data.schedule.jobfair.id,
+            name: data.schedule.jobfair.name,
+          })
+        }
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else router.push('/error')
+      })
   }
   const fetchBeforeTask = async () => {
-    await beforeTask(idTask).then((response) => {
-      setBeforeTask(response.data.before_tasks)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await beforeTask(idTask)
+      .then((response) => {
+        setBeforeTask(response.data.before_tasks)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const fetchAfterTask = async () => {
-    await afterTask(idTask).then((response) => {
-      setAfterTasks(response.data.after_tasks)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await afterTask(idTask)
+      .then((response) => {
+        setAfterTasks(response.data.after_tasks)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
-    await reviewers(idTask).then((response) => {
-      setReviewersList(response.data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      } else router.push('/error')
-    })
+    await reviewers(idTask)
+      .then((response) => {
+        setReviewersList(response.data)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        } else router.push('/error')
+      })
   }
   const modelDelete = () => {
     Modal.confirm({
@@ -437,7 +450,7 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-              {reviewersList.length !== 0 ? (
+              {reviewersList.length !== 0 && (
                 <div className="grid grid-cols-2 mx-4">
                   <div className="col-span-1 mx-4 mt-5">
                     <div className="grid grid-cols-8">
@@ -446,7 +459,6 @@ function TaskDetail() {
                       </div>
                       <div className="col-span-5 mx-4">
                         <ul className="list__member">
-
                           {reviewersList.map((item) => (
                             <li key={item.id} className="task__chil">{`${item.name},`}</li>
                           ))}
@@ -455,11 +467,11 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
-              ) : (<div />)}
-
-              <div className="mx-12 mt-5">
-                <div className=" mx-10 des demo-infinite-container">
-                  <MarkDownView source={infoTask.description_of_detail} />
+              )}
+              <div className=" mx-12 mt-5">
+                <p className="font-bold">詳細</p>
+                <div className=" mx-10  demo-infinite-container">
+                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                 </div>
               </div>
             </div>
