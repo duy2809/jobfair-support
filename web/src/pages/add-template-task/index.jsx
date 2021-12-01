@@ -177,7 +177,16 @@ const index = () => {
       try {
         const beforeID = []
         const afterIDs = []
-
+        const CategoryId = []
+        // const form.getFieldsValue().beforeTasks
+        if (values.category) {
+          listCatergories.map((item) => {
+            if (values.category.includes(item.category_name)) {
+              CategoryId.push(item.id)
+            }
+            return ''
+          })
+        }
         if (values.beforeTasks && values.afterTasks) {
           templateTasks.forEach((e) => {
             if (values.beforeTasks.includes(e.name)) {
@@ -196,14 +205,14 @@ const index = () => {
           is_day: values.isDay[1],
           unit: values.unit[1],
           effort: values.effort * 1.0,
-          category_id: values.category[1],
+          category_id: CategoryId,
           beforeTasks: beforeID,
           afterTasks: afterIDs,
         }
         setdisableBtn(true)
         setLoading(true)
         const response = await addTemplateTasksAPI.addTemplateTask(data)
-
+        console.log(CategoryId, 'categoryId')
         if (response.status < 299) {
           routeTo(`/template-task-dt/${response.data.id}`)
           successNotification()
@@ -393,6 +402,54 @@ const index = () => {
       }
       setDataPreview(data)
     }
+  }
+  const tagRenderr = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { label, closable, onClose } = props
+    // const nameUser = form.getFieldValue('assignee')
+    // setCountUserAs(nameUser)
+    // if (nameUser.length < 2) {
+    //   form.setFieldsValue({
+    //     reviewers: ['なし'],
+    //   })
+    // }
+    // if (nameUser.length !== 0) {
+    //   document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+    //   setAssign(true)
+    //   form.setFieldsValue({
+
+    //   })
+    // }
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={() => {
+          onClose()
+          // const nameUsers = form.getFieldValue('category')
+          // if (nameUsers.length === 0) {
+          //   setAssign(false)
+          //   setCountUserAs(null)
+          //   document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
+          // }
+          // if (nameUsers.length !== 0) {
+          //   setAssign(true)
+          //   document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
+          // }
+        }}
+        style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+      >
+        <Tooltip title={label}>
+          <span className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden">
+            {label}
+          </span>
+        </Tooltip>
+      </Tag>
+    )
   }
   return (
     <>
@@ -626,6 +683,8 @@ const index = () => {
                                   <Select
                                     size="large"
                                     showArrow
+                                    mode="multiple"
+                                    tagRender={tagRenderr}
                                     allowClear
                                     className="addJF-selector "
                                     placeholder="カテゴリを選択"
@@ -634,10 +693,7 @@ const index = () => {
                                     {listCatergories.map((element) => (
                                       <Select.Option
                                         key={element.id}
-                                        value={[
-                                          element.category_name,
-                                          element.id,
-                                        ]}
+                                        value={element.category_name}
                                       >
                                         {element.category_name}
                                       </Select.Option>

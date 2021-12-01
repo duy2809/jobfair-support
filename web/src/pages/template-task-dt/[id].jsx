@@ -17,7 +17,7 @@ function templatetTaskDt() {
   const router = useRouter()
   const idTplt = router.query.id
   const [name, setName] = useState('')
-  const [categoryName, setCategory] = useState('')
+  const [categoryName, setCategory] = useState(null)
   const [milestoneName, setMilestone] = useState('')
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
@@ -33,7 +33,7 @@ function templatetTaskDt() {
       .then((response) => {
         setName(response.data.name)
         if (response.data.categories[0]) {
-          setCategory(response.data.categories[0].category_name)
+          setCategory(response.data.categories)
         }
         if (response.data.milestone) {
           setMilestone(response.data.milestone.name)
