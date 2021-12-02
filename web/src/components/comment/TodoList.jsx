@@ -28,7 +28,7 @@ function TodoList(props) {
     console.log(`checked = ${e.target.checked}`)
   }
   return (
-    <div onClick={addStar}>
+    <div onClick={addStar} className=" flex items-center">
       <Tooltip
         placement="topLeft"
         title={props.checked ? 'Create a checkedbox' : 'Create a uncheckedbox'}

@@ -6,7 +6,7 @@ import { editTask } from '../../api/edit-task'
 import MarkDownView from '../markDownView'
 
 const StackEditor = (props) => {
-  const [description, setDescription] = useState(props.value)
+  const [description, setDescription] = useState(props.value || '')
   let def = ''
   const { openStackedit, onFileChange, onClose } = useStackEdit(setDescription)
   const saveData = async (des) => {
@@ -23,7 +23,7 @@ const StackEditor = (props) => {
     saveData(def)
   })
   useEffect(() => {
-    setDescription(props.value)
+    setDescription(props.value ?? '')
   }, [props.value])
   return (
     <div>
