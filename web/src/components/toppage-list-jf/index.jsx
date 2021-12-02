@@ -237,7 +237,7 @@ const ListJfToppage = ({
                   // key="demo"
                   name="name"
                   className="no-border"
-                  placeholder="名前"
+                  placeholder="ジョブフェア名"
                   onChange={searchInput}
                   defaultValue={filter.name}
                   bordered

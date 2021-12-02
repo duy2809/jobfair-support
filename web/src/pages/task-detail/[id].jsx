@@ -92,11 +92,13 @@ function TaskDetail() {
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
+    setLoading(true)
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
           getRole(data.schedule.jobfair.jobfair_admin_id)
+          setLoading(false)
           setInfoTask({
             id: data.id,
             name: data.name,
@@ -122,40 +124,50 @@ function TaskDetail() {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
+        setLoading(false)
       })
   }
   const fetchBeforeTask = async () => {
+    setLoading(true)
     await beforeTask(idTask)
       .then((response) => {
+        setLoading(false)
         setBeforeTask(response.data.before_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
+        setLoading(false)
       })
   }
   const fetchAfterTask = async () => {
+    setLoading(true)
     await afterTask(idTask)
       .then((response) => {
+        setLoading(false)
         setAfterTasks(response.data.after_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
+        setLoading(false)
       })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
+    setLoading(true)
     await reviewers(idTask)
       .then((response) => {
+        setLoading(false)
         setReviewersList(response.data)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
+        setLoading(false)
       })
   }
   const modelDelete = () => {
@@ -190,237 +202,238 @@ function TaskDetail() {
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
   return (
     <div>
-      {loading && <Loading loading={loading} overlay={loading} />}
-      <JfLayout id={infoJF.id} bgr={2}>
-        <JfLayout.Main>
-          <div className="task-details">
-            <div className="title flex justify-between items-center">
-              <h1>タスク詳細</h1>
-              <div className="button__right mb-12 pb-2">
-                {role === 'admin' ? (
-                  <>
-                    <EditTwoTone
-                      className="border-none mx-1 text-2xl"
-                      type="primary"
-                      onClick={handleEdit}
-                    >
-                      {/* <EditOutlined /> */}
-                    </EditTwoTone>
-                    <DeleteTwoTone
-                      className="border-none mx-1 text-2xl"
-                      type="primary"
-                      onClick={modelDelete}
-                    >
-                      {/* <DeleteOutlined /> */}
-                    </DeleteTwoTone>
-                  </>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="info__tplt">
-              <div className="grid grid-cols-2 mx-4 info__center">
-                <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-8 ">
-                    <div className=" layber col-span-2 mx-4">
-                      <p className="font-bold text-right">タスク名</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.name}</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 ">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber  col-span-2 mx-4">
-                      <p className="font-bold text-right">カテゴリ</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.categories}</div>
-                    </div>
+      {loading ? <Loading loading={loading} overlay={loading} />
+        : (
+          <JfLayout id={infoJF.id} bgr={2}>
+            <JfLayout.Main>
+              <div className="task-details">
+                <div className="title flex justify-between items-center">
+                  <h1>タスク詳細</h1>
+                  <div className="button__right mb-12 pb-2">
+                    {role === 'admin' ? (
+                      <>
+                        <EditTwoTone
+                          className="border-none mx-1 text-2xl"
+                          type="primary"
+                          onClick={handleEdit}
+                        >
+                          {/* <EditOutlined /> */}
+                        </EditTwoTone>
+                        <DeleteTwoTone
+                          className="border-none mx-1 text-2xl"
+                          type="primary"
+                          onClick={modelDelete}
+                        >
+                          {/* <DeleteOutlined /> */}
+                        </DeleteTwoTone>
+                      </>
+                    ) : null}
                   </div>
                 </div>
 
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">マイルストーン</p>
+                <div className="info__tplt">
+                  <div className="grid grid-cols-2 mx-4 info__center">
+                    <div className="col-span-1 mx-4 ">
+                      <div className="grid grid-cols-8 ">
+                        <div className=" layber col-span-2 mx-4">
+                          <p className="font-bold text-right">タスク名</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          <div className="item__right">{infoTask.name}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.milestone}</div>
+                    <div className="col-span-1 mx-4 ">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber  col-span-2 mx-4">
+                          <p className="font-bold text-right">カテゴリ</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          <div className="item__right">{infoTask.categories}</div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">工数</p>
+
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">マイルストーン</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          <div className="item__right">{infoTask.milestone}</div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-span-5 mx-4">
-                      {infoTask.unit === 'none' ? (
-                        <>
-                          <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
-                          <span>/</span>
-                          {infoTask.unit === 'students' ? (
-                            <span className="ef">学生数</span>
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">工数</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          {infoTask.unit === 'none' ? (
+                            <>
+                              <span className="ef">{infoTask.effort}</span>
+                              <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                            </>
                           ) : (
-                            <span className="ef">企業数</span>
+                            <>
+                              <span className="ef">{infoTask.effort}</span>
+                              <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                              <span>/</span>
+                              {infoTask.unit === 'students' ? (
+                                <span className="ef">学生数</span>
+                              ) : (
+                                <span className="ef">企業数</span>
+                              )}
+                            </>
                           )}
-                        </>
-                      )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">担当者</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {newAsigneesFromNewComment.length > 0
-                          ? newAsigneesFromNewComment
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">担当者</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          <ul className="list__member">
+                            {newAsigneesFromNewComment.length > 0
+                              ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return <li key={id} className="task__chil">{`${item},`}</li>
                             })
-                          : listMemberAssignee
+                              : listMemberAssignee
                             && listMemberAssignee.map((item) => (
                               <li key={item.id} className="task__chil">{`${item.name},`}</li>
                             ))}
-                      </ul>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">ステータス</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          {taskStatus === '未着手' ? (
+                            <span
+                              style={{ background: '#5EB5A6', color: '#fff' }}
+                              className=" stt item__right"
+                            >
+                              {taskStatus}
+                            </span>
+                          ) : null}
+                          {taskStatus === '進行中' ? (
+                            <span
+                              style={{ background: '#A1AF2F', color: '#fff' }}
+                              className=" stt item__right"
+                            >
+                              {taskStatus}
+                            </span>
+                          ) : null}
+                          {taskStatus === '完了' ? (
+                            <span
+                              style={{ background: '#4488C5', color: '#fff' }}
+                              className=" stt item__right"
+                            >
+                              {taskStatus}
+                            </span>
+                          ) : null}
+                          {taskStatus === '中断' ? (
+                            <span
+                              style={{
+                                background: 'rgb(185, 86, 86)',
+                                color: '#fff',
+                              }}
+                              className=" stt item__right"
+                            >
+                              {taskStatus}
+                            </span>
+                          ) : null}
+                          {taskStatus === '未完了' ? (
+                            <span
+                              style={{
+                                background: 'rgb(121, 86, 23)',
+                                color: '#fff',
+                              }}
+                              className=" stt item__right"
+                            >
+                              {taskStatus}
+                            </span>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">開始日</p>
+                        </div>
+                        <div className="col-span-5 mx-4">
+                          <span className="item__right">{infoTask.start_time}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 mx-4 mt-5">
+                      <div className="grid grid-cols-8 ">
+                        <div className="layber col-span-2 mx-4">
+                          <p className="font-bold text-right">終了日</p>
+                        </div>
+                        <div className="col-span-6 mx-4">
+                          <span className="item__right">{infoTask.end_time}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">ステータス</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      {taskStatus === '未着手' ? (
-                        <span
-                          style={{ background: '#5EB5A6', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '進行中' ? (
-                        <span
-                          style={{ background: '#A1AF2F', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '完了' ? (
-                        <span
-                          style={{ background: '#4488C5', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '中断' ? (
-                        <span
-                          style={{
-                            background: 'rgb(185, 86, 86)',
-                            color: '#fff',
-                          }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '未完了' ? (
-                        <span
-                          style={{
-                            background: 'rgb(121, 86, 23)',
-                            color: '#fff',
-                          }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">開始日</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <span className="item__right">{infoTask.start_time}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">終了日</p>
-                    </div>
-                    <div className="col-span-6 mx-4">
-                      <span className="item__right">{infoTask.end_time}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 mx-4 mt-5">
-                <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">前のタスク</p>
-                  </div>
-                  {beforeTasks?.length > 0 ? (
-                    <>
-                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
-                        {beforeTasks
-                          ? beforeTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
+                  <div className="grid grid-cols-2 mx-4 mt-5">
+                    <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">前のタスク</p>
+                      </div>
+                      {beforeTasks?.length > 0 ? (
+                        <>
+                          <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
+                            {beforeTasks
+                              ? beforeTasks.map((item) => (
+                                <li>
+                                  <Tag
+                                    style={{
+                                      marginRight: 3,
+                                      paddingTop: '5px',
+                                      paddingBottom: '3px',
+                                    }}
                                   >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
-                            </li>
-                          ))
-                          : null}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
-                  )}
-                </div>
-                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">次のタスク</p>
-                  </div>
-                  {afterTasks?.length > 0 ? (
-                    <>
-                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
-                        {afterTasks
+                                    <Tooltip placement="top" title={item.name}>
+                                      <a
+                                        href={`/task-detail/${item.id}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="inline-block text-blue-600 whitespace-nowrap "
+                                      >
+                                        {truncate(item.name)}
+                                      </a>
+                                    </Tooltip>
+                                  </Tag>
+                                </li>
+                              ))
+                              : null}
+                          </ul>
+                        </>
+                      ) : (
+                        <ul className="list__task col-span-6" />
+                      )}
+                    </div>
+                    <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">次のタスク</p>
+                      </div>
+                      {afterTasks?.length > 0 ? (
+                        <>
+                          <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
+                            {afterTasks
                           && afterTasks.map((item) => (
                             <li>
                               <Tag
@@ -443,48 +456,50 @@ function TaskDetail() {
                               </Tag>
                             </li>
                           ))}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
+                          </ul>
+                        </>
+                      ) : (
+                        <ul className="list__task col-span-6" />
+                      )}
+                    </div>
+                  </div>
+                  {reviewersList.length !== 0 && (
+                    <div className="grid grid-cols-2 mx-4">
+                      <div className="col-span-1 mx-4 mt-5">
+                        <div className="grid grid-cols-8">
+                          <div className="layber col-span-2 mx-4">
+                            <p className="font-bold text-right">レビュアー</p>
+                          </div>
+                          <div className="col-span-5 mx-4">
+                            <ul className="list__member">
+                              {reviewersList.map((item) => (
+                                <li key={item.id} className="task__chil">{`${item.name},`}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
-                </div>
-              </div>
-              {reviewersList.length !== 0 && (
-                <div className="grid grid-cols-2 mx-4">
-                  <div className="col-span-1 mx-4 mt-5">
-                    <div className="grid grid-cols-8">
-                      <div className="layber col-span-2 mx-4">
-                        <p className="font-bold text-right">レビュアー</p>
-                      </div>
-                      <div className="col-span-5 mx-4">
-                        <ul className="list__member">
-                          {reviewersList.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))}
-                        </ul>
-                      </div>
+                  <div className=" mx-12 mt-5">
+                    <p className="font-bold">詳細</p>
+                    <div className=" mx-10  demo-infinite-container">
+                      <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                     </div>
                   </div>
                 </div>
-              )}
-              <div className=" mx-12 mt-5">
-                <p className="font-bold">詳細</p>
-                <div className=" mx-10  demo-infinite-container">
-                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
-                </div>
+                <Comment
+                  id={idTask}
+                  statusProp={infoTask.status}
+                  assigneeProp={assigneeNames}
+                  category={infoTask.categories}
+                  parentCallback={getChildProps}
+                />
               </div>
-            </div>
-            <Comment
-              id={idTask}
-              statusProp={infoTask.status}
-              assigneeProp={assigneeNames}
-              category={infoTask.categories}
-              parentCallback={getChildProps}
-            />
-          </div>
-        </JfLayout.Main>
-      </JfLayout>
+            </JfLayout.Main>
+          </JfLayout>
+
+        )}
     </div>
   )
 }

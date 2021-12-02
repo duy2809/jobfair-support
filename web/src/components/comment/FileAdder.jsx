@@ -193,7 +193,7 @@ function FileAdder(props) {
         onChange={onChangeCas}
         multiple
         className="hidden"
-        placeholder="Select a file"
+        placeholder="ファイルを選択"
         maxTagCount="responsive"
       />
       <Modal
