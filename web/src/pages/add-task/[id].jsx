@@ -30,15 +30,20 @@ function index() {
     const data = []
     if (response) {
       for (let i = 0; i < response.data.length; i += 1) {
+        const categoryName = []
+        for (let j = 0; j < response.data[i].categories.length; j += 1) {
+          categoryName.push(response.data[i].categories[j].category_name)
+        }
         data.push({
           key: response.data[i].id,
           templateTaskName: response.data[i].name,
-          category_name: response.data[i].categories[0].category_name,
+          category_name: categoryName,
           milestone_name: response.data[i].milestone.name,
         })
       }
       setTemperaryData(data)
       setOriginalData(data)
+      console.log(data, 'data')
     }
   }
   useEffect(() => {
@@ -78,6 +83,11 @@ function index() {
       title: 'カテゴリ',
       dataIndex: 'category_name',
       fixed: 'left',
+      render: (categoryName) => (
+        <div className="">
+          {categoryName.length > 0 ? categoryName.join(', ') : ''}
+        </div>
+      ),
     },
     {
       title: 'マイルストーン',
@@ -90,7 +100,7 @@ function index() {
         ? templateTask.templateTaskName.toLowerCase().includes(value)
         : templateTask.templateTaskName)
         && (category
-          ? !templateTask.category_name.localeCompare(category)
+          ? !templateTask.category_name.includes(category)
           : templateTask.category_name)
         && (milestone
           ? !templateTask.milestone_name.localeCompare(milestone)
@@ -103,12 +113,11 @@ function index() {
     setValueSearch(currValue)
     searchDataOnTable(currValue)
   }
-
   const handleSelectCategory = (value) => {
     setCategory(value)
     const filteredData = originalData.filter(
       (templateTask) => (value
-        ? !templateTask.category_name.localeCompare(value)
+        ? templateTask.category_name.includes(value)
         : templateTask.category_name)
         && (valueSearch
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
@@ -130,7 +139,7 @@ function index() {
           ? templateTask.templateTaskName.toLowerCase().includes(valueSearch)
           : templateTask.templateTaskName)
         && (category
-          ? !templateTask.category_name.localeCompare(category)
+          ? !templateTask.category_name.includes(category)
           : templateTask.category_name),
     )
     setTemperaryData(filteredData)

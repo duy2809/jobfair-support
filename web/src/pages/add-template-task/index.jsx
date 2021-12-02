@@ -17,7 +17,6 @@ import dynamic from 'next/dynamic'
 import addTemplateTasksAPI from '../../api/add-template-task'
 import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
-// import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
 import MarkDownView from '../../components/markDownView'
 
@@ -40,9 +39,7 @@ const index = () => {
   const [chosePreview, setChosePreview] = useState(false)
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
-  // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
   const router = useRouter()
-  // route function handle all route in this page.
   const routeTo = async (url) => {
     router.prefetch(url)
     router.push(url)
@@ -87,15 +84,6 @@ const index = () => {
     }
     return true
   }
-  // const convertTaskToOptions = (tasks) => {
-  //   const options = []
-  //   Object.values(tasks).forEach((element) => {
-  //     const dummyObj = { value: '' }
-  //     dummyObj.value = element.name
-  //     options.push(dummyObj)
-  //   })
-  //   return options
-  // }
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -178,7 +166,6 @@ const index = () => {
         const beforeID = []
         const afterIDs = []
         const CategoryId = []
-        // const form.getFieldsValue().beforeTasks
         if (values.category) {
           listCatergories.map((item) => {
             if (values.category.includes(item.category_name)) {
@@ -256,9 +243,6 @@ const index = () => {
     if (value.match(Extensions.Reg.specialCharacter)) {
       return Promise.reject(new Error('使用できない文字が含まれています'))
     }
-    // if (isTemplateExisted === true) {
-    //   return Promise.reject(new Error('da ton tai'))
-    // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
@@ -288,10 +272,8 @@ const index = () => {
       return Promise.reject(new Error('0以上の数字で入力してください'))
     }
     if (Extensions.isFullWidth(value)) {
-      // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
+      return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
-
-    // setinputTest(Extention.toHalfWidth(value.toString()))
     if (
       !Extensions.isFullWidth(value)
       && !Extensions.Reg.floatNumber.test(value * 1.0)
@@ -406,20 +388,6 @@ const index = () => {
   const tagRenderr = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
-    // const nameUser = form.getFieldValue('assignee')
-    // setCountUserAs(nameUser)
-    // if (nameUser.length < 2) {
-    //   form.setFieldsValue({
-    //     reviewers: ['なし'],
-    //   })
-    // }
-    // if (nameUser.length !== 0) {
-    //   document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
-    //   setAssign(true)
-    //   form.setFieldsValue({
-
-    //   })
-    // }
     const onPreventMouseDown = (event) => {
       event.preventDefault()
       event.stopPropagation()
@@ -430,16 +398,6 @@ const index = () => {
         closable={closable}
         onClose={() => {
           onClose()
-          // const nameUsers = form.getFieldValue('category')
-          // if (nameUsers.length === 0) {
-          //   setAssign(false)
-          //   setCountUserAs(null)
-          //   document.getElementById('error-user').removeAttribute('hidden', 'text-red-600')
-          // }
-          // if (nameUsers.length !== 0) {
-          //   setAssign(true)
-          //   document.getElementById('error-user').setAttribute('hidden', 'text-red-600')
-          // }
         }}
         style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
       >
@@ -465,8 +423,6 @@ const index = () => {
               >
                 <h1>テンプレートタスク追加 </h1>
                 <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-                  {/* page title */}
-                  {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
                   <div>
                     <div className="container mt-20">
                       <div className="grid justify-items-center">
@@ -551,7 +507,6 @@ const index = () => {
                                 >
                                   <Form.Item
                                     noStyle
-                                    // hasFeedback
                                     name="milestone"
                                     rules={[
                                       {
@@ -707,7 +662,10 @@ const index = () => {
 
                               {/* Kōsū - effort  */}
                               <Form.Item label="工数" required={!isPreview}>
-                                <Space className="space-items-special flex justify-between " style={{ display: isPreview ? 'none' : '' }}>
+                                <Space
+                                  className="space-items-special flex justify-between "
+                                  style={{ display: isPreview ? 'none' : '' }}
+                                >
                                   <div className="w-1/2 max-w-xs flex-grow ">
                                     <Form.Item
                                       noStyle
@@ -749,7 +707,6 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
-
                                       >
                                         {isDayData.map((element) => (
                                           <Select.Option
@@ -789,7 +746,10 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
-                                        value={[unitData[0].name, unitData[0].id]}
+                                        value={[
+                                          unitData[0].name,
+                                          unitData[0].id,
+                                        ]}
                                       >
                                         {unitData.map((element) => (
                                           <Select.Option
@@ -806,9 +766,8 @@ const index = () => {
                                 <p style={{ display: isPreview ? '' : 'none' }}>
                                   {dataPreview.effort}
                                   {' '}
-                                  {' '}
                                   {dataPreview.is_day}
-                                  /
+/
                                   {dataPreview.unit}
                                 </p>
                               </Form.Item>
