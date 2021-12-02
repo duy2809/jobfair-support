@@ -72,7 +72,7 @@ const JfLayout = ({ children, id, bgr }) => {
             }
           })
           .catch(() => setAvatarAdmin(null))
-        await getProfile(id).then((response) => {
+        await getProfile(AdminId).then((response) => {
           setUserName(response.data.name)
         })
       }
