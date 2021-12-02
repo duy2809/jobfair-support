@@ -266,7 +266,7 @@ function TemplateTaskList() {
   const searchDataOnTable = (value) => {
     const filteredData = originalData.filter(
       (templateTask) => (value ? templateTask.templateTaskName.toLowerCase().includes(value) : templateTask.templateTaskName)
-        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name)
+        && (category ? templateTask.category_name.includes(category) : templateTask.category_name)
         && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
     setTemperaryData(filteredData)
@@ -283,7 +283,7 @@ function TemplateTaskList() {
     } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
+      (templateTask) => (value ? templateTask.category_name.includes(value) : templateTask.category_name)
         && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
         && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
@@ -298,7 +298,7 @@ function TemplateTaskList() {
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
         && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
-        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name),
+        && (category ? templateTask.category_name.includes(category) : templateTask.category_name),
     )
     setTemperaryData(filteredData)
   }
