@@ -20,35 +20,35 @@ class StatusController extends Controller
         incompeleted => 未完了
         pending =>  中断
     */
-    public function getTaskRole($jobfair_id, $user_id, $task_id)
+    public function getTaskRole($jobfairId, $userId, $taskId)
     {
-        if (Jobfair::find($jobfair_id)->where('jobfair_admin_id', $user_id)->count()) {
+        if (Jobfair::find($jobfairId)->where('jobfair_admin_id', $userId)->count()) {
             return 'jfadmin';
         }
 
-        if (Assignment::where('task_id', $task_id)->count() === 1) {
-            $user = User::find($user_id);
-            if ($user->tasks->find($task_id)->count() === 0) {
+        if (Assignment::where('task_id', $taskId)->count() === 1) {
+            $user = User::find($userId);
+            if ($user->tasks->find($taskId)->count() === 0) {
                 return 'member';
             }
 
-            return 'taskMember'.$user_id;
+            return 'taskMember'.$userId;
         }
 
-        $user = User::find($user_id);
-        if ($user->tasks->find($task_id)) {
-            return 'taskMember'.$user_id;
-        } else if ($user->reviewTasks->find($task_id)) {
+        $user = User::find($userId);
+        if ($user->tasks->find($taskId)) {
+            return 'taskMember'.$userId;
+        } else if ($user->reviewTasks->find($taskId)) {
             return 'reviewer';
         }
 
         return 'member';
     }
 
-    public function getStatus($jobfair_id, $user_id, $task_id)
+    public function getStatus($jobfairId, $userId, $taskId)
     {
         $status = null;
-        if (Jobfair::find($jobfair_id)->where('jobfair_admin_id', $user_id)->count()) {
+        if (Jobfair::find($jobfairId)->where('jobfair_admin_id', $userId)->count()) {
             return [
                 '未着手',
                 '進行中',
@@ -58,9 +58,9 @@ class StatusController extends Controller
             ];
         }
 
-        if (Assignment::where('task_id', $task_id)->count() === 1) {
-            $user = User::find($user_id);
-            if ($user->tasks->find($task_id)->count() === 0) {
+        if (Assignment::where('task_id', $taskId)->count() === 1) {
+            $user = User::find($userId);
+            if ($user->tasks->find($taskId)->count() === 0) {
                 return null;
             }
 
@@ -73,14 +73,14 @@ class StatusController extends Controller
             ];
         }
 
-        $user = User::find($user_id);
-        if ($user->tasks->find($task_id)) {
+        $user = User::find($userId);
+        if ($user->tasks->find($taskId)) {
             return [
                 '未着手',
                 '進行中',
                 'レビュー待ち',
             ];
-        } else if ($user->reviewTasks->find($task_id)) {
+        } else if ($user->reviewTasks->find($taskId)) {
             return [
                 '未着手',
                 '進行中',
@@ -93,9 +93,9 @@ class StatusController extends Controller
         return null;
     }
 
-    public function handleStatusTask($task_id)
+    public function handleStatusTask($taskId)
     {
-        $assignments = Assignment::where('task_id', $task_id)->get();
+        $assignments = Assignment::where('task_id', $taskId)->get();
         $isNew = true;
         foreach ($assignments as $assignment) {
             if (strcmp($assignment->status, '未着手') !== 0) {
@@ -104,7 +104,7 @@ class StatusController extends Controller
         }
 
         if ($isNew === false) {
-            $task = Task::find($task_id);
+            $task = Task::find($taskId);
             if (strcmp($task->status, '進行中') === 0) {
                 return '進行中';
             }
@@ -118,25 +118,25 @@ class StatusController extends Controller
         return '未着手';
     }
 
-    public function updateStatus($user_id, $task_id, Request $request)
+    public function updateStatus($userId, $taskId, Request $request)
     {
         $input = [
             'user_id' => auth()->user()->id,
-            'task_id' => $task_id,
+            'task_id' => $taskId,
             'body'    => '',
         ];
-        $assignment = Assignment::where('user_id', $user_id)->where('task_id', $task_id)->get();
+        $assignment = Assignment::where('user_id', $userId)->where('task_id', $taskId)->get();
         //Assignment::where('user_id', $user_id)->where('task_id', $task_id)->update(['status'=>$request->status]);
         //$assignment =  Assignment::where('user_id', $user_id)->where('task_id', $task_id);
         if ($assignment[0]->status !== $request->status) {
             $input['old_status'] = $assignment[0]->status;
             $input['new_status'] = $request->status;
-            Assignment::where('user_id', $user_id)->where('task_id', $task_id)->update(['status' => $request->status]);
+            Assignment::where('user_id', $userId)->where('task_id', $taskId)->update(['status' => $request->status]);
             $comment = Comment::create($input);
             CommentCreated::dispatch($comment);
         }
 
-        $taskStatus = $this->handleStatusTask($task_id);
+        $taskStatus = $this->handleStatusTask($taskId);
 
         return [
             'memberStatus' => $request->status,

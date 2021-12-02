@@ -38,7 +38,8 @@ function index({
   statusProp,
   assigneeProp,
   category,
-  parentCallback,
+  parentCallback1,
+  parentCallback2,
   roleTask,
 }) {
   const [visible, setVisible] = useState(false)
@@ -97,8 +98,11 @@ function index({
   const openPreview = () => {
     setPreviewing(true)
   }
-  const pushData2Parent = useCallback((data) => {
-    parentCallback(data)
+  const pushData2Parent1 = useCallback((data) => {
+    parentCallback1(data)
+  }, [])
+  const pushData2Parent2 = useCallback((data) => {
+    parentCallback2(data)
   }, [])
   const fetchListMember = async () => {
     try {
@@ -195,7 +199,6 @@ function index({
         status,
         memberStatus,
       }
-      console.log()
 
       if (
         !(
@@ -216,11 +219,16 @@ function index({
       const newComment = response.data
       if (response.status === 200) {
         if (newComment) {
-          console.log(newComment)
-          if (newComment.new_assignees || newComment.new_status) {
-            pushData2Parent({
+          if (newComment.new_assignees.length !== 0 || newComment.new_status) {
+            pushData2Parent1({
               new_assignees: newComment.new_assignees ?? '',
               new_status: newComment.new_status ?? '',
+              action: 'changeTaskStatus',
+            })
+          } else if (newComment.new_member_status) {
+            pushData2Parent2({
+              new_member_status: newComment.new_member_status,
+              action: 'changeMemberStatus',
             })
           }
           store.dispatch({
@@ -415,7 +423,6 @@ function index({
                           size="large"
                           defaultValue=""
                           className="addJF-selector"
-                          disabled={roleTask !== 'jfadmin'}
                           placeholder="ステータス"
                         >
                           {listStatus.map((element) => (
@@ -442,9 +449,6 @@ function index({
                             <Select.Option
                               className="validate-user"
                               key={element.id}
-                              disabled={
-                                roleTask !== 'jfadmin' ? true : { editing }
-                              }
                               value={element.id}
                             >
                               {element.name}
@@ -455,22 +459,19 @@ function index({
                         <Select
                           mode="multiple"
                           showArrow
-                          disabled={roleTask !== 'jfadmin'}
                           tagRender={tagRender}
                           style={{
                             width: '100%',
                             border: '1px solid red',
                             borderRadius: 6,
                           }}
+                          disabled={roleTask !== 'jfadmin'}
                           className="multiples"
                         >
                           {listUser.map((element) => (
                             <Select.Option
                               className="validate-user"
                               key={element.id}
-                              disabled={
-                                roleTask !== 'jfadmin' ? true : { editing }
-                              }
                               value={element.id}
                             >
                               {element.name}
