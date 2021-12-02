@@ -402,7 +402,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor value={value} onChange={typing} />
+                    <MyEditor jfID={id} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">

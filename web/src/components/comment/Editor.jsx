@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react'
 // import handlePastedText from '../../utils/handleOnPaste'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { MemberApi } from '../../api/member'
+import FileAdder from './FileAdder'
 import './styles.scss'
 import TodoBlock from './TodoBlock'
 import TodoList from './TodoList'
@@ -119,6 +120,7 @@ function index(props) {
     trigger: '@',
     suggestions: usersName,
   }
+
   const hashtag = {
     separator: ' ',
     trigger: '#',
@@ -175,6 +177,7 @@ function index(props) {
         editorState={editorState}
         toolbarClassName=""
         mention={mention}
+        // mention={files}
         hashtag={hashtag}
         blockStyleFn={blockStyleFn}
         blockRenderMap={blockRenderMap}
@@ -188,6 +191,7 @@ function index(props) {
         toolbarCustomButtons={[
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
+          <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
         ]}
       />
     </div>
@@ -196,5 +200,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  jfID: PropTypes.string,
 }
 export default index
