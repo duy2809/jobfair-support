@@ -88,6 +88,7 @@ function TaskDetail() {
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
+    setLoading(true)
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
@@ -97,6 +98,7 @@ function TaskDetail() {
             categoryName.push(element.category_name)
           })
           getRole(data.schedule.jobfair.jobfair_admin_id)
+          setLoading(false)
           setInfoTask({
             id: data.id,
             name: data.name,
@@ -122,40 +124,51 @@ function TaskDetail() {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
+        setLoading(false)
       })
   }
   const fetchBeforeTask = async () => {
+    setLoading(true)
+
     await beforeTask(idTask)
       .then((response) => {
+        setLoading(false)
         setBeforeTask(response.data.before_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
+        setLoading(false)
       })
   }
   const fetchAfterTask = async () => {
+    setLoading(true)
     await afterTask(idTask)
       .then((response) => {
+        setLoading(false)
         setAfterTasks(response.data.after_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
+        setLoading(false)
       })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
+    setLoading(true)
     await reviewers(idTask)
       .then((response) => {
+        setLoading(false)
         setReviewersList(response.data)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
+        setLoading(false)
       })
   }
   const modelDelete = () => {

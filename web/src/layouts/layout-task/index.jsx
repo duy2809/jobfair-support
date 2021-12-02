@@ -7,7 +7,7 @@ import {
   TableOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
-import { Layout, Menu, Avatar, Input } from 'antd'
+import { Layout, Menu, Avatar, Input, Tooltip } from 'antd'
 import _get from 'lodash/get'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
@@ -18,7 +18,7 @@ import Navbar from '../../components/navbar'
 import '../../pages/global.scss'
 import { findSlot } from '../../utils/pages'
 import './style.scss'
-import { getAvatar } from '../../api/profile'
+import { getAvatar, getProfile } from '../../api/profile'
 
 const JfLayout = ({ children, id, bgr }) => {
   const router = useRouter()
@@ -34,6 +34,7 @@ const JfLayout = ({ children, id, bgr }) => {
   const [numberOfCompanies, setNumberOfCompanies] = useState()
   const [AdminId, setAdminId] = useState()
   const [name, setName] = useState('')
+  const [userName, setUserName] = useState('')
   const { Sider, Content } = Layout
   const [collapsed, Setcollapsed] = useState(true)
   const [avatarAdmin, setAvatarAdmin] = useState(null)
@@ -71,6 +72,9 @@ const JfLayout = ({ children, id, bgr }) => {
             }
           })
           .catch(() => setAvatarAdmin(null))
+        await getProfile(AdminId).then((response) => {
+          setUserName(response.data.name)
+        })
       }
     }
   }
@@ -205,17 +209,19 @@ const JfLayout = ({ children, id, bgr }) => {
               <span className="text-lg px-2 ">{`企業: ${numberOfCompanies ?? 'N/A'}`}</span>
               <span className="text-lg px-2 ">{`学生: ${numberOfStudents ?? 'N/A'}`}</span>
               <div className="avatar pl-3 pr-2">
-                {avatarAdmin ? (
-                  <Avatar size={45} src={avatarAdmin} />
-                ) : (
-                  <Avatar
-                    size={45}
-                    style={{
-                      backgroundColor: '#FFD802',
-                    }}
-                    src="../images/avatars/default.jpg"
-                  />
-                )}
+                <Tooltip title={userName} placement="bottom">
+                  {avatarAdmin ? (
+                    <Avatar size={45} src={avatarAdmin} />
+                  ) : (
+                    <Avatar
+                      size={45}
+                      style={{
+                        backgroundColor: '#FFD802',
+                      }}
+                      src="../images/avatars/default.jpg"
+                    />
+                  )}
+                </Tooltip>
               </div>
               <span className="queue-demo">
                 {showSearchIcon && (

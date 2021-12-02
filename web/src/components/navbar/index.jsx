@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, Avatar } from 'antd'
+import { Menu, Dropdown, Avatar, Tooltip } from 'antd'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import './styles.scss'
@@ -17,6 +17,7 @@ export default function Navbar() {
   const [avatarUser, setAvatarUser] = useState('')
 
   const user = store.getState().get('auth').get('user')
+  const userName = store.getState().get('auth').get('user').get('name')
   const role = store.getState().get('auth').get('user').get('role')
   useEffect(async () => {
     if (user) {
@@ -134,24 +135,26 @@ export default function Navbar() {
         <Notification />
         <div className="pl-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            {avatarUser ? (
-              <Avatar
-                size={45}
-                style={{
-                  cursor: 'pointer',
-                }}
-                src={avatarUser}
-              />
-            ) : (
-              <Avatar
-                size={45}
-                style={{
-                  backgroundColor: '#FFD802',
-                  cursor: 'pointer',
-                }}
-                src="../images/avatars/default.jpg"
-              />
-            )}
+            <Tooltip title={userName}>
+              {avatarUser ? (
+                <Avatar
+                  size={45}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  src={avatarUser}
+                />
+              ) : (
+                <Avatar
+                  size={45}
+                  style={{
+                    backgroundColor: '#FFD802',
+                    cursor: 'pointer',
+                  }}
+                  src="../images/avatars/default.jpg"
+                />
+              )}
+            </Tooltip>
           </Dropdown>
         </div>
       </div>
