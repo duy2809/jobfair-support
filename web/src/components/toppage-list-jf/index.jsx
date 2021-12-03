@@ -61,8 +61,8 @@ const ListJfToppage = ({
         }
         if (data.title === 'タイム') {
           data.render = (row) => (
-            <div>
-              <span>開始日: </span>
+            <div className="time">
+              {/* <span>開始日: </span> */}
               <span>{row}</span>
             </div>
           )
