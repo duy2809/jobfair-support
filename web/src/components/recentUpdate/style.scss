@@ -39,4 +39,8 @@
   .item-link{
     cursor: pointer;
   }
+  .ant-btn:focus {
+    color: black;
+    border-color: #d9d9d9;
+  }
 }
