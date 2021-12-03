@@ -290,11 +290,11 @@ function EditTask() {
     })
   }
 
-  const forbidNotification = () => {
-    notification.error({
-      message: 'Method not allowed',
-    })
-  }
+  // const forbidNotification = () => {
+  //   notification.error({
+  //     message: 'Method not allowed',
+  //   })
+  // }
   const openNotification = (type, message, description) => {
     notification[type]({
       message,
@@ -365,7 +365,14 @@ function EditTask() {
               if (error.response.status === 404) {
                 router.push('/404')
               }
-              forbidNotification()
+              if (error.response.status === 422) {
+                notification.error({
+                  duration: 3,
+                  message: error.response.data.message,
+                  onClick: () => {},
+                })
+              }
+              // forbidNotification()
             })
         }
       } catch (error) {

@@ -78,17 +78,20 @@ class JobfairController extends Controller
             }
         }
 
+        //Slack
+        $channelname = strtolower($request->name);
+        $response = $this->slack->createChannel($channelname);
+        $res = json_decode($response);
+        if ($res->ok === false && $res->error === 'name_taken') {
+            return response()->json(['message' => 'Name channel already in use'], 422);
+        }
+
         $templateSchedule = Schedule::findOrFail($request->schedule_id);
         $jobfair = Jobfair::create($request->validated());
         $newSchedule = Schedule::create($templateSchedule->toArray());
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
         $newSchedule->milestones()->attach($templateSchedule->milestones);
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
-
-        //Slack
-        $channelname = strtolower($jobfair->name);
-        $response = $this->slack->createChannel($channelname);
-        $res = json_decode($response);
         if ($res->ok === true) {
             $jobfair->channel_id = $res->channel->id;
             $jobfair->save();
@@ -101,7 +104,6 @@ class JobfairController extends Controller
         $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
 
         return $jobfair;
-        // return response()->json(['message' => $response], 200);
     }
 
     /**

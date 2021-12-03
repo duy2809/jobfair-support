@@ -177,6 +177,13 @@ const index = () => {
       if (error.response.status === 404) {
         routeTo('/404')
       }
+      if (error.response.status === 422) {
+        notification.error({
+          duration: 3,
+          message: 'Slack name channel already in use. Please change name JF!!!',
+          onClick: () => {},
+        })
+      }
       return error
     }
   }
