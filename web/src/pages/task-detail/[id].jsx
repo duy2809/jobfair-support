@@ -1,23 +1,31 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { afterTask, beforeTask, deleteTask, taskData } from '~/api/task-detail'
+import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
 import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
 import './style.scss'
+import StatusStatic from '../../components/status/static-status'
+import Status from '../../components/status/dynamic-status'
 
 const StackEditor = dynamic(
   () => import('../../components/stackeditor').then((mod) => mod.default),
   { ssr: false },
 )
+
 function TaskDetail() {
   const router = useRouter()
   const idTask = router.query.id
@@ -26,6 +34,8 @@ function TaskDetail() {
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
   const [loading, setLoading] = useState(false)
+  const idUser = store.getState().get('auth').get('user').get('id')
+  const [roleTask, setRoleTask] = useState('member')
   const [infoTask, setInfoTask] = useState({
     id: null,
     name: '',
@@ -39,8 +49,12 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
+    [],
+  )
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
+  const [tempStatus, setTempStatus] = useState()
+  const [action, setAction] = useState('normal')
   const [infoJF, setInfoJF] = useState({
     id: null,
     name: '',
@@ -61,14 +75,11 @@ function TaskDetail() {
         saveNotification()
         setLoading(false)
       })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          router.push('/404')
-        }
+      .catch(() => {
         setLoading(false)
       })
   }
-  const getChildProps = useCallback((childState) => {
+  const getChildProps1 = useCallback((childState) => {
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
@@ -76,6 +87,17 @@ function TaskDetail() {
     }
     if (copyState.new_status !== '') {
       setTaskStatus(copyState.new_status)
+      setTempStatus(copyState.new_status)
+      setAction(copyState.action)
+    }
+  }, [])
+  const getChildProps2 = useCallback((childState) => {
+    console.log(childState)
+    const copyState = {}
+    Object.assign(copyState, childState)
+    if (copyState.new_member_status !== '') {
+      setTempStatus(copyState.new_member_status)
+      setAction(copyState.action)
     }
   }, [])
   const getRole = (id) => {
@@ -86,9 +108,15 @@ function TaskDetail() {
       setRole(user.get('role'))
     }
   }
+  const getRoleWithTask = async (idJF) => {
+    await getRoleTask(idJF, idUser, idTask)
+      .then((res) => {
+        setRoleTask(res.data)
+      })
+      .catch((error) => Error(error.toString()))
+  }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchTaskData = async () => {
-    setLoading(true)
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
@@ -98,7 +126,6 @@ function TaskDetail() {
             categoryName.push(element.category_name)
           })
           getRole(data.schedule.jobfair.jobfair_admin_id)
-          setLoading(false)
           setInfoTask({
             id: data.id,
             name: data.name,
@@ -118,57 +145,48 @@ function TaskDetail() {
             id: data.schedule.jobfair.id,
             name: data.schedule.jobfair.name,
           })
+          getRoleWithTask(data.schedule.jobfair.id, idUser, idTask)
         }
+        // set role task
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
-        setLoading(false)
       })
   }
   const fetchBeforeTask = async () => {
-    setLoading(true)
-
     await beforeTask(idTask)
       .then((response) => {
-        setLoading(false)
         setBeforeTask(response.data.before_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
-        setLoading(false)
       })
   }
   const fetchAfterTask = async () => {
-    setLoading(true)
     await afterTask(idTask)
       .then((response) => {
-        setLoading(false)
         setAfterTasks(response.data.after_tasks)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
-        setLoading(false)
       })
   }
   const [reviewersList, setReviewersList] = useState([])
   const fetchReviewersList = async () => {
-    setLoading(true)
     await reviewers(idTask)
       .then((response) => {
-        setLoading(false)
         setReviewersList(response.data)
       })
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         } else router.push('/error')
-        setLoading(false)
       })
   }
   const modelDelete = () => {
@@ -201,6 +219,7 @@ function TaskDetail() {
     setLoading(false)
   }, [role])
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
+
   return (
     <div>
       {loading && <Loading loading={loading} overlay={loading} />}
@@ -273,12 +292,16 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -293,20 +316,17 @@ function TaskDetail() {
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8">
                     <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">担当者</p>
+                      <p className="font-bold text-right">レビュアー</p>
                     </div>
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
-                        {newAsigneesFromNewComment.length > 0
-                          ? newAsigneesFromNewComment
-                            && newAsigneesFromNewComment.map((item, index) => {
-                              const id = index + item
-                              return <li key={id} className="task__chil">{`${item},`}</li>
-                            })
-                          : listMemberAssignee
-                            && listMemberAssignee.map((item) => (
-                              <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                            ))}
+                        {reviewersList.length !== 0 ? (
+                          <li>
+                            {reviewersList.map((item) => item.name).join(', ')}
+                          </li>
+                        ) : (
+                          <li className="task__chil">None</li>
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -317,52 +337,7 @@ function TaskDetail() {
                       <p className="font-bold text-right">ステータス</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      {taskStatus === '未着手' ? (
-                        <span
-                          style={{ background: '#5EB5A6', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '進行中' ? (
-                        <span
-                          style={{ background: '#A1AF2F', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '完了' ? (
-                        <span
-                          style={{ background: '#4488C5', color: '#fff' }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '中断' ? (
-                        <span
-                          style={{
-                            background: 'rgb(185, 86, 86)',
-                            color: '#fff',
-                          }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
-                      {taskStatus === '未完了' ? (
-                        <span
-                          style={{
-                            background: 'rgb(121, 86, 23)',
-                            color: '#fff',
-                          }}
-                          className=" stt item__right"
-                        >
-                          {taskStatus}
-                        </span>
-                      ) : null}
+                      <StatusStatic status={taskStatus} />
                     </div>
                   </div>
                 </div>
@@ -395,7 +370,10 @@ function TaskDetail() {
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul
+                        className="list__task col-span-5"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
                         {beforeTasks
                           ? beforeTasks.map((item) => (
                             <li>
@@ -432,7 +410,10 @@ function TaskDetail() {
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
+                      <ul
+                        className="list__task col-span-5"
+                        style={{ border: '1px solid #d9d9d9' }}
+                      >
                         {afterTasks
                           && afterTasks.map((item) => (
                             <li>
@@ -463,28 +444,88 @@ function TaskDetail() {
                   )}
                 </div>
               </div>
-              {reviewersList.length !== 0 && (
-                <div className="grid grid-cols-2 mx-4">
-                  <div className="col-span-1 mx-4 mt-5">
-                    <div className="grid grid-cols-8">
-                      <div className="layber col-span-2 mx-4">
-                        <p className="font-bold text-right">レビュアー</p>
-                      </div>
-                      <div className="col-span-5 mx-4">
-                        <ul className="list__member">
-                          {reviewersList.map((item) => (
-                            <li key={item.id} className="task__chil">{`${item.name},`}</li>
-                          ))}
-                        </ul>
-                      </div>
+              <div className="grid grid-cols-2 mx-4">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">担当者</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul>
+                        {newAsigneesFromNewComment.length > 0
+                          ? newAsigneesFromNewComment
+                            && newAsigneesFromNewComment.map((item, index) => {
+                              const id = index + item
+                              return (
+                                <>
+                                  <li key={id} className="task__chil">
+                                    {`${item}`}
+                                    {' '}
+&nbsp;
+                                    <Status status="未着手" />
+                                  </li>
+                                  <br />
+                                </>
+                              )
+                            })
+                          : listMemberAssignee
+                            && listMemberAssignee.map((item) => (
+                              <>
+                                <li key={item.id} className="task__chil">
+                                  {`${item.name}`}
+                                  {/* {roleTask ===
+                                    `taskMember${item.pivot.user_id}` ||
+                                  roleTask === "jfadmin" ||
+                                  roleTask === "reviewer" ? (
+                                    <Status
+                                      status={`${item.pivot.status}`}
+                                      user_id={`${item.pivot.user_id}`}
+                                      task_id={`${infoTask.id}`}
+                                      set_task_status={setTaskStatus}
+                                      roleTask={roleTask}
+                                    />
+                                  ) : (
+                                    <StatusStatic
+                                      status={`${item.pivot.status}`}
+                                    />
+                                  )} */}
+                                  {action === 'changeTaskStatus' ? (
+                                    <>
+                                      {tempStatus === `${item.pivot.status}` ? (
+                                        <StatusStatic
+                                          status={`${item.pivot.status}`}
+                                        />
+                                      ) : (
+                                        <StatusStatic status={tempStatus} />
+                                      )}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {action !== 'normal' && item.id === idUser ? (
+                                        <StatusStatic status={tempStatus} />
+                                      ) : (
+                                        <StatusStatic
+                                          status={`${item.pivot.status}`}
+                                        />
+                                      )}
+                                    </>
+                                  )}
+                                </li>
+                                <br />
+                              </>
+                            ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
               <div className=" mx-12 mt-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">
-                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
+                  <StackEditor
+                    value={infoTask.description_of_detail}
+                    taskId={idTask}
+                  />
                 </div>
               </div>
             </div>
@@ -493,7 +534,11 @@ function TaskDetail() {
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
               category={infoTask.categories}
-              parentCallback={getChildProps}
+              parentCallback1={getChildProps1}
+              parentCallback2={getChildProps2}
+              roleTask={roleTask}
+              listMemberAssignee={listMemberAssignee}
+              setListMemberAssignee={setListMemberAssignee}
             />
           </div>
         </JfLayout.Main>

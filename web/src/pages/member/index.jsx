@@ -203,7 +203,7 @@ function MemberList() {
     },
     {
       title: '参加日',
-      dataIndex: 'date',
+      dataIndex: 'created_at',
       width: `${role === 'superadmin' ? '20%' : '20%'}`,
       key: '参加日',
       ellipsis: {

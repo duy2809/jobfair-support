@@ -199,7 +199,6 @@ const index = () => {
         setdisableBtn(true)
         setLoading(true)
         const response = await addTemplateTasksAPI.addTemplateTask(data)
-        console.log(CategoryId, 'categoryId')
         if (response.status < 299) {
           routeTo(`/template-task-dt/${response.data.id}`)
           successNotification()

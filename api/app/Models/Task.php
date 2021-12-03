@@ -38,6 +38,7 @@ class Task extends Model
             'completed_date',
             'join_date',
             'notification',
+            'status',
         ]);
     }
 

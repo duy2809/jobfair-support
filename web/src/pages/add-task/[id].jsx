@@ -43,7 +43,6 @@ function index() {
       }
       setTemperaryData(data)
       setOriginalData(data)
-      console.log(data, 'data')
     }
   }
   useEffect(() => {
