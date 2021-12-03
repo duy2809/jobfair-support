@@ -1,10 +1,19 @@
+// eslint-disable-next-line operator-linebreak
 import {
   CheckCircleTwoTone,
   DeleteTwoTone,
   EditTwoTone,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Avatar, Button, Divider, Modal, notification, Popover, Typography } from 'antd'
+import {
+  Avatar,
+  Button,
+  Divider,
+  Modal,
+  notification,
+  Popover,
+  Typography,
+} from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import { useRouter } from 'next/router'
@@ -45,7 +54,9 @@ function Comment(props) {
 
   const deleteComment = async () => {
     try {
-      const comments = commentArray.filter((comment) => comment.id !== props.comment.id)
+      const comments = commentArray.filter(
+        (comment) => comment.id !== props.comment.id,
+      )
 
       const response = await deleteCommentAPI.deleteComment(props.comment.id)
 
@@ -98,12 +109,17 @@ function Comment(props) {
           <div className="flex flex-col w-full">
             <div className="flex flex-row justify-between">
               <div className="flex gap-4">
-                <span className="comment__author">{props.comment.author?.name}</span>
+                <span className="comment__author">
+                  {props.comment.author?.name}
+                </span>
                 <span className="comment__time">
                   {moment(props.comment.created).format('YYYY/MM/DD HH:mm:ss')}
                 </span>
               </div>
-              <div className="mr-4" hidden={userId !== props.comment.author?.id}>
+              <div
+                className="mr-4"
+                hidden={userId !== props.comment.author?.id}
+              >
                 <EditTwoTone
                   className="border-none mx-1 text-2xl"
                   type="primary"
@@ -118,12 +134,37 @@ function Comment(props) {
             </div>
             <div className="flex flex-col">
               <div className="flex flex-col ">
+                {/* status member change */}
+                <div className="">
+                  {props.comment.new_member_status?.length > 0 && (
+                    <div className="flex">
+                      <div className="old__status flex">
+                        <p className="text-right" style={{ minWidth: '90px' }}>
+                          {props.comment.member_name}
+                          のステータスを編集：
+                        </p>
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.old_member_status}
+                        </Typography>
+                      </div>
+                      &rArr;
+                      <div className="new__status">
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.new_member_status}
+                        </Typography>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {/* status changed */}
                 <div className="">
                   {props.comment.new_status?.length > 0 && (
                     <div className="flex">
                       <div className="old__status flex">
-                        <strong className="text-right" style={{ minWidth: '90px' }}>
+                        <strong
+                          className="text-right"
+                          style={{ minWidth: '90px' }}
+                        >
                           ステータス：
                         </strong>
                         <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -141,27 +182,33 @@ function Comment(props) {
                 </div>
                 {/* assignees changed */}
                 <div className="">
-                  {props.comment.new_assignees?.length > 0 && (
-                    <div className="flex">
-                      <div className="old__asignees flex">
-                        <strong className="text-right" style={{ minWidth: '90px' }}>
+                  {props.comment.new_assignees?.length !== 0
+                  && props.comment.old_assignees?.length !== 0 ? (
+                      <div className="flex">
+                        <div className="old__asignees flex">
+                          <strong
+                            className="text-right"
+                            style={{ minWidth: '90px' }}
+                          >
                           担当者：
-                        </strong>
-                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic">
-                          {props.comment.old_assignees.join(', ')}
-                        </Typography>
-                      </div>
+                          </strong>
+                          <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic">
+                            {props.comment.old_assignees.join(', ')}
+                          </Typography>
+                        </div>
                       &rArr;
-                      <div className="new__asignees">
-                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                          {props.comment.new_assignees.join(', ')}
-                        </Typography>
+                        <div className="new__asignees">
+                          <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                            {props.comment.new_assignees.join(', ')}
+                          </Typography>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    ) : null}
                 </div>
                 {(props.comment.new_status?.length > 0
-                  || props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
+                  || props.comment.new_assignees?.length > 0) && (
+                  <div className="mb-5" />
+                )}
               </div>
               {/* <Divider className="mx-2 bg-gray-300" /> */}
 
@@ -174,17 +221,24 @@ function Comment(props) {
                       className={
                         expanded
                           ? 'h-auto break-words'
-                          : commentOverflow && 'h-10 break-words overflow-hidden'
+                          : commentOverflow
+                            && 'h-10 break-words overflow-hidden'
                       }
                     >
-                      <MarkDownView id="editor" source={props.comment.content} className="" />
+                      <MarkDownView
+                        id="editor"
+                        source={props.comment.content}
+                        className=""
+                      />
                     </div>
                   )}
                 </div>
                 {/* edited time */}
                 <div>
                   <Popover
-                    content={moment(props.comment.lastEdit).format('YYYY/MM/DD HH:mm:ss')}
+                    content={moment(props.comment.lastEdit).format(
+                      'YYYY/MM/DD HH:mm:ss',
+                    )}
                     trigger="hover"
                   >
                     <span

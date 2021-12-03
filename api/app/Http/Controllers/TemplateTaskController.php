@@ -26,6 +26,13 @@ class TemplateTaskController extends Controller
 
     public function getTemplateTaskNotAdded($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $task = Jobfair::with([
             'schedule.tasks' => function ($q) {
                 $q->select('template_task_id', 'schedule_id');
@@ -88,6 +95,13 @@ class TemplateTaskController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $templateTask = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])
             ->findOrFail($id);
 
@@ -103,6 +117,13 @@ class TemplateTaskController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $templateTask = TemplateTask::findOrFail($id);
         $check = false;
         $existTemp = TemplateTask::whereRaw('BINARY `name`= ?', [$request->name])->first();
@@ -134,6 +155,13 @@ class TemplateTaskController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $templateTasks = TemplateTask::findOrFail($id);
         $templateTasks->categories()->detach();
         $templateTasks->beforeTasks()->detach();
@@ -152,6 +180,13 @@ class TemplateTaskController extends Controller
 
     public function getBeforeTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $beforeTasks = TemplateTask::with('beforeTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($beforeTasks);
@@ -159,6 +194,13 @@ class TemplateTaskController extends Controller
 
     public function getAfterTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $afterTasks = TemplateTask::with('afterTasks:id,name')->findOrFail($id, ['id', 'name']);
 
         return response()->json($afterTasks);

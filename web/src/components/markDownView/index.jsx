@@ -9,7 +9,9 @@ const MarkdownPreview = dynamic(
 )
 function MarkDownView(props) {
   return (
-    <MarkdownPreview source={props.source} />
+    <div className="m-4">
+      <MarkdownPreview source={props.source} />
+    </div>
   )
 }
 MarkDownView.propTypes = {

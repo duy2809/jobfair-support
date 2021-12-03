@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import 'tailwindcss/tailwind.css'
-import { Menu, Dropdown, Avatar } from 'antd'
+import { Menu, Dropdown, Avatar, Tooltip } from 'antd'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import './styles.scss'
@@ -13,13 +13,13 @@ import { LOAD_SUCCESS } from '../../store/modules/auth'
 export default function Navbar() {
   const { store } = useContext(ReactReduxContext)
   const router = useRouter()
-  const [user, setUser] = useState(null)
-  const [role, setRole] = useState()
+
   const [avatarUser, setAvatarUser] = useState('')
 
+  const user = store.getState().get('auth').get('user')
+  const userName = store.getState().get('auth').get('user').get('name')
+  const role = store.getState().get('auth').get('user').get('role')
   useEffect(async () => {
-    setUser(store.getState().get('auth').get('user'))
-    setRole(store.getState().get('auth').get('user').get('role'))
     if (user) {
       const id = user.get('id')
       await getAvatar(id)
@@ -27,6 +27,7 @@ export default function Navbar() {
           if (!res.data) {
             setAvatarUser(null)
           } else {
+            console.log(id)
             const link = `../../api/avatar/${id}`
             setAvatarUser(link)
           }
@@ -37,7 +38,7 @@ export default function Navbar() {
           } else setAvatarUser(null)
         })
     }
-  }, [user])
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -134,24 +135,26 @@ export default function Navbar() {
         <Notification />
         <div className="pl-4">
           <Dropdown overlay={userInformations} trigger={['click']}>
-            {avatarUser ? (
-              <Avatar
-                size={45}
-                style={{
-                  cursor: 'pointer',
-                }}
-                src={avatarUser}
-              />
-            ) : (
-              <Avatar
-                size={45}
-                style={{
-                  backgroundColor: '#FFD802',
-                  cursor: 'pointer',
-                }}
-                src="../images/avatars/default.jpg"
-              />
-            )}
+            <Tooltip title={userName}>
+              {avatarUser ? (
+                <Avatar
+                  size={45}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  src={avatarUser}
+                />
+              ) : (
+                <Avatar
+                  size={45}
+                  style={{
+                    backgroundColor: '#FFD802',
+                    cursor: 'pointer',
+                  }}
+                  src="../images/avatars/default.jpg"
+                />
+              )}
+            </Tooltip>
           </Dropdown>
         </div>
       </div>

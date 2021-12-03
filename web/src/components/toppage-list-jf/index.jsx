@@ -61,8 +61,8 @@ const ListJfToppage = ({
         }
         if (data.title === 'タイム') {
           data.render = (row) => (
-            <div>
-              <span>開始日: </span>
+            <div className="time">
+              {/* <span>開始日: </span> */}
               <span>{row}</span>
             </div>
           )
@@ -132,11 +132,10 @@ const ListJfToppage = ({
   }
 
   const searchInput = (e, dateString = '') => {
-    if (!dateString) {
-      if (dateString === '') {
-        setFilter({ ...filter, date: '' })
-        setList(dataSource)
-      } else {
+    if (dateString === '') {
+      setFilter({ ...filter, date: '' })
+      setList(dataSource)
+      if (e !== null) {
         if (e.target.name === 'name') {
           setFilter({ ...filter, name: e.target.value })
           if (e.target.value === '') {
@@ -238,8 +237,9 @@ const ListJfToppage = ({
                   // key="demo"
                   name="name"
                   className="no-border"
-                  placeholder="名前"
+                  placeholder="ジョブフェア名"
                   onChange={searchInput}
+                  defaultValue={filter.name}
                   bordered
                   prefix={<SearchOutlined />}
                 />

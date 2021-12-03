@@ -71,6 +71,13 @@ class JobfairController extends Controller
      */
     public function store(JobfairRequest $request)
     {
+        $arr = str_split($request->schedule_id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $templateSchedule = Schedule::findOrFail($request->schedule_id);
         $jobfair = Jobfair::create($request->validated());
         $newSchedule = Schedule::create($templateSchedule->toArray());
@@ -105,6 +112,13 @@ class JobfairController extends Controller
      */
     public function show($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         return Jobfair::with('user:id,name')->findOrFail($id);
     }
 
@@ -117,6 +131,13 @@ class JobfairController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $jobfair = Jobfair::findOrFail($id);
 
         if ($request->schedule_id !== 'none') {
@@ -161,6 +182,13 @@ class JobfairController extends Controller
      */
     public function destroy($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         Jobfair::findOrFail($id)->delete();
         $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
             ->select('jobfairs.*', 'users.name as admin')
@@ -172,6 +200,13 @@ class JobfairController extends Controller
 
     public function getMilestones($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $scheduleId = Jobfair::findOrFail($id)->schedule;
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
@@ -186,6 +221,13 @@ class JobfairController extends Controller
 
     public function getTasks($id)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
@@ -200,6 +242,13 @@ class JobfairController extends Controller
 
     public function updatedTasks($id, Request $request)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $tasks = Jobfair::with(['schedule:id,jobfair_id', 'schedule.tasks' => function ($query) {
             $query->select(['tasks.name', 'tasks.updated_at', 'tasks.id', 'tasks.schedule_id', 'users.name as username'])
                 ->join('users', 'users.id', '=', 'tasks.user_id')
@@ -213,6 +262,13 @@ class JobfairController extends Controller
 
     public function searchTask($id, Request $request)
     {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
                 $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
@@ -230,6 +286,13 @@ class JobfairController extends Controller
 
     public function isAdminJobfair(Request $request)
     {
+        $arr = str_split($request->input('jobfairId'));
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
         $jobfair = Jobfair::findOrFail($request->input('jobfairId'));
         $adminId = $jobfair->jobfair_admin_id;
         if ($adminId === intval($request->input('userId'))) {
