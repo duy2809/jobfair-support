@@ -96,6 +96,13 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
       if (error.response.status === 404) {
         router.push('/404')
       }
+      if (error.response.status === 422) {
+        notification.error({
+          duration: 3,
+          message: error.response.data.message,
+          onClick: () => {},
+        })
+      }
       setLoading(false)
       setRowEdit(null)
       setIsEdit(false)

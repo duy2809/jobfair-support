@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\UpdateTask::class,
+        \App\Console\Commands\SlackTask::class,
     ];
 
     /**
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('task:update')->daily();
         $schedule->command('notification:delete')->daily();
+        $schedule->command('task:slack')->dailyAt('10:43');
     }
 
     /**
