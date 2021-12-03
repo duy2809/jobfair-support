@@ -54,7 +54,6 @@ function EditTask() {
       .then((response) => {
         if (response.status === 200) {
           setReviewersData(response.data)
-          console.log(response.data, 'list Rv')
           const idReviewer = []
           response.data.forEach((element) => {
             idReviewer.push(element.id)
@@ -282,7 +281,6 @@ function EditTask() {
     const newReviewers = []
     newReviewers.push(value)
     setReviewersSelected(newReviewers)
-    console.log(newReviewers, 'new')
   }
 
   const getDataUser = async () => {
@@ -351,7 +349,6 @@ function EditTask() {
             return ''
           })
         }
-        console.log(values.reviewers, 'review')
         const data = {
           name: values.name,
           description_of_detail: values.detail,
@@ -816,20 +813,20 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.getInitialProps = async (ctx) => {
-//   const taskId = parseInt(ctx.query.id, 10)
-//   const userId = ctx.store.getState().get('auth').get('user').get('id')
-//   if (userId) {
-//     try {
-//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
-//         params: { userId, taskId },
-//       })
-//     } catch (err) {
-//       ctx.res?.writeHead(302, { Location: '/error' })
-//       ctx.res?.end()
-//     }
-//   }
-//   return {}
-// }
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
 EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
