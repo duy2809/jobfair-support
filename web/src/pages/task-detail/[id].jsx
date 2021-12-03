@@ -121,11 +121,15 @@ function TaskDetail() {
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
+          const categoryName = []
+          response.data.categories.forEach((element) => {
+            categoryName.push(element.category_name)
+          })
           getRole(data.schedule.jobfair.jobfair_admin_id)
           setInfoTask({
             id: data.id,
             name: data.name,
-            categories: data.categories[0].category_name,
+            categories: categoryName,
             milestone: data.milestone.name,
             status: data.status,
             start_time: data.start_time,
@@ -264,7 +268,7 @@ function TaskDetail() {
                       <p className="font-bold text-right">カテゴリ</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.categories}</div>
+                      <div className="item__right">{infoTask.categories ? infoTask.categories.join(', ') : null}</div>
                     </div>
                   </div>
                 </div>

@@ -50,6 +50,11 @@ const templateTaskDataColumn = [
     title: 'カテゴリ',
     dataIndex: 'category',
     key: 'category',
+    render: (categoryName) => (
+      <div className="">
+        {categoryName.length > 0 ? categoryName.join(', ') : ''}
+      </div>
+    ),
     width: '30%',
   },
   {
@@ -168,21 +173,18 @@ const Top = () => {
 
     const getTemplate = async () => {
       setLoadingTemplate(true)
-
       await getTemplateTaskList().then((res) => {
         const datas = []
         res.data.forEach((data) => {
-          // console.log(data);
-          const categoriesName = data.categories.map(
-            (category) => category.category_name,
+          const categoryName = []
+          data.categories.map(
+            (category) => categoryName.push(category.category_name),
           )
-          categoriesName.forEach((categoryName) => {
-            datas.push({
-              key: data.id,
-              name: data.name,
-              category: categoryName,
-              milestone: data.milestone.name,
-            })
+          datas.push({
+            key: data.id,
+            name: data.name,
+            category: categoryName,
+            milestone: data.milestone.name,
           })
         })
         setTemplateData(datas)

@@ -159,6 +159,7 @@ const LoginPage = () => {
                 label={<p className="font-bold">パスワード</p>}
                 name="password"
                 rules={[
+                  { required: true },
                   {
                     validator: validatorPass,
                   },

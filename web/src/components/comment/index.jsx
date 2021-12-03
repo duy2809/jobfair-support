@@ -106,10 +106,22 @@ function index({
   }, [])
   const fetchListMember = async () => {
     try {
-      const response = await getUserByCategory(category)
-      if (response.data) {
-        setListUser(response.data)
+      let listMember = []
+      // eslint-disable-next-line no-plusplus
+      for (let item = 0; item < category.length; item++) {
+        // eslint-disable-next-line no-await-in-loop
+        await getUserByCategory(category[item])
+          // eslint-disable-next-line no-loop-func
+          .then((response) => {
+            listMember = listMember.concat(response.data)
+          })
+          .catch((error) => {
+            if (error.response.status === 404) {
+              router.push('/404')
+            }
+          })
       }
+      setListUser(listMember)
     } catch (err) {
       if (err.response.status === 404) {
         router.push('/404')

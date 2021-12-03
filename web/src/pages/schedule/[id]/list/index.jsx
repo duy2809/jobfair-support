@@ -29,12 +29,6 @@ function ScheduleDetail() {
           element.wrapped = true
         }
         element.tasks = []
-        // element.template_tasks.forEach((task) => {
-        //   task.categories.forEach((category) => {
-        //     category.colorBorder = colors[category.id]
-        //   })
-        //   task.colorBorder = task.categories[0].colorBorder
-        // })
       })
       res.data.template_tasks.forEach((task) => {
         task.categories.forEach((category) => {
