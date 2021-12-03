@@ -77,6 +77,7 @@ class JobfairController extends Controller
                 return response(['message' => 'invalid id'], 404);
             }
         }
+
         //Slack
         $channelname = strtolower($request->name);
         $response = $this->slack->createChannel($channelname);
