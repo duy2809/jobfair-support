@@ -47,7 +47,6 @@ class StatusController extends Controller
 
     public function getStatus($jobfairId, $userId, $taskId)
     {
-        $status = null;
         if (Jobfair::find($jobfairId)->where('jobfair_admin_id', $userId)->count()) {
             return [
                 '未着手',

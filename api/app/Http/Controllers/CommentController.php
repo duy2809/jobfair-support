@@ -26,26 +26,6 @@ class CommentController extends Controller
         return Comment::all();
     }
 
-    public function handleStatusTask($taskId)
-    {
-        $assignments = Assignment::where('task_id', $taskId)->get();
-        $isNew = true;
-        foreach ($assignments as $assignment) {
-            if (strcmp($assignment->status, '未着手') !== 0) {
-                $isNew = false;
-            }
-        }
-
-        if ($isNew === false) {
-            $task = Task::find($taskId);
-            if ($task->status === '未着手') {
-                $task->status = '進行中';
-                $task->save();
-                $status = $task->status;
-            }
-        }
-    }
-
     public function store(Request $request)
     {
         // $status = ['未着手', '進行中'];
