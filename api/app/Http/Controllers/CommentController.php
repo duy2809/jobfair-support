@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\Broadcasting\CommentCreated;
+use App\Models\Assignment;
 use App\Models\Comment;
 use App\Models\Jobfair;
 use App\Models\Task;
@@ -58,6 +59,34 @@ class CommentController extends Controller
                 // store task-updating history in comment and update task
                 $task->update(['status' => $request->status]);
                 $isUpdatedTask = true;
+                Assignment::where('task_id', $request->task_id)->update(['status' => $request->status]);
+            }
+        }
+
+        if ($request->has('memberStatus')) {
+            $assignment = Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->get();
+            if ($assignment[0]->status !== $request->memberStatus) {
+                $input['old_member_status'] = $assignment[0]->status;
+                $input['new_member_status'] = $request->memberStatus;
+                $input['member_name'] = auth()->user()->name;
+                Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->update(['status' => $request->memberStatus]);
+                $isUpdatedTask = true;
+                $assignmentTemps = Assignment::where('task_id', $request->task_id)->get();
+                $isNew = true;
+                foreach ($assignmentTemps as $assignmentTemp) {
+                    if (strcmp($assignmentTemp->status, '未着手') !== 0) {
+                        $isNew = false;
+                    }
+                }
+
+                if ($isNew === false) {
+                    $task = Task::find($request->task_id);
+                    if ($task->status === '未着手') {
+                        $task->status = '進行中';
+                        $task->save();
+                        $input['new_status'] = $task->status;
+                    }
+                }
             }
         }
 
@@ -101,12 +130,10 @@ class CommentController extends Controller
             });
             // if old assignees equal to request's assignees (in any order) then don't update anything
             if (
-                !(
-                    is_array($listMember)
+                !(is_array($listMember)
                     && is_array($listOldMember)
                     && count($listMember) === count($listOldMember)
-                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
-                )
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember))
             ) {
                 // store list assignees as string with format "id1, id2, id3, ..."
                 $input['old_assignees'] = implode(',', $listOldMember);
@@ -189,9 +216,11 @@ class CommentController extends Controller
             'status'        => $status,
             'old_status'    => $comment->old_status ?? null,
             'new_status'    => $comment->new_status ?? null,
-
             'new_assignees' => $listNewAssignees,
             'old_assignees' => $listOldAssignees,
+            'new_member_status' => $comment->new_member_status ?? null,
+            'old_member_status' => $comment->old_member_status ?? null,
+            'member_name' => $comment->member_name ?? null,
         ];
     }
 
@@ -287,6 +316,9 @@ class CommentController extends Controller
                 'old_end_date'        => $comment->old_end_date,
                 'new_end_date'        => $comment->new_end_date,
                 'is_created_task'     => $comment->is_created_task,
+                'new_member_status' => $comment->new_member_status ?? null,
+                'old_member_status' => $comment->old_member_status ?? null,
+                'member_name' => $comment->member_name ?? null,
             ];
         });
 
@@ -394,6 +426,9 @@ class CommentController extends Controller
                 'new_end_date'        => $comment->new_end_date,
                 'is_created_task'     => $comment->is_created_task,
                 'is_normal_comment'   => $comment->is_normal_comment,
+                'new_member_status' => $comment->new_member_status ?? null,
+                'old_member_status' => $comment->old_member_status ?? null,
+                'member_name' => $comment->member_name ?? null,
             ];
         });
 

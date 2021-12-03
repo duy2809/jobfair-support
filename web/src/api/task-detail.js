@@ -9,3 +9,5 @@ export const getUserByCategory = (category) => axios.get('/category-member', { p
 export const checkAssignee = (taskID, userID) => axios.get(`/isAssignee/${taskID}/${userID}`)
 export const updateManagerTask = (id, arg) => axios.put(`/updatemanager/${id}`, arg)
 export const reviewers = (id) => axios.get(`/task/${id}/reviewers`)
+export const getRoleTask = (jobfairId, userId, taskId) => axios.get(`/task-role/${jobfairId}/${userId}/${taskId}`)
+export const updateStatusMember = (userId, taskId, status) => axios.put(`/update-status/${userId}/${taskId}?status=${status}`)
