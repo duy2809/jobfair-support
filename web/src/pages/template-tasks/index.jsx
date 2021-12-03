@@ -60,11 +60,15 @@ function TemplateTaskList() {
     if (response) {
       for (let i = 0; i < response.data.length; i += 1) {
         if (response.data[i].categories[0] && response.data[i].milestone) {
+          const categoryName = []
+          for (let j = 0; j < response.data[i].categories.length; j += 1) {
+            categoryName.push(response.data[i].categories[j].category_name)
+          }
           data.push({
             id: i + 1,
             idTemplateTask: response.data[i].id,
             templateTaskName: response.data[i].name,
-            category_name: response.data[i].categories[0].category_name,
+            category_name: categoryName,
             milestone_name: response.data[i].milestone.name,
           })
         }
@@ -142,7 +146,7 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      width: '40%',
+      width: '27%',
       render: (templateTaskName) => <Tooltip title={templateTaskName}><a>{templateTaskName}</a></Tooltip>,
       onCell: handleRow,
     },
@@ -153,11 +157,11 @@ function TemplateTaskList() {
       ellipsis: {
         showTitle: false,
       },
-      width: '15%',
+      width: '27%',
       render: (categoryName) => (
-        <Tooltip title={categoryName}>
-          <a>{categoryName}</a>
-        </Tooltip>
+        <div className="">
+          {categoryName.length > 0 ? categoryName.join(', ') : ''}
+        </div>
       ),
       onCell: handleRow,
     },
@@ -212,8 +216,10 @@ function TemplateTaskList() {
       title: 'カテゴリ',
       dataIndex: 'category_name',
       fixed: 'left',
-      render: (taskName) => (
-        <a>{taskName}</a>
+      render: (categoryName) => (
+        <div className="">
+          {categoryName.length > 0 ? categoryName.join(', ') : ''}
+        </div>
       ),
       onCell: handleRow,
     },
@@ -260,7 +266,7 @@ function TemplateTaskList() {
   const searchDataOnTable = (value) => {
     const filteredData = originalData.filter(
       (templateTask) => (value ? templateTask.templateTaskName.toLowerCase().includes(value) : templateTask.templateTaskName)
-        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name)
+        && (category ? templateTask.category_name.includes(category) : templateTask.category_name)
         && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
     setTemperaryData(filteredData)
@@ -277,7 +283,7 @@ function TemplateTaskList() {
     } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (templateTask) => (value ? !templateTask.category_name.localeCompare(value) : templateTask.category_name)
+      (templateTask) => (value ? templateTask.category_name.includes(value) : templateTask.category_name)
         && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
         && (milestone ? !templateTask.milestone_name.localeCompare(milestone) : templateTask.milestone_name),
     )
@@ -292,7 +298,7 @@ function TemplateTaskList() {
     const filteredData = originalData.filter(
       (templateTask) => (value ? !templateTask.milestone_name.localeCompare(value) : templateTask.milestone_name)
         && (valueSearch ? templateTask.templateTaskName.toLowerCase().includes(valueSearch) : templateTask.templateTaskName)
-        && (category ? !templateTask.category_name.localeCompare(category) : templateTask.category_name),
+        && (category ? templateTask.category_name.includes(category) : templateTask.category_name),
     )
     setTemperaryData(filteredData)
   }

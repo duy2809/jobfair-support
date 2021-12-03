@@ -91,6 +91,12 @@ function TaskList() {
     for (let i = 0; i < dataResponse.length; i += 1) {
       const manager = []
       const mem = []
+      const categoryName = []
+      const categoryId = []
+      for (let j = 0; j < dataResponse[i].categories.length; j += 1) {
+        categoryName.push(dataResponse[i].categories[j].category_name)
+        categoryId.push(dataResponse[i].categories[j].id)
+      }
       for (let j = 0; j < dataResponse[i].users.length; j += 1) {
         manager.push(dataResponse[i].users[j].name)
         mem.push({
@@ -105,18 +111,17 @@ function TaskList() {
         start_date: dataResponse[i].start_time,
         end_date: dataResponse[i].end_time,
         status: dataResponse[i].status,
-        category_name: dataResponse[i].categories[0]?.category_name,
+        category_name: categoryName,
         milestone_name: dataResponse[i]?.milestone.name,
         managers: manager,
         mems: mem,
-        idCategory: dataResponse[i].categories[0]?.id,
+        idCategory: categoryId,
       })
     }
 
     setTemperaryData(data)
     setOriginalData(data)
     if (valueSearch) {
-      // console.log(valueSearch, router.query)
       const taskNameParameter = router.query.name.toLowerCase()
       const filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
       setTemperaryData(filteredData)
@@ -198,7 +203,7 @@ function TaskList() {
     } else setIsFilterCA(false)
     setCategory(value)
     const filteredData = originalData.filter(
-      (task) => (value ? !task.category_name.localeCompare(value) : task.category_name)
+      (task) => (value ? task.category_name.includes(value) : task.category_name)
         && (valueSearch
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
@@ -220,7 +225,7 @@ function TaskList() {
           ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
             || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
           : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (category ? task.category_name.includes(category) : task.category_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )
     setTemperaryData(filteredData)
@@ -274,10 +279,14 @@ function TaskList() {
       },
       {
         title: 'カテゴリ',
-        width: '10%',
+        width: '15%',
         dataIndex: 'category_name',
         fixed: 'left',
-        render: (taskName) => <a>{taskName}</a>,
+        render: (categoryName) => (
+          <div className="">
+            {categoryName.length > 0 ? categoryName.join(', ') : ''}
+          </div>
+        ),
         onCell: handleRow,
       },
       {
@@ -290,7 +299,7 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '27%',
+        width: '20%',
         dataIndex: 'managers',
         fixed: 'left',
         render: (managers, record) => {
@@ -430,10 +439,14 @@ function TaskList() {
       },
       {
         title: 'カテゴリ',
-        width: '15%',
+        width: '20%',
         dataIndex: 'category_name',
         fixed: 'left',
-        render: (taskName) => <a>{taskName}</a>,
+        render: (categoryName) => (
+          <div className="">
+            {categoryName.length > 0 ? categoryName.join(', ') : ''}
+          </div>
+        ),
         onCell: handleRow,
       },
       {
@@ -446,7 +459,7 @@ function TaskList() {
       },
       {
         title: '担当者',
-        width: '27%',
+        width: '20%',
         dataIndex: 'managers',
         fixed: 'left',
         onCell: handleRow,
@@ -496,7 +509,7 @@ function TaskList() {
         ? task.taskName.toLowerCase().includes(value)
             || task.managers.some((manager) => manager.toLowerCase().includes(value))
         : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
+        && (category ? task.category_name.includes(category) : task.category_name)
         && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
         && (status ? !task.status.localeCompare(status) : task.status),
     )

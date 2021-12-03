@@ -37,7 +37,6 @@ const isDayData = [
 ]
 
 const EditTemplateTaskPage = () => {
-  const [categoryId, setCategoryId] = useState(0)
   const [milestoneId, setMilestoneId] = useState()
   const [isDay, setIsDay] = useState(0)
   const [unit, setUnit] = useState('')
@@ -61,103 +60,115 @@ const EditTemplateTaskPage = () => {
 
   let NameTPL = ''
   const getListTPL = async () => {
-    await getTemplateTasksList().then((res) => {
-      tasksList = [...res.data]
-      const data = res.data.filter((e) => e.name !== NameTPL)
-      setBeforeTaskNew(data)
-      setafterTaskNew(data)
-      setAllTask(data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await getTemplateTasksList()
+      .then((res) => {
+        tasksList = [...res.data]
+        const data = res.data.filter((e) => e.name !== NameTPL)
+        setBeforeTaskNew(data)
+        setafterTaskNew(data)
+        setAllTask(data)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const fetchTemplateTask = async (id) => {
-    await getTemplateTask(id).then((res) => {
-      setTemplateTaskNameInput(res.data.name)
-      NameTPL = res.data.name
-      let categoryName
-      if (res.data.categories.length > 0) {
-        setCategoryInput(res.data.categories[0].category_name)
-        categoryName = res.data.categories[0].category_name
-        setCategoryId(res.data.categories[0].id)
-      } else {
-        categoryName = ''
-      }
-      setMilestoneInput(res.data.milestone.name)
-      setMilestoneId(res.data.milestone.id)
-      setDescription(res.data.description_of_detail)
-      setEffortNumber(res.data.effort)
-      if (res.data.unit === 'students') {
-        setUnit('学生数')
-      } else {
-        setUnit('企業数')
-      }
-      setIsDay(res.data.is_day)
-
-      form.setFieldsValue({
-        templateTaskName: res.data.name,
-        category: categoryName,
-        milestone: res.data.milestone.name,
-        description: res.data.description_of_detail,
-        effort: res.data.effort,
-        unit,
-        is_day: isDayData[res.data.is_day].name,
+    await getTemplateTask(id)
+      .then((res) => {
+        setTemplateTaskNameInput(res.data.name)
+        NameTPL = res.data.name
+        let categoryName = []
+        if (res.data.categories.length > 0) {
+          setCategoryInput(res.data.categories[0].category_name)
+          res.data.categories.forEach((element) => {
+            categoryName.push(element.category_name)
+          })
+        } else {
+          categoryName = ''
+        }
+        setMilestoneInput(res.data.milestone.name)
+        setMilestoneId(res.data.milestone.id)
+        setDescription(res.data.description_of_detail)
+        setEffortNumber(res.data.effort)
+        if (res.data.unit === 'students') {
+          setUnit('学生数')
+        } else {
+          setUnit('企業数')
+        }
+        setIsDay(res.data.is_day)
+        form.setFieldsValue({
+          templateTaskName: res.data.name,
+          category: categoryName,
+          milestone: res.data.milestone.name,
+          description: res.data.description_of_detail,
+          effort: res.data.effort,
+          unit,
+          is_day: isDayData[res.data.is_day].name,
+        })
       })
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const fetchCategoryData = async () => {
-    await getCategoryData().then((res) => {
-      setCategoryData(res.data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await getCategoryData()
+      .then((res) => {
+        setCategoryData(res.data)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const fetchMilestoneData = async () => {
-    await getMilestoneData().then((res) => {
-      setMilestoneData(res.data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    await getMilestoneData()
+      .then((res) => {
+        setMilestoneData(res.data)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const fetchPrevTasks = async (id) => {
-    await getPrevTasks(id).then((res) => {
-      const value = []
-      res.data.before_tasks.forEach((item) => value.push(item.name))
-      form.setFieldsValue({
-        taskBefore: value,
+    await getPrevTasks(id)
+      .then((res) => {
+        const value = []
+        res.data.before_tasks.forEach((item) => value.push(item.name))
+        form.setFieldsValue({
+          taskBefore: value,
+        })
       })
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const fetchNextTasks = async (id) => {
-    await getNextTasks(id).then((res) => {
-      const value = []
-      res.data.after_tasks.forEach((item) => value.push(item.name))
-      form.setFieldsValue({
-        afterTask: value,
+    await getNextTasks(id)
+      .then((res) => {
+        const value = []
+        res.data.after_tasks.forEach((item) => value.push(item.name))
+        form.setFieldsValue({
+          afterTask: value,
+        })
       })
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
   const openNotificationSuccess = () => {
     if (
@@ -187,9 +198,17 @@ const EditTemplateTaskPage = () => {
     getListTPL()
   }, [])
   const handleOk = async (values) => {
-    // setIsModalVisible(false)
     const beforeID = []
     const afterIDs = []
+    const idCategory = []
+    if (values.category) {
+      categoryData.map((item) => {
+        if (values.category.includes(item.category_name)) {
+          idCategory.push(item.id)
+        }
+        return ''
+      })
+    }
     if (values.taskBefore && values.afterTask) {
       // eslint-disable-next-line array-callback-return
       allTask.map((e) => {
@@ -203,6 +222,7 @@ const EditTemplateTaskPage = () => {
     }
     const temp = /[/](\d+)[/]/.exec(window.location.pathname)
     const id = `${temp[1]}`
+
     await updateTemplateTask(id, {
       name: templateTaskNameInput,
       description_of_detail: description,
@@ -210,11 +230,10 @@ const EditTemplateTaskPage = () => {
       is_day: isDay,
       unit,
       effort: effortNumber,
-      category_id: categoryId,
+      category_id: idCategory,
       beforeTasks: beforeID,
       afterTasks: afterIDs,
     })
-
       .then(() => {
         router.push(`/template-task-dt/${id}`)
         setTimeout(() => {
@@ -225,20 +244,16 @@ const EditTemplateTaskPage = () => {
         if (error.response.status === 404) {
           router.push('/404')
         }
-        if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
+        if (
+          JSON.parse(error.response.request.response).message === 'Edit Failed'
+        ) {
           notification.error({
             message: 'このテンプレートタスク名は存在しています',
             duration: 3,
           })
         }
-        // notification.error({
-        //   message: 'Error',
-        // });
       })
   }
-  // const handleCancel = () => {
-  //   setIsModalVisible(false)
-  // }
   const truncates = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
@@ -365,22 +380,34 @@ const EditTemplateTaskPage = () => {
                         setInput={setTemplateTaskNameInput}
                         display={isPreview}
                       />
-                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.name}</p>
+                      <p style={{ display: isPreview ? '' : 'none' }}>
+                        {dataPreview.name}
+                      </p>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item label="カテゴリ" required={!isPreview}>
-                      <ItemDropdow
-                        form={form}
-                        name="category"
-                        setConfilm={setConfilm}
-                        setCheckSpace={setCheckSpace}
-                        data={categoryData}
-                        setInput={setCategoryInput}
-                        setId={setCategoryId}
-                        display={isPreview}
-                      />
-                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.category}</p>
+                    <Form.Item
+                      label="カテゴリ"
+                      name="category"
+                      className="tag_a"
+                      required={!isPreview}
+                    >
+                      <Select
+                        mode="multiple"
+                        showArrow
+                        tagRender={tagRender}
+                        style={{ width: '100%' }}
+                        onChange={filtedArr}
+                      >
+                        {categoryData.map((element) => (
+                          <Select.Option
+                            key={element.category_name}
+                            value={element.category_name}
+                          >
+                            {element.category_name}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
@@ -395,7 +422,9 @@ const EditTemplateTaskPage = () => {
                         setId={setMilestoneId}
                         display={isPreview}
                       />
-                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.milestone}</p>
+                      <p style={{ display: isPreview ? '' : 'none' }}>
+                        {dataPreview.milestone}
+                      </p>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
@@ -414,10 +443,9 @@ const EditTemplateTaskPage = () => {
                       <p style={{ display: isPreview ? '' : 'none' }}>
                         {dataPreview.effort}
                         {' '}
-                        &nbsp;
-                        {' '}
+&nbsp;
                         {dataPreview.is_day}
-                        /
+/
                         {dataPreview.unit}
                       </p>
                     </Form.Item>
@@ -427,7 +455,6 @@ const EditTemplateTaskPage = () => {
                       label="前のタスク"
                       name="taskBefore"
                       className="tag_a"
-
                     >
                       <Select
                         mode="multiple"
@@ -449,7 +476,6 @@ const EditTemplateTaskPage = () => {
                       label="次のタスク"
                       name="afterTask"
                       className="tag_a"
-
                     >
                       <Select
                         mode="multiple"
@@ -467,15 +493,31 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                 </div>
-                <div className="mr-4 2xl:mr-10 pl-12 mb-2" style={{ display: isPreview ? 'none' : '' }}>
-                  <MDEditor style={{ height: '40px !important' }} preview="edit" height="300" value={description} onChange={setDescription} />
+                <div
+                  className="mr-4 2xl:mr-10 pl-12 mb-2"
+                  style={{ display: isPreview ? 'none' : '' }}
+                >
+                  <MDEditor
+                    style={{ height: '40px !important' }}
+                    preview="edit"
+                    height="300"
+                    value={description}
+                    onChange={setDescription}
+                  />
                 </div>
-                <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
+                <div
+                  className="mr-8 ml-14 mb-2 des"
+                  style={{ display: isPreview ? '' : 'none' }}
+                >
                   <MarkDownView source={description} />
                 </div>
                 <div className="flex justify-end -mr-32">
                   <Form.Item>
-                    <Space size={20} className="flex place-content-end" style={{ display: isPreview ? 'none' : '' }}>
+                    <Space
+                      size={20}
+                      className="flex place-content-end"
+                      style={{ display: isPreview ? 'none' : '' }}
+                    >
                       <CancelEditTemplateTask confilm={confilm} id={pathId} />
                       <Button
                         className="preview_btn"
@@ -495,7 +537,10 @@ const EditTemplateTaskPage = () => {
                         <span> 保存 </span>
                       </Button>
                     </Space>
-                    <div style={{ display: isPreview ? '' : 'none' }} className="mr-40">
+                    <div
+                      style={{ display: isPreview ? '' : 'none' }}
+                      className="mr-40"
+                    >
                       <Space size={20}>
                         <Button
                           htmlType="button"

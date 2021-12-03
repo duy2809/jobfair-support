@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDetailController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TopPageTasksController;
 use Illuminate\Support\Facades\Route;
@@ -185,3 +186,8 @@ Route::get('/show-more-comment/{id}', 'CommentController@showMore');
 Route::get('/jobfair-comment/{JFid}', 'CommentController@showMoreInJobfair');
 Route::delete('/comment/{id}', 'CommentController@destroy');
 Route::post('/comment/{id}', 'CommentController@update');
+
+//status
+Route::get('/status/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getStatus']);
+Route::get('/task-role/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getTaskRole']);
+Route::put('/update-status/{user_id}/{task_id}', [StatusController::class, 'updateStatus']);

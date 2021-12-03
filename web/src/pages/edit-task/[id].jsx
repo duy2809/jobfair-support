@@ -3,6 +3,7 @@ import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tool
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { editTask, listReviewersSelectTag, reviewers } from '../../api/edit-task'
 import { jftask } from '../../api/jf-toppage'
 import { afterTask, beforeTask, getUserByCategory, taskData } from '../../api/task-detail'
@@ -53,6 +54,11 @@ function EditTask() {
       .then((response) => {
         if (response.status === 200) {
           setReviewersData(response.data)
+          const idReviewer = []
+          response.data.forEach((element) => {
+            idReviewer.push(element.id)
+          })
+          setReviewersSelected(idReviewer)
         }
       })
       .catch((err) => {
@@ -77,9 +83,13 @@ function EditTask() {
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
+          const categoryName = []
+          response.data.categories.forEach((element) => {
+            categoryName.push(element.category_name)
+          })
           setInfoTask({
             name: data.name,
-            categories: data.categories[0].category_name,
+            categories: categoryName,
             milestone: data.milestone.name,
             status: data.status,
             start_time: data.start_time,
@@ -101,9 +111,10 @@ function EditTask() {
             listReviewers.push(element.name)
           })
           setCountUserAs(listmember)
+
           form.setFieldsValue({
             name: data.name,
-            category: data.categories[0].category_name,
+            // category: data.categories[0].category_name,
             milestone: data.milestone.name,
             assignee: listmember,
             status: data.status,
@@ -338,7 +349,6 @@ function EditTask() {
             return ''
           })
         }
-
         const data = {
           name: values.name,
           description_of_detail: values.detail,
@@ -349,9 +359,9 @@ function EditTask() {
           admin: adminas,
           user_id: users.id,
           status: values.status,
-          reviewers: reviewersSelected,
+          reviewers: values.reviewers[0] === 'なし' ? [] : reviewersSelected,
         }
-        if (countUserAs.length > 1 && reviewersSelected.length === 0) {
+        if (countUserAs.length > 1 && values.reviewers[0] === 'なし') {
           openNotification('error', '複数の担当者を選択する場合にはレビュアーを選択してください')
         } else {
           setdisableBtn(true)
@@ -452,15 +462,22 @@ function EditTask() {
     }
   }
   const fetchListMember = async () => {
-    await getUserByCategory(infoTask.categories)
-      .then((response) => {
-        setListUser(response.data)
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          router.push('/404')
-        }
-      })
+    let listMember = []
+    // eslint-disable-next-line no-plusplus
+    for (let index = 0; index < infoTask.categories.length; index++) {
+      // eslint-disable-next-line no-await-in-loop
+      await getUserByCategory(infoTask.categories[index])
+        // eslint-disable-next-line no-loop-func
+        .then((response) => {
+          listMember = listMember.concat(response.data)
+        })
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
+        })
+    }
+    setListUser(listMember)
   }
   useEffect(() => {
     fetchTaskData()
@@ -534,7 +551,7 @@ function EditTask() {
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
                   <Form.Item label="カテゴリ" name="category">
-                    <span>{infoTask.categories}</span>
+                    <span>{infoTask.categories ? infoTask.categories.join(', ') : null}</span>
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
@@ -796,20 +813,20 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.getInitialProps = async (ctx) => {
-//   const taskId = parseInt(ctx.query.id, 10)
-//   const userId = ctx.store.getState().get('auth').get('user').get('id')
-//   if (userId) {
-//     try {
-//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
-//         params: { userId, taskId },
-//       })
-//     } catch (err) {
-//       ctx.res?.writeHead(302, { Location: '/error' })
-//       ctx.res?.end()
-//     }
-//   }
-//   return {}
-// }
-// EditTask.middleware = ['auth:superadmin', 'auth:member']
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
