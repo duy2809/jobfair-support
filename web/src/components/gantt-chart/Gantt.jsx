@@ -149,6 +149,7 @@ export default class Gantt extends Component {
         },
       },
     ]
+
     const formatMonthScale = gantt.date.date_to_str('%l')
 
     gantt.attachEvent('onBeforeTaskDisplay', (id, task) => {
