@@ -76,6 +76,7 @@ function index({
     setShow(true)
   }
   const openPreview = () => {
+    console.log(value)
     setPreviewing(true)
   }
   const pushData2Parent1 = useCallback((data) => {
@@ -124,11 +125,6 @@ function index({
   }
   const [listStatus, setListStatus] = useState([])
   useEffect(() => {
-    // new CommentChannel()
-    //   .onOutput((data) => {
-    //     console.log('log' + data)
-    //   })
-    //   .listen()
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else if (roleTask === 'reviewer') {
@@ -191,9 +187,9 @@ function index({
         status,
         memberStatus,
       }
-
       if (
-        !(comment.body !== '<p></p>' || comment.assignee || comment.status || comment.memberStatus)
+        !(comment.body || comment.assignee || comment.status || comment.memberStatus)
+        || !(comment.body !== '<p></p>' || comment.assignee || comment.status || comment.memberStatus)
       ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -204,6 +200,7 @@ function index({
       }
       const response = await addComment(comment)
       const newComment = response.data
+      console.log(newComment)
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
@@ -242,6 +239,7 @@ function index({
   }
 
   const typing = (data) => {
+    console.log(data)
     setValue(data)
   }
 
