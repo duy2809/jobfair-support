@@ -42,6 +42,6 @@ class Schedule extends Model
 
     public function templateTasks()
     {
-        return $this->belongsToMany(TemplateTask::class);
+        return $this->belongsToMany(TemplateTask::class)->withPivot('duration', 'template_task_parent_id');
     }
 }
