@@ -5,7 +5,7 @@ import {
   EditTwoTone,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Modal, notification, Tag, Tooltip } from 'antd'
+import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
@@ -364,37 +364,26 @@ function TaskDetail() {
               </div>
 
               <div className="grid grid-cols-2 mx-4 mt-5">
-                <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
+                <div className="col-span-1 mx-5 grid grid-cols-8">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5 task_list">
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/task-detail/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
@@ -404,39 +393,29 @@ function TaskDetail() {
                     <ul className="list__task col-span-6" />
                   )}
                 </div>
-                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
+                <div className="col-span-1 mx-8 grid grid-cols-8">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5 task_list">
                         {afterTasks
-                          && afterTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                          ? afterTasks.map((item) => (
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/task-detail/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
-                          ))}
+                          ))
+                          : null}
                       </ul>
                     </>
                   ) : (
