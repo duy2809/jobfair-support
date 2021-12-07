@@ -5,13 +5,13 @@ import React from 'react'
 
 function TodoList(props) {
   const addStar = async () => {
-    const data = `- [${props.checked ? 'x' : ' '}] ►\n`
+    const data = `${props.checked ? '✅ ' : '⬜️ '}\n`
     const { editorState, onChange } = props
     const contentState = Modifier.replaceText(
       editorState.getCurrentContent(),
       editorState.getSelection(),
       data,
-      editorState.getCurrentInlineStyle(),
+      editorState.getCurrentInlineStyle()
     )
     onChange(EditorState.push(editorState, contentState, 'insert-characters'))
     // const htmlToDraft = await import('html-to-draftjs').then((module) => module.default)
@@ -28,7 +28,7 @@ function TodoList(props) {
     console.log(`checked = ${e.target.checked}`)
   }
   return (
-    <div onClick={addStar} className=" flex items-center">
+    <div onClick={addStar} className=" flex items-center mx-2">
       <Tooltip
         placement="topLeft"
         title={props.checked ? 'Create a checkedbox' : 'Create a uncheckedbox'}
@@ -36,7 +36,7 @@ function TodoList(props) {
         <Checkbox
           checked
           onChange={onChangeCheck}
-          className={props.checked ? 'mx-5' : 'disable-checkbox'}
+          className={props.checked ? '!mx-5' : 'disable-checkbox'}
         />
       </Tooltip>
     </div>

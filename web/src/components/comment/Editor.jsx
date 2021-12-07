@@ -1,4 +1,5 @@
 import {
+  ContentState,
   convertFromRaw,
   convertToRaw,
   DefaultDraftBlockRenderMap,
@@ -85,17 +86,17 @@ function index(props) {
   /* onchange */
   const onEditorStateChange = async (state) => {
     setEditorState(state)
-    const res = await import('draftjs-to-markdown')
+    const res = await import('draftjs-to-html')
     const data = res.default(convertToRaw(state.getCurrentContent()))
     props.onChange(data)
   }
   const setEditorStateWhenEditing = async () => {
-    const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft,
-    )
-    setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
-    )
+    const convertMarkdown2Draft = await import('html-to-draftjs').then((module) => module.default)
+    const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
+    const { contentBlocks, entityMap } = blocksFromHtml
+    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+    const editorState = EditorState.createWithContent(contentState)
+    setEditorState(editorState)
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
@@ -147,7 +148,7 @@ function index(props) {
     const blockLength = currentBlock.getLength()
     if (blockLength === 1 && currentBlock.getText() === '[') {
       onEditorStateChange(
-        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
+        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled')
       )
       return true
     }

@@ -143,7 +143,7 @@ function FileAdder(props) {
       editorState.getCurrentContent(),
       editorState.getSelection(),
       link,
-      editorState.getCurrentInlineStyle(),
+      editorState.getCurrentInlineStyle()
     )
 
     onChange(EditorState.push(editorState, contentState, 'insert-characters'))
@@ -158,7 +158,7 @@ function FileAdder(props) {
         editorState.getCurrentContent(),
         editorState.getSelection(),
         `[${nameInput}](${linkInput})\n`,
-        editorState.getCurrentInlineStyle(),
+        editorState.getCurrentInlineStyle()
       )
 
       onChange(EditorState.push(editorState, contentState, 'insert-characters'))
@@ -179,7 +179,9 @@ function FileAdder(props) {
         optionFilterProp="children"
         value="Select a file"
         onChange={onFileSelect}
-        filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
       >
         {files.map((file) => (
           <Option key={file.id} value={file.link}>
@@ -187,7 +189,7 @@ function FileAdder(props) {
           </Option>
         ))}
       </Select>
-      <Cascader
+      {/* <Cascader
         style={{ width: 233 }}
         options={options || dummyOptions}
         onChange={onChangeCas}
@@ -195,7 +197,7 @@ function FileAdder(props) {
         className="hidden"
         placeholder="Select a file"
         maxTagCount="responsive"
-      />
+      /> */}
       <Modal
         title="ファイル編集"
         okText="保存"
