@@ -22,7 +22,8 @@ class StatusController extends Controller
     */
     public function getTaskRole($jobfairId, $userId, $taskId)
     {
-        if (Jobfair::find($jobfairId)->where('jobfair_admin_id', $userId)->count()) {
+        $jobfair = Jobfair::find($jobfairId);
+        if (strcmp($jobfair->jobfair_admin_id, $userId) === 0) {
             return 'jfadmin';
         }
 

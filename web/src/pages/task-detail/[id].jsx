@@ -11,7 +11,13 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+import {
+  afterTask,
+  beforeTask,
+  deleteTask,
+  taskData,
+  getRoleTask,
+} from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
@@ -19,7 +25,6 @@ import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
 import './style.scss'
 import StatusStatic from '../../components/status/static-status'
-import Status from '../../components/status/dynamic-status'
 
 const StackEditor = dynamic(
   () => import('../../components/stackeditor').then((mod) => mod.default),
@@ -268,7 +273,11 @@ function TaskDetail() {
                       <p className="font-bold text-right">カテゴリ</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.categories ? infoTask.categories.join(', ') : null}</div>
+                      <div className="item__right">
+                        {infoTask.categories
+                          ? infoTask.categories.join(', ')
+                          : null}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -313,6 +322,8 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
+                {/* {listMemberAssignee.length == 1? (<></>):
+                } */}
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8">
                     <div className="layber col-span-2 mx-4">
@@ -451,19 +462,23 @@ function TaskDetail() {
                       <p className="font-bold text-right">担当者</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <ul>
+                      <table>
                         {newAsigneesFromNewComment.length > 0
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return (
                                 <>
-                                  <li key={id} className="task__chil">
-                                    {`${item}`}
-                                    {' '}
-&nbsp;
-                                    <Status status="未着手" />
-                                  </li>
+                                  <tr key={id} className="task__chil">
+                                    <td>{`${item}`}</td>
+                                    {newAsigneesFromNewComment.length === 1 ? (
+                                      <td />
+                                    ) : (
+                                      <td>
+                                        <StatusStatic status="未着手" />
+                                      </td>
+                                    )}
+                                  </tr>
                                   <br />
                                 </>
                               )
@@ -471,8 +486,8 @@ function TaskDetail() {
                           : listMemberAssignee
                             && listMemberAssignee.map((item) => (
                               <>
-                                <li key={item.id} className="task__chil">
-                                  {`${item.name}`}
+                                <tr key={item.id} className="task__chil">
+                                  <td>{`${item.name}`}</td>
                                   {/* {roleTask ===
                                     `taskMember${item.pivot.user_id}` ||
                                   roleTask === "jfadmin" ||
@@ -489,32 +504,46 @@ function TaskDetail() {
                                       status={`${item.pivot.status}`}
                                     />
                                   )} */}
-                                  {action === 'changeTaskStatus' ? (
-                                    <>
-                                      {tempStatus === `${item.pivot.status}` ? (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
-                                      ) : (
-                                        <StatusStatic status={tempStatus} />
-                                      )}
-                                    </>
+                                  {listMemberAssignee.length === 1 ? (
+                                    <td />
                                   ) : (
                                     <>
-                                      {action !== 'normal' && item.id === idUser ? (
-                                        <StatusStatic status={tempStatus} />
-                                      ) : (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
-                                      )}
+                                      <td>
+                                        {action === 'changeTaskStatus' ? (
+                                          <>
+                                            {tempStatus
+                                            === `${item.pivot.status}` ? (
+                                                <StatusStatic
+                                                  status={`${item.pivot.status}`}
+                                                />
+                                              ) : (
+                                                <StatusStatic
+                                                  status={tempStatus}
+                                                />
+                                              )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            {action !== 'normal'
+                                            && item.id === idUser ? (
+                                                <StatusStatic
+                                                  status={tempStatus}
+                                                />
+                                              ) : (
+                                                <StatusStatic
+                                                  status={`${item.pivot.status}`}
+                                                />
+                                              )}
+                                          </>
+                                        )}
+                                      </td>
                                     </>
                                   )}
-                                </li>
+                                </tr>
                                 <br />
                               </>
                             ))}
-                      </ul>
+                      </table>
                     </div>
                   </div>
                 </div>
