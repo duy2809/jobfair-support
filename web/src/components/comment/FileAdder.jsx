@@ -28,8 +28,8 @@ function FileAdder(props) {
     }
   }
   useEffect(() => {
-    getAllFile(props.jfID)
-  }, [props.jfID])
+    getAllFile(props.jfInfo.id)
+  }, [props.jfInfo.id])
   const addNewFile = () => {
     showModalFn()
   }
@@ -38,7 +38,7 @@ function FileAdder(props) {
     const link = formEditFile.getFieldValue('link')
 
     if (!nameFile || !link) {
-      console.log('error')
+      console.error('error')
     }
   }
   const addLink = (link) => {
@@ -55,7 +55,6 @@ function FileAdder(props) {
   const handleEditFileOk = () => {
     const nameInput = formEditFile.getFieldValue('name_file')
     const linkInput = formEditFile.getFieldValue('link')
-    console.log(nameInput, linkInput)
     if (nameInput && linkInput) {
       const { editorState, onChange } = props
       const contentState = Modifier.insertText(
@@ -150,7 +149,7 @@ function FileAdder(props) {
 FileAdder.propTypes = {
   onChange: PropTypes.func.isRequired,
   editorState: PropTypes.object.isRequired,
-  jfID: PropTypes.string.isRequired,
+  jfInfo: PropTypes.object.isRequired,
 }
 
 export default FileAdder

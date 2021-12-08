@@ -191,7 +191,11 @@ function index(props) {
         toolbarCustomButtons={[
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
-          <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
+          <FileAdder
+            jfInfo={props.jfInfo}
+            editorState={editorState}
+            onChange={onEditorStateChange}
+          />,
         ]}
       />
     </div>
@@ -200,6 +204,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  jfID: PropTypes.string,
+  jfInfo: PropTypes.object,
 }
 export default index

@@ -21,6 +21,7 @@ function index({
   parentCallback1,
   parentCallback2,
   roleTask,
+  jfInfo,
 }) {
   const [visible, setVisible] = useState(false)
   const [previewing, setPreviewing] = useState(false)
@@ -76,7 +77,6 @@ function index({
     setShow(true)
   }
   const openPreview = () => {
-    console.log(value)
     setPreviewing(true)
   }
   const pushData2Parent1 = useCallback((data) => {
@@ -239,7 +239,6 @@ function index({
   }
 
   const typing = (data) => {
-    console.log(data)
     setValue(data)
   }
 
@@ -361,7 +360,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={id} value={value} onChange={typing} />
+                    <MyEditor jfID={id} jfInfo={jfInfo} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">

@@ -1,10 +1,6 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal, notification, Tag, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
@@ -49,9 +45,7 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
-    [],
-  )
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
   const [action, setAction] = useState('normal')
@@ -59,6 +53,7 @@ function TaskDetail() {
     id: null,
     name: '',
   })
+  const [jfInfo, setJfInfo] = useState({})
   const saveNotification = () => {
     notification.success({
       duration: 3,
@@ -92,7 +87,6 @@ function TaskDetail() {
     }
   }, [])
   const getChildProps2 = useCallback((childState) => {
-    console.log(childState)
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_member_status !== '') {
@@ -122,6 +116,7 @@ function TaskDetail() {
         if (response.status === 200) {
           const data = response.data
           const categoryName = []
+          setJfInfo(data.schedule.jobfair)
           response.data.categories.forEach((element) => {
             categoryName.push(element.category_name)
           })
@@ -268,7 +263,9 @@ function TaskDetail() {
                       <p className="font-bold text-right">カテゴリ</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.categories ? infoTask.categories.join(', ') : null}</div>
+                      <div className="item__right">
+                        {infoTask.categories ? infoTask.categories.join(', ') : null}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -292,16 +289,12 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -321,9 +314,7 @@ function TaskDetail() {
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
                         {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
+                          <li>{reviewersList.map((item) => item.name).join(', ')}</li>
                         ) : (
                           <li className="task__chil">None</li>
                         )}
@@ -370,10 +361,7 @@ function TaskDetail() {
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {beforeTasks
                           ? beforeTasks.map((item) => (
                             <li>
@@ -410,10 +398,7 @@ function TaskDetail() {
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="list__task col-span-5" style={{ border: '1px solid #d9d9d9' }}>
                         {afterTasks
                           && afterTasks.map((item) => (
                             <li>
@@ -492,9 +477,7 @@ function TaskDetail() {
                                   {action === 'changeTaskStatus' ? (
                                     <>
                                       {tempStatus === `${item.pivot.status}` ? (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
+                                        <StatusStatic status={`${item.pivot.status}`} />
                                       ) : (
                                         <StatusStatic status={tempStatus} />
                                       )}
@@ -504,9 +487,7 @@ function TaskDetail() {
                                       {action !== 'normal' && item.id === idUser ? (
                                         <StatusStatic status={tempStatus} />
                                       ) : (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
+                                        <StatusStatic status={`${item.pivot.status}`} />
                                       )}
                                     </>
                                   )}
@@ -522,15 +503,13 @@ function TaskDetail() {
               <div className=" mx-12 mt-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">
-                  <StackEditor
-                    value={infoTask.description_of_detail}
-                    taskId={idTask}
-                  />
+                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                 </div>
               </div>
             </div>
             <Comment
               id={idTask}
+              jfInfo={jfInfo}
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
               category={infoTask.categories}
