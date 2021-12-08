@@ -189,3 +189,13 @@ Route::post('/comment/{id}', 'CommentController@update');
 Route::get('/status/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getStatus']);
 Route::get('/task-role/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getTaskRole']);
 Route::put('/update-status/{user_id}/{task_id}', [StatusController::class, 'updateStatus']);
+
+
+// merge template task
+Route::post('/create-parent-template-tasks', 'ScheduleController@createTemplateTaskParent');
+Route::put('/update-parent-template-tasks/{template_task}/', 'ScheduleController@updateTemplateTaskParent');
+Route::delete('/detele-parent-template-tasks/{id}', 'ScheduleController@deleteTemplateTaskParent');
+Route::get('/get-child-template-tasks/{id}', 'ScheduleController@getChild');
+Route::get('/get-parent-template-tasks/{id}', 'ScheduleController@getTemplateTasksParent');
+Route::post('/post-duration/{id}', 'ScheduleController@postDuration');
+Route::get('/get-list-template-tasks/{id}', 'ScheduleController@getListTemplateTasks');

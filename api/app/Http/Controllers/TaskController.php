@@ -162,7 +162,7 @@ class TaskController extends Controller
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
             $templateTask = TemplateTask::find($idTemplateTask[$i]);
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
             $duration = 0;
             if ($templateTask->unit === 'students') {
                 $duration = (float) $templateTask->effort * $jobfair->number_of_students;
@@ -175,7 +175,7 @@ class TaskController extends Controller
             $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -467,36 +467,36 @@ class TaskController extends Controller
                     break;
                 }
 
-                if ($checkKey === 1) {
-                    $listOldReviewers = $task->reviewers;
-                    $listOldReviewersID = $listOldReviewers->pluck('id')->toArray();
-                    $listNewReviewers = $request->input('reviewers');
-                    if (
-                        !(
-                            is_array($listNewReviewers)
-                            && is_array($listOldReviewersID)
-                            && count($listNewReviewers) === count($listOldReviewersID)
-                            && array_diff($listNewReviewers, $listOldReviewersID) === array_diff($listOldReviewersID, $listNewReviewers)
-                        )
-                    ) {
-                        $editedField['old_reviewers'] = implode(',', $listOldReviewers->pluck('name')->toArray());
-                        $editedField['new_reviewers'] = implode(',', User::whereIn('id', $listNewReviewers)->pluck('name')->toArray());
-                    }
-                    $listReviewers = $request->input('reviewers');
-                } else {
+                if ($checkKey !== 1) {
                     return response()->json(['message' => 'list reviewers invalid'], 400);
                 }
-            }
 
+                $listOldReviewers = $task->reviewers;
+                $listOldReviewersID = $listOldReviewers->pluck('id')->toArray();
+                $listNewReviewers = $request->input('reviewers');
+                if (
+                    !(
+                        is_array($listNewReviewers)
+                        && is_array($listOldReviewersID)
+                        && count($listNewReviewers) === count($listOldReviewersID)
+                        && array_diff($listNewReviewers, $listOldReviewersID) === array_diff($listOldReviewersID, $listNewReviewers)
+                    )
+                ) {
+                    $editedField['old_reviewers'] = implode(',', $listOldReviewers->pluck('name')->toArray());
+                    $editedField['new_reviewers'] = implode(',', User::whereIn('id', $listNewReviewers)->pluck('name')->toArray());
+                }
+
+                $listReviewers = $request->input('reviewers');
+            }
         } else {
             $listReviewers = 'none';
         }
+
         // update reviewers
         if ($listReviewers !== 'none') {
             $task->reviewers()->sync($listReviewers);
         }
 
-        //
         if ($request->has('admin')) {
             $listMember = $request->admin;
             $listOldMember = $task->users->pluck('id')->toArray();
@@ -525,10 +525,10 @@ class TaskController extends Controller
                 );
             }
         }
+
         // comment history and update before after tasks
         $task->update($request->all());
         if (!empty($request->beforeTasks)) {
-
             $oldBeforeTasks = $task->beforeTasks;
             $newBeforeTasks = $request->beforeTasks;
             $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -547,6 +547,7 @@ class TaskController extends Controller
                 $task->beforeTasks()->sync($request->beforeTasks);
             }
         }
+
         if (empty($request->afterTasks)) {
             $oldAfterTasks = $task->afterTasks;
             $newAfterTasks = $request->afterTasks;
@@ -596,7 +597,9 @@ class TaskController extends Controller
             $comment = Comment::create($editedField);
             \App\Events\Broadcasting\CommentCreated::dispatch($comment);
         }
+
         $task->save();
+
         return response()->json(['message' => 'Edit Successfully'], 200);
     }
 

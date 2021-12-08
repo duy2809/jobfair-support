@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\TemplateTask;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
 
 class TemplateTaskRequest extends FormRequest
 {
@@ -23,15 +25,41 @@ class TemplateTaskRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'string|required|unique:template_tasks',
-        ];
+        Validator::extend('validate_milestone', function ($attr, $value) {
+            $milestone = TemplateTask::find($value[0])->milestone_id;
+            foreach ($value as $item) {
+                $id = TemplateTask::find($item)->milestone_id;
+                if ($milestone !== $id) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        switch ($this->method()) {
+            case 'POST':
+                return [
+                    'name' => 'string|required|unique:template_tasks',
+                    'children' => 'required|array|validate_milestone',
+                ];
+
+                break;
+            case 'PATCH':
+            case 'PUT':
+                return [
+                    'name' => 'string|required|unique:template_tasks,name,'.$this->template_task,
+                    'children' => 'array|validate_milestone',
+                ];
+
+                break;
+        }
     }
 
     public function messages()
     {
         return [
             'name.unique' => 'ユーザーが使用されているJF名を入力した',
+            'children.validate_milestone' => 'invalid milestone',
         ];
     }
 }
