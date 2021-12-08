@@ -59,17 +59,24 @@ class CommentController extends Controller
                 // store task-updating history in comment and update task
                 $task->update(['status' => $request->status]);
                 $isUpdatedTask = true;
-                Assignment::where('task_id', $request->task_id)->update(['status' => $request->status]);
             }
         }
 
         if ($request->has('memberStatus')) {
-            $assignment = Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->get();
+            $userId = auth()->user()->id;
+            $username = auth()->user()->name;
+            if ($request->has('member')) {
+                $userId = $request->member;
+                $memberName = User::find($request->member)->name;
+                $username = $memberName;
+            }
+
+            $assignment = Assignment::where('user_id', $userId)->where('task_id', $request->task_id)->get();
             if ($assignment[0]->status !== $request->memberStatus) {
                 $input['old_member_status'] = $assignment[0]->status;
                 $input['new_member_status'] = $request->memberStatus;
-                $input['member_name'] = auth()->user()->name;
-                Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->update(['status' => $request->memberStatus]);
+                $input['member_name'] = $username;
+                Assignment::where('user_id', $userId)->where('task_id', $request->task_id)->update(['status' => $request->memberStatus]);
                 $isUpdatedTask = true;
                 $assignmentTemps = Assignment::where('task_id', $request->task_id)->get();
                 $isNew = true;

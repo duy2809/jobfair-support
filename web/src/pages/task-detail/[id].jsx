@@ -58,6 +58,7 @@ function TaskDetail() {
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
   const [action, setAction] = useState('normal')
+  const [memberChangeStatus, setMemberChangeStatus] = useState('')
   const [infoJF, setInfoJF] = useState({
     id: null,
     name: '',
@@ -91,8 +92,6 @@ function TaskDetail() {
     }
     if (copyState.new_status !== '') {
       setTaskStatus(copyState.new_status)
-      setTempStatus(copyState.new_status)
-      setAction(copyState.action)
     }
   }, [])
   const getChildProps2 = useCallback((childState) => {
@@ -101,6 +100,7 @@ function TaskDetail() {
     if (copyState.new_member_status !== '') {
       setTempStatus(copyState.new_member_status)
       setAction(copyState.action)
+      setMemberChangeStatus(copyState.member)
     }
   }, [])
   const getRole = (id) => {
@@ -484,33 +484,14 @@ function TaskDetail() {
                                   ) : (
                                     <>
                                       <td>
-                                        {action === 'changeTaskStatus' ? (
-                                          <>
-                                            {tempStatus
-                                            === `${item.pivot.status}` ? (
-                                                <StatusStatic
-                                                  status={`${item.pivot.status}`}
-                                                />
-                                              ) : (
-                                                <StatusStatic
-                                                  status={tempStatus}
-                                                />
-                                              )}
-                                          </>
-                                        ) : (
-                                          <>
-                                            {action !== 'normal'
-                                            && item.id === idUser ? (
-                                                <StatusStatic
-                                                  status={tempStatus}
-                                                />
-                                              ) : (
-                                                <StatusStatic
-                                                  status={`${item.pivot.status}`}
-                                                />
-                                              )}
-                                          </>
-                                        )}
+                                        {action === 'changeMemberStatus'
+                                        && item.name === memberChangeStatus ? (
+                                            <StatusStatic status={tempStatus} />
+                                          ) : (
+                                            <StatusStatic
+                                              status={`${item.pivot.status}`}
+                                            />
+                                          )}
                                       </td>
                                     </>
                                   )}
@@ -540,7 +521,6 @@ function TaskDetail() {
               parentCallback2={getChildProps2}
               roleTask={roleTask}
               listMemberAssignee={listMemberAssignee}
-              setListMemberAssignee={setListMemberAssignee}
             />
           </div>
         </JfLayout.Main>
