@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ScheduleRequest;
-use App\Http\Requests\TemplateTaskRequest;
 use App\Models\Category;
 use App\Models\Milestone;
 use App\Models\Schedule;
@@ -580,7 +579,7 @@ class ScheduleController extends Controller
         return response()->json('Create Successfully');
     }
 
-    public function updateTemplateTaskParent(TemplateTaskRequest $request, $id)
+    public function updateTemplateTaskParent(Request $request, $id)
     {
         // $idCategory = [];
         // foreach ($request->children as $child) {
@@ -594,7 +593,7 @@ class ScheduleController extends Controller
         // }
 
         $templateTask = TemplateTask::findOrFail($id);
-        $templateTask->update($request->validated());
+        $templateTask->update($request->all());
         $templateTask->categories()->sync(array_values($categories));
         $schedule = Schedule::find($request->schedule_id);
 
