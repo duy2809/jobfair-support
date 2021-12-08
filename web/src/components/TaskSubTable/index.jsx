@@ -243,11 +243,11 @@ const TaskSubTable = ({
           >
             <span>
               {showTable ? (
-                <UpOutlined style={{ fontSize: '25px', marginRight: '5px' }} />
+                <UpOutlined style={{ fontSize: '20px', marginRight: '5px' }} />
 
               ) : (
                 <DownOutlined
-                  style={{ fontSize: '25px', marginRight: '5px' }}
+                  style={{ fontSize: '20px', marginRight: '5px' }}
                 />
               )}
             </span>

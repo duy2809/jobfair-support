@@ -297,7 +297,9 @@ class FileController extends Controller
                 $term .= '%';
                 $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
 
-                if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0) {
+                $jobfair = Jobfair::findOrFail($id);
+                $adminJF = $jobfair->jobfair_admin_id;
+                if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0 && $adminJF !== auth()->user()->id) {
                     return response(['message' => 'Subfolder and Subfile can not be deleted '], 400);
                 }
 

@@ -46,7 +46,8 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   const onEnter = (e) => {
     if (e.key === 'Enter') {
-      router.push({ pathname: `/tasks/${id}`, query: { name: e.target.value } })
+      if (router.pathname.includes('/tasks')) window.location.href = `/tasks/${id}?name=${e.target.value}`
+      else router.push({ pathname: '/tasks/[JFid]', query: { JFid: id, name: e.target.value } })
     }
   }
   const toggleCollapsed = () => {

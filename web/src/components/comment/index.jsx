@@ -391,6 +391,7 @@ function index({
                           defaultValue=""
                           className="addJF-selector"
                           placeholder="ステータス"
+                          disabled={roleTask === 'member'}
                         >
                           {listStatus.map((element) => (
                             <Select.Option disabled={editing} value={element}>
