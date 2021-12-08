@@ -172,14 +172,14 @@ class FileController extends Controller
 
     public function search(Request $request)
     {
-        $arr = str_split($request->jfId);
-        foreach ($arr as $char) {
-            if ($char < '0' || $char > '9') {
-                return response(['message' => 'invalid id'], 404);
-            }
-        }
+        // $arr = str_split($request->jfId);
+        // foreach ($arr as $char) {
+        //     if ($char < '0' || $char > '9') {
+        //         return response(['message' => 'invalid id'], 404);
+        //     }
+        // }
 
-        Jobfair::findOrFail($request->jfId);
+        // Jobfair::findOrFail($request->jfId);
         $query = Document::query();
         if ($request->has('name')) {
             $query->where('name', 'LIKE', "%$request->name%");
