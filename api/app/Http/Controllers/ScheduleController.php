@@ -550,13 +550,16 @@ class ScheduleController extends Controller
                 }
 
                 $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
-                array_push($idCategory, $temp);
+                // array_push($idCategory, $temp);
+                $idCategory = array_merge($idCategory, $temp);
             }
 
-            $categories = array_intersect(...$idCategory);
-            if (count($categories) === 0) {
-                return response()->json(['message' => 'invalid category'], 422);
-            }
+            $idCategory = array_unique($idCategory);
+
+            // $categories = array_intersect(...$idCategory);
+            // if (count($categories) === 0) {
+            //     return response()->json(['message' => 'invalid category'], 422);
+            // }
 
             $newTemplateTask = TemplateTask::create([
                 'name' => $parent['name'],
@@ -564,7 +567,7 @@ class ScheduleController extends Controller
                 'milestone_id' => $milestone,
             ]);
 
-            $newTemplateTask->categories()->attach(array_values($categories));
+            $newTemplateTask->categories()->attach(array_values($idCategory));
             $schedule = Schedule::find($parent['schedule_id']);
             // them template-task cha vao bang schedule_template_task
             $schedule->templateTasks()->attach($newTemplateTask);
@@ -579,16 +582,16 @@ class ScheduleController extends Controller
 
     public function updateTemplateTaskParent(TemplateTaskRequest $request, $id)
     {
-        $idCategory = [];
-        foreach ($request->children as $child) {
-            $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
-            array_push($idCategory, $temp);
-        }
+        // $idCategory = [];
+        // foreach ($request->children as $child) {
+        //     $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
+        //     array_push($idCategory, $temp);
+        // }
 
-        $categories = array_intersect(...$idCategory);
-        if (count($categories) === 0) {
-            return response()->json(['message' => 'invalid category'], 422);
-        }
+        // $categories = array_intersect(...$idCategory);
+        // if (count($categories) === 0) {
+        //     return response()->json(['message' => 'invalid category'], 422);
+        // }
 
         $templateTask = TemplateTask::findOrFail($id);
         $templateTask->update($request->validated());
