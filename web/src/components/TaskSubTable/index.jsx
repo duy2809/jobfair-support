@@ -22,7 +22,7 @@ const TaskSubTable = ({
   route,
   isLoading,
 }) => {
-  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const truncate = (input) => (input.length > 15 ? `${input.substring(0, 15)}...` : input)
   const ref = useRef()
   const [newDataColumn, setNewDataColumn] = useState([])
   const [show, setShow] = useState(false)
@@ -63,7 +63,7 @@ const TaskSubTable = ({
       } else if (datediff(parseDate(data.time), today) > 0) {
         data.time = `後${datediff(parseDate(data.time), today)}日`
       } else if (datediff(parseDate(data.time), today) < 0) {
-        data.time = `${-datediff(parseDate(data.time), today)}日遅くれ`
+        data.time = `${-datediff(parseDate(data.time), today)}日遅れ`
       } else {
         data.time = '今日'
       }
@@ -74,9 +74,9 @@ const TaskSubTable = ({
       dataColumn.map((dataItem) => {
         if (dataItem.title === 'タスク名') {
           dataItem.render = (row) => (
-            <>
-              <Link href={taskNameToLink({ row })}>{row}</Link>
-            </>
+            <Tooltip title={row}>
+              <a href={taskNameToLink({ row })}>{truncate(row)}</a>
+            </Tooltip>
           )
         }
         if (dataItem.title === 'JF名') {
@@ -91,7 +91,7 @@ const TaskSubTable = ({
             let color = ''
             if (row.indexOf('中断') !== -1) {
               color = 'geekblue'
-            } else if (row.indexOf('日遅くれ') !== -1) {
+            } else if (row.indexOf('日遅れ') !== -1) {
               color = 'volcano'
             } else if (row.indexOf('後') !== -1) {
               color = 'green'
@@ -120,7 +120,7 @@ const TaskSubTable = ({
         )
       } else if (filter.status === '期限きれ') {
         datas = datas.filter(
-          (data) => data.time.indexOf('日遅くれ') !== -1,
+          (data) => data.time.indexOf('日遅れ') !== -1,
         )
       } else if (filter.status === '中断') {
         datas = datas.filter(
