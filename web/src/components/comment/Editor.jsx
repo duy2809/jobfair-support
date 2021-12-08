@@ -1,5 +1,5 @@
 import {
-  convertFromRaw,
+  ContentState,
   convertToRaw,
   DefaultDraftBlockRenderMap,
   EditorState,
@@ -90,12 +90,12 @@ function index(props) {
     props.onChange(data)
   }
   const setEditorStateWhenEditing = async () => {
-    const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft,
-    )
-    setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
-    )
+    const convertMarkdown2Draft = await import('html-to-draftjs').then((module) => module.default)
+    const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
+    const { contentBlocks, entityMap } = blocksFromHtml
+    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+    const editorData = EditorState.createWithContent(contentState)
+    setEditorState(editorData)
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
@@ -145,7 +145,7 @@ function index(props) {
     const currentBlock = editorState.getCurrentContent().getBlockForKey(selection.getStartKey())
     const blockType = currentBlock.getType()
     const blockLength = currentBlock.getLength()
-    if (blockLength === 1 && currentBlock.getText() === '[') {
+    if (blockLength === 1 && currentBlock.getText() === '[]') {
       onEditorStateChange(
         resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
       )
