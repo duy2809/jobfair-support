@@ -4,8 +4,7 @@ if (!function_exists('taskRelation')) {
  * @param Integer[] $listTask: list task_id
  * @param Collection $prerequisites:
  *  $prerequisites[i]->before_tasks, $prerequisites[i]->after_tasks is task_id
- *  Ex: $pre = DB::table('pivot_table_template_tasks')
- *              ->select(['after_tasks', 'before_tasks'])->get()
+ *  Ex: $pre = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])->get()
  * @return Array[] if there is no cycle: each element of array has format: taskID => orderIndex
  *      tasks that can start at the same time have same orderIndex
  * @return String: 'invalid' if there's a cycle
@@ -20,12 +19,13 @@ if (!function_exists('taskRelation')) {
         $list = $visited = [];
         # Create a hash of colors that default to 0 (white)
         $colors = array_combine(array_keys($tasks), array_fill(0, count($listTask), 0));
+        $maxOrderIndex = array_combine(array_keys($tasks), array_fill(0, count($listTask), 0));
+
         $cycle = false;
         # Order Index: tasks which do not have dependency
         #   and stay next to each other have same orderIndex
-        $orderIndex = 1;
         $helper = function ($task) use (&$cycle, &$list,
-            &$visited, &$tasks, &$colors, &$helper, &$orderIndex) {
+            &$visited, &$tasks, &$colors, &$helper, &$maxOrderIndex) {
             # If we have visited the node before, return
             if (isset($visited[$task])) {
                 return;
@@ -36,7 +36,8 @@ if (!function_exists('taskRelation')) {
             if (count($tasks[$task]) == 0) {
                 $visited[$task] = true;
                 $color[$task] = 2;
-                $list[$task] = $orderIndex;
+                $maxOrderIndex[$task] = 0;
+                $list[$task] = 0;
                 return;
             }
 
@@ -50,18 +51,23 @@ if (!function_exists('taskRelation')) {
             # Paint this node grey
             $colors[$task] = 1;
             # Go through the course deps and process them
+            $max = -1;
             foreach ($tasks[$task] as $req) {
                 $helper($req);
+                if ($maxOrderIndex[$req] > $max) {
+                    $max = $maxOrderIndex[$req];
+                }
             }
-            $orderIndex++;
+            $max++;
             # After we are finished with this courses deps,
             # we can paint it 'black' and add it to the list
             # of courses to take.
             $colors[$task] = 2;
             # Mark as visited
             $visited[$task] = true;
+            $maxOrderIndex[$task] = $max;
             # Add to list
-            $list[$task] = $orderIndex;
+            $list[$task] = $max;
         };
 
         # Go through all the courses and run the helper
@@ -71,6 +77,15 @@ if (!function_exists('taskRelation')) {
                 return 'invalid';
             }
         }
+        uasort($list, function ($item1, $item2) {
+            if ($item1 === $item2) {
+                return 0;
+            }
+            if ($item1 > $item2) {
+                return 1;
+            }
+            return -1;
+        });
         return $list;
     }
 }

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\JobfairCreated;
 use App\Notifications\JobfairEdited;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
@@ -19,37 +20,63 @@ class JobfairController extends Controller
         $this->middleware('auth')->except('isAdminJobfair');
     }
 
+    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
+    {
+        $templateTasks = $templateSchedule->templateTasks()->with('milestone')->get();
+        $milestones = $templateSchedule->milestones()->with('templateTasks', function ($query) use ($templateTasks) {
+            $query->whereIn('template_tasks.id', $templateTasks->pluck('id')->toArray());
+        })->get();
+        orderMilestonesByPeriod($milestones);
+
+        function setNewStartTimeFromMilestone($templateTask, $jobfair, &$startTime)
+        {
+            $numDates = $templateTask->milestone->is_week ?
+            $templateTask->milestone->period * 7
+            : $templateTask->milestone->period;
+            $startTime = date('Y-m-d',
+                strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+        }
+
+        foreach ($milestones->toArray() as $milestone) {
+            $templateTaskIds = array_map(function ($item) {
+                return $item["id"];
+            }, $milestone['template_tasks']);
+            if (count($templateTaskIds) > 0) {
+                $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
+                    ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
+                $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
+                $currentOrderIndex = $templateTasksOrder[array_key_first($templateTasksOrder)];
+                $currentStartTime = $jobfair->start_date;
+                $firstTemplateTask = $templateTasks->where('id', array_key_first($templateTasksOrder))->first();
+                setNewStartTimeFromMilestone($firstTemplateTask, $jobfair, $currentStartTime);
+                $currentEndTime = date('Y-m-d', strtotime($jobfair->start_date));
+                return ['res' => $templateTasksOrder];
+                foreach ($templateTasksOrder as $templateTaskId => $orderIndex) {
+                    $templateTask = $templateTasks->where('id', $templateTaskId)->first();
+                    if ($orderIndex !== $currentOrderIndex) {
+                        $currentStartTime = $currentEndTime;
+                    }
+                    $currentOrderIndex = $orderIndex;
+                    $newEndTime = date('Y-m-d', strtotime($currentStartTime . ' + ' . $templateTask->pivot->duration . 'days'));
+                    $currentEndTime = max($currentEndTime, $newEndTime);
+                    $input = $templateTask->toArray();
+                    $input['start_time'] = $currentStartTime;
+                    $input['end_time'] = $newEndTime;
+                    $input['schedule_id'] = $newSchedule->id;
+                    $input['status'] = '未着手';
+                    $input['template_task_id'] = $templateTask->id;
+                    $newTask = Task::create($input);
+                    $newTask->categories()->attach($templateTask->categories);
+                }
+            }
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
-    {
-        foreach ($templateSchedule->templateTasks as $templateTask) {
-            $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
-            $duration = 0;
-            if ($templateTask->unit === 'students') {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_students;
-            } else if ($templateTask->unit === 'none') {
-                $duration = (float) $templateTask->effort;
-            } else {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
-            }
-
-            $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
-            $input = $templateTask->toArray();
-            $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
-            $input['schedule_id'] = $newSchedule->id;
-            $input['status'] = '未着手';
-            $input['template_task_id'] = $templateTask->id;
-            $newTask = Task::create($input);
-            $newTask->categories()->attach($templateTask->categories);
-        }
-    }
-
     public function index()
     {
         $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
@@ -255,7 +282,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
                 $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
-                    ->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                    ->where('tasks.name', 'LIKE', '%' . $request->name . '%');
             },
         ])->findOrFail($id, ['id']);
 

@@ -150,7 +150,7 @@ const index = () => {
       const response = await addJFAPI.addJF(data)
       if (response.status < 299) {
         setLoading(false)
-        routeTo(`/jf-toppage/${response.data.id}`)
+        // routeTo(`/jf-toppage/${response.data.id}`)
         saveNotification()
       }
       // else {

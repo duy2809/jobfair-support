@@ -40,7 +40,7 @@ class TemplateTask extends Model
 
     public function schedules()
     {
-        return $this->belongsToMany(Schedule::class);
+        return $this->belongsToMany(Schedule::class)->withPivot('duration', 'template_task_parent_id');
     }
 
     public function tasks()
