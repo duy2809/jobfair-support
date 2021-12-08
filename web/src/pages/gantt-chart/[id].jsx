@@ -2,7 +2,7 @@
 import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import ganttChartAPI from '../../api/gantt-chart'
 import { loadingIcon } from '../../components/loading'
@@ -26,7 +26,7 @@ function index() {
   // const [chartMethod, setchartMethod] = useState(null)
   const [jobfairStartDate, setJobfairStartDate] = useState(new Date())
 
-  const generateColor = (taskStatus) => {
+  const generateColor = useCallback((taskStatus) => {
     switch (taskStatus) {
       case '未着手':
         return '#5eb5a6'
@@ -46,12 +46,12 @@ function index() {
       default:
         return 'blue'
     }
-  }
+  }, [])
 
-  const generateTask = (data) => {
+  const generateTask = (resTask) => {
     const result = { data: [] }
-    if (data) {
-      data.forEach((element) => {
+    if (resTask) {
+      resTask.forEach((element) => {
         const dataObj = {
           id: element.id,
           text: element.name,
@@ -69,30 +69,34 @@ function index() {
     return result
   }
 
-  const generateLink = (beforeTasks, afterTasks) => {
+  const generateLink = (resTask) => {
     const link = { links: [] }
-    if (beforeTasks.before_tasks) {
-      beforeTasks.before_tasks.forEach((element) => {
-        const dummyObj = {
-          id: uuidv4(),
-          source: element.id,
-          target: beforeTasks.id,
-          type: '0',
-        }
-        link.links.push(dummyObj)
-      })
-    }
-    if (afterTasks.after_tasks) {
-      afterTasks.after_tasks.forEach((element) => {
-        const dummyObj = {
-          id: uuidv4(),
-          source: afterTasks.id,
-          target: element.id,
-          type: '0',
-        }
-        link.links.push(dummyObj)
-      })
-    }
+
+    resTask.forEach((task) => {
+      if (task.before_tasks) {
+        task.before_tasks.forEach((element) => {
+          const dummyObj = {
+            id: uuidv4(),
+            source: element.id,
+            target: task.id,
+            type: '0',
+          }
+          link.links.push(dummyObj)
+        })
+      }
+      if (task.after_tasks) {
+        task.after_tasks.forEach((element) => {
+          const dummyObj = {
+            id: uuidv4(),
+            source: task.id,
+            target: element.id,
+            type: '1',
+          }
+          link.links.push(dummyObj)
+        })
+      }
+    })
+    console.log(link)
     return link
   }
 
@@ -102,25 +106,31 @@ function index() {
     const fetchData = async () => {
       try {
         Promise.all([
-          ganttChartAPI.getBeforeTasks(jobfairID),
-          ganttChartAPI.getAfterTasks(jobfairID),
           ganttChartAPI.getJobfair(jobfairID),
+
           ganttChartAPI.getTasks(jobfairID),
-        ]).then((responses) => {
-          const beforeTasks = responses[0].data
-          const afterTasks = responses[1].data
-          const jobfair = responses[2].data
-          const resTasks = Array.from(responses[3].data.schedule.tasks)
-          const link = generateLink(beforeTasks, afterTasks)
-          const data = generateTask(resTasks)
-          setJobfairStartDate(new Date(jobfair.start_date))
-          setTask({ ...data, ...link })
-          setLoading(false)
-        }).catch((error) => {
-          if (error.response.status === 404) {
-            router.push('/404')
-          }
-        })
+          ganttChartAPI.getGanttTasks(jobfairID),
+        ])
+          .then((responses) => {
+            const jobfair = responses[0].data
+            /* task from old response => don't touch  */
+            const oldTaskRes = Array.from(responses[1].data.schedule.tasks)
+            // resTask = responses task
+            const resTask = responses[2].data
+            const links = generateLink(resTask)
+            const data = generateTask(oldTaskRes)
+            console.log(links)
+            setTask({ ...data, ...links })
+            setJobfairStartDate(new Date(jobfair.start_date))
+            setLoading(false)
+            return oldTaskRes
+          })
+          .catch((error) => {
+            setLoading(false)
+            if (error.response?.status === 404) {
+              router.push('/404')
+            }
+          })
         return []
       } catch (error) {
         setLoading(false)

@@ -254,9 +254,9 @@ function EditTask() {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
     }
-    if (value.match(Extensions.Reg.specialCharacter)) {
-      return Promise.reject(new Error('使用できない文字が含まれています'))
-    }
+    // if (value.match(Extensions.Reg.specialCharacter)) {
+    //   return Promise.reject(new Error('使用できない文字が含まれています'))
+    // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
