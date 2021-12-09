@@ -582,17 +582,18 @@ class ScheduleController extends Controller
     public function updateTemplateTaskParent(Request $request, $id)
     {
         $idCategory = [];
+        $milestone = TemplateTask::find($request->children[0])->milestone_id;
         foreach ($request->children as $child) {
               $id = TemplateTask::find($child)->milestone_id;
-                if ($milestone !== $id) {
-                    return response()->json(['message' => 'invalid milestone'], 422);
-                }
+            if ($milestone !== $id) {
+                return response()->json(['message' => 'invalid milestone'], 422);
+            }
 
             $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
             // array_push($idCategory, $temp);
             $idCategory = array_merge($idCategory, $temp);
         }
-        
+
         $idCategory = array_unique($idCategory);
 
         // $categories = array_intersect(...$idCategory);
