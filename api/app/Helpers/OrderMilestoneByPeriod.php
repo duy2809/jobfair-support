@@ -1,8 +1,5 @@
 <?php
 if (!function_exists('orderTaskByMilestone')) {
-/**
- * @param Collection an collection of milestones, each milestone have list taskID
- */
     function orderMilestonesByPeriod(&$listMilestone)
     {
         $listMilestone = $listMilestone->sort(function ($milestone1, $milestone2) {
@@ -17,6 +14,7 @@ if (!function_exists('orderTaskByMilestone')) {
             if ($numDates1 < $numDates2) {
                 return -1;
             }
+
             return 1;
         });
     }
