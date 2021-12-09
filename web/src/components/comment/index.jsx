@@ -243,7 +243,8 @@ function index({
               new_assignees: newComment.new_assignees ?? '',
               new_status: newComment.new_status ?? '',
             })
-          } else if (newComment.new_member_status) {
+          }
+          if (newComment.new_member_status) {
             listMemberAssignee.map((item) => {
               if (item.name === newComment.member_name) {
                 item.pivot.status = newComment.new_member_status
