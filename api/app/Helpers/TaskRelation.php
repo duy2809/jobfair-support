@@ -43,7 +43,7 @@ if (!function_exists('taskRelation')) {
             // to the list of courses we can take
             if (count($tasks[$task]) === 0) {
                 $visited[$task] = true;
-                $color[$task] = 2;
+                $colors[$task] = 2;
                 $maxOrderIndex[$task] = 0;
                 $list[$task] = 0;
 
