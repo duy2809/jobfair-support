@@ -236,7 +236,6 @@ function index({
       }
       const response = await addComment(comment)
       const newComment = response.data
-      console.log(newComment)
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
@@ -245,10 +244,17 @@ function index({
               new_status: newComment.new_status ?? '',
             })
           } else if (newComment.new_member_status) {
+            listMemberAssignee.map((item) => {
+              if (item.name === newComment.member_name) {
+                item.pivot.status = newComment.new_member_status
+              }
+              return item
+            })
             pushData2Parent2({
               new_member_status: newComment.new_member_status,
               action: 'changeMemberStatus',
               member: newComment.member_name,
+              updateListMember: listMemberAssignee,
             })
           }
           store.dispatch({
@@ -267,10 +273,10 @@ function index({
       }
       return newComment
     } catch (error) {
-      // if (error.response.status === 404) {
-      //   router.push("/404");
-      // } else return error;
-      // return null;
+      if (error.response.status === 404) {
+        router.push('/404')
+      } else return error
+      return null
     }
   }
 

@@ -85,6 +85,7 @@ function TaskDetail() {
       })
   }
   const getChildProps1 = useCallback((childState) => {
+    console.log(listMemberAssignee)
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
@@ -101,6 +102,7 @@ function TaskDetail() {
       setTempStatus(copyState.new_member_status)
       setAction(copyState.action)
       setMemberChangeStatus(copyState.member)
+      setListMemberAssignee(copyState.updateListMember)
     }
   }, [])
   const getRole = (id) => {
