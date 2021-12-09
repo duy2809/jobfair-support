@@ -113,7 +113,8 @@ class FileController extends Controller
             ));
 
             return DB::table('documents')
-                ->select('*')
+                ->join('users', 'users.id', '=', 'documents.updaterId')
+                ->select('users.name as updaterName', 'documents.*')
                 ->where('path', $request->path)
                 ->where('document_id', $request->document_id)
                 ->orderBy('documents.is_file', 'asc')
