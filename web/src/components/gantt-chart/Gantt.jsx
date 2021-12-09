@@ -16,8 +16,6 @@ export default class Gantt extends Component {
   componentDidMount() {
     const { tasks } = this.props
     // const { tasks } = this.props
-    const jobfairStartDate = this.props.jobfairStartDate
-    console.log(jobfairStartDate)
     /* Full List of Extensions */
     gantt.plugins({
       click_drag: true,
@@ -159,6 +157,12 @@ export default class Gantt extends Component {
       }
       return false
     })
+
+    gantt.templates.tooltip_text = function (start, end, task) {
+      return `<b>タスク:</b> ${task.text}<br/><b>開始日:</b> ${gantt.templates.tooltip_date_format(
+        start,
+      )}<br/><b>終了日:</b> ${gantt.templates.tooltip_date_format(end)}`
+    }
     gantt.templates.month_scale_date = (date) => formatMonthScale(date)
     gantt.config.autofit = false
     gantt.config.bar_height = 30
@@ -206,7 +210,6 @@ export default class Gantt extends Component {
 Gantt.propTypes = {
   tasks: PropTypes.object.isRequired,
   filter: PropTypes.string.isRequired,
-  jobfairStartDate: PropTypes.object.isRequired,
 }
 export function scrollToToday() {
   const state = gantt.getState()

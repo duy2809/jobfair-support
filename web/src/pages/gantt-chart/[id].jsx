@@ -52,11 +52,14 @@ function index() {
     const result = { data: [] }
     if (resTask) {
       resTask.forEach((element) => {
+        const startTime = new Date(element.start_time.replace(/\//g, '-'))
+        const endTime = new Date(element.end_time.replace(/\//g, '-'))
+        endTime.setHours(24)
         const dataObj = {
           id: element.id,
           text: element.name,
-          start_date: new Date(element.start_time.replace(/\//g, '-')),
-          end_date: new Date(element.end_time.replace(/\//g, '-')),
+          start_date: startTime,
+          end_date: endTime,
           open: true,
           color: generateColor(element.status),
           status: element.status,
