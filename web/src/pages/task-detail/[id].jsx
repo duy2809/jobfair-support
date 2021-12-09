@@ -317,22 +317,27 @@ function TaskDetail() {
                 </div>
                 {/* {listMemberAssignee.length == 1? (<></>):
                 } */}
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>{reviewersList.map((item) => item.name).join(', ')}</li>
-                        ) : (
-                          <li className="task__chil">None</li>
-                        )}
-                      </ul>
+                {newAsigneesFromNewComment.length + listMemberAssignee.length !== 1
+                && (
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.length !== 0 ? (
+                            <li>
+                              {reviewersList.map((item) => item.name).join(', ')}
+                            </li>
+                          ) : (
+                            <li className="task__chil">None</li>
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
