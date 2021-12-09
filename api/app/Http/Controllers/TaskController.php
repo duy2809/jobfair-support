@@ -511,7 +511,7 @@ class TaskController extends Controller
 
                             if ($slackId !== []) {
                                 $listSlackId = implode(' ,', $slackId);
-                                $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                                $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                                 $url = config('app.url');
                                 $listUserId = implode('>さん,<@', $slackId);
                                 $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
@@ -685,7 +685,7 @@ class TaskController extends Controller
 
                             if ($slackId !== []) {
                                 $listSlackId = implode(' ,', $slackId);
-                                $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                                $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                                 $url = config('app.url');
                                 $listUserId = implode('>さん,<@', $slackId);
                                 $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
@@ -863,7 +863,7 @@ class TaskController extends Controller
 
                         if ($slackId !== []) {
                             $listSlackId = implode(' ,', $slackId);
-                            $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                            $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                             $url = config('app.url');
                             $listUserId = implode('>さん,<@', $slackId);
                             $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
@@ -1188,7 +1188,7 @@ class TaskController extends Controller
 
                     if ($slackId !== []) {
                         $listSlackId = implode(' ,', $slackId);
-                        $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                        $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                         $url = config('app.url');
                         $listUserId = implode('>さん,<@', $slackId);
                         $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
