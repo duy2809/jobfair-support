@@ -59,6 +59,7 @@ function index({
       return error
     }
   }
+
   const clearForm = () => {
     form.resetFields()
     setEditing(false)
@@ -360,7 +361,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={id} jfInfo={jfInfo} value={value} onChange={typing} />
+                    <MyEditor jfID={jfInfo.id} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">

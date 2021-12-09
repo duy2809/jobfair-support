@@ -28,8 +28,8 @@ function FileAdder(props) {
     }
   }
   useEffect(() => {
-    getAllFile(props.jfInfo.id)
-  }, [props.jfInfo.id])
+    getAllFile(props.jfID)
+  }, [props.jfID])
   const addNewFile = () => {
     showModalFn()
   }
@@ -56,15 +56,8 @@ function FileAdder(props) {
     const nameInput = formEditFile.getFieldValue('name_file')
     const linkInput = formEditFile.getFieldValue('link')
     if (nameInput && linkInput) {
-      const { editorState, onChange } = props
-      const contentState = Modifier.insertText(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-        `[${nameInput}](${linkInput})\n`,
-        editorState.getCurrentInlineStyle(),
-      )
-
-      onChange(EditorState.push(editorState, contentState, 'insert-characters'))
+      const link = `[${nameInput}](${linkInput})\n`
+      addLink(link)
       formEditFile.resetFields()
       setShowModal(false)
     }
@@ -141,7 +134,7 @@ function FileAdder(props) {
         </Form>
       </Modal>
       <div onClick={addNewFile} className="cursor-pointer">
-        <FileAddOutlined className="text-xl  mx-2 " />
+        <FileAddOutlined className="!text-xl  mx-2 " />
       </div>
     </div>
   )
@@ -149,7 +142,7 @@ function FileAdder(props) {
 FileAdder.propTypes = {
   onChange: PropTypes.func.isRequired,
   editorState: PropTypes.object.isRequired,
-  jfInfo: PropTypes.object.isRequired,
+  jfID: PropTypes.string.isRequired,
 }
 
 export default FileAdder
