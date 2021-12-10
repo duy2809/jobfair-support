@@ -173,7 +173,7 @@ class TemplateTaskController extends Controller
 
     public function getCategoriesTasks()
     {
-        $categories = Category::has('templateTasks')->get();
+        $categories = Category::where('category_name', '<>', 'Reviewer')->get();
 
         return response()->json($categories);
     }
