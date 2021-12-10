@@ -438,6 +438,8 @@ class TaskController extends Controller
             }
         }
 
+        $listSlackEmpty = [];
+        $listUserError = [];
         if ($request->has('reviewers')) {
             if ($request->input('reviewers') === [] || $request->input('reviewers') === [null]) {
                 $listOldReviewers = $task->reviewers;
@@ -476,15 +478,16 @@ class TaskController extends Controller
                         $slackId = [];
                         $slackName = [];
                         $listSlackEmpty = [];
+                        $listUserError = [];
                         foreach ($newAssignees as $newAssignee) {
                             $listId[] = $newAssignee;
                             $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id', 'name']);
                             $slackName[] = $slack[0]->name;
                             if ($slack[0]->chatwork_id === '') {
                                 $listSlackEmpty[] = $slack[0]->name;
+                            } else {
+                                $slackId[] = $slack[0]->chatwork_id;
                             }
-
-                            $slackId[] = $slack[0]->chatwork_id;
                         }
 
                         Notification::send(
@@ -492,33 +495,28 @@ class TaskController extends Controller
                             new TaskCreated($task, auth()->user())
                         );
                         //Slack
-                        if ($listId !== []) {
-                            if ($listSlackEmpty !== []) {
-                                $errorMess = implode(', ', $listSlackEmpty);
-
-                                return response()->json(['message' => "{$errorMess} don't have slack id"], 422);
-                            }
-
+                        if ($slackId !== []) {
                             $jobfairId = $task->schedule->jobfair->id;
                             $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
                             $listSlackId = implode(' ,', $slackId);
                             $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                             $res = json_decode($response);
                             if ($res->ok === false && $res->error === 'user_not_found') {
-                                $listUserError = [];
                                 foreach ($res->errors as $error) {
-                                    $listUserError[] = $slackName[array_search($error->user, $slackId)];
+                                    $pos = array_search($error->user, $slackId);
+                                    $listUserError[] = $slackName[$pos];
+                                    unset($slackId[$pos]);
                                 }
-
-                                $errorMess = implode(', ', $listUserError);
-
-                                return response()->json(['message' => "{$errorMess} is not in the workspace"], 422);
                             }
 
-                            $url = config('app.url');
-                            $listUserId = implode('>さん,<@', $slackId);
-                            $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                            $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                            if ($slackId !== []) {
+                                $listSlackId = implode(' ,', $slackId);
+                                $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                                $url = config('app.url');
+                                $listUserId = implode('>さん,<@', $slackId);
+                                $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                                $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                            }
                         }
                     }
                 }
@@ -604,6 +602,20 @@ class TaskController extends Controller
 
                 $task->reviewers()->sync([]);
                 $task->save();
+                //Slack warning
+                $errorMessEmpty = implode('さん, ', $listSlackEmpty);
+                $errorMessAddChannel = implode('さん, ', $listUserError);
+                if ($listSlackEmpty !== [] && $listUserError !== []) {
+                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。\n{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                } else {
+                    if ($listSlackEmpty !== []) {
+                        return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。", 'warning' => true]);
+                    }
+
+                    if ($listUserError !== []) {
+                        return response()->json(['message' => "{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                    }
+                }
 
                 return response()->json(['message' => 'Edit Successfully'], 200);
             }
@@ -645,46 +657,40 @@ class TaskController extends Controller
                         $listId = [];
                         $slackId = [];
                         $slackName = [];
-                        $listSlackEmpty = [];
                         foreach ($newAssignees as $newAssignee) {
                             $listId[] = $newAssignee;
                             $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id', 'name']);
                             $slackName[] = $slack[0]->name;
                             if ($slack[0]->chatwork_id === '') {
                                 $listSlackEmpty[] = $slack[0]->name;
+                            } else {
+                                $slackId[] = $slack[0]->chatwork_id;
                             }
-
-                            $slackId[] = $slack[0]->chatwork_id;
                         }
 
                         //Slack
-                        if ($listId !== []) {
-                            if ($listSlackEmpty !== []) {
-                                $errorMess = implode(', ', $listSlackEmpty);
-
-                                return response()->json(['message' => "{$errorMess} don't have slack id"], 422);
-                            }
-
+                        if ($slackId !== []) {
                             $jobfairId = $task->schedule->jobfair->id;
                             $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
                             $listSlackId = implode(' ,', $slackId);
                             $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                             $res = json_decode($response);
                             if ($res->ok === false && $res->error === 'user_not_found') {
-                                $listUserError = [];
                                 foreach ($res->errors as $error) {
-                                    $listUserError[] = $slackName[array_search($error->user, $slackId)];
+                                    $pos = array_search($error->user, $slackId);
+                                    $listUserError[] = $slackName[$pos];
+                                    unset($slackId[$pos]);
                                 }
-
-                                $errorMess = implode(', ', $listUserError);
-
-                                return response()->json(['message' => "{$errorMess} is not in the workspace"], 422);
                             }
 
-                            $url = config('app.url');
-                            $listUserId = implode('>さん,<@', $slackId);
-                            $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                            $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                            if ($slackId !== []) {
+                                $listSlackId = implode(' ,', $slackId);
+                                $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                                $url = config('app.url');
+                                $listUserId = implode('>さん,<@', $slackId);
+                                $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                                $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                            }
                         }
                     }
                 }
@@ -785,6 +791,20 @@ class TaskController extends Controller
 
                 $task->reviewers()->sync($request->input('reviewers'));
                 $task->save();
+                //Slack warning
+                $errorMessEmpty = implode('さん, ', $listSlackEmpty);
+                $errorMessAddChannel = implode('さん, ', $listUserError);
+                if ($listSlackEmpty !== [] && $listUserError !== []) {
+                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。\n{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                } else {
+                    if ($listSlackEmpty !== []) {
+                        return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。", 'warning' => true]);
+                    }
+
+                    if ($listUserError !== []) {
+                        return response()->json(['message' => "{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                    }
+                }
 
                 return response()->json(['message' => 'Edit Successfully'], 200);
             }
@@ -811,16 +831,15 @@ class TaskController extends Controller
                     $listId = [];
                     $slackId = [];
                     $slackName = [];
-                    $listSlackEmpty = [];
                     foreach ($newAssignees as $newAssignee) {
                         $listId[] = $newAssignee;
                         $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id', 'name']);
                         $slackName[] = $slack[0]->name;
                         if ($slack[0]->chatwork_id === '') {
                             $listSlackEmpty[] = $slack[0]->name;
+                        } else {
+                            $slackId[] = $slack[0]->chatwork_id;
                         }
-
-                        $slackId[] = $slack[0]->chatwork_id;
                     }
 
                     Notification::send(
@@ -828,33 +847,28 @@ class TaskController extends Controller
                         new TaskCreated($task, auth()->user())
                     );
                     //Slack
-                    if ($listId !== []) {
-                        if ($listSlackEmpty !== []) {
-                            $errorMess = implode(', ', $listSlackEmpty);
-
-                            return response()->json(['message' => "{$errorMess} don't have slack id"], 422);
-                        }
-
+                    if ($slackId !== []) {
                         $jobfairId = $task->schedule->jobfair->id;
                         $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
                         $listSlackId = implode(' ,', $slackId);
                         $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
                         $res = json_decode($response);
                         if ($res->ok === false && $res->error === 'user_not_found') {
-                            $listUserError = [];
                             foreach ($res->errors as $error) {
-                                $listUserError[] = $slackName[array_search($error->user, $slackId)];
+                                $pos = array_search($error->user, $slackId);
+                                $listUserError[] = $slackName[$pos];
+                                unset($slackId[$pos]);
                             }
-
-                            $errorMess = implode(', ', $listUserError);
-
-                            return response()->json(['message' => "{$errorMess} is not in the workspace"], 422);
                         }
 
-                        $url = config('app.url');
-                        $listUserId = implode('>さん,<@', $slackId);
-                        $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                        $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                        if ($slackId !== []) {
+                            $listSlackId = implode(' ,', $slackId);
+                            $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                            $url = config('app.url');
+                            $listUserId = implode('>さん,<@', $slackId);
+                            $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                            $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                        }
                     }
                 }
             }
@@ -936,6 +950,21 @@ class TaskController extends Controller
                 $task->users()->syncWithPivotValues($request->admin, [
                     'join_date' => Carbon::now()->toDateTimeString(),
                 ]);
+            }
+
+            //Slack warning
+            $errorMessEmpty = implode('さん, ', $listSlackEmpty);
+            $errorMessAddChannel = implode('さん, ', $listUserError);
+            if ($listSlackEmpty !== [] && $listUserError !== []) {
+                return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。\n{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+            } else {
+                if ($listSlackEmpty !== []) {
+                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。", 'warning' => true]);
+                }
+
+                if ($listUserError !== []) {
+                    return response()->json(['message' => "{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                }
             }
 
             return response()->json(['message' => 'Edit Successfully'], 200);
@@ -1095,50 +1124,6 @@ class TaskController extends Controller
         if ($request->has('assignee')) {
             $listMember = $request->assignee;
             $listOldMember = $task->users->pluck('id')->toArray();
-            //Slack
-            $newAssignees = array_diff($listMember, $listOldMember);
-            $slackId = [];
-            $slackName = [];
-            $listSlackEmpty = [];
-            foreach ($newAssignees as $newAssignee) {
-                $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id', 'name']);
-                $slackName[] = $slack[0]->name;
-                if ($slack[0]->chatwork_id === '') {
-                    $listSlackEmpty[] = $slack[0]->name;
-                }
-
-                $slackId[] = $slack[0]->chatwork_id;
-            }
-
-            if ($slackId !== []) {
-                if ($listSlackEmpty !== []) {
-                    $errorMess = implode(', ', $listSlackEmpty);
-
-                    return response()->json(['message' => "{$errorMess} don't have slack id"], 422);
-                }
-
-                $jobfairId = $task->schedule->jobfair->id;
-                $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
-                $listSlackId = implode(' ,', $slackId);
-                $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
-                $res = json_decode($response);
-                if ($res->ok === false && $res->error === 'user_not_found') {
-                    $listUserError = [];
-                    foreach ($res->errors as $error) {
-                        $listUserError[] = $slackName[array_search($error->user, $slackId)];
-                    }
-
-                    $errorMess = implode(', ', $listUserError);
-
-                    return response()->json(['message' => "{$errorMess} is not in the workspace"], 422);
-                }
-
-                $url = config('app.url');
-                $listUserId = implode('>さん,<@', $slackId);
-                $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
-                $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
-            }
-
             if (
                 !(
                     is_array($listMember)
@@ -1171,8 +1156,44 @@ class TaskController extends Controller
                 // notification for new assignees
                 $newAssignees = array_diff($listMember, $listOldMember);
                 $listId = [];
+                $slackId = [];
+                $slackName = [];
+                $listSlackEmpty = [];
+                $listUserError = [];
                 foreach ($newAssignees as $newAssignee) {
                     $listId[] = $newAssignee;
+                    $slack = User::where('id', '=', $newAssignee)->get(['chatwork_id', 'name']);
+                    $slackName[] = $slack[0]->name;
+                    if ($slack[0]->chatwork_id === '') {
+                        $listSlackEmpty[] = $slack[0]->name;
+                    } else {
+                        $slackId[] = $slack[0]->chatwork_id;
+                    }
+                }
+
+                //Slack
+                if ($slackId !== []) {
+                    $jobfairId = $task->schedule->jobfair->id;
+                    $channelId = Jobfair::where('id', '=', $jobfairId)->get(['channel_id']);
+                    $listSlackId = implode(' ,', $slackId);
+                    $response = $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                    $res = json_decode($response);
+                    if ($res->ok === false && $res->error === 'user_not_found') {
+                        foreach ($res->errors as $error) {
+                            $pos = array_search($error->user, $slackId);
+                            $listUserError[] = $slackName[$pos];
+                            unset($slackId[$pos]);
+                        }
+                    }
+
+                    if ($slackId !== []) {
+                        $listSlackId = implode(' ,', $slackId);
+                        $this->slack->addUserToChannel($channelId[0]->channel_id, $listSlackId);
+                        $url = config('app.url');
+                        $listUserId = implode('>さん,<@', $slackId);
+                        $text = "<@{$listUserId}>さん\nこのタスクが割り当てられました。\nタスク：{$task->name}\nリンク：{$url}/task-detail/{$task->id}\n確認してください";
+                        $this->slack->assignTaskBot($text, $channelId[0]->channel_id);
+                    }
                 }
 
                 Notification::send(
@@ -1187,6 +1208,19 @@ class TaskController extends Controller
                     'task_id'       => $id,
                 ]);
                 \App\Events\Broadcasting\CommentCreated::dispatch($comment);
+                $errorMessEmpty = implode('さん, ', $listSlackEmpty);
+                $errorMessAddChannel = implode('さん, ', $listUserError);
+                if ($listSlackEmpty !== [] && $listUserError !== []) {
+                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。\n{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                }
+
+                if ($listSlackEmpty !== []) {
+                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。", 'warning' => true]);
+                }
+
+                if ($listUserError !== []) {
+                    return response()->json(['message' => "{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                }
             }
         }
 

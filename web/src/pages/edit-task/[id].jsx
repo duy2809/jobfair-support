@@ -301,11 +301,11 @@ function EditTask() {
     })
   }
 
-  // const forbidNotification = () => {
-  //   notification.error({
-  //     message: 'Method not allowed',
-  //   })
-  // }
+  const forbidNotification = () => {
+    notification.error({
+      message: 'Method not allowed',
+    })
+  }
   const openNotification = (type, message, description) => {
     notification[type]({
       message,
@@ -366,23 +366,22 @@ function EditTask() {
         } else {
           setdisableBtn(true)
           await editTask(idTask, data)
-            .then(() => {
+            .then((response) => {
               router.push(`/task-detail/${idTask}`)
-              saveNotification()
+              if (response.data.warning === true) {
+                notification.warning({
+                  duration: 3,
+                  message: response.data.message,
+                  onClick: () => {},
+                })
+              } else saveNotification()
             })
             .catch((error) => {
               setdisableBtn(false)
               if (error.response.status === 404) {
                 router.push('/404')
               }
-              if (error.response.status === 422) {
-                notification.error({
-                  duration: 3,
-                  message: error.response.data.message,
-                  onClick: () => {},
-                })
-              }
-              // forbidNotification()
+              forbidNotification()
             })
         }
       } catch (error) {

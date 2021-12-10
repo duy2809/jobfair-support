@@ -83,8 +83,14 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
     }
     setLoading(true)
     try {
-      await updateManagerTask(record.idtask, data).then(() => {
-        saveEditNotification()
+      await updateManagerTask(record.idtask, data).then((response) => {
+        if (response.data.warning === true) {
+          notification.warning({
+            duration: 3,
+            message: response.data.message,
+            onClick: () => {},
+          })
+        } else saveEditNotification()
       })
       await jftask(router.query.JFid).then((response) => {
         loadTableData(response)
@@ -95,13 +101,6 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
     } catch (error) {
       if (error.response.status === 404) {
         router.push('/404')
-      }
-      if (error.response.status === 422) {
-        notification.error({
-          duration: 3,
-          message: error.response.data.message,
-          onClick: () => {},
-        })
       }
       setLoading(false)
       setRowEdit(null)
