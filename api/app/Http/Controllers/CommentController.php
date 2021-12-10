@@ -59,6 +59,7 @@ class CommentController extends Controller
                 // store task-updating history in comment and update task
                 $task->update(['status' => $request->status]);
                 $isUpdatedTask = true;
+                Assignment::where('task_id', $request->task_id)->update(['status' => $request->status]);
             }
         }
 
@@ -90,6 +91,13 @@ class CommentController extends Controller
                     $task = Task::find($request->task_id);
                     if ($task->status === '未着手') {
                         $task->status = '進行中';
+                        $task->save();
+                        $input['new_status'] = $task->status;
+                    }
+                } else {
+                    $task = Task::find($request->task_id);
+                    if ($task->status !== '未着手') {
+                        $task->status = '未着手';
                         $task->save();
                         $input['new_status'] = $task->status;
                     }

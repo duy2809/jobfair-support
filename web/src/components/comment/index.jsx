@@ -60,9 +60,9 @@ function index({
   const idUser = store.getState().get('auth').get('user').get('id')
   const INIT_COMMENTS_NUM = 5
   const MORE_COMMENTS_NUM = 10
-
+  const [changeStatus, setChangeStatus] = useState(true)
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
-
+  const listMemberStatus = ['未着手', '進行中', 'リビュエー待ち']
   const getMoreComments = async (start, count) => {
     try {
       const response = await getComments(id, start, count)
@@ -152,9 +152,15 @@ function index({
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else if (roleTask === 'reviewer') {
-      setListStatus(['進行中', 'リビュエー待ち', '完了', '中断', '未完了'])
+      setListStatus(['進行中', '完了', '中断', '未完了'])
     } else {
       setListStatus(['未着手', '進行中', 'リビュエー待ち'])
+    }
+    console.log(statusProp)
+    if (statusProp === '未着手' || statusProp === '進行中') {
+      setChangeStatus(true)
+    } else {
+      setChangeStatus(false)
     }
     fetchListMember()
     fetchTaskData()
@@ -239,9 +245,16 @@ function index({
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
+            if (newComment.new_status === '未着手' || newComment.new_status === '進行中') {
+              setChangeStatus(true)
+            } else {
+              setChangeStatus(false)
+            }
             pushData2Parent1({
               new_assignees: newComment.new_assignees ?? '',
               new_status: newComment.new_status ?? '',
+              action: 'changeTaskStatus',
+              updateListMember: listMemberAssignee,
             })
           }
           if (newComment.new_member_status) {
@@ -430,9 +443,10 @@ function index({
                       >
                         <Select
                           size="large"
-                          defaultValue=""
                           className="addJF-selector"
-                          placeholder="memberステータス"
+                          placeholder="ステータス"
+                          disabled={!changeStatus}
+                          allowClear="true"
                         >
                           {listStatus.map((element) => (
                             <Select.Option disabled={editing} value={element}>
@@ -451,10 +465,10 @@ function index({
                         >
                           <Select
                             size="large"
-                            defaultValue=""
                             className="addJF-selector"
                             placeholder="ステータス"
                             disabled={roleTask === 'member'}
+                            allowClear="true"
                           >
                             {listStatus.map((element) => (
                               <Select.Option disabled={editing} value={element}>
@@ -475,7 +489,8 @@ function index({
                                   size="large"
                                   className="addJF-selector"
                                   placeholder="担当者"
-                                  disabled={roleTask === 'member'}
+                                  disabled={roleTask === 'member' || !changeStatus}
+                                  allowClear="true"
                                 >
                                   {listMemberAssignee.map((element) => (
                                     <Select.Option
@@ -493,12 +508,12 @@ function index({
                               <Form.Item name="memberStatus">
                                 <Select
                                   size="large"
-                                  defaultValue=""
                                   className="addJF-selector"
                                   placeholder="ステータス"
-                                  disabled={roleTask === 'member'}
+                                  disabled={roleTask === 'member' || !changeStatus}
+                                  allowClear="true"
                                 >
-                                  {listStatus.map((element) => (
+                                  {listMemberStatus.map((element) => (
                                     <Select.Option
                                       disabled={editing}
                                       value={element}
@@ -524,6 +539,7 @@ function index({
                           showArrow
                           tagRender={tagRender}
                           disabled={roleTask !== 'jfadmin'}
+                          allowClear="true"
                         >
                           {listUser.map((element) => (
                             <Select.Option
@@ -546,6 +562,7 @@ function index({
                             borderRadius: 6,
                           }}
                           disabled={roleTask !== 'jfadmin'}
+                          allowClear="true"
                           className="multiples"
                         >
                           {listUser.map((element) => (
