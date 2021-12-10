@@ -1,5 +1,6 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
+import axios from 'axios'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -86,7 +87,6 @@ function EditTask() {
         if (response.status === 200) {
           const data = response.data
           const categoryName = []
-          console.log(response.data)
           response.data.categories.forEach((element) => {
             categoryName.push(element.category_name)
           })
@@ -502,7 +502,6 @@ function EditTask() {
     setLoading(false)
   }, [idJF])
   useEffect(() => {
-    console.log(infoTask.description_of_detail)
     setDescription(infoTask.description_of_detail)
   }, [infoTask])
   useEffect(() => {
@@ -831,20 +830,20 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.getInitialProps = async (ctx) => {
-//   const taskId = parseInt(ctx.query.id, 10)
-//   const userId = ctx.store.getState().get('auth').get('user').get('id')
-//   if (userId) {
-//     try {
-//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
-//         params: { userId, taskId },
-//       })
-//     } catch (err) {
-//       ctx.res?.writeHead(302, { Location: '/error' })
-//       ctx.res?.end()
-//     }
-//   }
-//   return {}
-// }
-// EditTask.middleware = ['auth:superadmin', 'auth:member']
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask
