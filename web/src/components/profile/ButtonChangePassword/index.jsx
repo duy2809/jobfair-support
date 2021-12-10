@@ -126,6 +126,7 @@ const ButtonChangePassword = () => {
             }
             name="current_password"
             rules={[
+              { required: true },
               {
                 validator: validatorPass,
               },

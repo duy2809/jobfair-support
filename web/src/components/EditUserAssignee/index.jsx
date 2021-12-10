@@ -32,10 +32,10 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
     await getCategorys().then((response) => {
       let dataUser = []
       // eslint-disable-next-line array-callback-return
-      response.data.map((item) => {
-        if (record.idCategory === item.id) {
-          dataUser = item.users
-          setAllMemberAs(item.users)
+      response.data.forEach((element) => {
+        if (record.idCategory.includes(element.id)) {
+          dataUser = dataUser.concat(element.users)
+          setAllMemberAs(dataUser)
         }
       })
       // eslint-disable-next-line react/prop-types

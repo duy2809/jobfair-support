@@ -1,5 +1,5 @@
 import {
-  convertFromRaw,
+  ContentState,
   convertToRaw,
   DefaultDraftBlockRenderMap,
   EditorState,
@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react'
 // import handlePastedText from '../../utils/handleOnPaste'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { MemberApi } from '../../api/member'
+import FileAdder from './FileAdder'
 import './styles.scss'
 import TodoBlock from './TodoBlock'
 import TodoList from './TodoList'
@@ -89,12 +90,12 @@ function index(props) {
     props.onChange(data)
   }
   const setEditorStateWhenEditing = async () => {
-    const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft,
-    )
-    setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
-    )
+    const convertMarkdown2Draft = await import('html-to-draftjs').then((module) => module.default)
+    const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
+    const { contentBlocks, entityMap } = blocksFromHtml
+    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+    const editorData = EditorState.createWithContent(contentState)
+    setEditorState(editorData)
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
@@ -119,6 +120,7 @@ function index(props) {
     trigger: '@',
     suggestions: usersName,
   }
+
   const hashtag = {
     separator: ' ',
     trigger: '#',
@@ -143,7 +145,7 @@ function index(props) {
     const currentBlock = editorState.getCurrentContent().getBlockForKey(selection.getStartKey())
     const blockType = currentBlock.getType()
     const blockLength = currentBlock.getLength()
-    if (blockLength === 1 && currentBlock.getText() === '[') {
+    if (blockLength === 1 && currentBlock.getText() === '[]') {
       onEditorStateChange(
         resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
       )
@@ -175,6 +177,7 @@ function index(props) {
         editorState={editorState}
         toolbarClassName=""
         mention={mention}
+        // mention={files}
         hashtag={hashtag}
         blockStyleFn={blockStyleFn}
         blockRenderMap={blockRenderMap}
@@ -188,6 +191,11 @@ function index(props) {
         toolbarCustomButtons={[
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
+          <FileAdder
+            jfInfo={props.jfInfo}
+            editorState={editorState}
+            onChange={onEditorStateChange}
+          />,
         ]}
       />
     </div>
@@ -196,5 +204,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  jfInfo: PropTypes.object,
 }
 export default index

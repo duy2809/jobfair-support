@@ -1,10 +1,7 @@
 .recent-update {
   
   .ant-list-split:hover .ant-list-item:hover,.ant-list-split:hover .ant-list-item:focus {
-    // border: 1px solid black;
-    // box-shadow: 0 1em 1em -1em #e5ff60;
-    // transform: translateY(-0.25em);
-    box-shadow: 0 0 0 0 rgba(227, 246, 245, 0.5), inset 2em 9em 0 0 rgba(227, 246, 245, 0.5);
+    background-color: rgba(227, 246, 245, 0.5);
   }
   .ant-list-split .ant-list-item {
     border: 1px solid transparent;
@@ -38,5 +35,9 @@
   }
   .item-link{
     cursor: pointer;
+  }
+  .ant-btn:focus {
+    color: black;
+    border-color: #d9d9d9;
   }
 }

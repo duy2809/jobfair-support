@@ -19,7 +19,6 @@ function TodoBlock(props) {
     const data = block.getData()
     const checked = data.has('checked') && data.get('checked') === true
     const newData = data.set('checked', !checked)
-    console.log(checked, 'upd')
     onChange(updateDataOfBlock(getEditorState(), block, newData))
   }
   const data = props.block.getData()
