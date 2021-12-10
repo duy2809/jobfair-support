@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TemplateTaskRequest;
 use App\Models\Category;
 use App\Models\Jobfair;
+use App\Models\Milestone;
 use App\Models\TemplateTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class TemplateTaskController extends Controller
 {
@@ -137,6 +140,56 @@ class TemplateTaskController extends Controller
 
         if ($check) {
             return response()->json(['message' => 'Edit Failed'], 422);
+        }
+
+        // validate relation
+        $templateTasks = TemplateTask::all();
+        $milestones = Milestone::all();
+        orderMilestonesByPeriod($milestones);
+        $milestones = $milestones->pluck('id')->toArray();
+        $currentTemplateTaskMilestone = array_search($templateTask->milestone_id, $milestones);
+        $prerequisites = DB::table('pivot_table_template_tasks')->where('before_tasks', '<>', $id)
+            ->where('after_tasks', '<>', $id)->select(['after_tasks', 'before_tasks'])->get();
+        foreach ($request->beforeTasks as $beforeTaskID) {
+            if (
+                array_search(
+                    $templateTasks->where('id', $beforeTaskID)->first()->milestone_id,
+                    $milestones
+                ) > $currentTemplateTaskMilestone
+            ) {
+                return response([
+                    'error' => 'invalid before tasks',
+                ], 400);
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = $beforeTaskID;
+            $newPrerequisite->after_tasks = $id;
+            $prerequisites->push($newPrerequisite);
+        }
+
+        foreach ($request->afterTasks as $afterTaskID) {
+            if (
+                array_search(
+                    $templateTasks->where('id', $afterTaskID)->first()->milestone_id,
+                    $milestones
+                ) < $currentTemplateTaskMilestone
+            ) {
+                return response([
+                    'error' => 'invalid after tasks',
+                ], 400);
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = $id;
+            $newPrerequisite->after_tasks = $afterTaskID;
+            $prerequisites->push($newPrerequisite);
+        }
+
+        if (taskRelation($templateTasks->pluck('id')->toArray(), $prerequisites) === 'invalid') {
+            return response([
+                'error' => 'invalid relations',
+            ], 400);
         }
 
         $templateTask->update($request->all());

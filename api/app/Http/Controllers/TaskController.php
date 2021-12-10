@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Jobfair;
+use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
+use stdClass;
 
 class TaskController extends Controller
 {
@@ -354,14 +356,62 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    private function validateTaskRelation($id, $task, $beforeTasks, $afterTasks)
     {
+        // validate relation
+        $tasks = Task::where('schedule_id', $task->schedule_id)->get();
+        $milestones = Milestone::all();
+        orderMilestonesByPeriod($milestones);
+        $milestones = $milestones->pluck('id')->toArray();
+        $currentTaskMilestone = array_search($task->milestone_id, $milestones);
+        $prerequisites = DB::table('pivot_table_tasks')->where('before_tasks', '<>', $id)
+            ->where('after_tasks', '<>', $id)
+            ->whereIn('before_tasks', $tasks->pluck('id')->toArray())
+            ->whereIn('after_tasks', $tasks->pluck('id')->toArray())
+            ->select(['after_tasks', 'before_tasks'])->get();
+        foreach ($beforeTasks as $beforeTaskID) {
+            if (
+                array_search(
+                    $tasks->where('id', $beforeTaskID)->first()->milestone_id,
+                    $milestones
+                ) > $currentTaskMilestone
+            ) {
+                return [
+                    'error' => 'invalid before tasks',
+                ];
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = $beforeTaskID;
+            $newPrerequisite->after_tasks = intval($id);
+            $prerequisites->push($newPrerequisite);
+        }
+
+        foreach ($afterTasks as $afterTaskID) {
+            if (
+                array_search(
+                    $tasks->where('id', $afterTaskID)->first()->milestone_id,
+                    $milestones
+                ) < $currentTaskMilestone
+            ) {
+                return [
+                    'error' => 'invalid after tasks',
+                ];
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = intval($id);
+            $newPrerequisite->after_tasks = $afterTaskID;
+            $prerequisites->push($newPrerequisite);
+        }
+
+        if (taskRelation($tasks->pluck('id')->toArray(), $prerequisites) === 'invalid') {
+            return [
+                'error' => 'invalid relations',
+            ];
+        }
+
+        return 'oke';
     }
 
     /**
@@ -528,7 +578,13 @@ class TaskController extends Controller
 
         // comment history and update before after tasks
         $task->update($request->all());
-        if (!empty($request->beforeTasks)) {
+
+        if ($request->has('beforeTasks')) {
+            $result = $this->validateTaskRelation($id, $task, $request->beforeTasks, $request->afterTasks);
+            if ($result !== 'oke') {
+                return response($result, 400);
+            }
+
             $oldBeforeTasks = $task->beforeTasks;
             $newBeforeTasks = $request->beforeTasks;
             $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -548,7 +604,7 @@ class TaskController extends Controller
             }
         }
 
-        if (empty($request->afterTasks)) {
+        if ($request->has('afterTasks')) {
             $oldAfterTasks = $task->afterTasks;
             $newAfterTasks = $request->afterTasks;
             $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
