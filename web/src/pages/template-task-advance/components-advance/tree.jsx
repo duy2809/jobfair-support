@@ -52,6 +52,30 @@ const ad = [
         text: 'asfsdfasdjglkasdhgjdakasdsfsg',
       },
       {
+        id: 2,
+        parent: 0,
+        droppable: true,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+      {
+        id: 3,
+        parent: 0,
+        droppable: true,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+      {
+        id: 2,
+        parent: 0,
+        droppable: true,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+      {
+        id: 3,
+        parent: 0,
+        droppable: true,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+      {
         id: 4,
         parent: 1,
         text: 'asfsdfasdjglkasdhgjdakasdsfsg',
