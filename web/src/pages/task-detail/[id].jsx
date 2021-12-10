@@ -341,7 +341,7 @@ function TaskDetail() {
                             {reviewersList.map((item) => item.name).join(', ')}
                           </li>
                         ) : (
-                          <li className="task__chil"></li>
+                          <li className="task__chil" />
                         )}
                       </ul>
                     </div>
