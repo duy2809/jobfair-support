@@ -73,7 +73,9 @@ const JfLayout = ({ children, bgr }) => {
             </div>
             {bgr === 1 ? (
               <Menu.Item key="1" icon={<HomeOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/jf-toppage/${id}`}><span>ホーム</span></Link>
+                <Link href={`/jf-toppage/${id}`} className="text-black">
+                  <a style={{ color: '#2d334a' }}>ホーム</a>
+                </Link>
               </Menu.Item>
             ) : (
               <Menu.Item
@@ -81,7 +83,9 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<HomeOutlined className="sidebar-icons" />}
                 style={{ background: '#e3f6f5' }}
               >
-                <Link href={`/jf-toppage/${id}`}><span>ホーム</span></Link>
+                <Link href={`/jf-toppage/${id}`}>
+                  <a style={{ color: '#2d334a' }}>ホーム</a>
+                </Link>
               </Menu.Item>
             )}
 
@@ -91,11 +95,15 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<FileProtectOutlined className="sidebar-icons" />}
                 style={styles}
               >
-                <Link href={`/tasks/${id}`}><span>タスク</span></Link>
+                <Link href={`/tasks/${id}`}>
+                  <a style={{ color: '#2d334a' }}>タスク</a>
+                </Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="2" icon={<FileProtectOutlined className="sidebar-icons" />}>
-                <Link href={`/tasks/${id}`}><span>タスク</span></Link>
+                <Link href={`/tasks/${id}`}>
+                  <a style={{ color: '#2d334a' }}>タスク</a>
+                </Link>
               </Menu.Item>
             )}
 
@@ -105,31 +113,43 @@ const JfLayout = ({ children, bgr }) => {
                 icon={<BarChartOutlined className="sidebar-icons" />}
                 style={styles}
               >
-                <Link href={`/gantt-chart/${id}`}><span>ガントチャート</span></Link>
+                <Link href={`/gantt-chart/${id}`}>
+                  <a style={{ color: '#2d334a' }}>ガントチャート</a>
+                </Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="3" icon={<BarChartOutlined className="sidebar-icons" />}>
-                <Link href={`/gantt-chart/${id}`}><span>ガントチャート</span></Link>
+                <Link href={`/gantt-chart/${id}`}>
+                  <a style={{ color: '#2d334a' }}>ガントチャート</a>
+                </Link>
               </Menu.Item>
             )}
 
             {bgr === 4 ? (
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/kanban/${id}`}><span>カンバン</span></Link>
+                <Link href={`/kanban/${id}`}>
+                  <a style={{ color: '#2d334a' }}>カンバン</a>
+                </Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="4" icon={<TableOutlined className="sidebar-icons" />}>
-                <Link href={`/kanban/${id}`}><span>カンバン</span></Link>
+                <Link href={`/kanban/${id}`}>
+                  <a style={{ color: '#2d334a' }}>カンバン</a>
+                </Link>
               </Menu.Item>
             )}
 
             {bgr === 5 ? (
               <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />} style={styles}>
-                <Link href={`/file/${id}`}><span>ファイル</span></Link>
+                <Link href={`/file/${id}`}>
+                  <a style={{ color: '#2d334a' }}>ファイル</a>
+                </Link>
               </Menu.Item>
             ) : (
               <Menu.Item key="5" icon={<FileOutlined className="sidebar-icons" />}>
-                <Link href={`/file/${id}`}><span>ファイル</span></Link>
+                <Link href={`/file/${id}`}>
+                  <a style={{ color: '#2d334a' }}>ファイル</a>
+                </Link>
               </Menu.Item>
             )}
           </Menu>
