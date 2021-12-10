@@ -42,11 +42,11 @@ class JobfairController extends Controller
         });
     }
 
-    private function setNewStartTimeFromMilestone($templateTask, $jobfair, &$startTime)
+    private function setNewStartTimeFromMilestone($milestone, $jobfair, &$startTime)
     {
-        $numDates = $templateTask->milestone->is_week ?
-        $templateTask->milestone->period * 7
-        : $templateTask->milestone->period;
+        $numDates = $milestone['is_week'] ?
+        $milestone['period'] * 7
+        : $milestone['period'];
         $startTime = date(
             'Y-m-d',
             strtotime($jobfair->start_date.' + '.$numDates.'days')
@@ -55,7 +55,7 @@ class JobfairController extends Controller
 
     private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
     {
-        $templateTasks = $templateSchedule->templateTasks()->with('milestone')->get();
+        $templateTasks = $templateSchedule->templateTasks()->with('milestone')->with('beforeTasks')->get();
         $milestones = $templateSchedule->milestones()->with('templateTasks', function ($query) use ($templateTasks) {
             $query->whereIn('template_tasks.id', $templateTasks->pluck('id')->toArray());
         })->get();
@@ -73,34 +73,32 @@ class JobfairController extends Controller
                 $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
                     ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
                 $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
-                // start with smallest order index (low orderIndex -> start soon)
-                $currentOrderIndex = $templateTasksOrder[array_key_first($templateTasksOrder)];
+                // start time of the milestone
                 $currentStartTime = date('Y-m-d', strtotime($jobfair->start_date));
-                $firstTemplateTask = $templateTasks->where('id', array_key_first($templateTasksOrder))->first();
-                // initialize startTime to start time of milestone
-                $this->setNewStartTimeFromMilestone($firstTemplateTask, $jobfair, $currentStartTime);
-                // currentEndTime is latest end time flag in the following foreach loop
-                $currentEndTime = date('Y-m-d', strtotime($jobfair->start_date));
+                $this->setNewStartTimeFromMilestone($milestone, $jobfair, $currentStartTime);
+                // map template task ID to its task's end time
+                $mapTaskIDToEndTime = collect([]);
                 foreach ($templateTasksOrder as $templateTaskId => $orderIndex) {
                     $templateTask = $templateTasks->where('id', $templateTaskId)->first();
-                    if ($orderIndex !== $currentOrderIndex) {
-                        // if orderIndex is changed then this task must start after the latest task of the previous orderIndex
-                        // TODO: current start time start only after the relation task, not all task of previous orderIndex
-                        $currentStartTime = $currentEndTime;
-                    }
-
-                    $currentOrderIndex = $orderIndex;
-                    $newEndTime = date('Y-m-d', strtotime($currentStartTime.' + '.$templateTask->pivot->duration.'days'));
-                    $currentEndTime = max($currentEndTime, $newEndTime);
+                    // start time is max of the latest end time of before task and its milestone start time
+                    // can always calculate end time of before tasks because of before tasks is always be handled first (ordered by TaskRelation func)
+                    $newStartTime = $currentStartTime;
+                    $templateTask->beforeTasks->each(function ($element) use (&$newStartTime, $mapTaskIDToEndTime) {
+                        $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id].'+ 1 day'));
+                        if ($newStartTime < $possibleStartTime) {
+                            $newStartTime = $possibleStartTime;
+                        }
+                    });
+                    $newEndTime = date('Y-m-d', strtotime($newStartTime.' + '.$templateTask->pivot->duration.'days'));
                     $input = $templateTask->toArray();
-                    $input['start_time'] = $currentStartTime;
+                    $input['start_time'] = $newStartTime;
                     $input['end_time'] = $newEndTime;
                     $input['schedule_id'] = $newSchedule->id;
                     $input['status'] = '未着手';
                     $input['template_task_id'] = $templateTask->id;
                     $newTask = Task::create($input);
                     $newTask->categories()->attach($templateTask->categories);
-
+                    $mapTaskIDToEndTime->put($templateTaskId, $newEndTime);
                     $mapTemplateTaskToTaskID->put($templateTaskId, $newTask->id);
                 }
             }
