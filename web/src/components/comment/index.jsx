@@ -62,7 +62,7 @@ function index({
   const MORE_COMMENTS_NUM = 10
   const [changeStatus, setChangeStatus] = useState(true)
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
-  const listMemberStatus = ['未着手', '進行中', 'リビュエー待ち']
+  const listMemberStatus = ['未着手', '進行中', 'レビュー待ち']
   const getMoreComments = async (start, count) => {
     try {
       const response = await getComments(id, start, count)
@@ -154,9 +154,8 @@ function index({
     } else if (roleTask === 'reviewer') {
       setListStatus(['進行中', '完了', '中断', '未完了'])
     } else {
-      setListStatus(['未着手', '進行中', 'リビュエー待ち'])
+      setListStatus(['未着手', '進行中', 'レビュー待ち'])
     }
-    console.log(statusProp)
     if (statusProp === '未着手' || statusProp === '進行中') {
       setChangeStatus(true)
     } else {
