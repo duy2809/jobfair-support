@@ -14,6 +14,11 @@ const API = {
     return instance.get(url)
   },
 
+  getGanttTasks: (jobfairId) => {
+    const url = `/jobfair/${jobfairId}/gantt`
+    return instance.get(url)
+  },
+
   getBeforeTasks: (jobfairId) => {
     const url = `/before-tasks/${jobfairId}`
     return instance.get(url)

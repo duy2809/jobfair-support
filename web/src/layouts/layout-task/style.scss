@@ -57,6 +57,7 @@
     background-color: white !important;
     border-left: 3px solid #ffd803;
     margin-bottom: 0px;
+    color: #272343;
   }
 
   .ant-menu-dark .ant-menu-item-selected .ant-menu-item-icon + span,
@@ -150,8 +151,11 @@
     .avt {
       margin: 0 25px;
     }
-    .hv-icon:hover{
+    .hv-icon:hover {
       color: #ffd803 !important;
+    }
   }
+  .ant-menu-inline-collapsed-tooltip a {
+    color: #e40606 !important;
   }
 }

@@ -10,6 +10,8 @@ import { ConfigProvider } from 'antd'
 import * as Sentry from '@sentry/browser'
 
 import jaJP from 'antd/lib/locale/ja_JP'
+import Head from 'next/head'
+
 import axios from '~/api/axios'
 import createStore from '~/store'
 import { usePromise } from '~/utils/store'
@@ -77,6 +79,10 @@ class Jobfair extends App {
 
     return (
       <Provider store={store}>
+        <Head>
+          <title>JF Support</title>
+          <link rel="shortcut icon" href="favicon.svg" />
+        </Head>
         <ConfigProvider prefixCls="ant" locale={jaJP}>
           <Component {...pageProps} />
         </ConfigProvider>
