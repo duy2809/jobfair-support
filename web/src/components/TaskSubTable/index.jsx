@@ -43,7 +43,7 @@ const TaskSubTable = ({
     return new Date(mdy[0], mdy[1] - 1, mdy[2])
   }
   function datediff(first, second) {
-    return Math.round((first - second) / (1000 * 60 * 60 * 24))
+    return Math.ceil((first - second) / (1000 * 60 * 60 * 24))
   }
   function taskNameToLink(name) {
     let id = 0
