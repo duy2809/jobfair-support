@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { PlusOutlined, CloseCircleOutlined, CheckOutlined, EditTwoTone, SearchOutlined, DownOutlined, RightOutlined } from '@ant-design/icons'
 import './AddDialog.module.scss'
 
-export const AddDialog = ({ SampleData, treeData, setTreeData, handleAddText }) => {
+export const AddDialog = ({ SampleData, treeData, setTreeData, handleAddText, handleCloseDialog }) => {
   const [text, setText] = useState('')
 
   // const handleChangeText = (e) => {
@@ -23,6 +23,7 @@ export const AddDialog = ({ SampleData, treeData, setTreeData, handleAddText }) 
   // }
   const handleCancel = () => {
     setText('')
+    handleCloseDialog()
   }
 
   const handleChangeText = (e) => {
@@ -30,8 +31,8 @@ export const AddDialog = ({ SampleData, treeData, setTreeData, handleAddText }) 
   }
 
   const handleSubmit = () => {
-    // setVisibleInput(false)
-    handleAddText()
+    handleCloseDialog()
+    handleAddText(text)
   }
   return (
 

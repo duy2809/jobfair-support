@@ -8,7 +8,7 @@ export const CustomDragPreview = (props) => {
   const item = props.monitorProps.item
 
   return (
-    <div className={styles.root}>
+    <div className="flex items-center">
       <div className={styles.icon}>
         <TypeIcon droppable={item.droppable} fileType={item?.data?.fileType} />
       </div>

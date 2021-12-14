@@ -5,33 +5,43 @@ import {
   getDescendants,
 } from '@minoru/react-dnd-treeview'
 import {
-  Button,
-  DatePicker,
-  Empty,
-  Form,
-  Input,
-  List,
-  Modal,
-  notification,
-  Select,
-} from 'antd'
-import {
   PlusOutlined,
-  SearchOutlined,
-  DownOutlined,
-  UpOutlined,
 } from '@ant-design/icons'
+import useTree from './useTree'
 
+import { getNewMilestone } from '../../../api/template-advance'
 import { CustomNode } from './CustomNode'
 import { CustomDragPreview } from './CustomDragPreview'
 import { AddDialog } from './AddDialog'
 import SelectMilestone from './SelectMilestone'
 import './App.module.scss'
 
-const ad = [
+const backupData = [
   {
     id: 1,
-    name: 'milestone1',
+    milestone_name: 'milestone1',
+    task: [
+      {
+        id: 1,
+        parent: 0,
+        text: 'asfsdfasdjglkasdhgjdaksg',
+      },
+      {
+        id: 2,
+        parent: 0,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+      {
+        id: 3,
+        parent: 0,
+        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
+      },
+
+    ],
+  },
+  {
+    id: 2,
+    milestone_name: 'milestone2',
     task: [
       {
         id: 1,
@@ -51,74 +61,7 @@ const ad = [
         droppable: true,
         text: 'asfsdfasdjglkasdhgjdakasdsfsg',
       },
-      {
-        id: 2,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 3,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 2,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 3,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 4,
-        parent: 1,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 5,
-        parent: 1,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: 'milestone2',
-    task: [
-      {
-        id: 1,
-        parent: 0,
-        droppable: true,
-        text: 's',
-      },
-      {
-        id: 2,
-        parent: 0,
-        droppable: true,
-        text: 's',
-      },
-      {
-        id: 3,
-        parent: 0,
-        droppable: true,
-        text: 's',
-      },
-      {
-        id: 4,
-        parent: 1,
-        text: 'sd',
-      },
-      {
-        id: 5,
-        parent: 1,
-        text: 'ssss',
-      },
+
     ],
   },
 ]
@@ -143,16 +86,12 @@ const getLastId = (treeData) => {
 }
 
 function App() {
-  const SampleData = useRef(ad)
-  const [treeData, setTreeData] = useState(SampleData.current[0].task)
+  const { treeData, setTreeData, SampleData, setSamleData, idMilestoneActive, setIdMileStoneActive } = useTree()
   const handleDrop = (newTree) => {
     setTreeData(newTree)
-    SampleData.current[0].task = newTree
   }
   const [open, setOpen] = useState(false)
-  const [listMilestone, setListmilestone] = useState([])
   const [textAdd, setTextAdd] = useState('')
-  console.log(SampleData.current[0].task, 'data')
   const handleTextChange = (id, value) => {
     const newTree = treeData.map((node) => {
       if (node.id === id) {
@@ -166,8 +105,12 @@ function App() {
     })
 
     setTreeData(newTree)
-    SampleData.current[0].task = newTree
   }
+  const listMilestone = []
+  // eslint-disable-next-line no-unused-expressions
+  SampleData ? SampleData.forEach((element) => {
+    listMilestone.push({ name: element.milestone_name, id: element.id })
+  }) : null
   const handleDelete = (id) => {
     const deleteIds = [
       id,
@@ -175,7 +118,6 @@ function App() {
     ]
     const newTree = treeData.filter((node) => !deleteIds.includes(node.id))
     setTreeData(newTree)
-    SampleData.current[0].task = newTree
   }
   const handleOpenDialog = () => {
     setOpen(true)
@@ -199,26 +141,49 @@ function App() {
     setOpen(false)
   }
   const onMilestoneChange = (value) => {
-    const newList = SampleData.current.length > 0 ? SampleData.current.filter((item) => item.id === value) : null
-    setTreeData(newList[0].task)
+    const newList = SampleData ? SampleData.filter((item) => item.id === value) : null
+    setTreeData(newList ? newList[0].task : null)
+    setIdMileStoneActive(value)
   }
-  const handleAddText = (e) => {
-    e.preventDefault()
+  const handleAddText = (text) => {
     if (
-      textAdd.length === 0
+      text.length === 0
     ) return
+    const dataAdd = {
+      id: treeData.length + 1,
+      parent: 0,
+      text,
+      type: 'parent',
+    }
     const newList = [...treeData]
-    newList.push(textAdd)
+    newList.push(dataAdd)
     setTreeData(newList)
-    SampleData.current[0].task = newList
+    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newList,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
   }
-  useEffect(() => {
-    const newListMilestone = []
-    SampleData.current.forEach((element) => {
-      newListMilestone.push({ name: element.name, id: element.id })
-    })
-    setListmilestone(newListMilestone)
-  }, [])
+  // const fechtDataLeft = async () => {
+  //   await getNewMilestone()
+  //     .then((response) => {
+  //       // SampleData.current = response.data
+  //       // console.log(response.data, 'res')
+  //       // setTreeData(SampleData.current[0].task)
+  //       // console.log(treeData, 'samdata')
+  //     })
+  //     .catch((error) => {
+  //       if (error.response.status === 404) {
+  //         router.push('/404')
+  //       }
+  //     })
+  // }
+  // useEffect(() => {
+  //   fechtDataLeft()
+  // }, [])
   return (
     <div className="tree">
       <div>
@@ -227,6 +192,7 @@ function App() {
             <SelectMilestone
               onMilestoneChange={onMilestoneChange}
               listMilestone={listMilestone}
+              treeData={treeData}
             />
           </div>
           <div className="tree__right">
@@ -246,10 +212,11 @@ function App() {
           handleAddText={handleAddText}
           text={textAdd}
           setText={setTextAdd}
+          handleCloseDialog={handleCloseDialog}
         />
       )}
       <Tree
-        tree={treeData}
+        tree={treeData || backupData[0].task}
         rootId={0}
         render={(node, options) => (
           <CustomNode

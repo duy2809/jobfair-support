@@ -97,7 +97,6 @@ function TaskDetail() {
     }
   }, [])
   const getChildProps2 = useCallback((childState) => {
-    console.log(childState)
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_member_status !== '') {

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-duplicates */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
@@ -43,9 +44,7 @@ export const CustomNode = (props) => {
     setVisibleInput(false)
     props.onTextChange(id, labelText)
   }
-
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
-
   return (
     <div
       className={`tree-node mb-1 ${styles.root}`}

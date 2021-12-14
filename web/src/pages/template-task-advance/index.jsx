@@ -39,8 +39,8 @@ const templateTaskAdvance = () => {
                   </Card>
                 </Col>
                 <Col span={12}>
-                  <Card bordered={false} className="status__global">
-               xvcb
+                  <Card bordered={false} style={{ boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px' }} className="status__global">
+               chart milestone
                   </Card>
                 </Col>
               </Row>
