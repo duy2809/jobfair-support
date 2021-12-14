@@ -218,6 +218,7 @@ function App() {
       <Tree
         tree={treeData || backupData[0].task}
         rootId={0}
+        className="my-3"
         render={(node, options) => (
           <CustomNode
             node={node}

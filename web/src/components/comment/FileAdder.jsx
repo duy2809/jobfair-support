@@ -38,7 +38,7 @@ function FileAdder(props) {
     const link = formEditFile.getFieldValue('link')
 
     if (!nameFile || !link) {
-      console.log('error')
+      console.error('error')
     }
   }
   const addLink = (link) => {
@@ -55,17 +55,9 @@ function FileAdder(props) {
   const handleEditFileOk = () => {
     const nameInput = formEditFile.getFieldValue('name_file')
     const linkInput = formEditFile.getFieldValue('link')
-    console.log(nameInput, linkInput)
     if (nameInput && linkInput) {
-      const { editorState, onChange } = props
-      const contentState = Modifier.insertText(
-        editorState.getCurrentContent(),
-        editorState.getSelection(),
-        `[${nameInput}](${linkInput})\n`,
-        editorState.getCurrentInlineStyle(),
-      )
-
-      onChange(EditorState.push(editorState, contentState, 'insert-characters'))
+      const link = `[${nameInput}](${linkInput})\n`
+      addLink(link)
       formEditFile.resetFields()
       setShowModal(false)
     }
@@ -142,7 +134,7 @@ function FileAdder(props) {
         </Form>
       </Modal>
       <div onClick={addNewFile} className="cursor-pointer">
-        <FileAddOutlined className="text-xl  mx-2 " />
+        <FileAddOutlined className="!text-xl  mx-2 " />
       </div>
     </div>
   )

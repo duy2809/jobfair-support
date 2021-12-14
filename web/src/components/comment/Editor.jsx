@@ -79,7 +79,8 @@ const resetBlockType = (editorState, newType) => {
 }
 
 function index(props) {
-  const commentContent = props.value
+  // const commentContent = props.value
+  const [commentContent, setCommentContent] = useState(props.value || '')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   /* onchange */
@@ -111,6 +112,9 @@ function index(props) {
     setEditorStateWhenEditing()
     return () => setEditorState(EditorState.createEmpty())
   }, [])
+  useEffect(() => {
+    setCommentContent(props.value)
+  }, [props.value])
 
   const getEditorState = () => editorState
   const blockRendererFn = getBlockRendererFn(getEditorState, onEditorStateChange)
@@ -166,12 +170,10 @@ function index(props) {
       element: 'div',
     },
   }).merge(DefaultDraftBlockRenderMap)
-
   return (
     <div className="editor bg-[#F8F9FA]">
       <div className="flex">
         <p className="text-xs italic text-[#888888] mr-5">@ for tag </p>
-        <p className="text-xs italic text-[#888888]"># for hashtag</p>
       </div>
       <Editor
         editorState={editorState}
@@ -189,7 +191,7 @@ function index(props) {
         onEditorStateChange={onEditorStateChange}
         handlePastedText={() => false}
         toolbarCustomButtons={[
-          <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
+          // <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
           <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
         ]}
@@ -200,6 +202,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  jfID: PropTypes.string,
+  jfID: PropTypes.string.isRequired,
 }
 export default index

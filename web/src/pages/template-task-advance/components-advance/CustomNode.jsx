@@ -85,7 +85,7 @@ export const CustomNode = (props) => {
                         props.isOpen ? styles.isOpen : ''
                       }`}
                     >
-                      {!props.node.parent && (
+                      {props.node.droppable && (
                         <div onClick={handleToggle}>
                           {
                             iseOpen ? <DownOutlined /> : <RightOutlined />
@@ -96,7 +96,7 @@ export const CustomNode = (props) => {
                     </div>
                     <div className="flex items-center">
                       <div className="mr-1">
-                        {props.node.parent === 0
+                        {props.node.droppable
                           ? <FolderFilled />
                           : <FileFilled />}
                       </div>

@@ -31,3 +31,10 @@ Route::resource('/schedules', 'ScheduleController')->only([
 ]);
 Route::resource('/milestone', MilestoneController::class)->except(['index']);
 Route::apiResource('/category', CategoryController::class)->except(['index']);
+
+// merge template task
+Route::post('/create-parent-template-tasks', 'ScheduleController@createTemplateTaskParent');
+Route::put('/update-parent-template-tasks/{template_task}/', 'ScheduleController@updateTemplateTaskParent');
+Route::delete('/detele-parent-template-tasks/{id}', 'ScheduleController@deleteTemplateTaskParent');
+Route::get('/get-template-tasks/{id}', 'ScheduleController@getListTemplateTasks');
+Route::post('/post-duration/{id}', 'ScheduleController@postDuration');

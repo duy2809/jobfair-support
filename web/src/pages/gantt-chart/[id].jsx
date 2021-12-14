@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
-import { Button, Radio, Spin, Tooltip, Empty } from 'antd'
+import { Button, Empty, Radio, Spin, Tooltip } from 'antd'
+import moment from 'moment'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -52,11 +53,14 @@ function index() {
     const result = { data: [] }
     if (resTask) {
       resTask.forEach((element) => {
+        console.log()
+        const startTime = new Date(element.start_time.replace(/\//g, '-'))
+        const endTime = new Date(moment(element.end_time).endOf('day').format())
         const dataObj = {
           id: element.id,
           text: element.name,
-          start_date: new Date(element.start_time.replace(/\//g, '-')),
-          end_date: new Date(element.end_time.replace(/\//g, '-')),
+          start_date: startTime,
+          end_date: endTime,
           open: true,
           color: generateColor(element.status),
           status: element.status,
