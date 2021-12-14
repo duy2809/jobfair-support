@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Http;
 class SlackService
 {
     protected $slacktoken;
+    protected $workspace;
 
     public function __construct()
     {
         $this->slacktoken = config('app.slack_token');
+        $this->workspace = config('app.workspace_id');
     }
 
     public function createChannel($name)
@@ -95,6 +97,19 @@ class SlackService
                 'channel' => $channelId,
                 'as_user' => 'U02MG72M8FL',
                 'text' => $text,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+    public function checkInWorkspace($user_id)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->get('https://slack.com/api/users.conversations', [
+                'team_id' => $this->workspace,
+                'user' => $user_id,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th], 400);

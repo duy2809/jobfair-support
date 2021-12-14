@@ -900,15 +900,15 @@ class TaskController extends Controller
                 $errorMessEmpty = implode('さん, ', $listSlackEmpty);
                 $errorMessAddChannel = implode('さん, ', $listUserError);
                 if ($listSlackEmpty !== [] && $listUserError !== []) {
-                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。\n{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                    return response()->json(['message' => "{$errorMessEmpty}さんはSlackIDを持っていません。\n{$errorMessAddChannel}さんはワークスペースにいません。", 'warning' => true]);
                 }
 
                 if ($listSlackEmpty !== []) {
-                    return response()->json(['message' => "{$errorMessEmpty}SlackIDを持っていません。", 'warning' => true]);
+                    return response()->json(['message' => "{$errorMessEmpty}さんはSlackIDを持っていません。", 'warning' => true]);
                 }
 
                 if ($listUserError !== []) {
-                    return response()->json(['message' => "{$errorMessAddChannel}ワークスペースにいません。", 'warning' => true]);
+                    return response()->json(['message' => "{$errorMessAddChannel}さんはワークスペースにいません。", 'warning' => true]);
                 }
             }
         }

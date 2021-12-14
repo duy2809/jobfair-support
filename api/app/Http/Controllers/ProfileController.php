@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
+    protected $slack;
+
+    public function __construct(\App\Services\SlackService $slack)
+    {
+        $this->slack = $slack;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -90,6 +96,11 @@ class ProfileController extends Controller
         }
 
         $user = User::findOrFail($id);
+        $response = $this->slack->checkInWorkspace($user->chatwork_id);
+        $res = json_decode($response);
+        if($res->ok === false){
+            return response()->json(['message' => 'ワークスペースにユーザーが見つかりません。 スラックIDを確認してください'], 422);
+        }
         $user->update($request->all());
 
         return response()->json(['message' => 'Updated successfully'], 200);
