@@ -11,6 +11,8 @@ class Schedule extends Model
 
     public $timestamps = false;
 
+    protected $hidden = ['pivot'];
+
     protected $fillable = ['name', 'jobfair_id'];
 
     protected $guarded = [];

@@ -36,7 +36,5 @@ Route::apiResource('/category', CategoryController::class)->except(['index']);
 Route::post('/create-parent-template-tasks', 'ScheduleController@createTemplateTaskParent');
 Route::put('/update-parent-template-tasks/{template_task}/', 'ScheduleController@updateTemplateTaskParent');
 Route::delete('/detele-parent-template-tasks/{id}', 'ScheduleController@deleteTemplateTaskParent');
-Route::get('/get-child-template-tasks/{id}', 'ScheduleController@getChild');
-Route::get('/get-parent-template-tasks/{id}', 'ScheduleController@getTemplateTasksParent');
+Route::get('/get-template-tasks/{id}', 'ScheduleController@getListTemplateTasks');
 Route::post('/post-duration/{id}', 'ScheduleController@postDuration');
-Route::get('/get-list-template-tasks/{id}', 'ScheduleController@getListTemplateTasks');

@@ -62,6 +62,7 @@ class ScheduleController extends Controller
         $schedule->save();
         $schedule->milestones()->attach($request->addedMilestones);
         $schedule->templateTasks()->attach($request->addedTemplateTasks);
+        return $schedule;
     }
 
     /**
@@ -631,34 +632,24 @@ class ScheduleController extends Controller
         return response()->json('OK');
     }
 
-    public function getChild($id)
-    {
-        $children = DB::table('schedule_template_task')->where('template_task_parent_id', $id)->pluck('template_task_id');
-
-        return TemplateTask::whereIn('id', $children)->get();
-    }
-
     public function getListTemplateTasks($id)
     {
-        $schedule = Schedule::findOrFail($id);
-        $id = $schedule->templateTasks()->wherePivot('template_task_parent_id', null)->pluck('template_tasks.id');
-        $templateTasks = TemplateTask::whereIn('id', $id)->with('categories:id,category_name')->get();
-        foreach ($templateTasks as $templateTask) {
-            if ($templateTask->is_parent === 1) {
-                $templateTask['child'] = $this->getChild($templateTask->id);
+        $idTemplateTask = DB::table('schedule_template_task')->where('schedule_id', $id)->pluck('template_task_id');
+        $schedule = Schedule::with([
+            'milestones:id,name',
+            'milestones.templateTasks' => function ($templateTask) use ($idTemplateTask) {
+                $templateTask->whereIn('template_tasks.id',$idTemplateTask)->select(['id','name','milestone_id']);
+            }
+        ])->findOrFail($id,['id','name']);
+
+
+        foreach($schedule->milestones as $milestone) {
+            foreach($milestone->templateTasks as $templateTask) {
+                $taskParentId = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)->where('schedule_id', $id)->first()->template_task_parent_id;
+                $templateTask['parent'] = $taskParentId === null ? 0 : $taskParentId;
             }
         }
-
-        return response()->json($templateTasks);
-    }
-
-    public function getTemplateTasksParent($id)
-    {
-        $schedule = Schedule::findOrFail($id);
-        $id = $schedule->templateTasks()->wherePivot('template_task_parent_id', null)->pluck('template_tasks.id');
-        $templateTask = TemplateTask::whereIn('id', $id)->where('is_parent', 1)->get();
-
-        return response()->json($templateTask);
+        return $schedule->milestones;
     }
 
     public function postDuration($id, Request $request)
