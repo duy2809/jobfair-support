@@ -5,13 +5,19 @@ import {
   EditTwoTone,
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Modal, notification, Tag, Tooltip } from 'antd'
+import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+import {
+  afterTask,
+  beforeTask,
+  deleteTask,
+  taskData,
+  getRoleTask,
+} from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
@@ -19,7 +25,6 @@ import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
 import './style.scss'
 import StatusStatic from '../../components/status/static-status'
-import Status from '../../components/status/dynamic-status'
 
 const StackEditor = dynamic(
   () => import('../../components/stackeditor').then((mod) => mod.default),
@@ -49,9 +54,7 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
-    [],
-  )
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
   const [action, setAction] = useState('normal')
@@ -59,6 +62,7 @@ function TaskDetail() {
     id: null,
     name: '',
   })
+  const [jfInfo, setJfInfo] = useState({})
   const saveNotification = () => {
     notification.success({
       duration: 3,
@@ -92,7 +96,6 @@ function TaskDetail() {
     }
   }, [])
   const getChildProps2 = useCallback((childState) => {
-    console.log(childState)
     const copyState = {}
     Object.assign(copyState, childState)
     if (copyState.new_member_status !== '') {
@@ -122,6 +125,7 @@ function TaskDetail() {
         if (response.status === 200) {
           const data = response.data
           const categoryName = []
+          setJfInfo(data.schedule.jobfair)
           response.data.categories.forEach((element) => {
             categoryName.push(element.category_name)
           })
@@ -268,7 +272,9 @@ function TaskDetail() {
                       <p className="font-bold text-right">カテゴリ</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <div className="item__right">{infoTask.categories ? infoTask.categories.join(', ') : null}</div>
+                      <div className="item__right">
+                        {infoTask.categories ? infoTask.categories.join(', ') : null}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -292,16 +298,12 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -313,24 +315,29 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
-                        ) : (
-                          <li className="task__chil">None</li>
-                        )}
-                      </ul>
+                {/* {listMemberAssignee.length == 1? (<></>):
+                } */}
+                {newAsigneesFromNewComment.length + listMemberAssignee.length !== 1
+                && (
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.length !== 0 ? (
+                            <li>
+                              {reviewersList.map((item) => item.name).join(', ')}
+                            </li>
+                          ) : (
+                            <li className="task__chil">None</li>
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -364,37 +371,26 @@ function TaskDetail() {
               </div>
 
               <div className="grid grid-cols-2 mx-4 mt-5">
-                <div className="col-span-1 mx-5 grid grid-cols-8 items-center">
+                <div className="col-span-1 mx-5 grid grid-cols-8">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">前のタスク</p>
                   </div>
                   {beforeTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5 task_list">
                         {beforeTasks
                           ? beforeTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/task-detail/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
                           ))
                           : null}
@@ -404,39 +400,29 @@ function TaskDetail() {
                     <ul className="list__task col-span-6" />
                   )}
                 </div>
-                <div className="col-span-1 mx-8 grid grid-cols-8 items-center">
+                <div className="col-span-1 mx-8 grid grid-cols-8">
                   <div className="layber col-span-2 mx-4">
                     <p className="font-bold text-right">次のタスク</p>
                   </div>
                   {afterTasks?.length > 0 ? (
                     <>
-                      <ul
-                        className="list__task col-span-5"
-                        style={{ border: '1px solid #d9d9d9' }}
-                      >
+                      <ul className="ml-5 task_list">
                         {afterTasks
-                          && afterTasks.map((item) => (
-                            <li>
-                              <Tag
-                                style={{
-                                  marginRight: 3,
-                                  paddingTop: '5px',
-                                  paddingBottom: '3px',
-                                }}
-                              >
-                                <Tooltip placement="top" title={item.name}>
-                                  <a
-                                    href={`/task-detail/${item.id}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="inline-block text-blue-600 whitespace-nowrap "
-                                  >
-                                    {truncate(item.name)}
-                                  </a>
-                                </Tooltip>
-                              </Tag>
+                          ? afterTasks.map((item) => (
+                            <li className="mb-3">
+                              <Tooltip placement="top" title={item.name}>
+                                <a
+                                  href={`/task-detail/${item.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-block text-blue-600 whitespace-nowrap "
+                                >
+                                  {truncate(item.name)}
+                                </a>
+                              </Tooltip>
                             </li>
-                          ))}
+                          ))
+                          : null}
                       </ul>
                     </>
                   ) : (
@@ -451,19 +437,23 @@ function TaskDetail() {
                       <p className="font-bold text-right">担当者</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <ul>
+                      <table>
                         {newAsigneesFromNewComment.length > 0
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return (
                                 <>
-                                  <li key={id} className="task__chil">
-                                    {`${item}`}
-                                    {' '}
-&nbsp;
-                                    <Status status="未着手" />
-                                  </li>
+                                  <tr key={id} className="task__chil">
+                                    <td>{`${item}`}</td>
+                                    {newAsigneesFromNewComment.length === 1 ? (
+                                      <td />
+                                    ) : (
+                                      <td>
+                                        <StatusStatic status="未着手" />
+                                      </td>
+                                    )}
+                                  </tr>
                                   <br />
                                 </>
                               )
@@ -471,8 +461,8 @@ function TaskDetail() {
                           : listMemberAssignee
                             && listMemberAssignee.map((item) => (
                               <>
-                                <li key={item.id} className="task__chil">
-                                  {`${item.name}`}
+                                <tr key={item.id} className="task__chil">
+                                  <td>{`${item.name}`}</td>
                                   {/* {roleTask ===
                                     `taskMember${item.pivot.user_id}` ||
                                   roleTask === "jfadmin" ||
@@ -489,32 +479,46 @@ function TaskDetail() {
                                       status={`${item.pivot.status}`}
                                     />
                                   )} */}
-                                  {action === 'changeTaskStatus' ? (
-                                    <>
-                                      {tempStatus === `${item.pivot.status}` ? (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
-                                      ) : (
-                                        <StatusStatic status={tempStatus} />
-                                      )}
-                                    </>
+                                  {listMemberAssignee.length === 1 ? (
+                                    <td />
                                   ) : (
                                     <>
-                                      {action !== 'normal' && item.id === idUser ? (
-                                        <StatusStatic status={tempStatus} />
-                                      ) : (
-                                        <StatusStatic
-                                          status={`${item.pivot.status}`}
-                                        />
-                                      )}
+                                      <td>
+                                        {action === 'changeTaskStatus' ? (
+                                          <>
+                                            {tempStatus
+                                            === `${item.pivot.status}` ? (
+                                                <StatusStatic
+                                                  status={`${item.pivot.status}`}
+                                                />
+                                              ) : (
+                                                <StatusStatic
+                                                  status={tempStatus}
+                                                />
+                                              )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            {action !== 'normal'
+                                            && item.id === idUser ? (
+                                                <StatusStatic
+                                                  status={tempStatus}
+                                                />
+                                              ) : (
+                                                <StatusStatic
+                                                  status={`${item.pivot.status}`}
+                                                />
+                                              )}
+                                          </>
+                                        )}
+                                      </td>
                                     </>
                                   )}
-                                </li>
+                                </tr>
                                 <br />
                               </>
                             ))}
-                      </ul>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -522,15 +526,13 @@ function TaskDetail() {
               <div className=" mx-12 mt-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">
-                  <StackEditor
-                    value={infoTask.description_of_detail}
-                    taskId={idTask}
-                  />
+                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                 </div>
               </div>
             </div>
             <Comment
               id={idTask}
+              jfInfo={jfInfo}
               statusProp={infoTask.status}
               assigneeProp={assigneeNames}
               category={infoTask.categories}

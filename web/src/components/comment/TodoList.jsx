@@ -11,7 +11,7 @@ function TodoList(props) {
       editorState.getCurrentContent(),
       editorState.getSelection(),
       data,
-      editorState.getCurrentInlineStyle()
+      editorState.getCurrentInlineStyle(),
     )
     onChange(EditorState.push(editorState, contentState, 'insert-characters'))
     // const htmlToDraft = await import('html-to-draftjs').then((module) => module.default)

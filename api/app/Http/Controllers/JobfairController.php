@@ -284,4 +284,19 @@ class JobfairController extends Controller
 
         abort(403, 'Permission denied');
     }
+
+    public function ganttChart($id)
+    {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        $jobfair = Jobfair::findOrFail($id);
+        $tasks = $jobfair->schedule->tasks()->with(['beforeTasks', 'afterTasks'])->get();
+
+        return response()->json($tasks);
+    }
 }

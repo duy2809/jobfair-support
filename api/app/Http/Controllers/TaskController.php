@@ -431,6 +431,8 @@ class TaskController extends Controller
             }
         }
 
+        // handle input reviewers
+        $listReviewers = [];
         if ($request->has('reviewers')) {
             if ($request->input('reviewers') === [] || $request->input('reviewers') === [null]) {
                 $listOldReviewers = $task->reviewers;
@@ -447,236 +449,26 @@ class TaskController extends Controller
                     $editedField['old_reviewers'] = implode(',', $listOldReviewers->pluck('name')->toArray());
                     $editedField['new_reviewers'] = '';
                 }
-
-                if ($request->has('admin')) {
-                    $listMember = $request->admin;
-                    $listOldMember = $task->users->pluck('id')->toArray();
+            } else {
+                $checkKey = 1;
+                // check is each reviewers valid
+                foreach ($request->input('reviewers') as $key => $reviewer) {
+                    $user = User::find($reviewer);
+                    $categories = array_column($user->categories->toArray(), 'category_name');
                     if (
-                        !(
-                            is_array($listMember)
-                            && is_array($listOldMember)
-                            && count($listMember) === count($listOldMember)
-                            && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
-                        )
+                        (in_array('レビュアー', $categories) && in_array($task->categories()->first()->category_name, $categories))
+                        || $reviewer === $ad
                     ) {
-                        // comment history
-                        $editedField['old_assignees'] = implode(',', $listOldMember);
-                        $editedField['new_assignees'] = implode(',', $listMember);
-
-                        // notification for new assignees
-                        $newAssignees = array_diff($listMember, $listOldMember);
-                        $listId = [];
-                        foreach ($newAssignees as $newAssignee) {
-                            $listId[] = $newAssignee;
-                        }
-
-                        Notification::send(
-                            User::whereIn('id', $listId)->get(),
-                            new TaskCreated($task, auth()->user())
-                        );
+                        continue;
                     }
+
+                    $checkKey = 0;
+
+                    break;
                 }
 
-                $task->update($request->all());
-                if (empty($request->beforeTasks)) {
-                    $editedField['old_previous_tasks'] = '';
-                    $editedField['new_previous_tasks'] = '';
-                    $task->beforeTasks()->sync([]);
-                } else if (!empty($request->beforeTasks)) {
-                    $oldBeforeTasks = $task->beforeTasks;
-                    $newBeforeTasks = $request->beforeTasks;
-                    $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
-
-                    if (
-                        !(
-                            is_array($newBeforeTasks)
-                            && is_array($oldBeforeTasksID)
-                            && count($newBeforeTasks) === count($oldBeforeTasksID)
-                            && array_diff($newBeforeTasks, $oldBeforeTasksID) === array_diff($oldBeforeTasksID, $newBeforeTasks)
-                        )
-                    ) {
-                        // store list assignees as string with format "id1, id2, id3, ..."
-                        $editedField['old_previous_tasks'] = implode(',', $oldBeforeTasks->pluck('name')->toArray());
-                        $editedField['new_previous_tasks'] = implode(',', Task::whereIn('id', $newBeforeTasks)->pluck('name')->toArray());
-                        $task->beforeTasks()->sync($request->beforeTasks);
-                    }
-                }
-
-                if (empty($request->afterTasks)) {
-                    $editedField['old_following_tasks'] = '';
-                    $editedField['new_following_tasks'] = '';
-                    $task->afterTasks()->sync([]);
-                } else if (!empty($request->afterTasks)) {
-                    $oldAfterTasks = $task->afterTasks;
-                    $newAfterTasks = $request->afterTasks;
-                    $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
-                    if (
-                        !(
-                            is_array($newAfterTasks)
-                            && is_array($oldAfterTasksID)
-                            && count($newAfterTasks) === count($oldAfterTasksID)
-                            && array_diff($newAfterTasks, $oldAfterTasksID) === array_diff($oldAfterTasksID, $newAfterTasks)
-                        )
-                    ) {
-                        // store list assignees as string with format "id1, id2, id3, ..."
-                        $editedField['old_following_tasks'] = implode(',', $oldAfterTasks->pluck('name')->toArray());
-                        $editedField['new_following_tasks'] = implode(',', Task::whereIn('id', $newAfterTasks)->pluck('name')->toArray());
-                        $task->afterTasks()->sync($request->afterTasks);
-                    }
-                }
-
-                // notification edited
-                $editedUser = auth()->user();
-                $jobfairAdmin = $task->schedule->jobfair->user;
-                Notification::send(
-                    $task->users()
-                        ->where('users.id', '<>', $editedUser->id)->get(),
-                    new TaskEdited($editedUser, $task)
-                );
-                Notification::send(
-                    $task->reviewers()
-                        ->where('users.id', '<>', $editedUser->id)->get(),
-                    new TaskEdited($editedUser, $task)
-                );
-                if ($editedUser->id !== $jobfairAdmin->id) {
-                    $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
-                }
-
-                if (!empty($request->admin)) {
-                    $task->users()->syncWithPivotValues($request->admin, [
-                        'join_date' => Carbon::now()->toDateTimeString(),
-                    ]);
-                }
-
-                //save comment history
-                if (count($editedField) > 0) {
-                    $editedField['user_id'] = auth()->user()->id;
-                    $editedField['task_id'] = $id;
-                    $comment = Comment::create($editedField);
-                    \App\Events\Broadcasting\CommentCreated::dispatch($comment);
-                }
-
-                $task->reviewers()->sync([]);
-                $task->save();
-
-                return response()->json(['message' => 'Edit Successfully'], 200);
-            }
-
-            $checkKey = 1;
-            foreach ($request->input('reviewers') as $key => $reviewer) {
-                $user = User::find($reviewer);
-                $categories = array_column($user->categories->toArray(), 'category_name');
-                if (
-                    (in_array('レビュアー', $categories) && in_array($task->categories()->first()->category_name, $categories))
-                    || $reviewer === $ad
-                ) {
-                    continue;
-                }
-
-                $checkKey = 0;
-
-                break;
-            }
-
-            if ($checkKey === 1) {
-                if ($request->has('admin')) {
-                    $listMember = $request->admin;
-                    $listOldMember = $task->users->pluck('id')->toArray();
-                    if (
-                        !(
-                            is_array($listMember)
-                            && is_array($listOldMember)
-                            && count($listMember) === count($listOldMember)
-                            && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
-                        )
-                    ) {
-                        //comment history
-                        $editedField['old_assignees'] = implode(',', $listOldMember);
-                        $editedField['new_assignees'] = implode(',', $listMember);
-
-                        // notification for new assignees
-                        $newAssignees = array_diff($listMember, $listOldMember);
-                        $listId = [];
-                        foreach ($newAssignees as $newAssignee) {
-                            $listId[] = $newAssignee;
-                        }
-
-                        Notification::send(
-                            User::whereIn('id', $listId)->get(),
-                            new TaskCreated($task, auth()->user())
-                        );
-                    }
-                }
-
-                $task->update($request->all());
-                if (empty($request->beforeTasks)) {
-                    $editedField['old_previous_tasks'] = '';
-                    $editedField['new_previous_tasks'] = '';
-                    $task->beforeTasks()->sync([]);
-                } else if (!empty($request->beforeTasks)) {
-                    $oldBeforeTasks = $task->beforeTasks;
-                    $newBeforeTasks = $request->beforeTasks;
-                    $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
-
-                    if (
-                        !(
-                            is_array($newBeforeTasks)
-                            && is_array($oldBeforeTasksID)
-                            && count($newBeforeTasks) === count($oldBeforeTasksID)
-                            && array_diff($newBeforeTasks, $oldBeforeTasksID) === array_diff($oldBeforeTasksID, $newBeforeTasks)
-                        )
-                    ) {
-                        // store list assignees as string with format "id1, id2, id3, ..."
-                        $editedField['old_previous_tasks'] = implode(',', $oldBeforeTasks->pluck('name')->toArray());
-                        $editedField['new_previous_tasks'] = implode(',', Task::whereIn('id', $newBeforeTasks)->pluck('name')->toArray());
-                        $task->beforeTasks()->sync($request->beforeTasks);
-                    }
-                }
-
-                if (empty($request->afterTasks)) {
-                    $editedField['old_following_tasks'] = '';
-                    $editedField['new_following_tasks'] = '';
-                    $task->afterTasks()->sync([]);
-                } else if (!empty($request->afterTasks)) {
-                    $oldAfterTasks = $task->afterTasks;
-                    $newAfterTasks = $request->afterTasks;
-                    $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
-                    if (
-                        !(
-                            is_array($newAfterTasks)
-                            && is_array($oldAfterTasksID)
-                            && count($newAfterTasks) === count($oldAfterTasksID)
-                            && array_diff($newAfterTasks, $oldAfterTasksID) === array_diff($oldAfterTasksID, $newAfterTasks)
-                        )
-                    ) {
-                        // store list assignees as string with format "id1, id2, id3, ..."
-                        $editedField['old_following_tasks'] = implode(',', $oldAfterTasks->pluck('name')->toArray());
-                        $editedField['new_following_tasks'] = implode(',', Task::whereIn('id', $newAfterTasks)->pluck('name')->toArray());
-                        $task->afterTasks()->sync($request->afterTasks);
-                    }
-                }
-
-                // notification edited
-                $editedUser = auth()->user();
-                $jobfairAdmin = $task->schedule->jobfair->user;
-                Notification::send(
-                    $task->users()
-                        ->where('users.id', '<>', $editedUser->id)->get(),
-                    new TaskEdited($editedUser, $task)
-                );
-                Notification::send(
-                    $task->reviewers()
-                        ->where('users.id', '<>', $editedUser->id)->get(),
-                    new TaskEdited($editedUser, $task)
-                );
-                if ($editedUser->id !== $jobfairAdmin->id) {
-                    $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
-                }
-
-                if (!empty($request->admin)) {
-                    $task->users()->syncWithPivotValues($request->admin, [
-                        'join_date' => Carbon::now()->toDateTimeString(),
-                    ]);
+                if ($checkKey !== 1) {
+                    return response()->json(['message' => 'list reviewers invalid'], 400);
                 }
 
                 $listOldReviewers = $task->reviewers;
@@ -694,134 +486,121 @@ class TaskController extends Controller
                     $editedField['new_reviewers'] = implode(',', User::whereIn('id', $listNewReviewers)->pluck('name')->toArray());
                 }
 
-                //save comment history
-                if (count($editedField) > 0) {
-                    $editedField['user_id'] = auth()->user()->id;
-                    $editedField['task_id'] = $id;
-                    $comment = Comment::create($editedField);
-                    \App\Events\Broadcasting\CommentCreated::dispatch($comment);
-                }
-
-                $task->reviewers()->sync($request->input('reviewers'));
-                $task->save();
-
-                return response()->json(['message' => 'Edit Successfully'], 200);
+                $listReviewers = $request->input('reviewers');
             }
-
-            return response()->json(['message' => 'list reviewers invalid'], 400);
         } else {
-            if ($request->has('admin')) {
-                $listMember = $request->admin;
-                $listOldMember = $task->users->pluck('id')->toArray();
-                if (
-                    !(
-                        is_array($listMember)
-                        && is_array($listOldMember)
-                        && count($listMember) === count($listOldMember)
-                        && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
-                    )
-                ) {
-                    //comment history
-                    $editedField['old_assignees'] = implode(',', $listOldMember);
-                    $editedField['new_assignees'] = implode(',', $listMember);
-
-                    // notification for new assignees
-                    $newAssignees = array_diff($listMember, $listOldMember);
-                    $listId = [];
-                    foreach ($newAssignees as $newAssignee) {
-                        $listId[] = $newAssignee;
-                    }
-
-                    Notification::send(
-                        User::whereIn('id', $listId)->get(),
-                        new TaskCreated($task, auth()->user())
-                    );
-                }
-            }
-
-            $task->update($request->all());
-            if (empty($request->beforeTasks)) {
-                $editedField['old_previous_tasks'] = '';
-                $editedField['new_previous_tasks'] = '';
-                $task->beforeTasks()->sync([]);
-            } else if (!empty($request->beforeTasks)) {
-                $oldBeforeTasks = $task->beforeTasks;
-                $newBeforeTasks = $request->beforeTasks;
-                $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
-
-                if (
-                    !(
-                        is_array($newBeforeTasks)
-                        && is_array($oldBeforeTasksID)
-                        && count($newBeforeTasks) === count($oldBeforeTasksID)
-                        && array_diff($newBeforeTasks, $oldBeforeTasksID) === array_diff($oldBeforeTasksID, $newBeforeTasks)
-                    )
-                ) {
-                    // store list assignees as string with format "id1, id2, id3, ..."
-                    $editedField['old_previous_tasks'] = implode(',', $oldBeforeTasks->pluck('name')->toArray());
-                    $editedField['new_previous_tasks'] = implode(',', Task::whereIn('id', $newBeforeTasks)->pluck('name')->toArray());
-                    $task->beforeTasks()->sync($request->beforeTasks);
-                }
-            }
-
-            if (empty($request->afterTasks)) {
-                $editedField['old_following_tasks'] = '';
-                $editedField['new_following_tasks'] = '';
-                $task->afterTasks()->sync([]);
-            } else if (!empty($request->afterTasks)) {
-                $oldAfterTasks = $task->afterTasks;
-                $newAfterTasks = $request->afterTasks;
-                $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
-                if (
-                    !(
-                        is_array($newAfterTasks)
-                        && is_array($oldAfterTasksID)
-                        && count($newAfterTasks) === count($oldAfterTasksID)
-                        && array_diff($newAfterTasks, $oldAfterTasksID) === array_diff($oldAfterTasksID, $newAfterTasks)
-                    )
-                ) {
-                    // store list assignees as string with format "id1, id2, id3, ..."
-                    $editedField['old_following_tasks'] = implode(',', $oldAfterTasks->pluck('name')->toArray());
-                    $editedField['new_following_tasks'] = implode(',', Task::whereIn('id', $newAfterTasks)->toArray());
-                    $task->afterTasks()->sync($request->afterTasks);
-                }
-            }
-
-            //save comment history
-            if (count($editedField) > 0) {
-                $editedField['user_id'] = auth()->user()->id;
-                $editedField['task_id'] = $id;
-                $comment = Comment::create($editedField);
-                \App\Events\Broadcasting\CommentCreated::dispatch($comment);
-            }
-
-            // notification edited
-            $editedUser = auth()->user();
-            $jobfairAdmin = $task->schedule->jobfair->user;
-            Notification::send(
-                $task->users()
-                    ->where('users.id', '<>', $editedUser->id)->get(),
-                new TaskEdited($editedUser, $task)
-            );
-            Notification::send(
-                $task->reviewers()
-                    ->where('users.id', '<>', $editedUser->id)->get(),
-                new TaskEdited($editedUser, $task)
-            );
-            if ($editedUser->id !== $jobfairAdmin->id) {
-                $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
-            }
-
-            if (!empty($request->admin)) {
-                $task->users()->syncWithPivotValues($request->admin, [
-                    'join_date' => Carbon::now()->toDateTimeString(),
-                ]);
-            }
-
-            return response()->json(['message' => 'Edit Successfully'], 200);
+            $listReviewers = 'none';
         }
 
-        return response()->json(['message' => 'Error'], 400);
+        // update reviewers
+        if ($listReviewers !== 'none') {
+            $task->reviewers()->sync($listReviewers);
+        }
+
+        if ($request->has('admin')) {
+            $listMember = $request->admin;
+            $listOldMember = $task->users->pluck('id')->toArray();
+            if (
+                !(
+                    is_array($listMember)
+                    && is_array($listOldMember)
+                    && count($listMember) === count($listOldMember)
+                    && array_diff($listMember, $listOldMember) === array_diff($listOldMember, $listMember)
+                )
+            ) {
+                // comment history
+                $editedField['old_assignees'] = implode(',', $listOldMember);
+                $editedField['new_assignees'] = implode(',', $listMember);
+
+                // notification for new assignees
+                $newAssignees = array_diff($listMember, $listOldMember);
+                $listId = [];
+                foreach ($newAssignees as $newAssignee) {
+                    $listId[] = $newAssignee;
+                }
+
+                Notification::send(
+                    User::whereIn('id', $listId)->get(),
+                    new TaskCreated($task, auth()->user())
+                );
+            }
+        }
+
+        // comment history and update before after tasks
+        $task->update($request->all());
+        if (!empty($request->beforeTasks)) {
+            $oldBeforeTasks = $task->beforeTasks;
+            $newBeforeTasks = $request->beforeTasks;
+            $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
+
+            if (
+                !(
+                    is_array($newBeforeTasks)
+                    && is_array($oldBeforeTasksID)
+                    && count($newBeforeTasks) === count($oldBeforeTasksID)
+                    && array_diff($newBeforeTasks, $oldBeforeTasksID) === array_diff($oldBeforeTasksID, $newBeforeTasks)
+                )
+            ) {
+                // store list assignees as string with format "id1, id2, id3, ..."
+                $editedField['old_previous_tasks'] = implode(',', $oldBeforeTasks->pluck('name')->toArray());
+                $editedField['new_previous_tasks'] = implode(',', Task::whereIn('id', $newBeforeTasks)->pluck('name')->toArray());
+                $task->beforeTasks()->sync($request->beforeTasks);
+            }
+        }
+
+        if (empty($request->afterTasks)) {
+            $oldAfterTasks = $task->afterTasks;
+            $newAfterTasks = $request->afterTasks;
+            $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
+            if (
+                !(
+                    is_array($newAfterTasks)
+                    && is_array($oldAfterTasksID)
+                    && count($newAfterTasks) === count($oldAfterTasksID)
+                    && array_diff($newAfterTasks, $oldAfterTasksID) === array_diff($oldAfterTasksID, $newAfterTasks)
+                )
+            ) {
+                // store list assignees as string with format "id1, id2, id3, ..."
+                $editedField['old_following_tasks'] = implode(',', $oldAfterTasks->pluck('name')->toArray());
+                $editedField['new_following_tasks'] = implode(',', Task::whereIn('id', $newAfterTasks)->pluck('name')->toArray());
+                $task->afterTasks()->sync($request->afterTasks);
+            }
+        }
+
+        // notification edited
+        $editedUser = auth()->user();
+        $jobfairAdmin = $task->schedule->jobfair->user;
+        Notification::send(
+            $task->users()
+                ->where('users.id', '<>', $editedUser->id)->get(),
+            new TaskEdited($editedUser, $task)
+        );
+        Notification::send(
+            $task->reviewers()
+                ->where('users.id', '<>', $editedUser->id)->get(),
+            new TaskEdited($editedUser, $task)
+        );
+        if ($editedUser->id !== $jobfairAdmin->id) {
+            $jobfairAdmin->notify(new TaskEdited($editedUser, $task));
+        }
+
+        if (!empty($request->admin)) {
+            $task->users()->syncWithPivotValues($request->admin, [
+                'join_date' => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        //save comment history
+        if (count($editedField) > 0) {
+            $editedField['user_id'] = auth()->user()->id;
+            $editedField['task_id'] = $id;
+            $comment = Comment::create($editedField);
+            \App\Events\Broadcasting\CommentCreated::dispatch($comment);
+        }
+
+        $task->save();
+
+        return response()->json(['message' => 'Edit Successfully'], 200);
     }
 
     /**

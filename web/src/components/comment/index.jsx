@@ -21,6 +21,7 @@ function index({
   parentCallback1,
   parentCallback2,
   roleTask,
+  jfInfo,
 }) {
   const [visible, setVisible] = useState(false)
   const [previewing, setPreviewing] = useState(false)
@@ -58,6 +59,7 @@ function index({
       return error
     }
   }
+
   const clearForm = () => {
     form.resetFields()
     setEditing(false)
@@ -124,11 +126,6 @@ function index({
   }
   const [listStatus, setListStatus] = useState([])
   useEffect(() => {
-    // new CommentChannel()
-    //   .onOutput((data) => {
-    //     console.log('log' + data)
-    //   })
-    //   .listen()
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else if (roleTask === 'reviewer') {
@@ -191,9 +188,9 @@ function index({
         status,
         memberStatus,
       }
-
       if (
-        !(comment.body !== '<p></p>' || comment.assignee || comment.status || comment.memberStatus)
+        !(comment.body || comment.assignee || comment.status || comment.memberStatus)
+        || !(comment.body !== '<p></p>' || comment.assignee || comment.status || comment.memberStatus)
       ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -204,6 +201,7 @@ function index({
       }
       const response = await addComment(comment)
       const newComment = response.data
+      console.log(newComment)
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
@@ -363,7 +361,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={id} value={value} onChange={typing} />
+                    <MyEditor jfID={jfInfo.id} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">
@@ -394,6 +392,7 @@ function index({
                           defaultValue=""
                           className="addJF-selector"
                           placeholder="ステータス"
+                          disabled={roleTask === 'member'}
                         >
                           {listStatus.map((element) => (
                             <Select.Option disabled={editing} value={element}>
