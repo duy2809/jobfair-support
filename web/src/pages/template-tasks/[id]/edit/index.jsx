@@ -104,7 +104,7 @@ const EditTemplateTaskPage = () => {
           milestone: res.data.milestone.name,
           description: res.data.description_of_detail,
           effort: res.data.effort,
-          unit,
+          unit: res.data.unit,
           is_day: isDayData[res.data.is_day].name,
         })
       })

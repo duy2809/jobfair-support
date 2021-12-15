@@ -1,13 +1,14 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
+import axios from 'axios'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { editTask, listReviewersSelectTag, reviewers } from '../../api/edit-task'
 import { jftask } from '../../api/jf-toppage'
 import { afterTask, beforeTask, getUserByCategory, taskData } from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
+import Editor from '../../components/comment/Editor'
 import Loading from '../../components/loading'
 import JfLayout from '../../layouts/layout-task'
 import * as Extensions from '../../utils/extensions'
@@ -15,7 +16,6 @@ import './style.scss'
 
 function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
-  const { TextArea } = Input
   const router = useRouter()
   const idTask = router.query.id
   const [form] = Form.useForm()
@@ -32,6 +32,7 @@ function EditTask() {
     name: '',
     role: '',
   })
+  const [jfID, setJfID] = useState('')
   const [infoTask, setInfoTask] = useState({
     name: '',
     categories: '',
@@ -44,11 +45,13 @@ function EditTask() {
     unit: '',
     description_of_detail: '',
   })
+  const [reRender, setReRender] = useState(false)
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
   const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const [countUserAs, setCountUserAs] = useState(null)
+  const [description, setDescription] = useState(undefined)
   const fetchTaskData = async () => {
     await reviewers(idTask)
       .then((response) => {
@@ -97,8 +100,9 @@ function EditTask() {
             effort: data.template_task.effort,
             is_day: data.template_task.is_day,
             unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
+            description_of_detail: data.description_of_detail || '',
           })
+          setJfID(response.data.schedule.jobfair.id)
           setIdJF(data.schedule.jobfair.id)
           // eslint-disable-next-line no-use-before-define
           fetchListTask()
@@ -306,10 +310,10 @@ function EditTask() {
       message: 'Method not allowed',
     })
   }
-  const openNotification = (type, message, description) => {
+  const openNotification = (type, message, descrip) => {
     notification[type]({
       message,
-      description,
+      descrip,
       duration: 2.5,
     })
   }
@@ -351,7 +355,7 @@ function EditTask() {
         }
         const data = {
           name: values.name,
-          description_of_detail: values.detail,
+          description_of_detail: infoTask.description_of_detail.replace(/\\s/g, '').trim(),
           beforeTasks: beforeID,
           afterTasks: afterIDs,
           start_time: values.start_time.format(Extensions.dateFormat),
@@ -361,6 +365,10 @@ function EditTask() {
           status: values.status,
           reviewers: values.reviewers[0] === 'なし' ? [] : reviewersSelected,
         }
+        if (data.description_of_detail === '') {
+          data.description_of_detail = ' '
+        }
+
         if (countUserAs.length > 1 && values.reviewers[0] === 'なし') {
           openNotification('error', '複数の担当者を選択する場合にはレビュアーを選択してください')
         } else {
@@ -490,13 +498,30 @@ function EditTask() {
     fetchBeforeTask()
     fetchafterTask()
     getDataUser()
+  }, [])
+  useEffect(() => {
     if (idJF) {
       fetchListTask()
+      fetchListMember()
     }
-    fetchListMember()
+
     setLoading(false)
   }, [idJF])
+  useEffect(() => {
+    setDescription(infoTask.description_of_detail)
+  }, [infoTask])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReRender(true)
+    }, 800)
+    return () => clearTimeout(timer)
+  }, [infoTask.description_of_detail])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
+  const onTyping = (value) => {
+    if (value !== '') {
+      setInfoTask({ ...infoTask, description_of_detail: value })
+    }
+  }
   // ant-select-selector
   return (
     <div>
@@ -776,15 +801,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-2 mx-2 mb-2">
-                  <Form.Item name="detail">
-                    <TextArea
-                      onChange={() => {
-                        setIsEdit(true)
-                      }}
-                      rows={10}
-                      placeholder="何かを入力してください"
-                    />
-                  </Form.Item>
+                  {reRender && <Editor jfID={jfID} value={description} onChange={onTyping} />}
                 </div>
               </div>
               <div className="flex justify-end mr-2">
