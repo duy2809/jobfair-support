@@ -191,7 +191,7 @@ function index(props) {
         handlePastedText={() => false}
         toolbarCustomButtons={[
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
-          <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
+          // <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
           <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
         ]}
       />
