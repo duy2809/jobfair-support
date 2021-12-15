@@ -59,7 +59,7 @@ function TaskDetail() {
   )
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
-  const [action, setAction] = useState('normal')
+  const [action, setAction] = useState('none')
   const [memberChangeStatus, setMemberChangeStatus] = useState('')
   const [infoJF, setInfoJF] = useState({
     id: null,
@@ -91,6 +91,7 @@ function TaskDetail() {
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
+      setAction('none')
     }
     if (copyState.new_status !== '') {
       setTaskStatus(copyState.new_status)
@@ -447,7 +448,7 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <table>
-                        {newAsigneesFromNewComment.length > 0
+                        {newAsigneesFromNewComment.length > 0 && action === 'none'
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
