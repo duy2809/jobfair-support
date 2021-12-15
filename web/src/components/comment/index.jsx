@@ -1,8 +1,4 @@
-import {
-  CheckCircleTwoTone,
-  EditOutlined,
-  ExclamationCircleTwoTone,
-} from '@ant-design/icons'
+import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
 import {
   Button,
   Divider,
@@ -17,13 +13,7 @@ import {
   Col,
 } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
-import React, {
-  memo,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { addComment, getComments, updateComment } from '../../api/comment'
@@ -166,11 +156,14 @@ function index({
     }
     fetchListMember()
     fetchTaskData()
+  }, [category, roleTask])
+
+  useEffect(() => {
     getMoreComments(0, INIT_COMMENTS_NUM)
     return () => {
       store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
     }
-  }, [category, roleTask])
+  }, [])
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
@@ -220,20 +213,10 @@ function index({
         memberStatus,
       }
       if (
-        !(
-          comment.body
-          || comment.assignee
-          || comment.status
-          || comment.memberStatus
-          || comment.member
-        )
-        || !(
-          comment.body !== '<p></p>'
-          || comment.assignee
-          || comment.status
-          || comment.memberStatus
-          || comment.member
-        )
+        (comment.body === '' || comment.body === '<p></p>')
+        && comment.assignee === undefined
+        && comment.status === undefined
+        && comment.memberStatus === undefined
       ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -242,16 +225,14 @@ function index({
           onClick: () => {},
         })
       }
+
       const response = await addComment(comment)
       const newComment = response.data
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
             if (newComment.new_status) {
-              if (
-                newComment.new_status === '未着手'
-                || newComment.new_status === '進行中'
-              ) {
+              if (newComment.new_status === '未着手' || newComment.new_status === '進行中') {
                 setChangeStatus(true)
               } else {
                 setChangeStatus(false)
@@ -365,9 +346,7 @@ function index({
     <div className="comment my-10 px-10 ">
       <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
       <div className="flex justify-center items-center ">
-        <Button
-          onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
-        >
+        <Button onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}>
           コメントをもっと見る
         </Button>
       </div>
@@ -375,27 +354,15 @@ function index({
       {/* list comments history  */}
       <div className="comment-history">
         {commentArray.map((comment) => (
-          <Comment
-            key={comment.id}
-            comment={comment}
-            parentCallBack={callBack}
-          />
+          <Comment key={comment.id} comment={comment} parentCallBack={callBack} />
         ))}
       </div>
 
       <div className="mt-5 box-comment">
         {show && (
           <div className="flex justify-between items-center">
-            <Input
-              className="w-3/4"
-              onClick={showBox}
-              placeholder="コメントを入力してください"
-            />
-            <div
-              className="btn w-1/4 text-center"
-              onClick={showBox}
-              style={{ cursor: 'pointer' }}
-            >
+            <Input className="w-3/4" onClick={showBox} placeholder="コメントを入力してください" />
+            <div className="btn w-1/4 text-center" onClick={showBox} style={{ cursor: 'pointer' }}>
               <EditOutlined className="ml-3 " />
               <span>ステータス変更</span>
             </div>
@@ -440,12 +407,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor
-                      jfID={id}
-                      jfInfo={jfInfo}
-                      value={value}
-                      onChange={typing}
-                    />
+                    <MyEditor jfID={jfInfo.id} jfInfo={jfInfo} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">
@@ -454,9 +416,7 @@ function index({
                     {listMemberAssign.length === 1 ? (
                       <>
                         <Form.Item
-                          label={
-                            <p className="font-bold">タスクのステータス</p>
-                          }
+                          label={<p className="font-bold">タスクのステータス</p>}
                           name="status"
                         >
                           <Select
@@ -478,9 +438,7 @@ function index({
                       <>
                         {roleTask === `taskMember${idUser}` ? (
                           <Form.Item
-                            label={
-                              <p className="font-bold">あなたのステータス</p>
-                            }
+                            label={<p className="font-bold">あなたのステータス</p>}
                             name="memberStatus"
                           >
                             <Select
@@ -491,10 +449,7 @@ function index({
                               allowClear="true"
                             >
                               {listStatus.map((element) => (
-                                <Select.Option
-                                  disabled={editing}
-                                  value={element}
-                                >
+                                <Select.Option disabled={editing} value={element}>
                                   {element}
                                 </Select.Option>
                               ))}
@@ -503,9 +458,7 @@ function index({
                         ) : (
                           <>
                             <Form.Item
-                              label={
-                                <p className="font-bold">タスクのステータス</p>
-                              }
+                              label={<p className="font-bold">タスクのステータス</p>}
                               name="status"
                             >
                               <Select
@@ -516,22 +469,13 @@ function index({
                                 allowClear="true"
                               >
                                 {listStatus.map((element) => (
-                                  <Select.Option
-                                    disabled={editing}
-                                    value={element}
-                                  >
+                                  <Select.Option disabled={editing} value={element}>
                                     {element}
                                   </Select.Option>
                                 ))}
                               </Select>
                             </Form.Item>
-                            <Form.Item
-                              label={(
-                                <p className="font-bold">
-                                  メンバーのステータス
-                                </p>
-                              )}
-                            >
+                            <Form.Item label={<p className="font-bold">メンバーのステータス</p>}>
                               <Row gutter={8}>
                                 <Col span={12}>
                                   <Form.Item name="member">
@@ -539,9 +483,7 @@ function index({
                                       size="large"
                                       className="addJF-selector"
                                       placeholder="担当者"
-                                      disabled={
-                                        roleTask === 'member' || !changeStatus
-                                      }
+                                      disabled={roleTask === 'member' || !changeStatus}
                                       allowClear="true"
                                     >
                                       {listMemberAssignee.map((element) => (
@@ -562,16 +504,11 @@ function index({
                                       size="large"
                                       className="addJF-selector"
                                       placeholder="ステータス"
-                                      disabled={
-                                        roleTask === 'member' || !changeStatus
-                                      }
+                                      disabled={roleTask === 'member' || !changeStatus}
                                       allowClear="true"
                                     >
                                       {listMemberStatus.map((element) => (
-                                        <Select.Option
-                                          disabled={editing}
-                                          value={element}
-                                        >
+                                        <Select.Option disabled={editing} value={element}>
                                           {element}
                                         </Select.Option>
                                       ))}

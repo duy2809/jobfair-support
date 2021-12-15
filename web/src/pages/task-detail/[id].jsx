@@ -1,23 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import {
-  afterTask,
-  beforeTask,
-  deleteTask,
-  taskData,
-  getRoleTask,
-} from '~/api/task-detail'
+import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
