@@ -129,7 +129,11 @@ function RecentUpdate(props) {
         renderItem={(item) => (
           <>
             {item.isFirstOfDay && (
-              <Divider orientation="center">{changeFormat(item.last_edit)}</Divider>
+              <Divider orientation="center">
+                <div className="time-wrapper">
+                  {changeFormat(item.last_edit)}
+                </div>
+              </Divider>
             )}
             <Link href={`/task-detail/${item.task.id}`}>
               <List.Item
