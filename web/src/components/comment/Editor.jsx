@@ -79,7 +79,7 @@ const resetBlockType = (editorState, newType) => {
 }
 
 function index(props) {
-  const commentContent = props.value
+  const [commentContent, setCommentContent] = useState(props.value || '')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   /* onchange */
@@ -106,11 +106,15 @@ function index(props) {
     }))
     setUsersName(names)
   }
+
   useEffect(() => {
     getAllUser()
     setEditorStateWhenEditing()
     return () => setEditorState(EditorState.createEmpty())
   }, [])
+  useEffect(() => {
+    setCommentContent(props.value)
+  }, [props.value])
 
   const getEditorState = () => editorState
   const blockRendererFn = getBlockRendererFn(getEditorState, onEditorStateChange)

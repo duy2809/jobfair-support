@@ -44,10 +44,13 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
+    [],
+  )
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
-  const [action, setAction] = useState('normal')
+  const [action, setAction] = useState('none')
+  const [memberChangeStatus, setMemberChangeStatus] = useState('')
   const [infoJF, setInfoJF] = useState({
     id: null,
     name: '',
@@ -76,14 +79,15 @@ function TaskDetail() {
   const getChildProps1 = useCallback((childState) => {
     const copyState = {}
     Object.assign(copyState, childState)
-    console.log(childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
+      setAction('none')
     }
     if (copyState.new_status !== '') {
       setTaskStatus(copyState.new_status)
       setTempStatus(copyState.new_status)
       setAction(copyState.action)
+      setListMemberAssignee(copyState.updateListMember)
     }
   }, [])
   const getChildProps2 = useCallback((childState) => {
@@ -92,6 +96,8 @@ function TaskDetail() {
     if (copyState.new_member_status !== '') {
       setTempStatus(copyState.new_member_status)
       setAction(copyState.action)
+      setMemberChangeStatus(copyState.member)
+      setListMemberAssignee(copyState.updateListMember)
     }
   }, [])
   const getRole = (id) => {
@@ -264,7 +270,9 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">
-                        {infoTask.categories ? infoTask.categories.join(', ') : null}
+                        {infoTask.categories
+                          ? infoTask.categories.join(', ')
+                          : null}
                       </div>
                     </div>
                   </div>
@@ -289,12 +297,16 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
+                          <span className="ef">
+                            {infoTask.is_day ? '日' : '時間'}
+                          </span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -308,24 +320,24 @@ function TaskDetail() {
                 </div>
                 {/* {listMemberAssignee.length == 1? (<></>):
                 } */}
-                {newAsigneesFromNewComment.length + listMemberAssignee.length !== 1 && (
-                  <div className="col-span-1 mx-4 mt-5">
-                    <div className="grid grid-cols-8">
-                      <div className="layber col-span-2 mx-4">
-                        <p className="font-bold text-right">レビュアー</p>
-                      </div>
-                      <div className="col-span-5 mx-4">
-                        <ul className="list__member">
-                          {reviewersList.length !== 0 ? (
-                            <li>{reviewersList.map((item) => item.name).join(', ')}</li>
-                          ) : (
-                            <li className="task__chil">None</li>
-                          )}
-                        </ul>
-                      </div>
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">レビュアー</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul className="list__member">
+                        {reviewersList.length !== 0 ? (
+                          <li>
+                            {reviewersList.map((item) => item.name).join(', ')}
+                          </li>
+                        ) : (
+                          <li className="task__chil" />
+                        )}
+                      </ul>
                     </div>
                   </div>
-                )}
+                </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -426,7 +438,7 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <table>
-                        {newAsigneesFromNewComment.length > 0
+                        {newAsigneesFromNewComment.length > 0 && action === 'none'
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
@@ -467,31 +479,36 @@ function TaskDetail() {
                                       status={`${item.pivot.status}`}
                                     />
                                   )} */}
-                                  {listMemberAssignee.length === 1 ? (
-                                    <td />
-                                  ) : (
-                                    <>
-                                      <td>
-                                        {action === 'changeTaskStatus' ? (
-                                          <>
-                                            {tempStatus === `${item.pivot.status}` ? (
-                                              <StatusStatic status={`${item.pivot.status}`} />
-                                            ) : (
+                                  {listMemberAssignee.length === 1
+                                  || !(
+                                    taskStatus === '未着手'
+                                    || taskStatus === '進行中'
+                                  ) ? (
+                                      <td />
+                                    ) : (
+                                      <>
+                                        <td>
+                                          {action === 'changeTaskStatus' ? (
+                                            <>
                                               <StatusStatic status={tempStatus} />
-                                            )}
-                                          </>
-                                        ) : (
-                                          <>
-                                            {action !== 'normal' && item.id === idUser ? (
-                                              <StatusStatic status={tempStatus} />
-                                            ) : (
-                                              <StatusStatic status={`${item.pivot.status}`} />
-                                            )}
-                                          </>
-                                        )}
-                                      </td>
-                                    </>
-                                  )}
+                                            </>
+                                          ) : (
+                                            <>
+                                              {action === 'changeMemberStatus'
+                                            && item.name === memberChangeStatus ? (
+                                                  <StatusStatic
+                                                    status={tempStatus}
+                                                  />
+                                                ) : (
+                                                  <StatusStatic
+                                                    status={`${item.pivot.status}`}
+                                                  />
+                                                )}
+                                            </>
+                                          )}
+                                        </td>
+                                      </>
+                                    )}
                                 </tr>
                                 <br />
                               </>
@@ -504,7 +521,10 @@ function TaskDetail() {
               <div className=" mx-12 mt-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">
-                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
+                  <StackEditor
+                    value={infoTask.description_of_detail}
+                    taskId={idTask}
+                  />
                 </div>
               </div>
             </div>
@@ -518,7 +538,6 @@ function TaskDetail() {
               parentCallback2={getChildProps2}
               roleTask={roleTask}
               listMemberAssignee={listMemberAssignee}
-              setListMemberAssignee={setListMemberAssignee}
             />
           </div>
         </JfLayout.Main>

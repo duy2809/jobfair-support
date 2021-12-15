@@ -1,5 +1,17 @@
 import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
-import { Button, Divider, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
+import {
+  Button,
+  Divider,
+  Form,
+  Input,
+  Modal,
+  notification,
+  Select,
+  Tag,
+  Tooltip,
+  Row,
+  Col,
+} from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
 import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
@@ -22,6 +34,7 @@ function index({
   parentCallback2,
   roleTask,
   jfInfo,
+  listMemberAssignee,
 }) {
   const [visible, setVisible] = useState(false)
   const [previewing, setPreviewing] = useState(false)
@@ -37,9 +50,10 @@ function index({
   const idUser = store.getState().get('auth').get('user').get('id')
   const INIT_COMMENTS_NUM = 5
   const MORE_COMMENTS_NUM = 10
-
+  const [changeStatus, setChangeStatus] = useState(true)
+  const [listMemberAssign, setListMemberAssign] = useState()
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
-
+  const listMemberStatus = ['未着手', '進行中', 'レビュー待ち']
   const getMoreComments = async (start, count) => {
     try {
       const response = await getComments(id, start, count)
@@ -125,20 +139,26 @@ function index({
   }
   const [listStatus, setListStatus] = useState([])
   useEffect(() => {
+    setListMemberAssign(listMemberAssignee)
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else if (roleTask === 'reviewer') {
-      setListStatus(['進行中', 'リビュエー待ち', '完了', '中断', '未完了'])
+      setListStatus(['進行中', '完了', '中断', '未完了'])
+    } else if (listMemberAssignee.length === 1) {
+      setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else {
-      setListStatus(['未着手', '進行中', 'リビュエー待ち'])
+      setListStatus(['未着手', '進行中', 'レビュー待ち'])
+    }
+    if (statusProp === '未着手' || statusProp === '進行中') {
+      setChangeStatus(true)
+    } else {
+      setChangeStatus(false)
     }
     fetchListMember()
     fetchTaskData()
   }, [category, roleTask])
 
   useEffect(() => {
-    console.log('new cmt')
-
     getMoreComments(0, INIT_COMMENTS_NUM)
     return () => {
       store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
@@ -182,17 +202,16 @@ function index({
 
   const onFormSummit = async () => {
     try {
-      const { memberStatus, status, assignee } = form.getFieldsValue()
-
+      const { member, memberStatus, status, assignee } = form.getFieldsValue()
       // TODO: change task description
       const comment = {
         task_id: id,
         body: value.replace(/\\s/g, ' ').trim() ?? '',
         assignee: JSON.stringify(assignee),
         status,
+        member,
         memberStatus,
       }
-      console.log(comment)
       if (
         (comment.body === '' || comment.body === '<p></p>')
         && comment.assignee === undefined
@@ -209,19 +228,38 @@ function index({
 
       const response = await addComment(comment)
       const newComment = response.data
-      console.log(newComment)
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
+            if (newComment.new_status) {
+              if (newComment.new_status === '未着手' || newComment.new_status === '進行中') {
+                setChangeStatus(true)
+              } else {
+                setChangeStatus(false)
+              }
+            }
+            if (newComment.new_assignees.length) {
+              setListMemberAssign(newComment.new_assignees)
+            }
             pushData2Parent1({
               new_assignees: newComment.new_assignees ?? '',
               new_status: newComment.new_status ?? '',
               action: 'changeTaskStatus',
+              updateListMember: listMemberAssignee,
             })
-          } else if (newComment.new_member_status) {
+          }
+          if (newComment.new_member_status) {
+            listMemberAssignee.map((item) => {
+              if (item.name === newComment.member_name) {
+                item.pivot.status = newComment.new_member_status
+              }
+              return item
+            })
             pushData2Parent2({
               new_member_status: newComment.new_member_status,
               action: 'changeMemberStatus',
+              member: newComment.member_name,
+              updateListMember: listMemberAssignee,
             })
           }
           store.dispatch({
@@ -375,40 +413,113 @@ function index({
                 <div className="pos-right w-4/12 ">
                   {/* selector */}
                   <div className="h-full xl:mb-1">
-                    {roleTask === `taskMember${idUser}` ? (
-                      <Form.Item
-                        label={<p className="font-bold">ステータス</p>}
-                        name="memberStatus"
-                      >
-                        <Select
-                          size="large"
-                          defaultValue=""
-                          className="addJF-selector"
-                          placeholder="memberステータス"
+                    {listMemberAssign.length === 1 ? (
+                      <>
+                        <Form.Item
+                          label={<p className="font-bold">タスクのステータス</p>}
+                          name="status"
                         >
-                          {listStatus.map((element) => (
-                            <Select.Option disabled={editing} value={element}>
-                              {element}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                          <Select
+                            size="large"
+                            className="addJF-selector"
+                            placeholder="ステータス"
+                            disabled={roleTask === 'member'}
+                            allowClear="true"
+                          >
+                            {listStatus.map((element) => (
+                              <Select.Option disabled={editing} value={element}>
+                                {element}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </>
                     ) : (
-                      <Form.Item label={<p className="font-bold">ステータス</p>} name="status">
-                        <Select
-                          size="large"
-                          defaultValue=""
-                          className="addJF-selector"
-                          placeholder="ステータス"
-                          disabled={roleTask === 'member'}
-                        >
-                          {listStatus.map((element) => (
-                            <Select.Option disabled={editing} value={element}>
-                              {element}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
+                      <>
+                        {roleTask === `taskMember${idUser}` ? (
+                          <Form.Item
+                            label={<p className="font-bold">あなたのステータス</p>}
+                            name="memberStatus"
+                          >
+                            <Select
+                              size="large"
+                              className="addJF-selector"
+                              placeholder="ステータス"
+                              disabled={!changeStatus}
+                              allowClear="true"
+                            >
+                              {listStatus.map((element) => (
+                                <Select.Option disabled={editing} value={element}>
+                                  {element}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+                        ) : (
+                          <>
+                            <Form.Item
+                              label={<p className="font-bold">タスクのステータス</p>}
+                              name="status"
+                            >
+                              <Select
+                                size="large"
+                                className="addJF-selector"
+                                placeholder="ステータス"
+                                disabled={roleTask === 'member'}
+                                allowClear="true"
+                              >
+                                {listStatus.map((element) => (
+                                  <Select.Option disabled={editing} value={element}>
+                                    {element}
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item label={<p className="font-bold">メンバーのステータス</p>}>
+                              <Row gutter={8}>
+                                <Col span={12}>
+                                  <Form.Item name="member">
+                                    <Select
+                                      size="large"
+                                      className="addJF-selector"
+                                      placeholder="担当者"
+                                      disabled={roleTask === 'member' || !changeStatus}
+                                      allowClear="true"
+                                    >
+                                      {listMemberAssignee.map((element) => (
+                                        <Select.Option
+                                          className="validate-user"
+                                          key={element.id}
+                                          value={element.id}
+                                        >
+                                          {element.name}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                  <Form.Item name="memberStatus">
+                                    <Select
+                                      size="large"
+                                      className="addJF-selector"
+                                      placeholder="ステータス"
+                                      disabled={roleTask === 'member' || !changeStatus}
+                                      allowClear="true"
+                                    >
+                                      {listMemberStatus.map((element) => (
+                                        <Select.Option disabled={editing} value={element}>
+                                          {element}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                              </Row>
+                            </Form.Item>
+                          </>
+                        )}
+                      </>
                     )}
                     <Form.Item
                       label={<p className="font-bold">担当者</p>}
@@ -421,6 +532,7 @@ function index({
                           showArrow
                           tagRender={tagRender}
                           disabled={roleTask !== 'jfadmin'}
+                          allowClear="true"
                         >
                           {listUser.map((element) => (
                             <Select.Option
@@ -443,6 +555,7 @@ function index({
                             borderRadius: 6,
                           }}
                           disabled={roleTask !== 'jfadmin'}
+                          allowClear="true"
                           className="multiples"
                         >
                           {listUser.map((element) => (
