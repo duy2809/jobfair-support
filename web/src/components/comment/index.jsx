@@ -61,6 +61,7 @@ function index({
   const INIT_COMMENTS_NUM = 5
   const MORE_COMMENTS_NUM = 10
   const [changeStatus, setChangeStatus] = useState(true)
+  const [listMemberAssign, setListMemberAssign] = useState()
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
   const listMemberStatus = ['未着手', '進行中', 'レビュー待ち']
   const getMoreComments = async (start, count) => {
@@ -82,7 +83,6 @@ function index({
       return error
     }
   }
-
   const clearForm = () => {
     form.resetFields()
     setEditing(false)
@@ -149,10 +149,13 @@ function index({
   }
   const [listStatus, setListStatus] = useState([])
   useEffect(() => {
+    setListMemberAssign(listMemberAssignee)
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else if (roleTask === 'reviewer') {
       setListStatus(['進行中', '完了', '中断', '未完了'])
+    } else if (listMemberAssignee.length === 1) {
+      setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
     } else {
       setListStatus(['未着手', '進行中', 'レビュー待ち'])
     }
@@ -244,10 +247,18 @@ function index({
       if (response.status === 200) {
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
-            if (newComment.new_status === '未着手' || newComment.new_status === '進行中') {
-              setChangeStatus(true)
-            } else {
-              setChangeStatus(false)
+            if (newComment.new_status) {
+              if (
+                newComment.new_status === '未着手'
+                || newComment.new_status === '進行中'
+              ) {
+                setChangeStatus(true)
+              } else {
+                setChangeStatus(false)
+              }
+            }
+            if (newComment.new_assignees.length) {
+              setListMemberAssign(newComment.new_assignees)
             }
             pushData2Parent1({
               new_assignees: newComment.new_assignees ?? '',
@@ -429,32 +440,18 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={jfInfo.id} value={value} onChange={typing} />
+                    <MyEditor
+                      jfID={id}
+                      jfInfo={jfInfo}
+                      value={value}
+                      onChange={typing}
+                    />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">
                   {/* selector */}
                   <div className="h-full xl:mb-1">
-                    {roleTask === `taskMember${idUser}` ? (
-                      <Form.Item
-                        label={<p className="font-bold">あなたのステータス</p>}
-                        name="memberStatus"
-                      >
-                        <Select
-                          size="large"
-                          className="addJF-selector"
-                          placeholder="ステータス"
-                          disabled={!changeStatus}
-                          allowClear="true"
-                        >
-                          {listStatus.map((element) => (
-                            <Select.Option disabled={editing} value={element}>
-                              {element}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </Form.Item>
-                    ) : (
+                    {listMemberAssign.length === 1 ? (
                       <>
                         <Form.Item
                           label={
@@ -476,55 +473,115 @@ function index({
                             ))}
                           </Select>
                         </Form.Item>
-                        <Form.Item
-                          label={
-                            <p className="font-bold">メンバーのステータス</p>
-                          }
-                        >
-                          <Row gutter={8}>
-                            <Col span={12}>
-                              <Form.Item name="member">
-                                <Select
-                                  size="large"
-                                  className="addJF-selector"
-                                  placeholder="担当者"
-                                  disabled={roleTask === 'member' || !changeStatus}
-                                  allowClear="true"
+                      </>
+                    ) : (
+                      <>
+                        {roleTask === `taskMember${idUser}` ? (
+                          <Form.Item
+                            label={
+                              <p className="font-bold">あなたのステータス</p>
+                            }
+                            name="memberStatus"
+                          >
+                            <Select
+                              size="large"
+                              className="addJF-selector"
+                              placeholder="ステータス"
+                              disabled={!changeStatus}
+                              allowClear="true"
+                            >
+                              {listStatus.map((element) => (
+                                <Select.Option
+                                  disabled={editing}
+                                  value={element}
                                 >
-                                  {listMemberAssignee.map((element) => (
-                                    <Select.Option
-                                      className="validate-user"
-                                      key={element.id}
-                                      value={element.id}
+                                  {element}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          </Form.Item>
+                        ) : (
+                          <>
+                            <Form.Item
+                              label={
+                                <p className="font-bold">タスクのステータス</p>
+                              }
+                              name="status"
+                            >
+                              <Select
+                                size="large"
+                                className="addJF-selector"
+                                placeholder="ステータス"
+                                disabled={roleTask === 'member'}
+                                allowClear="true"
+                              >
+                                {listStatus.map((element) => (
+                                  <Select.Option
+                                    disabled={editing}
+                                    value={element}
+                                  >
+                                    {element}
+                                  </Select.Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+                            <Form.Item
+                              label={(
+                                <p className="font-bold">
+                                  メンバーのステータス
+                                </p>
+                              )}
+                            >
+                              <Row gutter={8}>
+                                <Col span={12}>
+                                  <Form.Item name="member">
+                                    <Select
+                                      size="large"
+                                      className="addJF-selector"
+                                      placeholder="担当者"
+                                      disabled={
+                                        roleTask === 'member' || !changeStatus
+                                      }
+                                      allowClear="true"
                                     >
-                                      {element.name}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                              <Form.Item name="memberStatus">
-                                <Select
-                                  size="large"
-                                  className="addJF-selector"
-                                  placeholder="ステータス"
-                                  disabled={roleTask === 'member' || !changeStatus}
-                                  allowClear="true"
-                                >
-                                  {listMemberStatus.map((element) => (
-                                    <Select.Option
-                                      disabled={editing}
-                                      value={element}
+                                      {listMemberAssignee.map((element) => (
+                                        <Select.Option
+                                          className="validate-user"
+                                          key={element.id}
+                                          value={element.id}
+                                        >
+                                          {element.name}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                                <Col span={12}>
+                                  <Form.Item name="memberStatus">
+                                    <Select
+                                      size="large"
+                                      className="addJF-selector"
+                                      placeholder="ステータス"
+                                      disabled={
+                                        roleTask === 'member' || !changeStatus
+                                      }
+                                      allowClear="true"
                                     >
-                                      {element}
-                                    </Select.Option>
-                                  ))}
-                                </Select>
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        </Form.Item>
+                                      {listMemberStatus.map((element) => (
+                                        <Select.Option
+                                          disabled={editing}
+                                          value={element}
+                                        >
+                                          {element}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                              </Row>
+                            </Form.Item>
+                          </>
+                        )}
                       </>
                     )}
                     <Form.Item
