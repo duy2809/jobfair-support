@@ -195,7 +195,12 @@ class JobfairController extends Controller
         $milestonesId = collect(Task::where('schedule_id', $schedule->id)->pluck('milestone_id'));
 
         $milestones = Milestone::whereIn('id', $milestonesId->unique())->get(['id', 'name', 'period', 'is_week']);
-        orderMilestonesByPeriod($milestones);
+        foreach ($milestones as $item) {
+            $day = $item->is_week === 1 ? $item->period * 7 : $item->period;
+            $item['day'] = $day;
+        }
+
+        $milestones = $milestones->sortBy('day');
         $milestones = array_values($milestones->toArray());
         foreach ($milestones as $key => $milestone) {
             $milestones[$key]['task'] = Task::where('milestone_id', $milestone['id'])->where('schedule_id', $schedule->id)->get(['id', 'name', 'status']);
