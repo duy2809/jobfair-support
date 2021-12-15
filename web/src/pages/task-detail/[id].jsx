@@ -1,23 +1,13 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import {
-  afterTask,
-  beforeTask,
-  deleteTask,
-  taskData,
-  getRoleTask,
-} from '~/api/task-detail'
+import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
@@ -86,6 +76,7 @@ function TaskDetail() {
   const getChildProps1 = useCallback((childState) => {
     const copyState = {}
     Object.assign(copyState, childState)
+    console.log(childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
     }
@@ -317,8 +308,7 @@ function TaskDetail() {
                 </div>
                 {/* {listMemberAssignee.length == 1? (<></>):
                 } */}
-                {newAsigneesFromNewComment.length + listMemberAssignee.length !== 1
-                && (
+                {newAsigneesFromNewComment.length + listMemberAssignee.length !== 1 && (
                   <div className="col-span-1 mx-4 mt-5">
                     <div className="grid grid-cols-8">
                       <div className="layber col-span-2 mx-4">
@@ -327,9 +317,7 @@ function TaskDetail() {
                       <div className="col-span-5 mx-4">
                         <ul className="list__member">
                           {reviewersList.length !== 0 ? (
-                            <li>
-                              {reviewersList.map((item) => item.name).join(', ')}
-                            </li>
+                            <li>{reviewersList.map((item) => item.name).join(', ')}</li>
                           ) : (
                             <li className="task__chil">None</li>
                           )}
@@ -486,29 +474,19 @@ function TaskDetail() {
                                       <td>
                                         {action === 'changeTaskStatus' ? (
                                           <>
-                                            {tempStatus
-                                            === `${item.pivot.status}` ? (
-                                                <StatusStatic
-                                                  status={`${item.pivot.status}`}
-                                                />
-                                              ) : (
-                                                <StatusStatic
-                                                  status={tempStatus}
-                                                />
-                                              )}
+                                            {tempStatus === `${item.pivot.status}` ? (
+                                              <StatusStatic status={`${item.pivot.status}`} />
+                                            ) : (
+                                              <StatusStatic status={tempStatus} />
+                                            )}
                                           </>
                                         ) : (
                                           <>
-                                            {action !== 'normal'
-                                            && item.id === idUser ? (
-                                                <StatusStatic
-                                                  status={tempStatus}
-                                                />
-                                              ) : (
-                                                <StatusStatic
-                                                  status={`${item.pivot.status}`}
-                                                />
-                                              )}
+                                            {action !== 'normal' && item.id === idUser ? (
+                                              <StatusStatic status={tempStatus} />
+                                            ) : (
+                                              <StatusStatic status={`${item.pivot.status}`} />
+                                            )}
                                           </>
                                         )}
                                       </td>

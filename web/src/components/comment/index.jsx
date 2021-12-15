@@ -59,7 +59,6 @@ function index({
       return error
     }
   }
-
   const clearForm = () => {
     form.resetFields()
     setEditing(false)
@@ -135,11 +134,16 @@ function index({
     }
     fetchListMember()
     fetchTaskData()
+  }, [category, roleTask])
+
+  useEffect(() => {
+    console.log('new cmt')
+
     getMoreComments(0, INIT_COMMENTS_NUM)
     return () => {
       store.dispatch({ type: actions.CLEAR_STORE, payload: [] })
     }
-  }, [category, roleTask])
+  }, [])
   const tagRender = (props) => {
     // eslint-disable-next-line react/prop-types
     const { label, closable, onClose } = props
@@ -188,9 +192,12 @@ function index({
         status,
         memberStatus,
       }
+      console.log(comment)
       if (
-        !(comment.body || comment.assignee || comment.status || comment.memberStatus)
-        || !(comment.body !== '<p></p>' || comment.assignee || comment.status || comment.memberStatus)
+        (comment.body === '' || comment.body === '<p></p>')
+        && comment.assignee === undefined
+        && comment.status === undefined
+        && comment.memberStatus === undefined
       ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -199,6 +206,7 @@ function index({
           onClick: () => {},
         })
       }
+
       const response = await addComment(comment)
       const newComment = response.data
       console.log(newComment)
@@ -361,7 +369,7 @@ function index({
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={jfInfo.id} value={value} onChange={typing} />
+                    <MyEditor jfID={jfInfo.id} jfInfo={jfInfo} value={value} onChange={typing} />
                   </Form.Item>
                 </div>
                 <div className="pos-right w-4/12 ">
