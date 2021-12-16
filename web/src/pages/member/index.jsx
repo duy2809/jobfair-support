@@ -55,6 +55,7 @@ function MemberList() {
   const handleInput = (e) => {
     const result = members.filter(
       (obj) => obj.name.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1,
+
     )
     setFilterData(result)
   }
@@ -84,6 +85,10 @@ function MemberList() {
       .then((res) => {
         const { data } = res
         setMembers(data)
+        data.map((item) => {
+          item.category = item.categories[0].category_name
+          return item
+        })
         setFilterData(data)
       }).catch((error) => {
         if (error.response.status === 404) {
@@ -213,6 +218,21 @@ function MemberList() {
       render: (joinDate) => (
         <Tooltip title={formatDate(joinDate)}>
           <a>{formatDate(joinDate)}</a>
+        </Tooltip>
+      ),
+      onCell: handleRow,
+    },
+    {
+      title: 'カテゴリー',
+      key: 'カテゴリー',
+      dataIndex: 'category',
+      width: '40%',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (category) => (
+        <Tooltip title={category}>
+          <a>{category}</a>
         </Tooltip>
       ),
       onCell: handleRow,
