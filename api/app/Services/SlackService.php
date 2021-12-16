@@ -102,6 +102,7 @@ class SlackService
             return response()->json(['message' => $th], 400);
         }
     }
+
     public function checkInWorkspace($user_id)
     {
         try {
@@ -110,6 +111,33 @@ class SlackService
             ])->get('https://slack.com/api/users.conversations', [
                 'team_id' => $this->workspace,
                 'user' => $user_id,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+
+    public function getInfoChannel($channel_id)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->get('https://slack.com/api/conversations.info', [
+                'channel' => $channel_id,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+
+    public function changeNameChannel($channel_id, $name)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->post('https://slack.com/api/conversations.rename', [
+                'channel' => $channel_id,
+                'name' => $name,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th], 400);

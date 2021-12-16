@@ -106,6 +106,7 @@ const index = () => {
           number_of_companies: infoJF.data.number_of_companies,
           jobfair_admin_id: infoJF.data.user.name,
           schedule_id: templateScheduleId,
+          channel_name: infoJF.data.channel_name,
         })
         // Extensions.unSaveChangeConfirm(true)
         return null
@@ -199,6 +200,7 @@ const index = () => {
         number_of_students: values.number_of_students * 1.0,
         number_of_companies: values.number_of_companies * 1.0,
         jobfair_admin_id: changeAdmin ? values.jobfair_admin_id * 1.0 : AdminDF,
+        channel_name: values.channel_name.toString(),
       }
       setDisableBtn(true)
       await editJF(idJf, data)
@@ -210,8 +212,16 @@ const index = () => {
           }
         })
         .catch((error) => {
+          setLoading(false)
           if (error.response.status === 404) {
             router.push('/404')
+          }
+          if (error.response.status === 422) {
+            notification.error({
+              duration: 3,
+              message: 'このSlackチャンネル名はすでに存在します。 チャンネル名を変更してください',
+              onClick: () => {},
+            })
           }
           setDisableBtn(false)
         })
@@ -273,6 +283,13 @@ const index = () => {
     return Promise.resolve()
   }
 
+  const channelNameValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+    return Promise.resolve()
+  }
+
   const startDayValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -331,6 +348,21 @@ const index = () => {
                       type="text"
                       placeholder="JF名入力する"
                       onChange={onValueNameChange}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label={<p className="font-bold">チャンネル名</p>}
+                    name="channel_name"
+                    rules={[
+                      {
+                        validator: channelNameValidator,
+                        required: true,
+                      },
+                    ]}
+                  >
+                    <Input
+                      type="text"
+                      placeholder="チャンネル名を入力する"
                     />
                   </Form.Item>
                 </div>
