@@ -190,7 +190,6 @@ class JobfairController extends Controller
             }
         }
 
-        $scheduleId = Jobfair::findOrFail($id)->schedule;
         $milestones = Jobfair::with([
             'schedule:id,jobfair_id',
             'schedule.milestones:id,name,period',

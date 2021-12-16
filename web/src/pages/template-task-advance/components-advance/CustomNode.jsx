@@ -45,16 +45,13 @@ export const CustomNode = (props) => {
     props.onTextChange(id, labelText)
   }
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
-  const [inputValue, setInputValue] = useState(7)
+  const [inputValue, setInputValue] = useState({ id: null, value: 7 })
   const onChange = (value) => {
-    console.log(value, 'change')
-    setInputValue(value)
-    console.log(id)
+    setInputValue({ id: props.node.id, value })
+    // eslint-disable-next-line no-unused-expressions
+    props.onChangeTime({ id: props.node.id, value })
   }
-  const onAfterChange = (value) => {
-    console.log(value, 'afterchange')
-    console.log(id)
-  }
+
   return (
     <div
       className={`tree-node mb-1 ${styles.root}`}
@@ -139,9 +136,9 @@ export const CustomNode = (props) => {
                                 max={7}
                                 onChange={onChange}
                                 defaultValue={7}
-                                value={typeof inputValue === 'number' ? inputValue : 0}
+                                value={typeof inputValue.value === 'number' ? inputValue.value : 0}
                               />
-                              <div className="inputValue">{inputValue}</div>
+                              <div className="inputValue">{inputValue.value}</div>
                             </div>
                           )
                           : null}

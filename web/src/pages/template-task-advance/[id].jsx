@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react'
-import { EditTwoTone, UserOutlined } from '@ant-design/icons'
+import { EditTwoTone, UserOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { ReactReduxContext } from 'react-redux'
 import { useRouter } from 'next/router'
-import { Card, Row, Col,Button } from 'antd'
+import { Card, Row, Col, Button, Modal } from 'antd'
 import Otherlayout from '../../layouts/OtherLayout'
 import Loading from '../../components/loading'
 import Tree from './components-advance/tree'
+import useTree from './useTree'
 import './style.scss'
 // import ChartMilestone from './chart-miestone'
 
@@ -17,11 +18,34 @@ const templateTaskAdvance = () => {
 
   const router = useRouter()
   const idSchedule = router.query.id
+  const { SampleData } = useTree(idSchedule)
+  const onChangeTime = (value) => {
+    console.log(value, 'value')
+    console.log(SampleData, 'samplae')
+  }
   useEffect(() => {
     // setLoading(true)
 
     // setLoading(false)
   }, [])
+  const cancelConfirmModle = () => {
+    Modal.confirm({
+      title: '変更内容が保存されません。よろしいですか？',
+      icon: <ExclamationCircleOutlined />,
+      content: '',
+      centered: true,
+      onOk: () => {
+        router.push('/jf-schedule/add')
+      },
+
+      onCancel: () => {},
+      okText: 'はい',
+      cancelText: 'いいえ',
+    })
+  }
+  const handSubmit = () => {
+    console.log('heheheh')
+  }
   return (
     <>
       <Otherlayout>
@@ -38,6 +62,7 @@ const templateTaskAdvance = () => {
                   <div>
                     <Tree
                       idSchedule={idSchedule}
+                      onChangeTime={onChangeTime}
                     />
                   </div>
                 </Card>
@@ -47,7 +72,23 @@ const templateTaskAdvance = () => {
                   idSchedule={idSchedule}
                 />
               </Card> */}
-              <Button>asfsdf</Button>
+                <div className="group-button mt-4">
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    onClick={cancelConfirmModle}
+                    className="button_cacel mr-3"
+                  >
+                      キャンセル
+                  </Button>
+                  <Button
+                    type="primary"
+                    className=""
+                    onClick={handSubmit}
+                  >
+                    <span> 保存 </span>
+                  </Button>
+                </div>
               </div>
             </div>
           )}

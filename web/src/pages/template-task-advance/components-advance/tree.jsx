@@ -85,7 +85,7 @@ const getLastId = (treeData) => {
 }
 
 // eslint-disable-next-line react/prop-types
-function App({ idSchedule }) {
+function App({ idSchedule, onChangeTime }) {
   const { treeData, setTreeData, SampleData, setSamleData, idMilestoneActive, setIdMileStoneActive } = useTree(idSchedule)
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
@@ -204,6 +204,7 @@ function App({ idSchedule }) {
     const newSam = SampleData.fill(newSample, index, index + 1)
     setSamleData(newSam)
   }
+
   return (
     <div className="tree">
       <div>
@@ -246,6 +247,7 @@ function App({ idSchedule }) {
             {...options}
             onDelete={handleDelete}
             onTextChange={handleTextChange}
+            onChangeTime={onChangeTime}
           />
         )}
         dragPreviewRender={(monitorProps) => (
