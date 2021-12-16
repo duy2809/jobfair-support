@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { PlusOutlined, CloseCircleOutlined, CheckOutlined, EditTwoTone, FolderFilled,
   ExclamationCircleOutlined,
   FileFilled, SearchOutlined, DownOutlined, RightOutlined } from '@ant-design/icons'
-import { Row, Col } from 'antd'
+import { Row, Col, Slider } from 'antd'
 import { useDragOver } from '@minoru/react-dnd-treeview'
 import {
   DeleteTwoTone,
@@ -45,6 +45,16 @@ export const CustomNode = (props) => {
     props.onTextChange(id, labelText)
   }
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
+  const [inputValue, setInputValue] = useState(7)
+  const onChange = (value) => {
+    console.log(value, 'change')
+    setInputValue(value)
+    console.log(id)
+  }
+  const onAfterChange = (value) => {
+    console.log(value, 'afterchange')
+    console.log(id)
+  }
   return (
     <div
       className={`tree-node mb-1 ${styles.root}`}
@@ -77,46 +87,71 @@ export const CustomNode = (props) => {
           )
           : (
             <>
-              <Row gutter={[50, 50]}>
-                <Col span={15}>
-                  <div className="flex items-center">
-                    <div
-                      className={`mr-2 ${styles.expandIconWrapper} ${
-                        props.isOpen ? styles.isOpen : ''
-                      }`}
-                    >
-                      {props.node.droppable && (
-                        <div onClick={handleToggle}>
-                          {
-                            iseOpen ? <DownOutlined /> : <RightOutlined />
-                          }
+
+              <div className="">
+
+                <div className="">
+
+                  <Row gutter={[50, 50]}>
+
+                    <Col span={12}>
+                      <div className="flex items-center">
+                        <div>
+                          {props.node.droppable && (
+                            <div onClick={handleToggle}>
+                              {
+                                iseOpen ? <DownOutlined /> : <RightOutlined />
+                              }
+                            </div>
+                          )}
+
                         </div>
-                      )}
-
-                    </div>
-                    <div className="flex items-center">
-                      <div className="mr-1">
-                        {props.node.droppable
-                          ? <FolderFilled />
-                          : <FileFilled />}
+                        <div className="mr-1">
+                          {props.node.droppable
+                            ? <FolderFilled />
+                            : <FileFilled />}
+                        </div>
+                        <div className="text">{props.node.text}</div>
+                        {
+                          props.node.droppable
+                            ? (
+                              <div className={styles.actionButton}>
+                                <a className="mr-1" onClick={handleShowInput}>
+                                  <EditTwoTone className="" />
+                                </a>
+                                <a size="small ml-10" onClick={() => props.onDelete(id)}>
+                                  <DeleteTwoTone />
+                                </a>
+                              </div>
+                            )
+                            : null
+                        }
                       </div>
-                      <span variant="body2">{props.node.text}</span>
-                    </div>
-                  </div>
+                    </Col>
+                    <Col span={12}>
+                      {' '}
+                      <div className="item-task">
+                        {!props.node.droppable
+                          ? (
+                            <div className="">
+                              <Slider
+                                min={1}
+                                max={7}
+                                onChange={onChange}
+                                defaultValue={7}
+                                value={typeof inputValue === 'number' ? inputValue : 0}
+                              />
+                              <div className="inputValue">{inputValue}</div>
+                            </div>
+                          )
+                          : null}
+                      </div>
+                    </Col>
+                  </Row>
 
-                </Col>
-                <Col span={9}>
-                  <div className={styles.actionButton}>
-                    <a className="mr-1" onClick={handleShowInput}>
-                      <EditTwoTone className="" />
-                    </a>
-                    <a size="small ml-10" onClick={() => props.onDelete(id)}>
-                      <DeleteTwoTone />
-                    </a>
-                  </div>
-                </Col>
+                </div>
+              </div>
 
-              </Row>
             </>
           )}
       </div>

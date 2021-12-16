@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import {
   Tree,
   // DragLayerMonitorProps,
@@ -7,9 +7,8 @@ import {
 import {
   PlusOutlined,
 } from '@ant-design/icons'
-import useTree from './useTree'
+import useTree from '../useTree'
 
-import { getNewMilestone } from '../../../api/template-advance'
 import { CustomNode } from './CustomNode'
 import { CustomDragPreview } from './CustomDragPreview'
 import { AddDialog } from './AddDialog'
@@ -85,10 +84,24 @@ const getLastId = (treeData) => {
   return 0
 }
 
-function App() {
-  const { treeData, setTreeData, SampleData, setSamleData, idMilestoneActive, setIdMileStoneActive } = useTree()
+// eslint-disable-next-line react/prop-types
+function App({ idSchedule }) {
+  const { treeData, setTreeData, SampleData, setSamleData, idMilestoneActive, setIdMileStoneActive } = useTree(idSchedule)
   const handleDrop = (newTree) => {
+    for (let index = 0; index < newTree.length; index += 1) {
+      if (newTree[index].droppable) {
+        newTree[index].parent = 0
+      }
+    }
     setTreeData(newTree)
+    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newTree,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
   }
   const [open, setOpen] = useState(false)
   const [textAdd, setTextAdd] = useState('')
@@ -105,6 +118,14 @@ function App() {
     })
 
     setTreeData(newTree)
+    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newTree,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
   }
   const listMilestone = []
   // eslint-disable-next-line no-unused-expressions
@@ -116,8 +137,24 @@ function App() {
       id,
       ...getDescendants(treeData, id).map((node) => node.id),
     ]
+    // eslint-disable-next-line prefer-const
+    let listChil = treeData.filter((node) => node.parent === id)
+    // eslint-disable-next-line prefer-const
+    listChil[0].parent = 0
+    for (let index = 0; index < listChil.length; index += 1) {
+      listChil[index].parent = 0
+    }
     const newTree = treeData.filter((node) => !deleteIds.includes(node.id))
-    setTreeData(newTree)
+    const newChil = newTree.concat(listChil)
+    setTreeData(newChil)
+    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newChil,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
   }
   const handleOpenDialog = () => {
     setOpen(true)
@@ -150,10 +187,10 @@ function App() {
       text.length === 0
     ) return
     const dataAdd = {
-      id: treeData.length + 1,
+      id: Math.floor(Math.random() * (9999 - 1000)) + 1000,
       parent: 0,
+      droppable: true,
       text,
-      type: 'parent',
     }
     const newList = [...treeData]
     newList.push(dataAdd)
@@ -167,23 +204,6 @@ function App() {
     const newSam = SampleData.fill(newSample, index, index + 1)
     setSamleData(newSam)
   }
-  // const fechtDataLeft = async () => {
-  //   await getNewMilestone()
-  //     .then((response) => {
-  //       // SampleData.current = response.data
-  //       // console.log(response.data, 'res')
-  //       // setTreeData(SampleData.current[0].task)
-  //       // console.log(treeData, 'samdata')
-  //     })
-  //     .catch((error) => {
-  //       if (error.response.status === 404) {
-  //         router.push('/404')
-  //       }
-  //     })
-  // }
-  // useEffect(() => {
-  //   fechtDataLeft()
-  // }, [])
   return (
     <div className="tree">
       <div>
@@ -193,6 +213,7 @@ function App() {
               onMilestoneChange={onMilestoneChange}
               listMilestone={listMilestone}
               treeData={treeData}
+              idSchedule={idSchedule}
             />
           </div>
           <div className="tree__right">

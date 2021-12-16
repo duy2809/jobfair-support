@@ -7,7 +7,7 @@ import {
 import './style.scss'
 import axios from 'axios'
 
-function SelectML({ onMilestoneChange, listMilestone }) {
+function SelectML({ onMilestoneChange, listMilestone, idSchedule }) {
   const [form] = Form.useForm()
 
   useEffect(() => {
@@ -15,10 +15,10 @@ function SelectML({ onMilestoneChange, listMilestone }) {
     const fetchApi = async () => {
       try {
         const res = await axios.get(
-          'https://61b6019ec95dd70017d40dd2.mockapi.io/advance',
+          `http://jobfair.local:8000/api/get-template-tasks/${idSchedule}`,
         )
         form.setFieldsValue({
-          milestone: res.data[0].milestone_name,
+          milestone: res.data[0].name,
         })
       } catch (error) {
         console.log(error)

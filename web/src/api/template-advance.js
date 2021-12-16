@@ -1,3 +1,4 @@
 import instance from './axios'
 
-export const getNewMilestone = () => instance.get('https://61b6019ec95dd70017d40dd2.mockapi.io/advance')
+// eslint-disable-next-line no-undef
+export const getNewMilestone = (id) => instance.get(`/get-template-tasks/${id}`)
