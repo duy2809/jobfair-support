@@ -57,6 +57,7 @@ Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkSche
 Route::prefix('schedules/{id}')->group(function () {
     Route::get('/added-milestones', 'ScheduleController@getAddedMilestones');
     Route::get('/added-template-tasks', 'ScheduleController@getAddedTemplateTasks');
+    Route::get('/parent-and-child-tasks', 'ScheduleController@getListTemplateTasks');
 });
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
 Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
