@@ -1,5 +1,9 @@
 .tree-node {
-  margin: 15px 0;
+  .text{
+    margin: 0;
+    padding: 0;
+  }
+  margin: 20px 0;
   .textA {
     pointer-events: none;
     cursor: not-allowed;
@@ -101,4 +105,7 @@
   border: 2px solid rgb(197, 196, 135);
   padding: 0 15px;
   border-radius: 5px;
+}
+li ul{
+  padding: 0 !important;
 }
