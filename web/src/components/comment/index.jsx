@@ -290,6 +290,7 @@ function index({
   }
 
   const callBack = (childState) => {
+    if (childState === 'delete') return clearForm()
     const copyState = {}
     Object.assign(copyState, childState)
     showBox()
@@ -299,7 +300,7 @@ function index({
     const commentContent = copyState.comment.content
     setValue(commentContent)
 
-    form.setFieldsValue({
+    return form.setFieldsValue({
       detail: commentContent,
       assignee: assigneeProp,
       status: statusProp,
@@ -311,6 +312,7 @@ function index({
 
     const { status, assignee } = form.getFieldsValue()
     const newComment = { ...editingComment, content: value, status, assignee }
+    console.log(value)
     try {
       const response = await updateComment(newComment.id, newComment)
       if (response.status === 200) {
@@ -393,7 +395,7 @@ function index({
               ]}
               // onCancel={() => {}}
             >
-              <MarkDownView source={value.replace(/\\s/g, '')} />
+              <MarkDownView source={value?.replace(/\\s/g, '')} />
             </Modal>
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
               <div className="pos flex items-start justify-evenly ">
@@ -538,6 +540,7 @@ function index({
                             <Select.Option
                               className="validate-user"
                               key={element.id}
+                              disabled={editing}
                               value={element.id}
                             >
                               {element.name}

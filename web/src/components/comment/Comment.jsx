@@ -55,6 +55,7 @@ function Comment(props) {
           type: actions.DELETE_COMMENT,
           payload: comments,
         })
+        props.parentCallBack('delete')
         notification.open({
           icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
           duration: 3,
@@ -105,11 +106,13 @@ function Comment(props) {
                 </span>
               </div>
               <div className="mr-4" hidden={userId !== props.comment.author?.id}>
-                <EditTwoTone
-                  className="border-none mx-1 text-2xl"
-                  type="primary"
-                  onClick={editComment}
-                />
+                {props.comment.content !== '<p></p>' && (
+                  <EditTwoTone
+                    className="border-none mx-1 text-2xl"
+                    type="primary"
+                    onClick={editComment}
+                  />
+                )}
                 <DeleteTwoTone
                   className="border-none mx-1 text-2xl"
                   type="primary"
