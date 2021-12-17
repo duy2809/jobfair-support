@@ -6,8 +6,12 @@ use App\Imports\CategoriesImport;
 use App\Imports\MilestonesImport;
 use App\Imports\TemplateTasksImport;
 use App\Imports\UsersImport;
+use App\Models\Milestone;
+use App\Models\Schedule;
+use App\Models\TemplateTask;
 use Excel;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -166,33 +170,36 @@ class DatabaseSeeder extends Seeder
         Excel::import(new CategoriesImport(), base_path('file/categories.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new TemplateTasksImport(), base_path('file/template_task.ods'), null, \Maatwebsite\Excel\Excel::ODS);
         Excel::import(new UsersImport(), base_path('file/users.ods'), null, \Maatwebsite\Excel\Excel::ODS);
-        // $schedule = Schedule::create([
-        //     'name' => 'Template Schedule',
-        // ]);
-        // $milestones = Milestone::all();
-        // // create schedule
-        // $schedule->milestones()->attach($milestones->pluck('id')->toArray());
-        // $templateTasks = TemplateTask::whereIn('milestone_id', $milestones->pluck('id')->toArray())
-        //     ->get()->random(80);
-        // $schedule->templateTasks()->attach($templateTasks->pluck('id')->toArray());
-        // // random 3 parents
-        // $schedule->templateTasks->random(6)->each(
-        //     function ($parent) use ($schedule) {
-        //         $parent->is_parent = true;
-        //         $parent->save();
-        //         // each parent random 2 child
-        //         $parent->categories->first()->templateTasks()->where('has_parent', false)
-        //             ->where('is_parent', false)->whereHas('schedules', function ($query) use ($schedule) {
-        //                 $query->where('schedules.id', $schedule->id);
-        //             })->get()->random(5)->each(function ($templateTask) use ($schedule, $parent) {
-        //                 $templateTask->has_parent = true;
-        //                 $templateTask->save();
-        //                 DB::table('schedule_template_task')->where('schedule_id', $schedule->id)
-        //                     ->where('template_task_id', $templateTask->id)->update([
-        //                         'template_task_parent_id' => $parent->id,
-        //                     ]);
-        //             });
-        //     }
-        // );
+        $schedule = Schedule::create([
+            'name' => 'Template Schedule',
+        ]);
+        $milestones = Milestone::all();
+        // create schedule
+        $schedule->milestones()->attach($milestones->pluck('id')->toArray());
+        $templateTasks = TemplateTask::whereIn('milestone_id', $milestones->pluck('id')->toArray())
+            ->get()->random(80);
+        $schedule->templateTasks()->attach($templateTasks->pluck('id')->toArray());
+        // random 3 parents
+        $schedule->templateTasks->random(6)->each(
+            function ($parent) use ($schedule) {
+                $parent->is_parent = true;
+                $parent->has_parent = false;
+                $parent->save();
+                // each parent random 2 child
+
+                $child = $parent->categories->first()->templateTasks()->where('has_parent', 0)
+                    ->where('is_parent', 0)->whereHas('schedules', function ($query) use ($schedule) {
+                    $query->where('schedules.id', $schedule->id);
+                })->where('milestone_id', $parent->milestone_id)->get();
+                $child->random(min(count($child), 3))->each(function ($templateTask) use ($schedule, $parent) {
+                    $templateTask->has_parent = true;
+                    $templateTask->save();
+                    DB::table('schedule_template_task')->where('schedule_id', $schedule->id)
+                        ->where('template_task_id', $templateTask->id)->update([
+                        'template_task_parent_id' => $parent->id,
+                    ]);
+                });
+            }
+        );
     }
 }

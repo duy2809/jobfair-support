@@ -93,7 +93,7 @@ class TaskController extends Controller
         }
 
         $jobfair = Jobfair::findOrFail($id);
-        $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
+        $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->where('is_parent', 0)->get()->map(function ($item) use ($jobfair) {
             return [
                 'jobfairName'           => $jobfair->name,
 
@@ -122,7 +122,7 @@ class TaskController extends Controller
             ->join('assignments', 'assignments.task_id', 'tasks.id')
             ->join('users', 'assignments.user_id', '=', 'users.id')
             ->select('jobfairs.name as jobfairName', 'users.id as userId', 'users.name as userName', 'users.avatar', 'tasks.*', 'tasks.name as taskName')
-            ->where('jobfairs.id', '=', $id)
+            ->where('jobfairs.id', '=', $id)->where('tasks.is_parent', 0)
             ->get()->merge($first);
     }
 
@@ -162,22 +162,29 @@ class TaskController extends Controller
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $idTemplateTask = $request->data;
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
-            $templateTask = TemplateTask::find($idTemplateTask[$i]);
+            $templateTask = $schedule->templateTasks()->where('template_tasks.id', $idTemplateTask[$i])->first();
+
+            $duration = 0;
+            if (!isset($templateTask)) {
+                $templateTask = TemplateTask::find($idTemplateTask[$i]);
+                if ($templateTask->unit === 'students') {
+                    $duration = (float) $templateTask->effort * $jobfair->number_of_students;
+                } else if ($templateTask->unit === 'none') {
+                    $duration = (float) $templateTask->effort;
+                } else {
+                    $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
+                }
+
+                $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
+            } else {
+                $duration = $templateTask->pivot->duration;
+            }
+            $duration--;
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
             $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
-            $duration = 0;
-            if ($templateTask->unit === 'students') {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_students;
-            } else if ($templateTask->unit === 'none') {
-                $duration = (float) $templateTask->effort;
-            } else {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
-            }
-
-            $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . $duration . 'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . min($duration, 0) . 'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -760,7 +767,7 @@ class TaskController extends Controller
             },
         ])->findOrFail($id);
 
-        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
+        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))->where('is_parent', 0)
             ->with(['categories:id,category_name', 'milestone:id,name'])->get(['id', 'name', 'milestone_id']);
 
         return response()->json($templateTask);

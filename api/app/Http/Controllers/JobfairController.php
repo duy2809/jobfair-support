@@ -89,8 +89,10 @@ class JobfairController extends Controller
                             $newStartTime = $possibleStartTime;
                         }
                     });
-                    $newEndTime = date('Y-m-d', strtotime($newStartTime . ' + ' . $templateTask->pivot->duration . 'days'));
+                    $duration = $templateTask->pivot->duration - 1;
+                    $newEndTime = date('Y-m-d', strtotime($newStartTime . ' + ' . min($duration, 0) . 'days'));
                     $input = $templateTask->toArray();
+                    $input['is_parent'] = $templateTask->is_parent;
                     $input['start_time'] = $newStartTime;
                     $input['end_time'] = $newEndTime;
                     $input['schedule_id'] = $newSchedule->id;
@@ -260,7 +262,7 @@ class JobfairController extends Controller
             'schedule:id,jobfair_id',
             'schedule.milestones:id,name,period',
             'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
-                $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
+                $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id)->where('is_parent', 0);
             },
         ])->find($id, ['id']);
 
@@ -279,7 +281,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
-
+                    ->where('is_parent', 0)
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
                     ->orderBy('tasks.id', 'ASC');
             },
@@ -348,5 +350,19 @@ class JobfairController extends Controller
         }
 
         abort(403, 'Permission denied');
+    }
+    public function ganttChart($id)
+    {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        $jobfair = Jobfair::findOrFail($id);
+        $tasks = $jobfair->schedule->tasks()->with(['beforeTasks', 'afterTasks'])->get();
+
+        return response()->json($tasks);
     }
 }
