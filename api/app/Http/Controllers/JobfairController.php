@@ -290,6 +290,34 @@ class JobfairController extends Controller
         return response()->json($tasks);
     }
 
+    public function getTasksWithParent($id)
+    {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        $tasks = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
+                    ->where('is_parent', 1)->orWhere(function ($query) {
+                    $query->where('is_parent', 0)->where('parent_id', null);
+                })
+                    ->orderBy('tasks.id', 'ASC');
+            },
+        ])->findOrFail($id, ['id']);
+        $jobfair = Jobfair::with('schedule.tasks')->find($id);
+        $tasks->schedule->tasks = $tasks->schedule->tasks->map(function ($task) use ($jobfair) {
+            if ($task->is_parent === 1) {
+                $task->children = $jobfair->schedule->tasks->where('parent_id', $task->id);
+            }
+            return $task;
+        });
+        return response()->json($tasks);
+    }
+
     public function updatedTasks($id, Request $request)
     {
         $arr = str_split($id);
@@ -361,7 +389,7 @@ class JobfairController extends Controller
         }
 
         $jobfair = Jobfair::findOrFail($id);
-        $tasks = $jobfair->schedule->tasks()->with(['beforeTasks', 'afterTasks'])->get();
+        $tasks = $jobfair->schedule->tasks()->where('is_parent', 0)->with(['beforeTasks', 'afterTasks'])->get();
 
         return response()->json($tasks);
     }

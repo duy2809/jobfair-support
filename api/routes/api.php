@@ -32,6 +32,7 @@ Route::apiResource('/category', CategoryController::class)->only(['index']);
 Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/milestones', 'JobfairController@getMilestones');
     Route::get('/tasks', 'JobfairController@getTasks');
+    Route::get('/tasks-with-parent', 'JobfairController@getTasksWithParent');
     Route::get('/updated-tasks', 'JobfairController@updatedTasks');
     Route::get('/tasks/search', 'JobfairController@searchTask');
     Route::post('/add-task', 'TaskController@store');
