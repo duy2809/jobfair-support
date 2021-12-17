@@ -54,6 +54,8 @@ function index({
   const [listMemberAssign, setListMemberAssign] = useState()
   const commentArray = useSelector((state) => commentSelectors.comments(state).toJS())
   const listMemberStatus = ['未着手', '進行中', 'レビュー待ち']
+  const [taskStatus, setTaskStatus] = useState()
+  // const [listNameMemberAssign, setListNameMemberAssgin] = useState()
   const getMoreComments = async (start, count) => {
     try {
       const response = await getComments(id, start, count)
@@ -139,6 +141,12 @@ function index({
   }
   const [listStatus, setListStatus] = useState([])
   useEffect(() => {
+    // let memberAssign = []
+    // listMemberAssignee.map((item)=> (
+    //   memberAssign.push(item.name)
+    // ))
+    // setListNameMemberAssgin(memberAssign)
+    setTaskStatus(statusProp)
     setListMemberAssign(listMemberAssignee)
     if (roleTask === 'jfadmin') {
       setListStatus(['未着手', '進行中', '完了', '中断', '未完了'])
@@ -238,14 +246,26 @@ function index({
                 setChangeStatus(false)
               }
             }
+            let assignees = listMemberAssign
             if (newComment.new_assignees.length) {
-              setListMemberAssign(newComment.new_assignees)
+              assignees = []
+              newComment.new_assignees.map((item, i) => {
+                const temp = {}
+                temp.id = assignee[i]
+                temp.name = item
+                temp.pivot = {
+                  status: '未着手',
+                }
+                assignees.push(temp)
+                return item
+              })
+              setListMemberAssign(assignees)
             }
             pushData2Parent1({
               new_assignees: newComment.new_assignees ?? '',
               new_status: newComment.new_status ?? '',
               action: 'changeTaskStatus',
-              updateListMember: listMemberAssignee,
+              updateListMember: assignees,
             })
           }
           if (newComment.new_member_status) {
@@ -343,7 +363,9 @@ function index({
     }
     return newComment
   }
-
+  const handleChangeTaskStatus = (valueSelect) => {
+    setTaskStatus(valueSelect)
+  }
   return (
     <div className="comment my-10 px-10 ">
       <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
@@ -424,6 +446,8 @@ function index({
                           <Select
                             size="large"
                             className="addJF-selector"
+                            defaultValue={taskStatus}
+                            onChange={handleChangeTaskStatus}
                             placeholder="ステータス"
                             disabled={roleTask === 'member'}
                             allowClear="true"
@@ -466,6 +490,8 @@ function index({
                               <Select
                                 size="large"
                                 className="addJF-selector"
+                                defaultValue={taskStatus}
+                                onChange={handleChangeTaskStatus}
                                 placeholder="ステータス"
                                 disabled={roleTask === 'member'}
                                 allowClear="true"
@@ -485,10 +511,11 @@ function index({
                                       size="large"
                                       className="addJF-selector"
                                       placeholder="担当者"
+                                      // defaultValue={listNameMemberAssign}
                                       disabled={roleTask === 'member' || !changeStatus}
                                       allowClear="true"
                                     >
-                                      {listMemberAssignee.map((element) => (
+                                      {listMemberAssign.map((element) => (
                                         <Select.Option
                                           className="validate-user"
                                           key={element.id}
@@ -532,6 +559,7 @@ function index({
                         <Select
                           mode="multiple"
                           showArrow
+                          // defaultValue={listNameMemberAssign}
                           tagRender={tagRender}
                           disabled={roleTask !== 'jfadmin'}
                           allowClear="true"
