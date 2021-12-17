@@ -8,8 +8,8 @@ import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
 import 'antd/dist/antd.css'
 import './style.scss'
-import { getTaskByJfId, updateTask, getJobfair } from '../../api/task-kanban'
-import { checkAssignee } from '../../api/task-detail'
+import { getTaskByJfId, updateTask } from '../../api/task-kanban'
+import { getRoleTask } from '../../api/task-detail'
 import Loading from '../../components/loading'
 
 const singleTask = (type, taskIds) => {
@@ -40,25 +40,23 @@ function KanBan() {
   const [visible, setVisible] = useState(false)
   const [memo, setMemo] = useState('')
   const [id, setId] = useState('')
-  const [isAdminJobfair, setIsAdminJobfair] = useState([])
 
   const { store } = useContext(ReactReduxContext)
 
   const currentUserId = store.getState().get('auth').get('user').get('id')
 
-  const getJf = async () => {
-    try {
-      const { data } = await getJobfair(idJf * 1, currentUserId)
-      setIsAdminJobfair(data)
-    } catch (error) {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    }
-    // if (data.length > 0) {
-    //   setIsControllable(true)
-    // }
-  }
+  // const getJf = async () => {
+  //   try {
+  //     const { data } = await getJobfair(idJf * 1, currentUserId)
+  //   } catch (error) {
+  //     if (error.response.status === 404) {
+  //       router.push('/404')
+  //     }
+  //   }
+  //   // if (data.length > 0) {
+  //   //   setIsControllable(true)
+  //   // }
+  // }
 
   const fetchData = async () => {
     try {
@@ -197,13 +195,17 @@ function KanBan() {
       }
     })
 
-    const isAssignee = await checkAssignee(taskID, currentUserId).catch((error) => {
+    // const isAssignee = await checkAssignee(taskID, currentUserId).catch((error) => {
+    //   if (error.response.status === 404) {
+    //     router.push('/404')
+    //   }
+    // })
+    const roleTask = await getRoleTask(idJf, currentUserId, taskID).catch((error) => {
       if (error.response.status === 404) {
         router.push('/404')
       }
     })
-    if (isAdminJobfair.length === 0 && isAssignee.data === ''
-    ) {
+    if (roleTask.data !== 'jfadmin' && roleTask.data !== 'reviewer' && roleTask.data !== 'taskMember') {
       return
     }
     if (start === finish) {
@@ -313,7 +315,7 @@ function KanBan() {
 
   useEffect(() => {
     localStorage.setItem('id-jf', idJf)
-    getJf()
+    // getJf()
     fetchData()
   }, [])
 
