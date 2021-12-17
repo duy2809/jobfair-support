@@ -105,11 +105,13 @@ function Comment(props) {
                 </span>
               </div>
               <div className="mr-4" hidden={userId !== props.comment.author?.id}>
-                <EditTwoTone
-                  className="border-none mx-1 text-2xl"
-                  type="primary"
-                  onClick={editComment}
-                />
+                {props.comment.content !== '<p></p>' && (
+                  <EditTwoTone
+                    className="border-none mx-1 text-2xl"
+                    type="primary"
+                    onClick={editComment}
+                  />
+                )}
                 <DeleteTwoTone
                   className="border-none mx-1 text-2xl"
                   type="primary"
@@ -143,8 +145,8 @@ function Comment(props) {
                 </div>
                 {/* status changed */}
                 <div className="">
-                  {(props.comment.new_status?.length > 0
-                    || props.comment.old_status?.length > 0) && (
+                  {(props.comment.new_status?.length > 0 ||
+                    props.comment.old_status?.length > 0) && (
                     <div className="flex">
                       <div className="old__status flex">
                         <strong className="text-right" style={{ minWidth: '90px' }}>
@@ -165,28 +167,28 @@ function Comment(props) {
                 </div>
                 {/* assignees changed */}
                 <div className="">
-                  {props.comment.new_assignees?.length !== 0
-                  || props.comment.old_assignees?.length !== 0 ? (
-                      <div className="flex">
-                        <div className="old__asignees flex">
-                          <strong className="text-right" style={{ minWidth: '90px' }}>
+                  {props.comment.new_assignees?.length !== 0 ||
+                  props.comment.old_assignees?.length !== 0 ? (
+                    <div className="flex">
+                      <div className="old__asignees flex">
+                        <strong className="text-right" style={{ minWidth: '90px' }}>
                           担当者：
-                          </strong>
-                          <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic">
-                            {props.comment.old_assignees.join(', ')}
-                          </Typography>
-                        </div>
-                      &rArr;
-                        <div className="new__asignees">
-                          <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
-                            {props.comment.new_assignees.join(', ')}
-                          </Typography>
-                        </div>
+                        </strong>
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic">
+                          {props.comment.old_assignees.join(', ')}
+                        </Typography>
                       </div>
-                    ) : null}
+                      &rArr;
+                      <div className="new__asignees">
+                        <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
+                          {props.comment.new_assignees.join(', ')}
+                        </Typography>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
-                {(props.comment.new_status?.length > 0
-                  || props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
+                {(props.comment.new_status?.length > 0 ||
+                  props.comment.new_assignees?.length > 0) && <div className="mb-5" />}
               </div>
               {/* <Divider className="mx-2 bg-gray-300" /> */}
 
