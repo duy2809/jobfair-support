@@ -218,7 +218,7 @@ function TaskDetail() {
     fetchAfterTask()
     fetchReviewersList()
     setLoading(false)
-  }, [role])
+  }, [role, router.query.id])
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
 
   return (
