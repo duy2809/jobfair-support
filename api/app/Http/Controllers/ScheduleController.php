@@ -115,7 +115,7 @@ class ScheduleController extends Controller
             }
         }
 
-        return Schedule::findOrFail($id)->templateTasks()->where('is_parent', 0)->get()->count();
+        return Schedule::findOrFail($id)->templateTasks()->where('is_parent', 0)->get();
     }
 
     public function checkScheduleNameExist(Request $request)

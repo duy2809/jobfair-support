@@ -208,6 +208,6 @@ class TemplateTaskController extends Controller
 
     public function checkNameExisted(Request $request)
     {
-        return TemplateTask::where('name', '=', $request->name)->get();
+        return TemplateTask::where('name', '=', $request->name)->where('is_parent', 0)->get();
     }
 }
