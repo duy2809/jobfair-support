@@ -598,6 +598,7 @@ class ScheduleController extends Controller
                     ], 400);
                 }
             }
+
         }
 
         // if all milestones's duration is oke then update the durations
@@ -610,34 +611,54 @@ class ScheduleController extends Controller
                     ->update(['duration' => $milestone['template_tasks'][$templateTask->id]]);
             }
         }
+        $this->calculateParentDuration($schedule_id);
     }
     private function calculateParentDuration($scheduleId)
     {
-        $templateTasks = Schedule::findOrFail($scheduleId)->templateTasks;
+        $schedule = Schedule::findOrFail($scheduleId);
+        $templateTasks = $schedule->templateTasks;
         $templateTaskIds = $templateTasks->pluck('id')->toArray();
         $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
             ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
         $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
-        $parentTemplateTask = $templateTasks->filter(function ($templateTask) {
-            return $templateTask->is_parent === 1;
-        })->map(function ($templateTask) use ($templateTasks, $templateTasksOrder, $scheduleId) {
-
-            if ($templateTask->is_parent === 1 && $templateTask->pivot->schedule_id === $scheduleId) {
-                $templateTask->children = $templateTasks->filter(function ($element) use ($templateTask) {
-                    return $element->pivot->template_task_parent_id === $templateTask->id;
-                })->sort(function ($child1, $child2) use ($templateTasksOrder) {
-                    $index1 = array_search($child1->id, array_keys($templateTasksOrder));
-                    $index2 = array_search($child2->id, array_keys($templateTasksOrder));
-                    if ($index1 === $index2) {
-                        return 0;
-                    }
-                    if ($index1 < $index2) {
-                        return -1;
-                    }
-                    return 1;
-                });
-            }
+        $parentTemplateTasks = $templateTasks->where("is_parent", 1);
+        $parentTemplateTasks = $parentTemplateTasks->map(function ($templateTask) use ($templateTasks, $templateTasksOrder) {
+            $templateTask->children = $templateTasks->filter(function ($element) use ($templateTask) {
+                return $element->pivot->template_task_parent_id === $templateTask->id;
+            })->sort(function ($child1, $child2) use ($templateTasksOrder) {
+                $index1 = array_search($child1->id, array_keys($templateTasksOrder));
+                $index2 = array_search($child2->id, array_keys($templateTasksOrder));
+                if ($index1 === $index2) {
+                    return 0;
+                }
+                if ($index1 < $index2) {
+                    return -1;
+                }
+                return 1;
+            });
             return $templateTask;
+        });
+        $parentTemplateTasks->each(function ($parentTemplateTask) use ($schedule) {
+            $mapTaskIDToDuration = collect([]);
+            $templateTaskIds = $parentTemplateTask->children->pluck('id')->toArray();
+            $parentTemplateTask->children->each(function ($child) use (&$mapTaskIDToDuration, $templateTaskIds) {
+                $newDuration = 0;
+                $child->beforeTasks->each(function ($element)
+                     use (&$newDuration, &$mapTaskIDToDuration, $templateTaskIds) {
+                        if (in_array($element->id, $templateTaskIds)) {
+                            $possibleDuration = $mapTaskIDToDuration[$element->id];
+                            if ($newDuration < $possibleDuration) {
+                                $newDuration = $possibleDuration;
+                            }
+                        }
+
+                    });
+                $newDuration = $newDuration + $child->pivot->duration;
+                $mapTaskIDToDuration->put($child->id, $newDuration);
+            });
+            $schedule->templateTasks()->updateExistingPivot($parentTemplateTask, [
+                'duration' => $mapTaskIDToDuration[$parentTemplateTask->children->last()->id],
+            ], false);
         });
     }
     public function createTemplateTaskParent(Request $request)

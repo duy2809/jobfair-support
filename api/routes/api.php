@@ -192,3 +192,5 @@ Route::post('/comment/{id}', 'CommentController@update');
 Route::get('/status/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getStatus']);
 Route::get('/task-role/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getTaskRole']);
 Route::put('/update-status/{user_id}/{task_id}', [StatusController::class, 'updateStatus']);
+
+Route::post('post-duration/{id}', 'ScheduleController@test');
