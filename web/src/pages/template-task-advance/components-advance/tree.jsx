@@ -1,12 +1,11 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react'
 import {
   Tree,
   // DragLayerMonitorProps,
   getDescendants,
 } from '@minoru/react-dnd-treeview'
-import {
-  PlusOutlined,
-} from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 import useTree from '../useTree'
 
 import { CustomNode } from './CustomNode'
@@ -23,19 +22,8 @@ const backupData = [
       {
         id: 1,
         parent: 0,
-        text: 'asfsdfasdjglkasdhgjdaksg',
+        text: 'test',
       },
-      {
-        id: 2,
-        parent: 0,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 3,
-        parent: 0,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-
     ],
   },
   {
@@ -46,21 +34,8 @@ const backupData = [
         id: 1,
         parent: 0,
         droppable: true,
-        text: 'asfsdfasdjglkasdhgjdaksg',
+        text: 'test',
       },
-      {
-        id: 2,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-      {
-        id: 3,
-        parent: 0,
-        droppable: true,
-        text: 'asfsdfasdjglkasdhgjdakasdsfsg',
-      },
-
     ],
   },
 ]
@@ -85,8 +60,16 @@ const getLastId = (treeData) => {
 }
 
 // eslint-disable-next-line react/prop-types
-function App({ idSchedule, onChangeTime }) {
-  const { treeData, setTreeData, SampleData, setSamleData, idMilestoneActive, setIdMileStoneActive } = useTree(idSchedule)
+function App({
+  idSchedule,
+  onAfterChange,
+  onChangeTime,
+  SampleData,
+  setSamleData,
+  idMilestoneActive,
+  setIdMileStoneActive,
+}) {
+  const { treeData, setTreeData } = useTree(idSchedule)
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
       if (newTree[index].droppable) {
@@ -94,7 +77,7 @@ function App({ idSchedule, onChangeTime }) {
       }
     }
     setTreeData(newTree)
-    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
     const newSample = {
       id: SampleData[index].id,
       milestone_name: SampleData[index].milestone_name,
@@ -118,7 +101,7 @@ function App({ idSchedule, onChangeTime }) {
     })
 
     setTreeData(newTree)
-    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
     const newSample = {
       id: SampleData[index].id,
       milestone_name: SampleData[index].milestone_name,
@@ -129,9 +112,11 @@ function App({ idSchedule, onChangeTime }) {
   }
   const listMilestone = []
   // eslint-disable-next-line no-unused-expressions
-  SampleData ? SampleData.forEach((element) => {
-    listMilestone.push({ name: element.milestone_name, id: element.id })
-  }) : null
+  SampleData
+    ? SampleData.forEach((element) => {
+      listMilestone.push({ name: element.milestone_name, id: element.id })
+    })
+    : null
   const handleDelete = (id) => {
     const deleteIds = [
       id,
@@ -147,7 +132,7 @@ function App({ idSchedule, onChangeTime }) {
     const newTree = treeData.filter((node) => !deleteIds.includes(node.id))
     const newChil = newTree.concat(listChil)
     setTreeData(newChil)
-    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
     const newSample = {
       id: SampleData[index].id,
       milestone_name: SampleData[index].milestone_name,
@@ -178,14 +163,14 @@ function App({ idSchedule, onChangeTime }) {
     setOpen(false)
   }
   const onMilestoneChange = (value) => {
-    const newList = SampleData ? SampleData.filter((item) => item.id === value) : null
+    const newList = SampleData
+      ? SampleData.filter((item) => item.id === value)
+      : null
     setTreeData(newList ? newList[0].task : null)
     setIdMileStoneActive(value)
   }
   const handleAddText = (text) => {
-    if (
-      text.length === 0
-    ) return
+    if (text.length === 0) return
     const dataAdd = {
       id: Math.floor(Math.random() * (9999 - 1000)) + 1000,
       parent: 0,
@@ -195,7 +180,7 @@ function App({ idSchedule, onChangeTime }) {
     const newList = [...treeData]
     newList.push(dataAdd)
     setTreeData(newList)
-    const index = SampleData.findIndex((item) => (item.id === idMilestoneActive))
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
     const newSample = {
       id: SampleData[index].id,
       milestone_name: SampleData[index].milestone_name,
@@ -248,6 +233,7 @@ function App({ idSchedule, onChangeTime }) {
             onDelete={handleDelete}
             onTextChange={handleTextChange}
             onChangeTime={onChangeTime}
+            onAfterChange={onAfterChange}
           />
         )}
         dragPreviewRender={(monitorProps) => (

@@ -651,7 +651,7 @@ class ScheduleController extends Controller
         return response()->json('Create Successfully');
     }
 
-    public function updateTemplateTaskParent(Request $request, $id)
+    public function updateTemplateTaskParent(Request $request)
     {
         $idCategory = [];
         $schedule = Schedule::find($request->schedule_id);

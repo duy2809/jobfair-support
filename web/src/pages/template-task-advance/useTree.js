@@ -34,8 +34,25 @@ const useHome = (idSchedule) => {
           }
         }
         const newRes = newSamp.filter((item, index) => newSamp.indexOf(item) === index)
+
+        const milestones = []
+        for (let index = 0; index < newRes.length; index += 1) {
+          const templa = []
+          for (let item = 0; item < newRes[index].task.length; item += 1) {
+            templa.push({ [newRes[index].task[item].id]: 7 })
+            // const ah = Object.assign({}, ...templa)
+            const a = {
+              milestone_id: newRes[index].id,
+              template_tasks: templa,
+            }
+            milestones.push(a)
+          }
+        }
+        const newMilestone = milestones.filter((value, index, self) => index === self.findIndex((t) => (
+          t.milestone_id === value.milestone_id
+        )))
+        setDataChartMilestone(newMilestone)
         setSamleData(newRes)
-        setDataChartMilestone(res.data)
         setTreeData(newRes[0].task)
         setIdMileStoneActive(newRes[0].id)
       })
@@ -56,6 +73,7 @@ const useHome = (idSchedule) => {
     idMilestoneActive,
     setIdMileStoneActive,
     dataChartMilestone,
+    setDataChartMilestone,
   }
 }
 export default useHome
