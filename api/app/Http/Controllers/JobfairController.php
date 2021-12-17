@@ -49,7 +49,7 @@ class JobfairController extends Controller
         : $milestone['period'];
         $startTime = date(
             'Y-m-d',
-            strtotime($jobfair->start_date.' + '.$numDates.'days')
+            strtotime($jobfair->start_date . ' + ' . $numDates . 'days')
         );
     }
 
@@ -84,12 +84,12 @@ class JobfairController extends Controller
                     // can always calculate end time of before tasks because of before tasks is always be handled first (ordered by TaskRelation func)
                     $newStartTime = $currentStartTime;
                     $templateTask->beforeTasks->each(function ($element) use (&$newStartTime, $mapTaskIDToEndTime) {
-                        $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id].'+ 1 day'));
+                        $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id] . '+ 1 day'));
                         if ($newStartTime < $possibleStartTime) {
                             $newStartTime = $possibleStartTime;
                         }
                     });
-                    $newEndTime = date('Y-m-d', strtotime($newStartTime.' + '.$templateTask->pivot->duration.'days'));
+                    $newEndTime = date('Y-m-d', strtotime($newStartTime . ' + ' . $templateTask->pivot->duration . 'days'));
                     $input = $templateTask->toArray();
                     $input['start_time'] = $newStartTime;
                     $input['end_time'] = $newEndTime;
@@ -320,7 +320,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
                 $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
-                    ->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                    ->where('tasks.name', 'LIKE', '%' . $request->name . '%');
             },
         ])->findOrFail($id, ['id']);
 

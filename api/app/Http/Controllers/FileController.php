@@ -113,7 +113,8 @@ class FileController extends Controller
             ));
 
             return DB::table('documents')
-                ->select('*')
+                ->join('users', 'users.id', '=', 'documents.updaterId')
+                ->select('users.name as updaterName', 'documents.*')
                 ->where('path', $request->path)
                 ->where('document_id', $request->document_id)
                 ->orderBy('documents.is_file', 'asc')
@@ -172,14 +173,14 @@ class FileController extends Controller
 
     public function search(Request $request)
     {
-        $arr = str_split($request->jfId);
-        foreach ($arr as $char) {
-            if ($char < '0' || $char > '9') {
-                return response(['message' => 'invalid id'], 404);
-            }
-        }
+        // $arr = str_split($request->jfId);
+        // foreach ($arr as $char) {
+        //     if ($char < '0' || $char > '9') {
+        //         return response(['message' => 'invalid id'], 404);
+        //     }
+        // }
 
-        Jobfair::findOrFail($request->jfId);
+        // Jobfair::findOrFail($request->jfId);
         $query = Document::query();
         if ($request->has('name')) {
             $query->where('name', 'LIKE', "%$request->name%");
@@ -297,7 +298,9 @@ class FileController extends Controller
                 $term .= '%';
                 $result = Document::where('path', 'LIKE', $term)->orWhere('path', $pathD);
 
-                if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0) {
+                $jobfair = Jobfair::findOrFail($id);
+                $adminJF = $jobfair->jobfair_admin_id;
+                if ($result->where('authorId', '<>', auth()->user()->id)->count() > 0 && $adminJF !== auth()->user()->id) {
                     return response(['message' => 'Subfolder and Subfile can not be deleted '], 400);
                 }
 

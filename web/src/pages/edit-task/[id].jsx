@@ -1,5 +1,6 @@
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Form, Input, Modal, notification, Select, Tag, Tooltip } from 'antd'
+import axios from 'axios'
 import moment from 'moment'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -7,6 +8,7 @@ import { editTask, listReviewersSelectTag, reviewers } from '../../api/edit-task
 import { jftask } from '../../api/jf-toppage'
 import { afterTask, beforeTask, getUserByCategory, taskData } from '../../api/task-detail'
 import { webInit } from '../../api/web-init'
+import Editor from '../../components/comment/Editor'
 import Loading from '../../components/loading'
 import JfLayout from '../../layouts/layout-task'
 import * as Extensions from '../../utils/extensions'
@@ -14,7 +16,6 @@ import './style.scss'
 
 function EditTask() {
   const dateFormat = 'YYYY/MM/DD'
-  const { TextArea } = Input
   const router = useRouter()
   const idTask = router.query.id
   const [form] = Form.useForm()
@@ -31,6 +32,7 @@ function EditTask() {
     name: '',
     role: '',
   })
+  const [jfID, setJfID] = useState('')
   const [infoTask, setInfoTask] = useState({
     name: '',
     categories: '',
@@ -43,16 +45,23 @@ function EditTask() {
     unit: '',
     description_of_detail: '',
   })
+  const [reRender, setReRender] = useState(false)
   const [loading, setLoading] = useState(true)
   const [idJF, setIdJF] = useState(null)
   const [reviewersData, setReviewersData] = useState([])
   const [reviewersSelectTag, setReviewersSelectTag] = useState([])
   const [countUserAs, setCountUserAs] = useState(null)
+  const [description, setDescription] = useState(undefined)
   const fetchTaskData = async () => {
     await reviewers(idTask)
       .then((response) => {
         if (response.status === 200) {
           setReviewersData(response.data)
+          const idReviewer = []
+          response.data.forEach((element) => {
+            idReviewer.push(element.id)
+          })
+          setReviewersSelected(idReviewer)
         }
       })
       .catch((err) => {
@@ -77,9 +86,13 @@ function EditTask() {
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
+          const categoryName = []
+          response.data.categories.forEach((element) => {
+            categoryName.push(element.category_name)
+          })
           setInfoTask({
             name: data.name,
-            categories: data.categories[0].category_name,
+            categories: categoryName,
             milestone: data.milestone.name,
             status: data.status,
             start_time: data.start_time,
@@ -87,8 +100,9 @@ function EditTask() {
             effort: data.template_task.effort,
             is_day: data.template_task.is_day,
             unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
+            description_of_detail: data.description_of_detail || '',
           })
+          setJfID(response.data.schedule.jobfair.id)
           setIdJF(data.schedule.jobfair.id)
           // eslint-disable-next-line no-use-before-define
           fetchListTask()
@@ -101,9 +115,10 @@ function EditTask() {
             listReviewers.push(element.name)
           })
           setCountUserAs(listmember)
+
           form.setFieldsValue({
             name: data.name,
-            category: data.categories[0].category_name,
+            // category: data.categories[0].category_name,
             milestone: data.milestone.name,
             assignee: listmember,
             status: data.status,
@@ -243,9 +258,9 @@ function EditTask() {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
     }
-    if (value.match(Extensions.Reg.specialCharacter)) {
-      return Promise.reject(new Error('使用できない文字が含まれています'))
-    }
+    // if (value.match(Extensions.Reg.specialCharacter)) {
+    //   return Promise.reject(new Error('使用できない文字が含まれています'))
+    // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
     }
@@ -295,10 +310,10 @@ function EditTask() {
       message: 'Method not allowed',
     })
   }
-  const openNotification = (type, message, description) => {
+  const openNotification = (type, message, descrip) => {
     notification[type]({
       message,
-      description,
+      descrip,
       duration: 2.5,
     })
   }
@@ -338,10 +353,9 @@ function EditTask() {
             return ''
           })
         }
-
         const data = {
           name: values.name,
-          description_of_detail: values.detail,
+          description_of_detail: infoTask.description_of_detail.replace(/\\s/g, '').trim(),
           beforeTasks: beforeID,
           afterTasks: afterIDs,
           start_time: values.start_time.format(Extensions.dateFormat),
@@ -349,9 +363,13 @@ function EditTask() {
           admin: adminas,
           user_id: users.id,
           status: values.status,
-          reviewers: reviewersSelected,
+          reviewers: values.reviewers[0] === 'なし' ? [] : reviewersSelected,
         }
-        if (countUserAs.length > 1 && reviewersSelected.length === 0) {
+        if (data.description_of_detail === '') {
+          data.description_of_detail = ' '
+        }
+
+        if (countUserAs.length > 1 && values.reviewers[0] === 'なし') {
           openNotification('error', '複数の担当者を選択する場合にはレビュアーを選択してください')
         } else {
           setdisableBtn(true)
@@ -452,28 +470,52 @@ function EditTask() {
     }
   }
   const fetchListMember = async () => {
-    await getUserByCategory(infoTask.categories)
-      .then((response) => {
-        setListUser(response.data)
-      })
-      .catch((error) => {
-        if (error.response.status === 404) {
-          router.push('/404')
-        }
-      })
+    let listMember = []
+    // eslint-disable-next-line no-plusplus
+    for (let index = 0; index < infoTask.categories.length; index++) {
+      // eslint-disable-next-line no-await-in-loop
+      await getUserByCategory(infoTask.categories[index])
+        // eslint-disable-next-line no-loop-func
+        .then((response) => {
+          listMember = listMember.concat(response.data)
+        })
+        .catch((error) => {
+          if (error.response.status === 404) {
+            router.push('/404')
+          }
+        })
+    }
+    setListUser(listMember)
   }
   useEffect(() => {
     fetchTaskData()
     fetchBeforeTask()
     fetchafterTask()
     getDataUser()
+  }, [])
+  useEffect(() => {
     if (idJF) {
       fetchListTask()
+      fetchListMember()
     }
-    fetchListMember()
+
     setLoading(false)
   }, [idJF])
+  useEffect(() => {
+    setDescription(infoTask.description_of_detail)
+  }, [infoTask])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setReRender(true)
+    }, 800)
+    return () => clearTimeout(timer)
+  }, [infoTask.description_of_detail])
   const listStatus = ['未着手', '進行中', '完了', '中断', '未完了']
+  const onTyping = (value) => {
+    if (value !== '') {
+      setInfoTask({ ...infoTask, description_of_detail: value })
+    }
+  }
   // ant-select-selector
   return (
     <div>
@@ -534,7 +576,7 @@ function EditTask() {
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
                   <Form.Item label="カテゴリ" name="category">
-                    <span>{infoTask.categories}</span>
+                    <span>{infoTask.categories ? infoTask.categories.join(', ') : null}</span>
                   </Form.Item>
                 </div>
                 <div className="col-span-1 mx-2 mb-2">
@@ -753,15 +795,7 @@ function EditTask() {
                   </Form.Item>
                 </div>
                 <div className="col-span-2 mx-2 mb-2">
-                  <Form.Item name="detail">
-                    <TextArea
-                      onChange={() => {
-                        setIsEdit(true)
-                      }}
-                      rows={10}
-                      placeholder="何かを入力してください"
-                    />
-                  </Form.Item>
+                  {reRender && <Editor jfID={jfID} value={description} onChange={onTyping} />}
                 </div>
               </div>
               <div className="flex justify-end mr-2">
@@ -796,20 +830,20 @@ function EditTask() {
     </div>
   )
 }
-// EditTask.getInitialProps = async (ctx) => {
-//   const taskId = parseInt(ctx.query.id, 10)
-//   const userId = ctx.store.getState().get('auth').get('user').get('id')
-//   if (userId) {
-//     try {
-//       await axios.get(`${ctx.serverURL}/is-admin-task`, {
-//         params: { userId, taskId },
-//       })
-//     } catch (err) {
-//       ctx.res?.writeHead(302, { Location: '/error' })
-//       ctx.res?.end()
-//     }
-//   }
-//   return {}
-// }
-// EditTask.middleware = ['auth:superadmin', 'auth:member']
+EditTask.getInitialProps = async (ctx) => {
+  const taskId = parseInt(ctx.query.id, 10)
+  const userId = ctx.store.getState().get('auth').get('user').get('id')
+  if (userId) {
+    try {
+      await axios.get(`${ctx.serverURL}/is-admin-task`, {
+        params: { userId, taskId },
+      })
+    } catch (err) {
+      ctx.res?.writeHead(302, { Location: '/error' })
+      ctx.res?.end()
+    }
+  }
+  return {}
+}
+EditTask.middleware = ['auth:superadmin', 'auth:member']
 export default EditTask

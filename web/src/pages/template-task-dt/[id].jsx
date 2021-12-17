@@ -17,7 +17,7 @@ function templatetTaskDt() {
   const router = useRouter()
   const idTplt = router.query.id
   const [name, setName] = useState('')
-  const [categoryName, setCategory] = useState('')
+  const [categoryName, setCategory] = useState([])
   const [milestoneName, setMilestone] = useState('')
   const [beforeTasks, setBeforeTask] = useState([])
   const [afterTasks, setAfterTasks] = useState([])
@@ -32,9 +32,14 @@ function templatetTaskDt() {
     await templateTask(idTplt)
       .then((response) => {
         setName(response.data.name)
-        if (response.data.categories[0]) {
-          setCategory(response.data.categories[0].category_name)
+        if (response.data.categories) {
+          const NameCategory = []
+          response.data.categories.forEach((element) => {
+            NameCategory.push(element.category_name)
+          })
+          setCategory(NameCategory)
         }
+
         if (response.data.milestone) {
           setMilestone(response.data.milestone.name)
         }
@@ -176,7 +181,7 @@ function templatetTaskDt() {
                       <p>カテゴリ</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <div className="item__right">{categoryName}</div>
+                      <div className="item__right">{categoryName.join(', ')}</div>
                     </div>
                   </div>
                 </div>
@@ -207,11 +212,7 @@ function templatetTaskDt() {
                           <span className="ef">{ef}</span>
                           <span className="ef">{isDay ? '日' : '時間'}</span>
                           <span>/</span>
-                          {unit === 'students' ? (
-                            <span className="ef">学生数</span>
-                          ) : (
-                            <span className="ef">企業数</span>
-                          )}
+                          {unit}
                         </>
                       )}
                     </div>

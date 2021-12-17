@@ -1,5 +1,5 @@
 import {
-  convertFromRaw,
+  ContentState,
   convertToRaw,
   DefaultDraftBlockRenderMap,
   EditorState,
@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react'
 // import handlePastedText from '../../utils/handleOnPaste'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { MemberApi } from '../../api/member'
+import FileAdder from './FileAdder'
 import './styles.scss'
 import TodoBlock from './TodoBlock'
 import TodoList from './TodoList'
@@ -78,23 +79,23 @@ const resetBlockType = (editorState, newType) => {
 }
 
 function index(props) {
-  const commentContent = props.value
+  const [commentContent, setCommentContent] = useState(props.value || '')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   /* onchange */
   const onEditorStateChange = async (state) => {
     setEditorState(state)
-    const res = await import('draftjs-to-markdown')
+    const res = await import('draftjs-to-html')
     const data = res.default(convertToRaw(state.getCurrentContent()))
     props.onChange(data)
   }
   const setEditorStateWhenEditing = async () => {
-    const convertMarkdown2Draft = await import('markdown-draft-js').then(
-      (module) => module.markdownToDraft,
-    )
-    setEditorState(
-      EditorState.createWithContent(convertFromRaw(convertMarkdown2Draft(commentContent))),
-    )
+    const convertMarkdown2Draft = await import('html-to-draftjs').then((module) => module.default)
+    const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
+    const { contentBlocks, entityMap } = blocksFromHtml
+    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
+    const newEditorState = EditorState.createWithContent(contentState)
+    setEditorState(newEditorState)
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
@@ -105,11 +106,15 @@ function index(props) {
     }))
     setUsersName(names)
   }
+
   useEffect(() => {
     getAllUser()
     setEditorStateWhenEditing()
     return () => setEditorState(EditorState.createEmpty())
   }, [])
+  useEffect(() => {
+    setCommentContent(props.value)
+  }, [props.value])
 
   const getEditorState = () => editorState
   const blockRendererFn = getBlockRendererFn(getEditorState, onEditorStateChange)
@@ -119,6 +124,7 @@ function index(props) {
     trigger: '@',
     suggestions: usersName,
   }
+
   const hashtag = {
     separator: ' ',
     trigger: '#',
@@ -143,7 +149,7 @@ function index(props) {
     const currentBlock = editorState.getCurrentContent().getBlockForKey(selection.getStartKey())
     const blockType = currentBlock.getType()
     const blockLength = currentBlock.getLength()
-    if (blockLength === 1 && currentBlock.getText() === '[') {
+    if (blockLength === 1 && currentBlock.getText() === '[]]') {
       onEditorStateChange(
         resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
       )
@@ -175,6 +181,7 @@ function index(props) {
         editorState={editorState}
         toolbarClassName=""
         mention={mention}
+        // mention={files}
         hashtag={hashtag}
         blockStyleFn={blockStyleFn}
         blockRenderMap={blockRenderMap}
@@ -188,6 +195,7 @@ function index(props) {
         toolbarCustomButtons={[
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
+          <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
         ]}
       />
     </div>
@@ -196,5 +204,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  jfID: PropTypes.string,
 }
 export default index

@@ -19,7 +19,7 @@
     "@sentry/browser": "^6.7.1",
     "@uiw/react-markdown-preview": "3.4.0",
     "@uiw/react-md-editor": "^3.6.5",
-    "antd": "^4.16.3",
+    "antd": "^4.17.2",
     "axios": "^0.21.1",
     "babel-loader": "^8.2.3",
     "babel-plugin-import": "^1.13.3",

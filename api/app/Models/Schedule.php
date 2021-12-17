@@ -11,6 +11,8 @@ class Schedule extends Model
 
     public $timestamps = false;
 
+    protected $hidden = ['pivot'];
+
     protected $fillable = ['name', 'jobfair_id'];
 
     protected $guarded = [];
@@ -42,6 +44,6 @@ class Schedule extends Model
 
     public function templateTasks()
     {
-        return $this->belongsToMany(TemplateTask::class)->withPivot('duration', 'template_task_parent_id');
+        return $this->belongsToMany(TemplateTask::class)->withPivot(['template_task_parent_id', 'duration']);
     }
 }

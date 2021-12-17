@@ -20,7 +20,7 @@ class TemplateTaskController extends Controller
      */
     public function index()
     {
-        $templateTasks = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])
+        $templateTasks = TemplateTask::with(['categories:id,category_name', 'milestone:id,name'])->where('is_parent', 0)
             ->orderBy('template_tasks.created_at', 'DESC')
             ->get(['template_tasks.id', 'template_tasks.name', 'template_tasks.milestone_id', 'template_tasks.created_at']);
 
@@ -42,7 +42,7 @@ class TemplateTaskController extends Controller
             },
         ])->findOrFail($id);
 
-        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
+        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))->where('is_parent', 0)
             ->with(['categories:id,category_name', 'milestone:id,name'])
             ->orderBy('template_tasks.id', 'DESC')
             ->get(['id', 'name', 'milestone_id']);
@@ -226,7 +226,7 @@ class TemplateTaskController extends Controller
 
     public function getCategoriesTasks()
     {
-        $categories = Category::has('templateTasks')->get();
+        $categories = Category::where('category_name', '<>', 'Reviewer')->get();
 
         return response()->json($categories);
     }

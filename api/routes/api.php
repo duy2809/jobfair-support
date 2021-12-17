@@ -36,7 +36,9 @@ Route::group(['prefix' => 'jobfair/{id}'], function () {
     Route::get('/tasks/search', 'JobfairController@searchTask');
     Route::post('/add-task', 'TaskController@store');
     Route::get('/get-template-task-not-add', 'TaskController@getTemplateTaskNotAdd');
+    Route::get('/gantt', 'JobfairController@ganttChart');
 });
+
 Route::get('/jf-schedule/{id}', 'ScheduleController@getSchedule');
 Route::get('/milestone/search', 'MilestoneController@getSearch');
 Route::post('/is-jf-existed', 'JobfairController@checkNameExisted');
@@ -55,6 +57,7 @@ Route::post('jf-schedules/checkScheduleNameExist', 'ScheduleController@checkSche
 Route::prefix('schedules/{id}')->group(function () {
     Route::get('/added-milestones', 'ScheduleController@getAddedMilestones');
     Route::get('/added-template-tasks', 'ScheduleController@getAddedTemplateTasks');
+    Route::get('/parent-and-child-tasks', 'ScheduleController@getListTemplateTasks');
 });
 Route::get('/schedules/{id}/milestones', 'ScheduleController@getMilestones');
 Route::get('/schedules/{id}/template-tasks', 'ScheduleController@getTemplateTasks');
@@ -189,3 +192,5 @@ Route::post('/comment/{id}', 'CommentController@update');
 Route::get('/status/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getStatus']);
 Route::get('/task-role/{jobfair_id}/{user_id}/{task_id}', [StatusController::class, 'getTaskRole']);
 Route::put('/update-status/{user_id}/{task_id}', [StatusController::class, 'updateStatus']);
+
+Route::post('post-duration/{id}', 'ScheduleController@test');

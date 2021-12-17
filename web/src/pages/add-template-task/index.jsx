@@ -17,7 +17,6 @@ import dynamic from 'next/dynamic'
 import addTemplateTasksAPI from '../../api/add-template-task'
 import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
-// import useUnsavedChangesWarning from '../../components/load_more'
 import './style.scss'
 import MarkDownView from '../../components/markDownView'
 
@@ -40,9 +39,7 @@ const index = () => {
   const [chosePreview, setChosePreview] = useState(false)
   const [disableBtn, setdisableBtn] = useState(false)
   const [form] = Form.useForm()
-  // const [Prompt, setDirty, setPristine] = useUnsavedChangesWarning()
   const router = useRouter()
-  // route function handle all route in this page.
   const routeTo = async (url) => {
     router.prefetch(url)
     router.push(url)
@@ -87,15 +84,6 @@ const index = () => {
     }
     return true
   }
-  // const convertTaskToOptions = (tasks) => {
-  //   const options = []
-  //   Object.values(tasks).forEach((element) => {
-  //     const dummyObj = { value: '' }
-  //     dummyObj.value = element.name
-  //     options.push(dummyObj)
-  //   })
-  //   return options
-  // }
   useEffect(() => {
     const fetchAPI = async () => {
       try {
@@ -177,7 +165,15 @@ const index = () => {
       try {
         const beforeID = []
         const afterIDs = []
-
+        const CategoryId = []
+        if (values.category) {
+          listCatergories.map((item) => {
+            if (values.category.includes(item.category_name)) {
+              CategoryId.push(item.id)
+            }
+            return ''
+          })
+        }
         if (values.beforeTasks && values.afterTasks) {
           templateTasks.forEach((e) => {
             if (values.beforeTasks.includes(e.name)) {
@@ -196,14 +192,13 @@ const index = () => {
           is_day: values.isDay[1],
           unit: values.unit[1],
           effort: values.effort * 1.0,
-          category_id: values.category[1],
+          category_id: CategoryId,
           beforeTasks: beforeID,
           afterTasks: afterIDs,
         }
         setdisableBtn(true)
         setLoading(true)
         const response = await addTemplateTasksAPI.addTemplateTask(data)
-
         if (response.status < 299) {
           routeTo(`/template-task-dt/${response.data.id}`)
           successNotification()
@@ -244,11 +239,8 @@ const index = () => {
       return Promise.reject(new Error('この項目は必須です'))
     }
 
-    if (value.match(Extensions.Reg.specialCharacter)) {
-      return Promise.reject(new Error('使用できない文字が含まれています'))
-    }
-    // if (isTemplateExisted === true) {
-    //   return Promise.reject(new Error('da ton tai'))
+    // if (value.match(Extensions.Reg.specialCharacter)) {
+    //   return Promise.reject(new Error('使用できない文字が含まれています'))
     // }
     if (value.match(Extensions.Reg.onlyNumber)) {
       return Promise.reject(new Error('数字のみを含めることはできない'))
@@ -279,10 +271,8 @@ const index = () => {
       return Promise.reject(new Error('0以上の数字で入力してください'))
     }
     if (Extensions.isFullWidth(value)) {
-      // return Promise.reject(new Error('1以上の半角の整数で入力してください'))
+      return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
-
-    // setinputTest(Extention.toHalfWidth(value.toString()))
     if (
       !Extensions.isFullWidth(value)
       && !Extensions.Reg.floatNumber.test(value * 1.0)
@@ -394,6 +384,30 @@ const index = () => {
       setDataPreview(data)
     }
   }
+  const tagRenderr = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { label, closable, onClose } = props
+    const onPreventMouseDown = (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    return (
+      <Tag
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={() => {
+          onClose()
+        }}
+        style={{ marginRight: 3, paddingTop: '5px', paddingBottom: '3px' }}
+      >
+        <Tooltip title={label}>
+          <span className="inline-block text-blue-600 cursor-pointer whitespace-nowrap overflow-hidden">
+            {label}
+          </span>
+        </Tooltip>
+      </Tag>
+    )
+  }
   return (
     <>
       <OtherLayout>
@@ -408,8 +422,6 @@ const index = () => {
               >
                 <h1>テンプレートタスク追加 </h1>
                 <div className="container mx-auto flex-1 justify-center px-4  pb-20">
-                  {/* page title */}
-                  {/* <h1 className="pl-12 text-3xl font-extrabold">テンプレートタスク追加 </h1> */}
                   <div>
                     <div className="container mt-20">
                       <div className="grid justify-items-center">
@@ -494,7 +506,6 @@ const index = () => {
                                 >
                                   <Form.Item
                                     noStyle
-                                    // hasFeedback
                                     name="milestone"
                                     rules={[
                                       {
@@ -626,6 +637,8 @@ const index = () => {
                                   <Select
                                     size="large"
                                     showArrow
+                                    mode="multiple"
+                                    tagRender={tagRenderr}
                                     allowClear
                                     className="addJF-selector "
                                     placeholder="カテゴリを選択"
@@ -634,10 +647,7 @@ const index = () => {
                                     {listCatergories.map((element) => (
                                       <Select.Option
                                         key={element.id}
-                                        value={[
-                                          element.category_name,
-                                          element.id,
-                                        ]}
+                                        value={element.category_name}
                                       >
                                         {element.category_name}
                                       </Select.Option>
@@ -651,7 +661,10 @@ const index = () => {
 
                               {/* Kōsū - effort  */}
                               <Form.Item label="工数" required={!isPreview}>
-                                <Space className="space-items-special flex justify-between " style={{ display: isPreview ? 'none' : '' }}>
+                                <Space
+                                  className="space-items-special flex justify-between "
+                                  style={{ display: isPreview ? 'none' : '' }}
+                                >
                                   <div className="w-1/2 max-w-xs flex-grow ">
                                     <Form.Item
                                       noStyle
@@ -693,7 +706,6 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
-
                                       >
                                         {isDayData.map((element) => (
                                           <Select.Option
@@ -733,7 +745,10 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
-                                        value={[unitData[0].name, unitData[0].id]}
+                                        value={[
+                                          unitData[0].name,
+                                          unitData[0].id,
+                                        ]}
                                       >
                                         {unitData.map((element) => (
                                           <Select.Option
@@ -750,9 +765,8 @@ const index = () => {
                                 <p style={{ display: isPreview ? '' : 'none' }}>
                                   {dataPreview.effort}
                                   {' '}
-                                  {' '}
                                   {dataPreview.is_day}
-                                  /
+/
                                   {dataPreview.unit}
                                 </p>
                               </Form.Item>

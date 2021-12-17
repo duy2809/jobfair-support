@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import { getJobfairComment } from '../../api/comment'
 import './style.scss'
 import CommentChannel from '../../libs/echo/channels/comment-channel'
+import MarkDownView from '../markDownView'
 
 function RecentUpdate(props) {
   // const [initLoading, setInitLoading] = useState(true)
@@ -46,34 +47,35 @@ function RecentUpdate(props) {
   }
   useEffect(async () => {
     setList([])
-    getJobfairComment(props.JFid, start, 5).then((response) => {
-      addData(response.data)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
-    new CommentChannel()
-      .listen((data) => {
-        setList((prev) => {
-          let newList = [...prev]
-          if (props.JFid === 'all' || data.jobfair_id.toString() === props.JFid.toString()) {
-            newList = [data, ...newList]
-
-            let currentDate = ''
-            newList.forEach((element) => {
-              const date = new Date(element.last_edit).toLocaleDateString()
-              if (date !== currentDate) {
-                element.isFirstOfDay = true
-                currentDate = date
-              } else {
-                element.isFirstOfDay = false
-              }
-            })
-          }
-          return newList
-        })
+    getJobfairComment(props.JFid, start, 5)
+      .then((response) => {
+        addData(response.data)
       })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
+    new CommentChannel().listen((data) => {
+      setList((prev) => {
+        let newList = [...prev]
+        if (props.JFid === 'all' || data.jobfair_id.toString() === props.JFid.toString()) {
+          newList = [data, ...newList]
+
+          let currentDate = ''
+          newList.forEach((element) => {
+            const date = new Date(element.last_edit).toLocaleDateString()
+            if (date !== currentDate) {
+              element.isFirstOfDay = true
+              currentDate = date
+            } else {
+              element.isFirstOfDay = false
+            }
+          })
+        }
+        return newList
+      })
+    })
   }, [])
   // const data = [q
   //   {
@@ -127,10 +129,17 @@ function RecentUpdate(props) {
         renderItem={(item) => (
           <>
             {item.isFirstOfDay && (
-              <Divider orientation="center">{changeFormat(item.last_edit)}</Divider>
+              <Divider orientation="center">
+                <div className="time-wrapper">
+                  {changeFormat(item.last_edit)}
+                </div>
+              </Divider>
             )}
             <Link href={`/task-detail/${item.task.id}`}>
-              <List.Item className="cursor-pointer" style={{ transition: '0.25s', display: 'flex' }}>
+              <List.Item
+                className="cursor-pointer"
+                style={{ transition: '0.25s', display: 'flex' }}
+              >
                 <List.Item.Meta
                   avatar={(
                     <>
@@ -138,9 +147,7 @@ function RecentUpdate(props) {
                         <Avatar src="../images/avatars/default.jpg" />
                       ) : (
                         <>
-                          <Avatar
-                            src={`${process.env.APP_URL}/api/avatar/${item.author.id}`}
-                          />
+                          <Avatar src={`${process.env.APP_URL}/api/avatar/${item.author.id}`} />
                         </>
                       )}
                     </>
@@ -150,7 +157,9 @@ function RecentUpdate(props) {
                       <span href="">{item.author.name}</span>
                       {item.is_created_task ? (
                         <span>さんがタスクを追加</span>
-                      ) : item.is_normal_comment ? (<span>がタスクにコメント</span>) : (
+                      ) : item.is_normal_comment ? (
+                        <span>がタスクにコメント</span>
+                      ) : (
                         <span>さんがタスクを更新</span>
                       )}
                     </>
@@ -158,14 +167,11 @@ function RecentUpdate(props) {
                   description={(
                     <>
                       <a href={`/task-detail/${item.task.id}`}>{item.task.name}</a>
-                      <p>{item.content}</p>
+                      <MarkDownView source={item.content} />
                       {(item.old_name || item.new_name) && (
                         <div className="flex pr-4">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               タスク名：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -183,10 +189,7 @@ function RecentUpdate(props) {
                       {(item.old_status || item.new_status) && (
                         <div className="flex">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               ステータス：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -204,10 +207,7 @@ function RecentUpdate(props) {
                       {(item.old_start_date || item.new_start_date) && (
                         <div className="flex">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               開始日：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -225,10 +225,7 @@ function RecentUpdate(props) {
                       {(item.old_end_date || item.new_end_date) && (
                         <div className="flex">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               終了日：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -243,14 +240,10 @@ function RecentUpdate(props) {
                           </div>
                         </div>
                       )}
-                      {(item.old_assignees.length > 0
-                      || item.new_assignees.length > 0) && (
+                      {(item.old_assignees.length > 0 || item.new_assignees.length > 0) && (
                         <div className="flex pr-4">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               担当者：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -261,9 +254,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -271,9 +263,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -287,9 +278,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -297,22 +287,18 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
                         </div>
                       )}
                       {(item.old_previous_tasks.length > 0
-                      || item.new_previous_tasks.length > 0) && (
+                        || item.new_previous_tasks.length > 0) && (
                         <div className="flex pr-4">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               前のタスク：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -323,9 +309,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -333,9 +318,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -349,9 +333,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -359,9 +342,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -369,13 +351,10 @@ function RecentUpdate(props) {
                       )}
 
                       {(item.old_following_tasks.length > 0
-                      || item.new_following_tasks.length > 0) && (
+                        || item.new_following_tasks.length > 0) && (
                         <div className="flex pr-4">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               次のタスク：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -386,9 +365,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -396,9 +374,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -412,9 +389,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -422,22 +398,17 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
                         </div>
                       )}
-                      {(item.old_reviewers.length > 0
-                      || item.new_reviewers.length > 0) && (
+                      {(item.old_reviewers.length > 0 || item.new_reviewers.length > 0) && (
                         <div className="flex pr-4">
                           <div className="old__status flex">
-                            <strong
-                              className="text-right"
-                              style={{ minWidth: '90px' }}
-                            >
+                            <strong className="text-right" style={{ minWidth: '90px' }}>
                               レビュアー：
                             </strong>
                             <Typography className="bg-black-600  text-[#888888] text-sm px-2 italic ">
@@ -448,9 +419,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '20ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -458,9 +428,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '20ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -474,9 +443,8 @@ function RecentUpdate(props) {
                                     style={{ maxWidth: '25ch' }}
                                   >
                                     {index < arr.length - 1 ? `${el}, ` : el}
-                                  &nbsp;
+                                      &nbsp;
                                   </span>
-
                                 </Tooltip>
                               ) : (
                                 <span
@@ -484,9 +452,8 @@ function RecentUpdate(props) {
                                   style={{ maxWidth: '25ch' }}
                                 >
                                   {index < arr.length - 1 ? `${el}, ` : el}
-                                &nbsp;
+                                    &nbsp;
                                 </span>
-
                               )))}
                             </Typography>
                           </div>
@@ -497,7 +464,11 @@ function RecentUpdate(props) {
                 />
                 <h4 style={{ alignSelf: 'start' }}>
                   {' '}
-                  <TimeAgo style={{ paddingBottom: '4px' }} date={item.last_edit} formatter={formatter} />
+                  <TimeAgo
+                    style={{ paddingBottom: '4px' }}
+                    date={item.last_edit}
+                    formatter={formatter}
+                  />
                 </h4>
               </List.Item>
             </Link>
