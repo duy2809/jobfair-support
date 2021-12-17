@@ -182,10 +182,6 @@ class JobfairController extends Controller
                 $dataAdminToChannel = [$jobfair->channel_id, $slackid[0]->chatwork_id];
                 $this->slack->addAdminToChannel($dataAdminToChannel);
                 $this->slack->createChannelBot($jobfair->name, $res->channel->id);
-                // Lay cac user phu trach task
-                // $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
-
-                // });
             }
         }
 

@@ -408,10 +408,10 @@ const index = () => {
                           label={<p className="font-bold">チャンネル名</p>}
                           name="channel_name"
                           rules={[
-                              {
-                                validator: channelNameValidator,
-                              },
-                            ]}
+                            {
+                              validator: channelNameValidator,
+                            },
+                          ]}
                         >
                           <Input
                             type="text"

@@ -17,7 +17,7 @@ class SlackService
 
     public function createChannel($name)
     {
-        $name = str_replace([' ', '　'], '-', $name);
+        $name = str_replace([' ', '　'], '_', $name);
         try {
             return Http::withHeaders([
                 'authorization' => "Bearer {$this->slacktoken}",
