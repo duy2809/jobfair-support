@@ -43,7 +43,7 @@ const TaskSubTable = ({
     return new Date(mdy[0], mdy[1] - 1, mdy[2])
   }
   function datediff(first, second) {
-    return Math.round((first - second) / (1000 * 60 * 60 * 24))
+    return Math.ceil((first - second) / (1000 * 60 * 60 * 24))
   }
   function taskNameToLink(name) {
     let id = 0
@@ -112,9 +112,13 @@ const TaskSubTable = ({
   useEffect(() => {
     let datas = [...list]
     if (filter) {
-      if (filter.status === '進行中') {
+      if (filter.status === '未着手') {
         datas = datas.filter(
-          (data) => data.time.indexOf('後') !== -1,
+          (data) => data.status === '未着手' && data.time.indexOf('後') !== -1,
+        )
+      } else if (filter.status === '進行中') {
+        datas = datas.filter(
+          (data) => data.status === '進行中' && data.time.indexOf('後') !== -1,
         )
       } else if (filter.status === '今まで') {
         datas = datas.filter(
@@ -123,10 +127,6 @@ const TaskSubTable = ({
       } else if (filter.status === '期限きれ') {
         datas = datas.filter(
           (data) => data.time.indexOf('日遅れ') !== -1,
-        )
-      } else if (filter.status === '中断') {
-        datas = datas.filter(
-          (data) => data.time.indexOf('中断') !== -1,
         )
       }
       if (filter.reviewer_task.length > 0) {
@@ -355,6 +355,14 @@ const TaskSubTable = ({
                 <Button
                   name="status"
                   onClick={handleSelectStatus}
+                  className={`border-0 mx-4 ${optionStatus === '未着手' ? 'option-active' : ''
+                  }`}
+                >
+                  未着手
+                </Button>
+                <Button
+                  name="status"
+                  onClick={handleSelectStatus}
                   className={`border-0 mx-4 ${optionStatus === '進行中' ? 'option-active' : ''
                   }`}
                 >
@@ -372,19 +380,11 @@ const TaskSubTable = ({
                   name="status"
                   onClick={handleSelectStatus}
                   className={`border-0 mx-4 ${optionStatus === '期限きれ' ? 'option-active' : ''
-                  }`}
-                >
-                  期限きれ
-                </Button>
-                <Button
-                  name="status"
-                  onClick={handleSelectStatus}
-                  className={`border-0 mx-4 ${optionStatus === '中断' ? 'option-active' : ''
                   }
                     `}
                   style={{ letterSpacing: '-1px' }}
                 >
-                  <span> 中断 </span>
+                  <span> 期限きれ </span>
                 </Button>
               </div>
             </div>

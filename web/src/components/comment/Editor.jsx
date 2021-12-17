@@ -151,7 +151,7 @@ function index(props) {
     const blockLength = currentBlock.getLength()
     if (blockLength === 1 && currentBlock.getText() === '[]]') {
       onEditorStateChange(
-        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled')
+        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
       )
       return true
     }

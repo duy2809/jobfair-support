@@ -213,10 +213,10 @@ function index({
         memberStatus,
       }
       if (
-        (comment.body === '' || comment.body === '<p></p>') &&
-        comment.assignee === undefined &&
-        comment.status === undefined &&
-        comment.memberStatus === undefined
+        (comment.body === '' || comment.body === '<p></p>')
+        && comment.assignee === undefined
+        && comment.status === undefined
+        && comment.memberStatus === undefined
       ) {
         return notification.open({
           icon: <ExclamationCircleTwoTone twoToneColor="red" />,
@@ -300,7 +300,7 @@ function index({
     const commentContent = copyState.comment.content
     setValue(commentContent)
 
-    form.setFieldsValue({
+    return form.setFieldsValue({
       detail: commentContent,
       assignee: assigneeProp,
       status: statusProp,
@@ -540,6 +540,7 @@ function index({
                             <Select.Option
                               className="validate-user"
                               key={element.id}
+                              disabled={editing}
                               value={element.id}
                             >
                               {element.name}
