@@ -16,7 +16,6 @@ import Tree from './components-advance/tree'
 import useTree from './useTree'
 import './style.scss'
 import { updateParent } from '../../api/template-advance'
-// import ChartMilestone from './chart-miestone'
 
 const templateTaskAdvance = () => {
   const [loading, setLoading] = useState(false)

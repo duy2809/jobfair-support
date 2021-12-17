@@ -6,10 +6,11 @@ import {
 } from 'antd'
 import './style.scss'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 function SelectML({ onMilestoneChange, listMilestone, idSchedule }) {
   const [form] = Form.useForm()
-
+  const router = useRouter()
   useEffect(() => {
     let mounted = true
     const fetchApi = async () => {
@@ -21,7 +22,9 @@ function SelectML({ onMilestoneChange, listMilestone, idSchedule }) {
           milestone: res.data[0].name,
         })
       } catch (error) {
-        console.log(error)
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
       }
     }
     if (mounted) fetchApi()

@@ -1,19 +1,15 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable import/no-duplicates */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-// import IconButton from '@material-ui/core/IconButton'
-// import { ArrowRight, Delete, FileCopy } from '@material-ui/icons'
 import {
-  PlusOutlined,
   CloseCircleOutlined,
   CheckOutlined,
   EditTwoTone,
   FolderFilled,
-  ExclamationCircleOutlined,
   FileFilled,
-  SearchOutlined,
   DownOutlined,
   RightOutlined,
 } from '@ant-design/icons'

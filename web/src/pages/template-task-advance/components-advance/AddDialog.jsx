@@ -1,26 +1,10 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react'
-import { PlusOutlined, CloseCircleOutlined, CheckOutlined, EditTwoTone, SearchOutlined, DownOutlined, RightOutlined } from '@ant-design/icons'
+import { CloseCircleOutlined, CheckOutlined } from '@ant-design/icons'
 import './AddDialog.module.scss'
 
-export const AddDialog = ({ SampleData, treeData, setTreeData, handleAddText, handleCloseDialog }) => {
+export const AddDialog = ({ handleAddText, handleCloseDialog }) => {
   const [text, setText] = useState('')
-
-  // const handleChangeText = (e) => {
-  //   setText(e.target.value)
-  // }
-
-  // const handleChangeParent = (e) => {
-  //   setParent(Number(e.target.value))
-  // }
-
-  // const handleChangeDroppable = (e) => {
-  //   setDroppable(e.target.checked)
-  // }
-
-  // const handleChangeFileType = (e) => {
-  //   setFileType(e.target.value)
-  // }
   const handleCancel = () => {
     setText('')
     handleCloseDialog()
