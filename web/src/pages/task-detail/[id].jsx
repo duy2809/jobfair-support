@@ -1,13 +1,23 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
 import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+import {
+  afterTask,
+  beforeTask,
+  deleteTask,
+  taskData,
+  getRoleTask,
+} from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
@@ -138,7 +148,10 @@ function TaskDetail() {
             effort: data.template_task.effort,
             is_day: data.template_task.is_day,
             unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
+            description_of_detail: data.description_of_detail.replace(
+              /<a/g,
+              '<a target="_blank" ',
+            ),
           })
           setTaskStatus(data.status)
           setListMemberAssignee(data.users)
@@ -438,7 +451,8 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <table>
-                        {newAsigneesFromNewComment.length > 0 && action === 'none'
+                        {newAsigneesFromNewComment.length > 0
+                        && action === 'none'
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
