@@ -92,13 +92,13 @@ const Top = () => {
       title: '名前',
       dataIndex: 'name',
       key: 'key',
-      width: '60%',
+      width: '80%',
     },
     {
       title: 'タイム',
       dataIndex: 'time',
       key: 'key',
-      width: '40%',
+      width: '20%',
     },
   ]
 

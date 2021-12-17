@@ -74,11 +74,11 @@ const TaskSubTable = ({
       dataColumn.map((dataItem) => {
         if (dataItem.title === 'タスク名') {
           dataItem.render = (row) => (
-            <Link href={taskNameToLink({ row })}>
+            <a href={taskNameToLink({ row })}>
               <Tooltip title={row}>
-                <a>{truncate(row)}</a>
+                <p>{truncate(row)}</p>
               </Tooltip>
-            </Link>
+            </a>
           )
         }
         if (dataItem.title === 'JF名') {

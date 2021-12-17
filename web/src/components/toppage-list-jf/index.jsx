@@ -38,7 +38,7 @@ const ListJfToppage = ({
       dataColumn.map((data) => {
         if (data.title === '名前') {
           data.render = (row, record) => (
-            <div>
+            <a href={`/jf-toppage/${record.key}`}>
               <div className="top-row">
                 {' '}
                 <Tooltip title={row}>
@@ -53,10 +53,8 @@ const ListJfToppage = ({
                 <a href={`/kanban/${record.key}`}>カンバン</a>
                 <span className="sp">|</span>
                 <a href={`/file/${record.key}`}>ファイル</a>
-
               </div>
-
-            </div>
+            </a>
           )
         }
         if (data.title === 'タイム') {
