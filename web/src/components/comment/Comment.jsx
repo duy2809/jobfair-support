@@ -55,6 +55,7 @@ function Comment(props) {
           type: actions.DELETE_COMMENT,
           payload: comments,
         })
+        props.parentCallBack('delete')
         notification.open({
           icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
           duration: 3,

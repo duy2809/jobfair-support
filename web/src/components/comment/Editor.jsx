@@ -151,7 +151,7 @@ function index(props) {
     const blockLength = currentBlock.getLength()
     if (blockLength === 1 && currentBlock.getText() === '[]]') {
       onEditorStateChange(
-        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
+        resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled')
       )
       return true
     }
@@ -178,6 +178,32 @@ function index(props) {
         <p className="text-xs italic text-[#888888]"># for hashtag</p>
       </div>
       <Editor
+        toolbar={{
+          options: [
+            'inline',
+            'blockType',
+            'list',
+            'textAlign',
+            'colorPicker',
+            'link',
+            'embedded',
+            'emoji',
+            'image',
+            'history',
+          ],
+          inline: { inDropdown: true },
+          list: { inDropdown: true },
+          textAlign: { inDropdown: true },
+          link: { inDropdown: true },
+          history: { inDropdown: true },
+          image: {
+            urlEnabled: true,
+            uploadEnabled: true,
+            previewImage: true,
+            // image: { uploadCallback: _uploadImageCallBack },
+            alt: { present: false, mandatory: false },
+          },
+        }}
         editorState={editorState}
         toolbarClassName=""
         mention={mention}
