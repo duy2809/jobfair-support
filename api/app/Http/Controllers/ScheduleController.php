@@ -705,7 +705,7 @@ class ScheduleController extends Controller
     {
         $idTemplateTask = DB::table('schedule_template_task')->where('schedule_id', $id)->pluck('template_task_id');
         $schedule = Schedule::with([
-            'milestones:id,name',
+            'milestones:id,name,is_week,period',
             'milestones.templateTasks' => function ($templateTask) use ($idTemplateTask) {
                 $templateTask->whereIn('template_tasks.id', $idTemplateTask)->select(['id', 'name', 'milestone_id']);
             },
