@@ -79,14 +79,13 @@ const resetBlockType = (editorState, newType) => {
 }
 
 function index(props) {
-  // const commentContent = props.value
   const [commentContent, setCommentContent] = useState(props.value || '')
   const [editorState, setEditorState] = useState(EditorState.createEmpty())
   const [usersName, setUsersName] = useState([])
   /* onchange */
   const onEditorStateChange = async (state) => {
     setEditorState(state)
-    const res = await import('draftjs-to-markdown')
+    const res = await import('draftjs-to-html')
     const data = res.default(convertToRaw(state.getCurrentContent()))
     props.onChange(data)
   }
@@ -95,8 +94,8 @@ function index(props) {
     const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
     const { contentBlocks, entityMap } = blocksFromHtml
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
-    const editorData = EditorState.createWithContent(contentState)
-    setEditorState(editorData)
+    const newEditorState = EditorState.createWithContent(contentState)
+    setEditorState(newEditorState)
   }
   const getAllUser = async () => {
     const res = await MemberApi.getListMember()
@@ -107,6 +106,7 @@ function index(props) {
     }))
     setUsersName(names)
   }
+
   useEffect(() => {
     getAllUser()
     setEditorStateWhenEditing()
@@ -149,7 +149,7 @@ function index(props) {
     const currentBlock = editorState.getCurrentContent().getBlockForKey(selection.getStartKey())
     const blockType = currentBlock.getType()
     const blockLength = currentBlock.getLength()
-    if (blockLength === 1 && currentBlock.getText() === '[]') {
+    if (blockLength === 1 && currentBlock.getText() === '[]]') {
       onEditorStateChange(
         resetBlockType(editorState, blockType !== TODO_TYPE ? TODO_TYPE : 'unstyled'),
       )
@@ -170,12 +170,40 @@ function index(props) {
       element: 'div',
     },
   }).merge(DefaultDraftBlockRenderMap)
+
   return (
     <div className="editor bg-[#F8F9FA]">
       <div className="flex">
         <p className="text-xs italic text-[#888888] mr-5">@ for tag </p>
+        <p className="text-xs italic text-[#888888]"># for hashtag</p>
       </div>
       <Editor
+        toolbar={{
+          options: [
+            'inline',
+            'blockType',
+            'list',
+            'textAlign',
+            'colorPicker',
+            'link',
+            'embedded',
+            'emoji',
+            'image',
+            'history',
+          ],
+          inline: { inDropdown: true },
+          list: { inDropdown: true },
+          textAlign: { inDropdown: true },
+          link: { inDropdown: true },
+          history: { inDropdown: true },
+          image: {
+            urlEnabled: true,
+            uploadEnabled: true,
+            previewImage: true,
+            // image: { uploadCallback: _uploadImageCallBack },
+            alt: { present: false, mandatory: false },
+          },
+        }}
         editorState={editorState}
         toolbarClassName=""
         mention={mention}
@@ -191,7 +219,7 @@ function index(props) {
         onEditorStateChange={onEditorStateChange}
         handlePastedText={() => false}
         toolbarCustomButtons={[
-          // <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
+          <TodoList onChange={onEditorStateChange} editorState={editorState} checked />,
           <TodoList onChange={onEditorStateChange} editorState={editorState} checked={false} />,
           <FileAdder jfID={props.jfID} editorState={editorState} onChange={onEditorStateChange} />,
         ]}
@@ -202,6 +230,6 @@ function index(props) {
 index.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  jfID: PropTypes.string.isRequired,
+  jfID: PropTypes.string,
 }
 export default index

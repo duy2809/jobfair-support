@@ -64,12 +64,20 @@ class CommentController extends Controller
         }
 
         if ($request->has('memberStatus')) {
-            $assignment = Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->get();
+            $userId = auth()->user()->id;
+            $username = auth()->user()->name;
+            if ($request->has('member')) {
+                $userId = $request->member;
+                $memberName = User::find($request->member)->name;
+                $username = $memberName;
+            }
+
+            $assignment = Assignment::where('user_id', $userId)->where('task_id', $request->task_id)->get();
             if ($assignment[0]->status !== $request->memberStatus) {
                 $input['old_member_status'] = $assignment[0]->status;
                 $input['new_member_status'] = $request->memberStatus;
-                $input['member_name'] = auth()->user()->name;
-                Assignment::where('user_id', auth()->user()->id)->where('task_id', $request->task_id)->update(['status' => $request->memberStatus]);
+                $input['member_name'] = $username;
+                Assignment::where('user_id', $userId)->where('task_id', $request->task_id)->update(['status' => $request->memberStatus]);
                 $isUpdatedTask = true;
                 $assignmentTemps = Assignment::where('task_id', $request->task_id)->get();
                 $isNew = true;
@@ -83,6 +91,13 @@ class CommentController extends Controller
                     $task = Task::find($request->task_id);
                     if ($task->status === '未着手') {
                         $task->status = '進行中';
+                        $task->save();
+                        $input['new_status'] = $task->status;
+                    }
+                } else {
+                    $task = Task::find($request->task_id);
+                    if ($task->status !== '未着手') {
+                        $task->status = '未着手';
                         $task->save();
                         $input['new_status'] = $task->status;
                     }

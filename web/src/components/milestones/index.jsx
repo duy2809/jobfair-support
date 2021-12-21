@@ -241,7 +241,6 @@ const MilestoneList = () => {
             <Select
               labelInValue
               defaultValue={{ value: '10' }}
-              style={{ width: 60 }}
               onChange={(e) => setPageSize(e)}
             >
               <Select.Option value="10">10</Select.Option>
