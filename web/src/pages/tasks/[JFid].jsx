@@ -47,7 +47,7 @@ function TaskList() {
   const [isFilterMI, setIsFilterMI] = useState(false)
   const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(false)
-  const [originalData, setOriginalData] = useState()
+  const [originalData, setOriginalData] = useState([])
   const [temperaryData, setTemperaryData] = useState([])
   const [optionMilestone, setOptionMileStone] = useState([])
   const [optionCategory, setOptionCategory] = useState([])
@@ -130,7 +130,6 @@ function TaskList() {
             childCategoryName.push(child.categories[j].category_name)
             childCategoryId.push(child.categories[j].id)
           }
-          console.log(child.users)
           for (let j = 0; j < child.users.length; j += 1) {
             childManager.push(child.users[j].name)
             member.push({
@@ -180,9 +179,10 @@ function TaskList() {
 
   const loadCategoryOptions = (response) => {
     const option = []
+    option.push(<Option key={0} value={0}>全て</Option>)
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
+        <Option value={response.data[i].category_name}>{response.data[i].category_name}</Option>,
       )
     }
     setOptionCategory(option)
@@ -190,8 +190,9 @@ function TaskList() {
 
   const loadMilestoneOptions = (response) => {
     const option = []
+    option.push(<Option value={0}>全て</Option>)
     for (let i = 0; i < response.data.length; i += 1) {
-      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
+      option.push(<Option value={response.data[i].name}>{response.data[i].name}</Option>)
     }
     setOptionMileStone(option)
   }
@@ -239,37 +240,11 @@ function TaskList() {
     router.push(`/edit-task/${id}`)
   }
   const handleSelectCategory = (value) => {
-    if (value) {
-      setIsFilterCA(true)
-    } else setIsFilterCA(false)
     setCategory(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? task.category_name.includes(value) : task.category_name)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
   }
 
   const handlSelectMilestone = (value) => {
-    if (value) {
-      setIsFilterMI(true)
-    } else setIsFilterMI(false)
     setMilestone(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (category ? task.category_name.includes(category) : task.category_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
   }
   const handleRow = (record) => ({
     onClick: () => {
@@ -539,48 +514,52 @@ function TaskList() {
         loadMilestoneOptions(response)
       })
     } catch (error) {
-      console.log(error)
       if (error.response.status === 404) {
         router.push('/404')
       }
     }
     setLoading(false)
   }, [role])
-  // Search data on Table
-  const searchDataOnTable = (value) => {
-    value = value.toLowerCase()
-    const filteredData = originalData.filter(
-      (task) => (value
-        ? task.taskName.toLowerCase().includes(value)
-            || task.managers.some((manager) => manager.toLowerCase().includes(value))
-        : task.taskName)
-        && (category ? task.category_name.includes(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
-  }
   const onSearch = (e) => {
     const currValue = e.target.value
     setValueSearch(currValue)
-    searchDataOnTable(currValue)
   }
 
   const FilterByStatus = (value) => {
     setStatus(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? !task.status.localeCompare(value) : task.status)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
-    )
-    setTemperaryData(filteredData)
-    setLoading(false)
   }
-  // const [active] = useState([1, 0, 0, 0, 0])
+  useEffect(() => {
+    if (originalData.length > 0) {
+      let filteredData = [...originalData]
+      if (status !== '') {
+        filteredData = filteredData.filter(
+          (task) => (status ? !task.status.localeCompare(status) : task.status),
+        )
+      }
+      if (valueSearch) {
+        const value = valueSearch.toLowerCase()
+        filteredData = filteredData.filter(
+          (task) => (value
+            ? task.taskName.toLowerCase().includes(value)
+            || task.managers.some((manager) => manager.toLowerCase().includes(value))
+            : task.taskName),
+        )
+      }
+      if (milestone !== 0) {
+        filteredData = filteredData.filter(
+          (task) => (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
+        )
+      } else setIsFilterMI(false)
+      if (category !== 0) {
+        setIsFilterCA(true)
+        filteredData = filteredData.filter(
+          (task) => (category ? task.category_name.includes(category) : task.category_name),
+        )
+      } else setIsFilterCA(false)
+      setLoading(false)
+      setTemperaryData(filteredData)
+    }
+  }, [milestone, category, valueSearch, status])
   const chooseStatus = (index) => {
     setLoading(true)
     const arr = [0, 0, 0, 0, 0, 0]
