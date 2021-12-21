@@ -5,7 +5,7 @@ import TimeAgo from 'react-timeago'
 import PropTypes from 'prop-types'
 import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
-import Link from 'next/link'
+// import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { getJobfairComment } from '../../api/comment'
 import './style.scss'
@@ -135,7 +135,7 @@ function RecentUpdate(props) {
                 </div>
               </Divider>
             )}
-            <Link href={`/task-detail/${item.task.id}`}>
+            <a href={`/task-detail/${item.task.id}`}>
               <List.Item
                 className="cursor-pointer"
                 style={{ transition: '0.25s', display: 'flex' }}
@@ -471,7 +471,7 @@ function RecentUpdate(props) {
                   />
                 </h4>
               </List.Item>
-            </Link>
+            </a>
           </>
         )}
       />
