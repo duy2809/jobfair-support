@@ -179,12 +179,13 @@ class TaskController extends Controller
             } else {
                 $duration = $templateTask->pivot->duration;
             }
+
             $duration--;
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . min($duration, 0) . 'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.min($duration, 0).'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -359,6 +360,9 @@ class TaskController extends Controller
             'schedule.jobfair:id,name,jobfair_admin_id',
             'templateTask:id,effort,is_day,unit',
         ])->findOrFail($id);
+        if ($task->is_parent === 1) {
+            $task->children = Task::where('parent_id', $task->id)->get();
+        }
 
         return response()->json($task);
     }

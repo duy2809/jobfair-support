@@ -89,9 +89,10 @@ class MilestoneController extends Controller
                 return response(['message' => 'invalid id'], 404);
             }
         }
+
         $templateTasks = Schedule::findOrFail($id)->templateTasks;
         $templateTaskIds = $templateTasks->pluck('id')->toArray();
-        $result = Schedule::with('milestones')->with('milestones.templateTasks', function ($query) use ($id, $templateTaskIds) {
+        $result = Schedule::with('milestones')->with('milestones.templateTasks', function ($query) use ($templateTaskIds) {
             $query->whereIn('id', $templateTaskIds)->where(function ($q) {
                 $q->where('is_parent', 1)->orWhere('has_parent', 0);
             })->with('categories');
@@ -101,7 +102,6 @@ class MilestoneController extends Controller
         $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
         $result = $result->milestones->map(function ($milestone) use ($templateTasks, $templateTasksOrder) {
             $milestone->templateTasks->map(function ($templateTask) use ($templateTasks, $templateTasksOrder) {
-
                 if ($templateTask->is_parent === 1) {
                     $templateTask->children = $templateTasks->filter(function ($element) use ($templateTask) {
                         return $element->pivot->template_task_parent_id === $templateTask->id;
@@ -111,16 +111,21 @@ class MilestoneController extends Controller
                         if ($index1 === $index2) {
                             return 0;
                         }
+
                         if ($index1 < $index2) {
                             return -1;
                         }
+
                         return 1;
                     });
                 }
+
                 return $templateTask;
             });
+
             return $milestone;
         });
+
         return $result;
     }
 
@@ -190,7 +195,7 @@ class MilestoneController extends Controller
         $s = $request->input('s');
         if ($request->input('s')) {
             $data = DB::table('milestones')
-                ->where('name', 'LIKE', '%'+$s+'%')
+                ->where('name', 'LIKE', '%' + $s + '%')
                 ->orderBy('id', 'asc')
                 ->get();
 

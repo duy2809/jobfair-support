@@ -18,10 +18,10 @@ import {
   getTemplateTasksList,
 } from '../../../../api/template-task-edit'
 import MarkDownView from '../../../../components/markDownView'
-
-const MDEditor = dynamic(
+// import Editor from '../../../../components/comment/Editor'
+const Editor = dynamic(
   // eslint-disable-next-line import/no-unresolved
-  () => import('@uiw/react-md-editor').then((mod) => mod.default),
+  () => import('../../../../components/comment/Editor'),
   { ssr: false },
 )
 
@@ -102,7 +102,7 @@ const EditTemplateTaskPage = () => {
           templateTaskName: res.data.name,
           category: categoryName,
           milestone: res.data.milestone.name,
-          description: res.data.description_of_detail,
+          // description: res.data.description_of_detail,
           effort: res.data.effort,
           unit: res.data.unit,
           is_day: isDayData[res.data.is_day].name,
@@ -244,9 +244,7 @@ const EditTemplateTaskPage = () => {
         if (error.response.status === 404) {
           router.push('/404')
         }
-        if (
-          JSON.parse(error.response.request.response).message === 'Edit Failed'
-        ) {
+        if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
           notification.error({
             message: 'このテンプレートタスク名は存在しています',
             duration: 3,
@@ -368,10 +366,7 @@ const EditTemplateTaskPage = () => {
               >
                 <div className="grid grid-cols-2">
                   <div className="col-span-1 ml-8">
-                    <Form.Item
-                      label="テンプレートタスク名"
-                      required={!isPreview}
-                    >
+                    <Form.Item label="テンプレートタスク名" required={!isPreview}>
                       <ItemInput
                         form={form}
                         name="templateTaskName"
@@ -380,9 +375,7 @@ const EditTemplateTaskPage = () => {
                         setInput={setTemplateTaskNameInput}
                         display={isPreview}
                       />
-                      <p style={{ display: isPreview ? '' : 'none' }}>
-                        {dataPreview.name}
-                      </p>
+                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.name}</p>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
@@ -400,10 +393,7 @@ const EditTemplateTaskPage = () => {
                         onChange={filtedArr}
                       >
                         {categoryData.map((element) => (
-                          <Select.Option
-                            key={element.category_name}
-                            value={element.category_name}
-                          >
+                          <Select.Option key={element.category_name} value={element.category_name}>
                             {element.category_name}
                           </Select.Option>
                         ))}
@@ -422,9 +412,7 @@ const EditTemplateTaskPage = () => {
                         setId={setMilestoneId}
                         display={isPreview}
                       />
-                      <p style={{ display: isPreview ? '' : 'none' }}>
-                        {dataPreview.milestone}
-                      </p>
+                      <p style={{ display: isPreview ? '' : 'none' }}>{dataPreview.milestone}</p>
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
@@ -451,11 +439,7 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item
-                      label="前のタスク"
-                      name="taskBefore"
-                      className="tag_a"
-                    >
+                    <Form.Item label="前のタスク" name="taskBefore" className="tag_a">
                       <Select
                         mode="multiple"
                         showArrow
@@ -472,11 +456,7 @@ const EditTemplateTaskPage = () => {
                     </Form.Item>
                   </div>
                   <div className="col-span-1 ml-8">
-                    <Form.Item
-                      label="次のタスク"
-                      name="afterTask"
-                      className="tag_a"
-                    >
+                    <Form.Item label="次のタスク" name="afterTask" className="tag_a">
                       <Select
                         mode="multiple"
                         showArrow
@@ -497,18 +477,15 @@ const EditTemplateTaskPage = () => {
                   className="mr-4 2xl:mr-10 pl-12 mb-2"
                   style={{ display: isPreview ? 'none' : '' }}
                 >
-                  <MDEditor
-                    style={{ height: '40px !important' }}
-                    preview="edit"
-                    height="300"
+                  <Editor
                     value={description}
-                    onChange={setDescription}
+                    onChange={(data) => {
+                      setDescription(data)
+                    }}
+                    jfID={1}
                   />
                 </div>
-                <div
-                  className="mr-8 ml-14 mb-2 des"
-                  style={{ display: isPreview ? '' : 'none' }}
-                >
+                <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
                   <MarkDownView source={description} />
                 </div>
                 <div className="flex justify-end -mr-32">
@@ -529,18 +506,11 @@ const EditTemplateTaskPage = () => {
                       >
                         プレビュー
                       </Button>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="text-base mr-5 2xl:mr-10"
-                      >
+                      <Button type="primary" htmlType="submit" className="text-base mr-5 2xl:mr-10">
                         <span> 保存 </span>
                       </Button>
                     </Space>
-                    <div
-                      style={{ display: isPreview ? '' : 'none' }}
-                      className="mr-40"
-                    >
+                    <div style={{ display: isPreview ? '' : 'none' }} className="mr-40">
                       <Space size={20}>
                         <Button
                           htmlType="button"
@@ -551,11 +521,7 @@ const EditTemplateTaskPage = () => {
                         >
                           編集
                         </Button>
-                        <Button
-                          type="primary"
-                          htmlType="submit"
-                          className="text-base "
-                        >
+                        <Button type="primary" htmlType="submit" className="text-base ">
                           <span> 保存 </span>
                         </Button>
                       </Space>
