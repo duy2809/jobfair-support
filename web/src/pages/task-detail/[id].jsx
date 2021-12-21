@@ -332,36 +332,6 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
-                {/* {listMemberAssignee.length == 1? (<></>):
-                } */}
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
-                        ) : (
-                          <li className="task__chil" />
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">ステータス</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <StatusStatic status={taskStatus} />
-                    </div>
-                  </div>
-                </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -529,6 +499,36 @@ function TaskDetail() {
                               </>
                             ))}
                       </table>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">ステータス</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <StatusStatic status={taskStatus} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 mx-4">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">レビュアー</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul className="list__member">
+                        {reviewersList.length !== 0 ? (
+                          <li>
+                            {reviewersList.map((item) => item.name).join(', ')}
+                          </li>
+                        ) : (
+                          <li className="task__chil" />
+                        )}
+                      </ul>
                     </div>
                   </div>
                 </div>
