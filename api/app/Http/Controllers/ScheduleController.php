@@ -673,7 +673,7 @@ class ScheduleController extends Controller
         }
 
         $schedule->milestones = $schedule->milestones->sortBy('day');
-        foreach($schedule->milestones as $milestone) {
+        foreach ($schedule->milestones as $milestone) {
             $index = $schedule->milestones->search(function ($element) use ($milestone) {
                 return $element->id === $milestone['id'];
             });
@@ -686,7 +686,8 @@ class ScheduleController extends Controller
 
         foreach ($schedule->milestones as $milestone) {
             foreach ($milestone->templateTasks as $templateTask) {
-                $taskParentId = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)->where('schedule_id', $id)->first()->template_task_parent_id;
+                $taskParentId = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)
+                    ->where('schedule_id', $id)->first()->template_task_parent_id;
                 $templateTask['parent'] = $taskParentId === null ? 0 : $taskParentId;
                 $temp = TemplateTask::findOrFail($templateTask->id);
                 $templateTask['beforeTasks'] = $temp->beforeTasks->pluck('id');
