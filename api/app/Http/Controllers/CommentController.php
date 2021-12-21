@@ -156,6 +156,7 @@ class CommentController extends Controller
                 // sync laravel N to N
                 $task->users()->syncWithPivotValues($listMember, [
                     'join_date' => Carbon::now()->toDateTimeString(),
+                    'status' => '未着手',
                 ]);
 
                 // notification for new assignees

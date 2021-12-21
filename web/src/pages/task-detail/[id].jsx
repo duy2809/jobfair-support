@@ -91,6 +91,7 @@ function TaskDetail() {
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
+      setListMemberAssignee(copyState.updateListMember)
       setAction('none')
     }
     if (copyState.new_status !== '') {
