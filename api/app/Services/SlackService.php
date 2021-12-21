@@ -7,15 +7,17 @@ use Illuminate\Support\Facades\Http;
 class SlackService
 {
     protected $slacktoken;
+    protected $workspace;
 
     public function __construct()
     {
         $this->slacktoken = config('app.slack_token');
+        $this->workspace = config('app.workspace_id');
     }
 
     public function createChannel($name)
     {
-        $name = str_replace([' ', '　'], '-', $name);
+        $name = str_replace([' ', '　'], '_', $name);
         try {
             return Http::withHeaders([
                 'authorization' => "Bearer {$this->slacktoken}",
@@ -95,6 +97,47 @@ class SlackService
                 'channel' => $channelId,
                 'as_user' => 'U02MG72M8FL',
                 'text' => $text,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+
+    public function checkInWorkspace($userId)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->get('https://slack.com/api/users.conversations', [
+                'team_id' => $this->workspace,
+                'user' => $userId,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+
+    public function getInfoChannel($channelId)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->get('https://slack.com/api/conversations.info', [
+                'channel' => $channelId,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => $th], 400);
+        }
+    }
+
+    public function changeNameChannel($channelId, $name)
+    {
+        try {
+            return Http::withHeaders([
+                'authorization' => "Bearer {$this->slacktoken}",
+            ])->post('https://slack.com/api/conversations.rename', [
+                'channel' => $channelId,
+                'name' => $name,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['message' => $th], 400);

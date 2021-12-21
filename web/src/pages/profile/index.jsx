@@ -118,7 +118,7 @@ const Profile = () => {
 
                   <div className="col-span-3 justify-self-end">
                     <p style={{ margin: 0 }} className="font-bold">
-                      チャットワークID
+                      スラックID
                       {' '}
                     </p>
                   </div>

@@ -80,7 +80,7 @@ class JobfairController extends Controller
         }
 
         //Slack
-        $channelname = strtolower($request->name);
+        $channelname = strtolower($request->channel_name);
         $response = $this->slack->createChannel($channelname);
         $res = json_decode($response);
         if ($res->ok === false && $res->error === 'name_taken') {
@@ -122,7 +122,18 @@ class JobfairController extends Controller
             }
         }
 
-        return Jobfair::with('user:id,name')->findOrFail($id);
+        $jobfair = Jobfair::with('user:id,name')->findOrFail($id);
+        if ($jobfair->channel_id !== null) {
+            $response = $this->slack->getInfoChannel($jobfair->channel_id);
+            $res = json_decode($response);
+            if ($res->ok === true) {
+                $jobfair->setAttribute('channel_name', $res->channel->name);
+            }
+        } else {
+            $jobfair->setAttribute('channel_name', null);
+        }
+
+        return $jobfair;
     }
 
     /**
@@ -150,6 +161,29 @@ class JobfairController extends Controller
             $schedule->milestones()->sync($templateSchedule->milestones);
             $schedule->tasks()->delete();
             $this->createMilestonesAndTasks($templateSchedule, $schedule, $jobfair);
+        }
+
+        //Slack
+        if ($jobfair->channel_id !== null) {
+            $response = $this->slack->changeNameChannel($jobfair->channel_id, $request->channel_name);
+            $res = json_decode($response);
+            if ($res->ok === false && $res->error === 'name_taken') {
+                return response()->json(['message' => 'Name channel already in use'], 422);
+            }
+        } else {
+            $response = $this->slack->createChannel($request->channel_name);
+            $res = json_decode($response);
+            if ($res->ok === false && $res->error === 'name_taken') {
+                return response()->json(['message' => 'Name channel already in use'], 422);
+            }
+
+            if ($res->ok === true) {
+                $jobfair->channel_id = $res->channel->id;
+                $slackid = User::where('id', '=', $jobfair->jobfair_admin_id)->get(['chatwork_id']);
+                $dataAdminToChannel = [$jobfair->channel_id, $slackid[0]->chatwork_id];
+                $this->slack->addAdminToChannel($dataAdminToChannel);
+                $this->slack->createChannelBot($jobfair->name, $res->channel->id);
+            }
         }
 
         $validated = $request->validate([

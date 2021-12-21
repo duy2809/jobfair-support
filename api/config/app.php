@@ -123,6 +123,7 @@ return [
 
     'cipher'          => 'AES-256-CBC',
     'slack_token'     => env('SLACK_TOKEN'),
+    'workspace_id'     => env('WORKSPACE'),
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
