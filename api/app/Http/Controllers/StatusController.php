@@ -33,7 +33,9 @@ class StatusController extends Controller
                 return 'member';
             }
 
-            return 'taskMember'.$userId;
+            return 'taskMember';
+        } else if (Assignment::where('task_id', $taskId)->count() <= 1) {
+            return 'member';
         }
 
         $user = User::find($userId);
@@ -42,8 +44,6 @@ class StatusController extends Controller
         } else if ($user->reviewTasks->find($taskId)) {
             return 'reviewer';
         }
-
-        return 'member';
     }
 
     public function getStatus($jobfairId, $userId, $taskId)

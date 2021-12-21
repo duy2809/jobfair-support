@@ -26,10 +26,10 @@ function StatusStatic(props) {
           {`${props.status}`}
         </span>
       ) : null}
-      {`${props.status}` === 'リビュエー待ち' ? (
+      {`${props.status}` === 'レビュー待ち' ? (
         <span
           style={{
-            background: '#4488C5',
+            background: '#be00f8',
             color: '#fff',
           }}
           className=" stt item__right"

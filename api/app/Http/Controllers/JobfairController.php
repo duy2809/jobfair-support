@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\JobfairRequest;
 use App\Models\Jobfair;
+use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\User;
@@ -189,15 +190,20 @@ class JobfairController extends Controller
                 return response(['message' => 'invalid id'], 404);
             }
         }
+        $schedule = Jobfair::findOrFail($id)->schedule;
+        $milestonesId = collect(Task::where('schedule_id', $schedule->id)->pluck('milestone_id'));
 
-        $milestones = Jobfair::with([
-            'schedule:id,jobfair_id',
-            'schedule.milestones:id,name,period',
-            'schedule.milestones.tasks' => function ($q) use ($scheduleId) {
-                $q->select('name', 'status', 'milestone_id')->where('schedule_id', '=', $scheduleId->id);
-            },
-        ])->find($id, ['id']);
+        $milestones = Milestone::whereIn('id', $milestonesId->unique())->get(['id', 'name', 'period', 'is_week']);
+        foreach ($milestones as $item) {
+            $day = $item->is_week === 1 ? $item->period * 7 : $item->period;
+            $item['day'] = $day;
+        }
 
+        $milestones = $milestones->sortBy('day');
+        $milestones = array_values($milestones->toArray());
+        foreach ($milestones as $key => $milestone) {
+            $milestones[$key]['task'] = Task::where('milestone_id', $milestone['id'])->where('schedule_id', $schedule->id)->get(['id', 'name', 'status']);
+        }
         return response()->json($milestones);
     }
 

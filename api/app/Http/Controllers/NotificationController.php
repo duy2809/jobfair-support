@@ -54,12 +54,12 @@ class NotificationController extends Controller
      */
     public function update($id)
     {
-        $arr = str_split($id);
-        foreach ($arr as $char) {
-            if ($char < '0' || $char > '9') {
-                return response(['message' => 'invalid id'], 404);
-            }
-        }
+        // $arr = str_split($id);
+        // foreach ($arr as $char) {
+        //     if ($char < '0' || $char > '9') {
+        //         return response(['message' => 'invalid id'], 404);
+        //     }
+        // }
 
         $date = Notification::findOrFail($id);
         $date->read_at = \Carbon\Carbon::now();
