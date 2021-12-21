@@ -539,8 +539,41 @@ class ScheduleController extends Controller
         }
     }
 
-    private function changeDuration($milestones, $schedule_id, $schedule)
+    public function createTemplateTaskParent(Request $request)
     {
+        $schedule = Schedule::findOrFail($request->schedule_id);
+
+        // create template task parent
+        foreach ($request->parent as $parent) {
+            $idCategory = [];
+            $milestone = TemplateTask::find($parent['children'][0])->milestone_id;
+            foreach ($parent['children'] as $child) {
+                $id = TemplateTask::find($child)->milestone_id;
+                if ($milestone !== $id) {
+                    return response()->json(['message' => 'invalid milestone'], 422);
+                }
+
+                $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
+                $idCategory = array_merge($idCategory, $temp);
+            }
+
+            $idCategory = array_unique($idCategory);
+            $newTemplateTask = TemplateTask::create([
+                'name' => $parent['name'],
+                'is_parent' => true,
+                'milestone_id' => $milestone,
+            ]);
+
+            $newTemplateTask->categories()->attach(array_values($idCategory));
+            // add template task parent to table schedule_template_task
+            $schedule->templateTasks()->attach($newTemplateTask);
+            $schedule->templateTasks()->updateExistingPivot($parent['children'], [
+                'template_task_parent_id' => $newTemplateTask->id,
+            ]);
+            TemplateTask::whereIn('id', $parent['children'])->update(['has_parent' => 1]);
+        }
+
+        // Change duration
         $milestones = $schedule->milestones;
         foreach ($milestones as $item) {
             $day = $item->is_week === 1 ? $item->period * 7 : $item->period;
@@ -548,7 +581,7 @@ class ScheduleController extends Controller
         }
 
         $milestones = $milestones->sortBy('day');
-        foreach ($milestones as $milestone) {
+        foreach ($request->milestones as $milestone) {
             $index = $milestones->search(function ($element) use ($milestone) {
                 return $element->id === $milestone['milestone_id'];
             });
@@ -559,11 +592,9 @@ class ScheduleController extends Controller
             // min start time of all template task is milestone's start time
             $minStartTime = $milestones[$index]->day;
             $mapTaskIDToEndTime = collect([]);
-            // remove template task parent
             $templateTasks = $schedule->templateTasks()->where('milestone_id', $milestone['milestone_id'])->get()->filter(function ($task) {
                 return $task->is_parent === 0;
             });
-
             $templateTaskIds = $templateTasks->pluck('id')->toArray();
             $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
                 ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
@@ -601,91 +632,17 @@ class ScheduleController extends Controller
         }
 
         // if all milestones's duration is oke then update the durations
-        foreach ($milestones as $milestone) {
+        foreach ($request->milestones as $milestone) {
             $templateTasks = $schedule->templateTasks()
-                ->where('milestone_id', $milestone['milestone_id'])->get(['template_tasks.id']);
+                ->where('milestone_id', $milestone['milestone_id'])->where('template_tasks.is_parent', 0)->get(['template_tasks.id']);
             foreach ($templateTasks as $templateTask) {
-                DB::table('schedule_template_task')->where('schedule_id', $schedule_id)
+                DB::table('schedule_template_task')->where('schedule_id', $request->schedule_id)
                     ->where('template_task_id', $templateTask->id)
                     ->update(['duration' => $milestone['template_tasks'][$templateTask->id]]);
             }
         }
-    }
-
-    public function createTemplateTaskParent(Request $request)
-    {
-        $schedule = Schedule::find($request->schedule_id);
-        // Change duration
-        $this->changeDuration($request->milestones, $request->schedule_id, $schedule);
-
-        // create template task parent
-        foreach ($request->parent as $parent) {
-            $idCategory = [];
-            $milestone = TemplateTask::find($parent['children'][0])->milestone_id;
-            foreach ($parent['children'] as $child) {
-                $id = TemplateTask::find($child)->milestone_id;
-                if ($milestone !== $id) {
-                    return response()->json(['message' => 'invalid milestone'], 422);
-                }
-
-                $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
-                $idCategory = array_merge($idCategory, $temp);
-            }
-
-            $idCategory = array_unique($idCategory);
-            $newTemplateTask = TemplateTask::create([
-                'name' => $parent['name'],
-                'is_parent' => true,
-                'milestone_id' => $milestone,
-            ]);
-
-            $newTemplateTask->categories()->attach(array_values($idCategory));
-            // add template task parent to table schedule_template_task
-            $schedule->templateTasks()->attach($newTemplateTask);
-            $schedule->templateTasks()->updateExistingPivot($parent['children'], [
-                'template_task_parent_id' => $newTemplateTask->id,
-            ]);
-            TemplateTask::whereIn('id', $parent['children'])->update(['has_parent' => 1]);
-        }
 
         return response()->json('Create Successfully');
-    }
-
-    public function updateTemplateTaskParent(Request $request, $id)
-    {
-        $idCategory = [];
-        $schedule = Schedule::find($request->schedule_id);
-        $milestone = TemplateTask::find($request->children[0])->milestone_id;
-        foreach ($request->children as $child) {
-              $id = TemplateTask::find($child)->milestone_id;
-            if ($milestone !== $id) {
-                return response()->json(['message' => 'invalid milestone'], 422);
-            }
-
-            $temp = TemplateTask::find($child)->categories()->pluck('id')->toArray();
-            $idCategory = array_merge($idCategory, $temp);
-        }
-
-        $idCategory = array_unique($idCategory);
-        $templateTask = TemplateTask::findOrFail($id);
-        $templateTask->update($request->all());
-        $templateTask->categories()->sync(array_values($idCategory));
-
-        if ($templateTask->is_parent === 1) {
-            $schedule->templateTasks()->wherePivot('template_task_parent_id', $templateTask->id)
-                ->update(['template_task_parent_id' => null]);
-
-            $schedule->templateTasks()->updateExistingPivot($request->children, [
-                'template_task_parent_id' => $templateTask->id,
-            ]);
-        }
-
-        // change duration
-        if ($request->milestones) {
-            $this->changeDuration($request->milestones, $request->schedule_id, $schedule);
-        }
-
-        return $templateTask;
     }
 
     public function deleteTemplateTaskParent(Request $request, $id)
@@ -718,7 +675,7 @@ class ScheduleController extends Controller
         $schedule->milestones = $schedule->milestones->sortBy('day');
         foreach($schedule->milestones as $milestone) {
             $index = $schedule->milestones->search(function ($element) use ($milestone) {
-                return $element->id === $milestone['milestone_id'];
+                return $element->id === $milestone['id'];
             });
             // the gap between two milestone is possible the time of this milestone
             // if it's the last milestone then the duration is forever

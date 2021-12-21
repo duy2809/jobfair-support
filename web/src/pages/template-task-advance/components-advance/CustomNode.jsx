@@ -61,8 +61,8 @@ export const CustomNode = (props) => {
     props.onAfterChange({ id: props.node.id, value })
   }
   let defaultMaxDay
-  if (props.daysMilestone[0].gap < 100) {
-    defaultMaxDay = props.daysMilestone.length > 0 ? props.daysMilestone[0].gap : null
+  if (props.daysMilestone.length > 0) {
+    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : null
   } else {
     defaultMaxDay = 20
   }
