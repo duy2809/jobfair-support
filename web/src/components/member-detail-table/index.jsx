@@ -2,7 +2,7 @@ import React from 'react'
 import './styles.scss'
 import { withRouter } from 'next/router'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'antd'
+import { Row, Col, Avatar } from 'antd'
 import { getMember } from '~/api/member-detail'
 
 class MemberDetailTable extends React.Component {
@@ -53,8 +53,12 @@ class MemberDetailTable extends React.Component {
         this.setState({
           listJF: listJobfair.map((element) => (
             <div className="assigned-jf border-none block mx-auto">
-              <div className="border-none inline-block mr-2">{element.jobfair.name}</div>
-              <div className="border-none inline-block">{element.jobfair.start_date}</div>
+              <div className="border-none inline-block mr-2">
+                {element.jobfair.name}
+              </div>
+              <div className="border-none inline-block">
+                {element.jobfair.start_date}
+              </div>
             </div>
           )),
         })
@@ -81,26 +85,33 @@ class MemberDetailTable extends React.Component {
   render() {
     return (
       <div className="flex css_all items-center justify-center">
-        <img
-          alt="イメージがない"
-          src={`/api/avatar/${this.state.member.id}`}
-          style={{
-            width: '150px',
-            height: '150px',
-            borderRadius: '50%',
-          }}
-          id="avatar"
-          className="mr-10"
-        />
+        {this.state.member.avatar ? (
+          <Avatar
+            size={150}
+            style={{
+              lineHeight: '100px',
+              marginRight: '60px',
+            }}
+            src={`/api/avatar/${this.state.member.id}`}
+          />
+        ) : (
+          <Avatar
+            size={150}
+            style={{
+              backgroundColor: '#FFD802',
+              lineHeight: '100px',
+              marginRight: '60px',
+            }}
+            src="../images/avatars/default.jpg"
+          />
+        )}
+
         <div className="member_table py-3" style={{ width: '650px' }}>
           <Row>
             <Col span={7} className="text-right font-bold py-3 pl-5">
               フルネーム
             </Col>
-            <Col
-              offset={1}
-              className="py-3 text-left "
-            >
+            <Col offset={1} className="py-3 text-left ">
               {this.state.member.fullName}
             </Col>
           </Row>
@@ -108,10 +119,7 @@ class MemberDetailTable extends React.Component {
             <Col span={7} className="text-right font-bold py-3 pl-5">
               メールアドレス
             </Col>
-            <Col
-              offset={1}
-              className="py-3 text-left"
-            >
+            <Col offset={1} className="py-3 text-left">
               {this.state.member.email}
             </Col>
           </Row>
@@ -119,10 +127,7 @@ class MemberDetailTable extends React.Component {
             <Col span={7} className="text-right font-bold py-3 pl-5">
               カテゴリー
             </Col>
-            <Col
-              offset={1}
-              className="py-3 text-left"
-            >
+            <Col offset={1} className="py-3 text-left">
               {this.state.listCate}
             </Col>
           </Row>
@@ -130,10 +135,7 @@ class MemberDetailTable extends React.Component {
             <Col span={7} className="text-right font-bold py-3 pl-5">
               アサインされたJF
             </Col>
-            <Col
-              offset={1}
-              className="py-3 text-left"
-            >
+            <Col offset={1} className="py-3 text-left">
               {this.state.listJF}
             </Col>
           </Row>
