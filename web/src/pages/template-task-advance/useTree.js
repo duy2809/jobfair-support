@@ -10,12 +10,19 @@ const useHome = (idSchedule) => {
   const [treeData, setTreeData] = useState(null)
   const [idMilestoneActive, setIdMileStoneActive] = useState(null)
   const [dataChartMilestone, setDataChartMilestone] = useState(null)
+  const [dayMilestone, setDayMilestone] = useState([])
   const fechLeftData = async () => {
     await getNewMilestone(idSchedule)
       .then((res) => {
         const newSamp = []
+        const dayMilestones = []
         for (let index = 0; index < res.data.length; index += 1) {
           // const element = array[index];
+          dayMilestones.push(
+            { id: res.data[index].id,
+              period: res.data[index].period,
+              is_week: res.data[index].is_week },
+          )
           const newTask = {
             id: res.data[index].id,
             milestone_name: res.data[index].name,
@@ -33,14 +40,14 @@ const useHome = (idSchedule) => {
             newSamp.push(newTask)
           }
         }
+        setDayMilestone(dayMilestones)
         const newRes = newSamp.filter((item, index) => newSamp.indexOf(item) === index)
 
         const milestones = []
         for (let index = 0; index < newRes.length; index += 1) {
           const templa = []
           for (let item = 0; item < newRes[index].task.length; item += 1) {
-            templa.push({ [newRes[index].task[item].id]: 7 })
-            // const ah = Object.assign({}, ...templa)
+            templa.push({ [newRes[index].task[item].id]: 0 })
             const a = {
               milestone_id: newRes[index].id,
               template_tasks: templa,
@@ -74,6 +81,7 @@ const useHome = (idSchedule) => {
     setIdMileStoneActive,
     dataChartMilestone,
     setDataChartMilestone,
+    dayMilestone,
   }
 }
 export default useHome

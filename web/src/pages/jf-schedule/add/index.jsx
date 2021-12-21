@@ -83,8 +83,7 @@ function addJobfairSchedule() {
           await postData(dataSend)
             .then((res) => {
               if (res.status === 200) {
-                console.log(res.data)
-                router.push('/template-task-advance')
+                router.push(`/template-task-advance/${res.data.id}`)
                 openNotification('success', '正常に登録されました。')
               }
             }).catch((error) => {

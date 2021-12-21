@@ -51,7 +51,7 @@ export const CustomNode = (props) => {
     props.onTextChange(id, labelText)
   }
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
-  const [inputValue, setInputValue] = useState({ id: null, value: 7 })
+  const [inputValue, setInputValue] = useState({ id: null, value: 0 })
   const onChange = (value) => {
     setInputValue({ id: props.node.id, value })
     // eslint-disable-next-line no-unused-expressions
@@ -59,6 +59,14 @@ export const CustomNode = (props) => {
   }
   function onAfterChange(value) {
     props.onAfterChange({ id: props.node.id, value })
+  }
+  let defaultMaxDay
+  if (props.daysMilestone.length > 0 && props.daysMilestone[0]) {
+    if (props.daysMilestone[0].is_week) {
+      defaultMaxDay = props.daysMilestone[0].period
+    } else {
+      defaultMaxDay = props.daysMilestone[0].period * 7
+    }
   }
   return (
     <div
@@ -98,16 +106,21 @@ export const CustomNode = (props) => {
                           <div>
                             {props.node.droppable && (
                               <div onClick={handleToggle}>
-                                {iseOpen ? <DownOutlined className="mr-1" /> : <RightOutlined className="mr-1" />}
+                                {iseOpen ? (
+                                  <DownOutlined className="mr-1" />
+                                ) : (
+                                  <RightOutlined className="mr-1" />
+                                )}
                               </div>
                             )}
                           </div>
                           <div className="mr-1">
                             {props.node.droppable ? (
                               <FolderFilled />
+                            ) : props.node.parent ? (
+                              <FileFilled className="ml-4" />
                             ) : (
-                              props.node.parent ? <FileFilled className="ml-4" />
-                                : <FileFilled />
+                              <FileFilled />
                             )}
                           </div>
                           <div className="text">
@@ -115,7 +128,6 @@ export const CustomNode = (props) => {
                             {' '}
                           </div>
                         </div>
-
                       </Col>
                       <Col span={4}>
                         {props.node.droppable ? (
@@ -131,7 +143,6 @@ export const CustomNode = (props) => {
                             </a>
                           </div>
                         ) : null}
-
                       </Col>
                     </Row>
 
@@ -144,10 +155,10 @@ export const CustomNode = (props) => {
                         <div className="">
                           <Slider
                             min={1}
-                            max={7}
+                            max={defaultMaxDay}
                             onChange={onChange}
                             onAfterChange={onAfterChange}
-                            defaultValue={7}
+                            defaultValue={0}
                             value={
                               typeof inputValue.value === 'number'
                                 ? inputValue.value

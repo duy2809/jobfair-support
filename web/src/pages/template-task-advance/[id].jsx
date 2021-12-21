@@ -31,6 +31,7 @@ const templateTaskAdvance = () => {
     setSamleData,
     dataChartMilestone,
     setDataChartMilestone,
+    dayMilestone,
   } = useTree(idSchedule)
   const [listData, setListData] = useState([])
   const onChangeTime = (value) => {}
@@ -156,6 +157,7 @@ const templateTaskAdvance = () => {
                       idMilestoneActive={idMilestoneActive}
                       setIdMileStoneActive={setIdMileStoneActive}
                       onAfterChange={onAfterChange}
+                      dayMilestone={dayMilestone}
                     />
                   </div>
                 </Card>

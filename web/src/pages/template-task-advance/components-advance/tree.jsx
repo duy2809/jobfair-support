@@ -68,7 +68,9 @@ function App({
   setSamleData,
   idMilestoneActive,
   setIdMileStoneActive,
+  dayMilestone,
 }) {
+  const [daysMilestone, setDaysMilestone] = useState(dayMilestone)
   const { treeData, setTreeData } = useTree(idSchedule)
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
@@ -168,6 +170,8 @@ function App({
       : null
     setTreeData(newList ? newList[0].task : null)
     setIdMileStoneActive(value)
+    const daysActive = dayMilestone.filter((item) => item.id === value)
+    setDaysMilestone(daysActive)
   }
   const handleAddText = (text) => {
     if (text.length === 0) return
@@ -189,7 +193,6 @@ function App({
     const newSam = SampleData.fill(newSample, index, index + 1)
     setSamleData(newSam)
   }
-
   return (
     <div className="tree">
       <div>
@@ -234,6 +237,8 @@ function App({
             onTextChange={handleTextChange}
             onChangeTime={onChangeTime}
             onAfterChange={onAfterChange}
+            treeData={treeData}
+            daysMilestone={daysMilestone}
           />
         )}
         dragPreviewRender={(monitorProps) => (
