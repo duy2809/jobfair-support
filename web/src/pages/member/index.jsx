@@ -86,7 +86,12 @@ function MemberList() {
         const { data } = res
         setMembers(data)
         data.map((item) => {
-          item.category = item.categories[0].category_name
+          item.categories_name = []
+          if (item.categories.length) {
+            item.categories.forEach((category) => {
+              item.categories_name.push(category.category_name)
+            })
+          }
           return item
         })
         setFilterData(data)
@@ -225,15 +230,15 @@ function MemberList() {
     {
       title: 'カテゴリー',
       key: 'カテゴリー',
-      dataIndex: 'category',
+      dataIndex: 'categories_name',
       width: '40%',
       ellipsis: {
         showTitle: false,
       },
-      render: (category) => (
-        <Tooltip title={category}>
-          <a>{category}</a>
-        </Tooltip>
+      render: (categories) => (
+        <div>
+          {categories.length > 0 ? categories.join(', ') : ''}
+        </div>
       ),
       onCell: handleRow,
     },
