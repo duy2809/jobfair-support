@@ -1,4 +1,8 @@
-import { CheckCircleTwoTone, EditOutlined, ExclamationCircleTwoTone } from '@ant-design/icons'
+import {
+  CheckCircleTwoTone,
+  EditOutlined,
+  ExclamationCircleTwoTone,
+} from '@ant-design/icons'
 import {
   Button,
   Divider,
@@ -13,7 +17,13 @@ import {
   Col,
 } from 'antd'
 // import CommentChannel from '../../libs/echo/channels/comment'
-import React, { memo, useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { ReactReduxContext, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import { addComment, getComments, updateComment } from '../../api/comment'
@@ -240,7 +250,10 @@ function index({
         if (newComment) {
           if (newComment.new_assignees.length !== 0 || newComment.new_status) {
             if (newComment.new_status) {
-              if (newComment.new_status === '未着手' || newComment.new_status === '進行中') {
+              if (
+                newComment.new_status === '未着手'
+                || newComment.new_status === '進行中'
+              ) {
                 setChangeStatus(true)
               } else {
                 setChangeStatus(false)
@@ -370,7 +383,9 @@ function index({
     <div className="comment my-10 px-10 ">
       <span className="comment__count block">{`コメント数(${commentArray.length})`}</span>
       <div className="flex justify-center items-center ">
-        <Button onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}>
+        <Button
+          onClick={() => getMoreComments(commentArray.length, MORE_COMMENTS_NUM)}
+        >
           コメントをもっと見る
         </Button>
       </div>
@@ -378,15 +393,27 @@ function index({
       {/* list comments history  */}
       <div className="comment-history">
         {commentArray.map((comment) => (
-          <Comment key={comment.id} comment={comment} parentCallBack={callBack} />
+          <Comment
+            key={comment.id}
+            comment={comment}
+            parentCallBack={callBack}
+          />
         ))}
       </div>
 
       <div className="mt-5 box-comment">
         {show && (
           <div className="flex justify-between items-center">
-            <Input className="w-3/4" onClick={showBox} placeholder="コメントを入力してください" />
-            <div className="btn w-1/4 text-center" onClick={showBox} style={{ cursor: 'pointer' }}>
+            <Input
+              className="w-3/4"
+              onClick={showBox}
+              placeholder="コメントを入力してください"
+            />
+            <div
+              className="btn w-1/4 text-center"
+              onClick={showBox}
+              style={{ cursor: 'pointer' }}
+            >
               <EditOutlined className="ml-3 " />
               <span>ステータス変更</span>
             </div>
@@ -420,32 +447,60 @@ function index({
               <MarkDownView source={value?.replace(/\\s/g, '')} />
             </Modal>
             <Form form={form} layout="vertical" onFinish={onFormSummit}>
-              <div className="pos flex items-start justify-evenly ">
-                <div className="pos-left w-8/12 mr-5">
+              <div className="pos flex items-center justify-evenly">
+                <div
+                  className={
+                    roleTask === 'member'
+                    || (roleTask !== 'jfadmin'
+                      && roleTask !== 'reviewer'
+                      && roleTask !== 'taskMember'
+                      && changeStatus === false)
+                      ? 'w-full'
+                      : 'w-8/12 mr-5'
+                  }
+                >
                   <Form.Item
                     label=""
-                    className="block mx-7"
+                    className="block"
                     style={{ display: 'block' }}
                     name="detail"
                     // onChange={typing}
                   >
                     {/* <Editor value={value} /> */}
                     {/* <CKeditor /> */}
-                    <MyEditor jfID={jfInfo.id} jfInfo={jfInfo} value={value} onChange={typing} />
+                    <MyEditor
+                      jfID={jfInfo.id}
+                      jfInfo={jfInfo}
+                      value={value}
+                      onChange={typing}
+                    />
                   </Form.Item>
                 </div>
-                <div className="pos-right w-4/12 ">
+                <div
+                  className="w-4/12"
+                  style={{
+                    display:
+                      roleTask === 'member'
+                      || (roleTask !== 'jfadmin'
+                        && roleTask !== 'reviewer'
+                        && roleTask !== 'taskMember'
+                        && changeStatus === false)
+                        ? 'none'
+                        : '',
+                  }}
+                >
                   {/* selector */}
-                  <div className="h-full xl:mb-1">
+                  <div className="xl:mb-1">
                     {listMemberAssign.length === 1 ? (
                       <>
                         <Form.Item
-                          label={<p className="font-bold">タスクのステータス</p>}
+                          label={
+                            <p className="font-bold">タスクのステータス</p>
+                          }
                           name="status"
                         >
                           <Select
                             size="large"
-                            className="addJF-selector"
                             defaultValue={taskStatus}
                             onChange={handleChangeTaskStatus}
                             placeholder="ステータス"
@@ -464,18 +519,23 @@ function index({
                       <>
                         {roleTask === `taskMember${idUser}` ? (
                           <Form.Item
-                            label={<p className="font-bold">あなたのステータス</p>}
+                            label={
+                              <p className="font-bold">あなたのステータス</p>
+                            }
                             name="memberStatus"
+                            style={{ display: changeStatus ? '' : 'none' }}
                           >
                             <Select
                               size="large"
-                              className="addJF-selector"
                               placeholder="ステータス"
                               disabled={!changeStatus}
                               allowClear="true"
                             >
                               {listStatus.map((element) => (
-                                <Select.Option disabled={editing} value={element}>
+                                <Select.Option
+                                  disabled={editing}
+                                  value={element}
+                                >
                                   {element}
                                 </Select.Option>
                               ))}
@@ -484,12 +544,13 @@ function index({
                         ) : (
                           <>
                             <Form.Item
-                              label={<p className="font-bold">タスクのステータス</p>}
+                              label={
+                                <p className="font-bold">タスクのステータス</p>
+                              }
                               name="status"
                             >
                               <Select
                                 size="large"
-                                className="addJF-selector"
                                 defaultValue={taskStatus}
                                 onChange={handleChangeTaskStatus}
                                 placeholder="ステータス"
@@ -497,27 +558,38 @@ function index({
                                 allowClear="true"
                               >
                                 {listStatus.map((element) => (
-                                  <Select.Option disabled={editing} value={element}>
+                                  <Select.Option
+                                    disabled={editing}
+                                    value={element}
+                                  >
                                     {element}
                                   </Select.Option>
                                 ))}
                               </Select>
                             </Form.Item>
-                            <Form.Item label={<p className="font-bold">メンバーのステータス</p>}>
+                            <Form.Item
+                              label={(
+                                <p className="font-bold">
+                                  メンバーのステータス
+                                </p>
+                              )}
+                              className="memberStatus"
+                              style={{ display: changeStatus ? '' : 'none' }}
+                            >
                               <Row gutter={8}>
                                 <Col span={12}>
                                   <Form.Item name="member">
                                     <Select
                                       size="large"
-                                      className="addJF-selector"
                                       placeholder="担当者"
                                       // defaultValue={listNameMemberAssign}
-                                      disabled={roleTask === 'member' || !changeStatus}
+                                      disabled={
+                                        roleTask === 'member' || !changeStatus
+                                      }
                                       allowClear="true"
                                     >
                                       {listMemberAssign.map((element) => (
                                         <Select.Option
-                                          className="validate-user"
                                           key={element.id}
                                           value={element.id}
                                         >
@@ -531,13 +603,17 @@ function index({
                                   <Form.Item name="memberStatus">
                                     <Select
                                       size="large"
-                                      className="addJF-selector"
                                       placeholder="ステータス"
-                                      disabled={roleTask === 'member' || !changeStatus}
+                                      disabled={
+                                        roleTask === 'member' || !changeStatus
+                                      }
                                       allowClear="true"
                                     >
                                       {listMemberStatus.map((element) => (
-                                        <Select.Option disabled={editing} value={element}>
+                                        <Select.Option
+                                          disabled={editing}
+                                          value={element}
+                                        >
                                           {element}
                                         </Select.Option>
                                       ))}
@@ -553,7 +629,7 @@ function index({
                     <Form.Item
                       label={<p className="font-bold">担当者</p>}
                       name="assignee"
-                      className="multiples"
+                      style={{ display: roleTask === 'jfadmin' ? '' : 'none' }}
                     >
                       {assign ? (
                         <Select
@@ -566,7 +642,6 @@ function index({
                         >
                           {listUser.map((element) => (
                             <Select.Option
-                              className="validate-user"
                               key={element.id}
                               disabled={editing}
                               value={element.id}
@@ -603,50 +678,48 @@ function index({
                     </Form.Item>
                   </div>
                   {/* buttons */}
-                  <div className="xl:mt-20">
-                    <Form.Item noStyle>
-                      <div className="grid xl:gap-5 md:gap-2 gap-2 xl:grid-cols-3 lg:grid-cols-1 overflow-hidden grid-flow-row ">
-                        <Button
-                          htmlType="button"
-                          className="button_cancel ant-btn "
-                          onClick={closeBox}
-                        >
-                          キャンセル
-                        </Button>
-                        {/* ============================== */}
-                        <Button
-                          htmlType="button"
-                          type="primary"
-                          onClick={openPreview}
-                          className="button_preview "
-                        >
-                          プレビュー
-                        </Button>
-                        {/* =============================== */}
-                        {editing ? (
-                          <Button
-                            type="primary"
-                            className="edit_brn "
-                            style={{ letterSpacing: '-1px' }}
-                            onClick={onDoneEditing}
-                          >
-                            <span>編集</span>
-                          </Button>
-                        ) : (
-                          <Button
-                            type="primary"
-                            htmlType="submit"
-                            className="button_save "
-                            style={{ letterSpacing: '-1px' }}
-                          >
-                            <span>追加</span>
-                          </Button>
-                        )}
-                      </div>
-                    </Form.Item>
-                  </div>
                 </div>
               </div>
+              <Form.Item noStyle>
+                <div className="grid gap-5 grid-cols-3 float-right">
+                  <Button
+                    htmlType="button"
+                    className="button_cancel ant-btn "
+                    onClick={closeBox}
+                  >
+                    キャンセル
+                  </Button>
+                  {/* ============================== */}
+                  <Button
+                    htmlType="button"
+                    type="primary"
+                    onClick={openPreview}
+                    className="button_preview "
+                  >
+                    プレビュー
+                  </Button>
+                  {/* =============================== */}
+                  {editing ? (
+                    <Button
+                      type="primary"
+                      className="edit_brn "
+                      style={{ letterSpacing: '-1px' }}
+                      onClick={onDoneEditing}
+                    >
+                      <span>編集</span>
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="button_save "
+                      style={{ letterSpacing: '-1px' }}
+                    >
+                      <span>追加</span>
+                    </Button>
+                  )}
+                </div>
+              </Form.Item>
             </Form>
           </div>
         )}
