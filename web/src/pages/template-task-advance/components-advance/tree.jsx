@@ -70,7 +70,8 @@ function App({
   setIdMileStoneActive,
   dayMilestone,
 }) {
-  const [daysMilestone, setDaysMilestone] = useState(dayMilestone)
+  const daysStart = dayMilestone
+  const [daysMilestone, setDaysMilestone] = useState(daysStart)
   const { treeData, setTreeData } = useTree(idSchedule)
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {

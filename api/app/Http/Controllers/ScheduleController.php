@@ -651,7 +651,7 @@ class ScheduleController extends Controller
         return response()->json('Create Successfully');
     }
 
-    public function updateTemplateTaskParent(Request $request)
+    public function updateTemplateTaskParent(Request $request, $id)
     {
         $idCategory = [];
         $schedule = Schedule::find($request->schedule_id);
@@ -710,6 +710,23 @@ class ScheduleController extends Controller
                 $templateTask->whereIn('template_tasks.id', $idTemplateTask)->select(['id', 'name', 'milestone_id']);
             },
         ])->findOrFail($id, ['id', 'name']);
+        foreach ($schedule->milestones as $item) {
+            $day = $item->is_week === 1 ? $item->period * 7 : $item->period;
+            $item['day'] = $day;
+        }
+
+        $schedule->milestones = $schedule->milestones->sortBy('day');
+        foreach($schedule->milestones as $milestone) {
+            $index = $schedule->milestones->search(function ($element) use ($milestone) {
+                return $element->id === $milestone['milestone_id'];
+            });
+            // the gap between two milestone is possible the time of this milestone
+            // if it's the last milestone then the duration is forever
+            $gap = $index < count($schedule->milestones) - 1 ?
+            $schedule->milestones[$index + 1]->day - $schedule->milestones[$index]->day : PHP_INT_MAX;
+            $milestone['gap'] = $gap;
+        }
+
         foreach ($schedule->milestones as $milestone) {
             foreach ($milestone->templateTasks as $templateTask) {
                 $taskParentId = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)->where('schedule_id', $id)->first()->template_task_parent_id;
@@ -720,6 +737,6 @@ class ScheduleController extends Controller
             }
         }
 
-        return $schedule->milestones;
+        return $schedule->milestones->toArray();
     }
 }

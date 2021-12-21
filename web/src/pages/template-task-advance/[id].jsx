@@ -108,6 +108,7 @@ const templateTaskAdvance = () => {
         parent: reParen,
         milestones: reTimeChart,
       }
+      console.log(data, 'data')
       await updateParent(data)
         .then((response) => {
           if (response.status === 200) {

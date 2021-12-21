@@ -14,25 +14,25 @@ const useHome = (idSchedule) => {
   const fechLeftData = async () => {
     await getNewMilestone(idSchedule)
       .then((res) => {
+        const dataRes = Object.values(res.data)
         const newSamp = []
         const dayMilestones = []
-        for (let index = 0; index < res.data.length; index += 1) {
+        for (let index = 0; index < dataRes.length; index += 1) {
           // const element = array[index];
           dayMilestones.push(
-            { id: res.data[index].id,
-              period: res.data[index].period,
-              is_week: res.data[index].is_week },
+            { id: dataRes[index].id,
+              gap: dataRes[index].gap },
           )
           const newTask = {
-            id: res.data[index].id,
-            milestone_name: res.data[index].name,
+            id: dataRes[index].id,
+            milestone_name: dataRes[index].name,
             task: [],
           }
-          for (let item = 0; item < res.data[index].template_tasks.length; item += 1) {
+          for (let item = 0; item < dataRes[index].template_tasks.length; item += 1) {
             newTask.task.push(
               {
-                id: res.data[index].template_tasks[item].id,
-                text: res.data[index].template_tasks[item].name,
+                id: dataRes[index].template_tasks[item].id,
+                text: dataRes[index].template_tasks[item].name,
                 parent: 0,
                 droppable: false,
               },
@@ -47,7 +47,7 @@ const useHome = (idSchedule) => {
         for (let index = 0; index < newRes.length; index += 1) {
           const templa = []
           for (let item = 0; item < newRes[index].task.length; item += 1) {
-            templa.push({ [newRes[index].task[item].id]: 0 })
+            templa.push({ [newRes[index].task[item].id]: 1 })
             const a = {
               milestone_id: newRes[index].id,
               template_tasks: templa,
@@ -64,7 +64,7 @@ const useHome = (idSchedule) => {
         setIdMileStoneActive(newRes[0].id)
       })
       .catch((error) => {
-        if (error.response.status === 404) {
+        if (error.res.status === 404) {
           router.push('/404')
         }
       })
