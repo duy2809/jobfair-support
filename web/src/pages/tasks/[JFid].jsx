@@ -27,7 +27,7 @@ import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { jftask } from '../../api/jf-toppage'
+import { listTaskWithParent } from '../../api/jf-toppage'
 import { deleteTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
 import EditUserAssignee from '../../components/EditUserAssignee'
@@ -48,7 +48,7 @@ function TaskList() {
   const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(false)
   const [originalData, setOriginalData] = useState()
-  const [temperaryData, setTemperaryData] = useState()
+  const [temperaryData, setTemperaryData] = useState([])
   const [optionMilestone, setOptionMileStone] = useState([])
   const [optionCategory, setOptionCategory] = useState([])
   const [status, setStatus] = useState(router.query.status)
@@ -104,8 +104,8 @@ function TaskList() {
           name: dataResponse[i].users[j].name,
         })
       }
-      data.push({
-        id: i + 1,
+      let info = {
+        key: dataResponse[i].id,
         idtask: dataResponse[i].id,
         taskName: dataResponse[i].name,
         start_date: dataResponse[i].start_time,
@@ -116,14 +116,55 @@ function TaskList() {
         managers: manager,
         mems: mem,
         idCategory: categoryId,
-      })
+        parent_id: dataResponse[i]?.parent_id,
+        is_parent: dataResponse[i]?.is_parent,
+      }
+      if ('children' in dataResponse[i]) {
+        const children = []
+        dataResponse[i].children.forEach((child) => {
+          const childManager = []
+          const member = []
+          const childCategoryName = []
+          const childCategoryId = []
+          for (let j = 0; j < child.categories.length; j += 1) {
+            childCategoryName.push(child.categories[j].category_name)
+            childCategoryId.push(child.categories[j].id)
+          }
+          console.log(child.users)
+          for (let j = 0; j < child.users.length; j += 1) {
+            childManager.push(child.users[j].name)
+            member.push({
+              id: child.users[j].id,
+              name: child.users[j].name,
+            })
+          }
+          const childInfo = {
+            key: child.id,
+            idtask: child.id,
+            taskName: child.name,
+            start_date: child.start_time,
+            end_date: child.end_time,
+            status: child.status,
+            category_name: childCategoryName,
+            milestone_name: child?.milestone.name,
+            managers: childManager,
+            mems: member,
+            idCategory: childCategoryId,
+            parent_id: child?.parent_id,
+            is_parent: child?.is_parent,
+          }
+          children.push(childInfo)
+        })
+        info = { ...info, children }
+      }
+      data.push(info)
     }
-
     setTemperaryData(data)
     setOriginalData(data)
+    let filteredData = [...data]
     if (valueSearch) {
       const taskNameParameter = router.query.name.toLowerCase()
-      const filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
+      filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
       setTemperaryData(filteredData)
     }
     if (status) {
@@ -132,7 +173,7 @@ function TaskList() {
       const arr = [0, 0, 0, 0, 0, 0]
       arr[index] = 1
       setActive(arr)
-      const filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
+      filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
       setTemperaryData(filteredData)
     }
   }
@@ -303,75 +344,78 @@ function TaskList() {
         dataIndex: 'managers',
         fixed: 'left',
         render: (managers, record) => {
-          if (rowEdit === record.id) {
+          if (record.is_parent !== 1) {
+            if (rowEdit === record.key) {
+              return (
+                <EditUserAssignee
+                  setIsEdit={setIsEdit}
+                  setRowEdit={setRowEdit}
+                  record={record}
+                  loadTableData={loadTableData}
+                  setLoading={setLoading}
+                />
+              )
+            }
+
             return (
-              <EditUserAssignee
-                setIsEdit={setIsEdit}
-                setRowEdit={setRowEdit}
-                record={record}
-                loadTableData={loadTableData}
-                setLoading={setLoading}
-              />
+              <div
+                onClick={() => {
+                  if (rowEdit && isEdit) {
+                    Modal.confirm({
+                      title: '変更内容が保存されません。よろしいですか？',
+                      icon: <ExclamationCircleOutlined />,
+                      content: '',
+                      centered: true,
+                      okText: 'はい',
+                      cancelText: 'いいえ',
+                      onOk: () => {
+                        setRowEdit(record.key)
+                        setIsEdit(false)
+                      },
+                    })
+                  } else {
+                    setRowEdit(record.key)
+                  }
+                }}
+                className=""
+              >
+                { // eslint-disable-next-line consistent-return
+                  managers.length > 0 ? managers.map((item) => {
+                    if (item === managers[managers.length - 1]) {
+                      return (
+                        <span className="">
+
+                          <span>
+                            {' '}
+                            {item}
+                          </span>
+                          <span><EditTwoTone className="ml-1" /></span>
+                        </span>
+                      )
+                    }
+                    if (item !== managers[managers.length - 1]) {
+                      return (
+                        <>
+                          <span style={{ paddingRight: '3px' }}>
+                            {item}
+                            ,
+                          </span>
+                        </>
+                      )
+                    }
+                  }) : (
+                    <div className="flex items-center">
+                      <EditTwoTone />
+                      <span style={{ color: '#999' }} className="ml-1">
+                        担当者を選択してください
+                      </span>
+                    </div>
+                  )
+                }
+              </div>
             )
           }
-
-          return (
-            <div
-              onClick={() => {
-                if (rowEdit && isEdit) {
-                  Modal.confirm({
-                    title: '変更内容が保存されません。よろしいですか？',
-                    icon: <ExclamationCircleOutlined />,
-                    content: '',
-                    centered: true,
-                    okText: 'はい',
-                    cancelText: 'いいえ',
-                    onOk: () => {
-                      setRowEdit(record.id)
-                      setIsEdit(false)
-                    },
-                  })
-                } else {
-                  setRowEdit(record.id)
-                }
-              }}
-              className=""
-            >
-              { // eslint-disable-next-line consistent-return
-                managers.length > 0 ? managers.map((item) => {
-                  if (item === managers[managers.length - 1]) {
-                    return (
-                      <span className="">
-
-                        <span>
-                          {' '}
-                          {item}
-                        </span>
-                        <span><EditTwoTone className="ml-1" /></span>
-                      </span>
-                    )
-                  }
-                  if (item !== managers[managers.length - 1]) {
-                    return (
-                      <>
-                        <span style={{ paddingRight: '3px' }}>
-                          {item}
-                          ,
-                        </span>
-                      </>
-                    )
-                  }
-                }) : (
-                  <div className="flex items-center">
-                    <EditTwoTone />
-                    <span style={{ color: '#999' }} className="ml-1">
-                      担当者を選択してください
-                    </span>
-                  </div>
-                )
-              }
-            </div>
-          )
+          return ''
         },
       },
       {
@@ -381,14 +425,14 @@ function TaskList() {
         render: (_text, record) => role === 'admin' && (
           <Space size="middle">
             <EditTwoTone
-              id={record.id}
+              id={record.key}
               onClick={() => {
                 handleEdit(record.idtask)
               }}
             />
 
             <DeleteTwoTone
-              id={record.id}
+              id={record.key}
               onClick={() => {
                 modelDelete(record.idtask)
               }}
@@ -485,7 +529,7 @@ function TaskList() {
     getRole()
     initPagination()
     try {
-      await jftask(router.query.JFid).then((response) => {
+      await listTaskWithParent(router.query.JFid).then((response) => {
         loadTableData(response)
       })
       await getCategories().then((response) => {
@@ -495,6 +539,7 @@ function TaskList() {
         loadMilestoneOptions(response)
       })
     } catch (error) {
+      console.log(error)
       if (error.response.status === 404) {
         router.push('/404')
       }

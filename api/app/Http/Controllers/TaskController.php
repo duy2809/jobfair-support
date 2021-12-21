@@ -359,7 +359,9 @@ class TaskController extends Controller
             'schedule.jobfair:id,name,jobfair_admin_id',
             'templateTask:id,effort,is_day,unit',
         ])->findOrFail($id);
-
+        if ($task->is_parent === 1) {
+            $task->children = Task::where('parent_id', $task->id)->get();
+        }
         return response()->json($task);
     }
 

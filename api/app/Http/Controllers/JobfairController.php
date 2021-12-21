@@ -308,10 +308,18 @@ class JobfairController extends Controller
                     ->orderBy('tasks.id', 'ASC');
             },
         ])->findOrFail($id, ['id']);
-        $jobfair = Jobfair::with('schedule.tasks')->find($id);
+        $jobfair = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name');
+            },
+        ])->findOrFail($id, ['id']);
         $tasks->schedule->tasks = $tasks->schedule->tasks->map(function ($task) use ($jobfair) {
             if ($task->is_parent === 1) {
-                $task->children = $jobfair->schedule->tasks->where('parent_id', $task->id);
+                $temp = $jobfair->schedule->tasks->where('parent_id', $task->id);
+                $task->children = collect([]);
+                $temp->each(function ($item, $key) use ($temp, &$task) {
+                    $task->children->push($temp[$key]);
+                });
             }
             return $task;
         });
