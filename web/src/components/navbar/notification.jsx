@@ -10,7 +10,14 @@ import frenchStrings from 'react-timeago/lib/language-strings/ja'
 import { useRouter } from 'next/router'
 import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
 import NotificationChannel from '../../libs/echo/channels/notification-channel'
-import { getNotification, update, updateAllRead, getUnreadNotification, deleteNotification } from '../../api/notification'
+import {
+  getNotification,
+  update,
+  updateAllRead,
+  getUnreadNotification,
+  deleteNotification,
+} from '../../api/notification'
+import { getAvatar } from '../../api/profile'
 
 export default function Notification() {
   // const [userName, setUserName] = useState([])
@@ -26,6 +33,7 @@ export default function Notification() {
   const [dataNoti, setDataNoti] = useState([])
   const formatter = buildFormatter(frenchStrings)
   const router = useRouter()
+  const [avatarUser, setAvatarUser] = useState('')
 
   const fetchData = async () => {
     setLoading(true)
@@ -34,6 +42,23 @@ export default function Notification() {
       setUser(store.getState().get('auth').get('user'))
       if (user) {
         const id = user.get('id')
+
+        await getAvatar(id)
+          .then((res) => {
+            if (!res.data) {
+              setAvatarUser('../images/avatars/default.jpg')
+            } else {
+              console.log(id)
+              const link = `../../api/avatar/${id}`
+              setAvatarUser(link)
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 404) {
+              router.push('/404')
+            } else setAvatarUser('../images/avatars/default.jpg')
+          })
+
         let data
         if (unread) {
           const res = await getUnreadNotification(id)
@@ -50,48 +75,56 @@ export default function Notification() {
           }
           data = res.data
         }
+
         // const length = data.noti.length
         // setLengthNoti(length)
         let countUnreadNoti = 0
-        const newNoti = data.map((item) => {
-          if (!item.read_at) {
-            countUnreadNoti += 1
-          }
+        const newNoti = data
+          .map((item) => {
+            if (!item.read_at) {
+              countUnreadNoti += 1
+            }
 
-          let action
-          let userid
-          let url
-          if (item.type === 'App\\Notifications\\JobfairEdited') {
-            action = `${item.data.user.name}さんが${item.data.jobfair.name}JFを編集しました。`
-            userid = item.data.user.id
-            url = `/jf-toppage/${item.data.jobfair.id}`
-          } else if (item.type === 'App\\Notifications\\JobfairCreated') {
-            action = `${item.data.jobfair.name}JFの管理者に選ばれました。`
-            userid = item.data.user.id
-            url = `/jf-toppage/${item.data.jobfair.id}`
-          } else if (item.type === 'App\\Notifications\\MemberEdited') {
-            action = `${item.data.edited_user.name}さんが${user.get('name')}メンバを編集しました。`
-            userid = item.data.edited_user.id
-            url = `/member/${id}`
-          } else if (item.type === 'App\\Notifications\\TaskCreated') {
-            action = `${item.data.task.name}タスクの責任者に選ばれました。`
-            userid = item.data.user.id
-            url = `/task-detail/${item.data.task.id}`
-          } else if (item.type === 'App\\Notifications\\TaskEdited') {
-            action = `${item.data.user.name}さんが${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
-            userid = item.data.user.id
-            url = `/task-detail/${item.data.task.id}`
-          } else if (item.type === 'App\\Notifications\\TaskExpired') {
-            action = `タスク${item.data.task.name}が完了期限を過ぎました。`
-            userid = item.data.user.id
-            url = `/task-detail/${item.data.task.id}`
-          }
-          const newItem = {
-            ...item, action, avatar: `/api/avatar/${userid}`, url,
-          }
+            let action
+            let userid
+            let url
+            if (item.type === 'App\\Notifications\\JobfairEdited') {
+              action = `${item.data.user.name}さんが${item.data.jobfair.name}JFを編集しました。`
+              userid = item.data.user.id
+              url = `/jf-toppage/${item.data.jobfair.id}`
+            } else if (item.type === 'App\\Notifications\\JobfairCreated') {
+              action = `${item.data.jobfair.name}JFの管理者に選ばれました。`
+              userid = item.data.user.id
+              url = `/jf-toppage/${item.data.jobfair.id}`
+            } else if (item.type === 'App\\Notifications\\MemberEdited') {
+              action = `${item.data.edited_user.name}さんが${user.get(
+                'name',
+              )}メンバを編集しました。`
+              userid = item.data.edited_user.id
+              url = `/member/${id}`
+            } else if (item.type === 'App\\Notifications\\TaskCreated') {
+              action = `${item.data.task.name}タスクの責任者に選ばれました。`
+              userid = item.data.user.id
+              url = `/task-detail/${item.data.task.id}`
+            } else if (item.type === 'App\\Notifications\\TaskEdited') {
+              action = `${item.data.user.name}さんが${item.data.jobfair.name}JFに${item.data.task.name}タスクを編集しました。`
+              userid = item.data.user.id
+              url = `/task-detail/${item.data.task.id}`
+            } else if (item.type === 'App\\Notifications\\TaskExpired') {
+              action = `タスク${item.data.task.name}が完了期限を過ぎました。`
+              userid = item.data.user.id
+              url = `/task-detail/${item.data.task.id}`
+            }
+            const newItem = {
+              ...item,
+              action,
+              avatar: avatarUser,
+              url,
+            }
 
-          return newItem
-        }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            return newItem
+          })
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         setUnReadLength(countUnreadNoti)
         setDataNoti(newNoti)
         setLoading(false)
@@ -119,7 +152,9 @@ export default function Notification() {
           userid = data.user.id
           url = `/jf-toppage/${data.jobfair.id}`
         } else if (data.type === 'App\\Notifications\\MemberEdited') {
-          action = `${data.edited_user.name}さんが${user.get('name')}メンバを編集しました。`
+          action = `${data.edited_user.name}さんが${user.get(
+            'name',
+          )}メンバを編集しました。`
           userid = data.edited_user.id
           url = `/member/${user.get('id')}`
         } else if (data.type === 'App\\Notifications\\TaskCreated') {
@@ -140,7 +175,11 @@ export default function Notification() {
         const isoDateTime = new Date(date.getTime()).toISOString()
 
         const newItem = {
-          action, avatar: `/api/avatar/${userid}`, url, created_at: isoDateTime, read_at: null,
+          action,
+          avatar: avatarUser,
+          url,
+          created_at: isoDateTime,
+          read_at: null,
         }
         setUnReadLength((prev) => prev + 1)
         setDataNoti((prev) => [newItem, ...prev])
@@ -191,43 +230,49 @@ export default function Notification() {
     // console.log(noti_id)
     // setDeleteNoti(noti_id)
     // console.log(deleteNotiID)
-    deleteNotification(notiId).then((res) => {
-      if (res.data == null) {
-        return
-      }
-      setDeleteNoti(deleteNotiCheck + 1)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    deleteNotification(notiId)
+      .then((res) => {
+        if (res.data == null) {
+          return
+        }
+        setDeleteNoti(deleteNotiCheck + 1)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const updateReadAt = (id) => {
-    update(id).then((res) => {
-      if (res.data == null) {
-        return
-      }
-      setCheckUpdate(checkUpdate + 1)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    update(id)
+      .then((res) => {
+        if (res.data == null) {
+          return
+        }
+        setCheckUpdate(checkUpdate + 1)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const onChange = () => {
-    updateAllRead(user.get('id')).then((res) => {
-      if (res.data == null) {
-        return
-      }
-      setCheckUpdate(checkUpdate + 1)
-      setUnReadLength(0)
-    }).catch((error) => {
-      if (error.response.status === 404) {
-        router.push('/404')
-      }
-    })
+    updateAllRead(user.get('id'))
+      .then((res) => {
+        if (res.data == null) {
+          return
+        }
+        setCheckUpdate(checkUpdate + 1)
+        setUnReadLength(0)
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          router.push('/404')
+        }
+      })
   }
 
   const handlerClick = (url) => {
@@ -284,14 +329,10 @@ export default function Notification() {
                       handlerClick(item.url)
                     }}
                     avatar={<Avatar src={item.avatar} />}
-                    title={(
-                      <div>
-
-                        {item.action}
-
-                      </div>
-                    )}
-                    description={<TimeAgo date={item.created_at} formatter={formatter} />}
+                    title={<div>{item.action}</div>}
+                    description={
+                      <TimeAgo date={item.created_at} formatter={formatter} />
+                    }
                   />
                   {/* <div className="noti-time">
                       {convertDate(item.created_at)}
