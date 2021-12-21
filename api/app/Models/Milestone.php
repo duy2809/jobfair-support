@@ -11,6 +11,8 @@ class Milestone extends Model
 
     public $timestamps = false;
 
+    protected $hidden = ['pivot'];
+
     protected $fillable = ['name', 'period', 'schedule_id', 'is_week'];
 
     public function tasks()

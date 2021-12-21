@@ -28,7 +28,7 @@ class AddCommentStatusMember extends Migration
     public function down()
     {
         Schema::table('comments', function (Blueprint $table) {
-            $table->dropColumn(['new_member_status', 'old_member_status', 'member_id']);
+            $table->dropColumn(['new_member_status', 'old_member_status', 'member_name']);
         });
     }
 }
