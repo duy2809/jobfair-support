@@ -15,7 +15,7 @@ class AddDurationAndParentIdToScheduleTemplateTaskTable extends Migration
     {
         Schema::table('schedule_template_task', function (Blueprint $table) {
             $table->unsignedBigInteger('template_task_parent_id')->nullable();
-            $table->unsignedInteger('duration')->nullable();
+            $table->unsignedInteger('duration')->default(1);
             $table->foreign('template_task_parent_id')->references('id')
                 ->on('template_tasks')->nullOnDelete()->cascadeOnUpdate();
         });

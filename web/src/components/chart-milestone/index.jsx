@@ -11,7 +11,7 @@ export default function ChartMilestone({ id }) {
   const router = useRouter()
   const fetchTasks = async () => {
     await listmilestone(id).then((response) => {
-      setlistTask(response.data)
+      setlistTask(response.data.schedule.milestones)
     }).catch((error) => {
       if (error.response.status === 404) {
         router.push('/404')
@@ -23,7 +23,7 @@ export default function ChartMilestone({ id }) {
   }, [])
 
   const listData = listTask.map((item) => (
-    <MilestoneItem listTask={item.task} milestoneName={item.name} dealine={item.is_week ? `${item.period} 週間` : `${item.period} 日`} />
+    <MilestoneItem listTask={item.tasks} milestoneName={item.name} dealine={item.is_week ? `${item.period} 週間` : `${item.period} 日`} />
   ))
   return (
     <div>

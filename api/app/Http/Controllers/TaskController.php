@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Jobfair;
+use App\Models\Milestone;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\TemplateTask;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
+use stdClass;
 
 class TaskController extends Controller
 {
@@ -91,7 +93,7 @@ class TaskController extends Controller
         }
 
         $jobfair = Jobfair::findOrFail($id);
-        $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->get()->map(function ($item) use ($jobfair) {
+        $first = $jobfair->schedule->tasks()->whereHas('users', null, '=', 0)->where('is_parent', 0)->get()->map(function ($item) use ($jobfair) {
             return [
                 'jobfairName'           => $jobfair->name,
 
@@ -120,7 +122,7 @@ class TaskController extends Controller
             ->join('assignments', 'assignments.task_id', 'tasks.id')
             ->join('users', 'assignments.user_id', '=', 'users.id')
             ->select('jobfairs.name as jobfairName', 'users.id as userId', 'users.name as userName', 'users.avatar', 'tasks.*', 'tasks.name as taskName')
-            ->where('jobfairs.id', '=', $id)
+            ->where('jobfairs.id', '=', $id)->where('tasks.is_parent', 0)
             ->get()->merge($first);
     }
 
@@ -160,22 +162,29 @@ class TaskController extends Controller
         $schedule = Schedule::where('jobfair_id', '=', $id)->first();
         $idTemplateTask = $request->data;
         for ($i = 0; $i < count($idTemplateTask); $i += 1) {
-            $templateTask = TemplateTask::find($idTemplateTask[$i]);
-            $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
-            $duration = 0;
-            if ($templateTask->unit === 'students') {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_students;
-            } else if ($templateTask->unit === 'none') {
-                $duration = (float) $templateTask->effort;
-            } else {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
-            }
+            $templateTask = $schedule->templateTasks()->where('template_tasks.id', $idTemplateTask[$i])->first();
 
-            $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
+            $duration = 0;
+            if (!isset($templateTask)) {
+                $templateTask = TemplateTask::find($idTemplateTask[$i]);
+                if ($templateTask->unit === 'students') {
+                    $duration = (float) $templateTask->effort * $jobfair->number_of_students;
+                } else if ($templateTask->unit === 'none') {
+                    $duration = (float) $templateTask->effort;
+                } else {
+                    $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
+                }
+
+                $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
+            } else {
+                $duration = $templateTask->pivot->duration;
+            }
+            $duration--;
+            $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
+            $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . min($duration, 0) . 'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -354,14 +363,62 @@ class TaskController extends Controller
         return response()->json($task);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    private function validateTaskRelation($id, $task, $beforeTasks, $afterTasks)
     {
+        // validate relation
+        $tasks = Task::where('schedule_id', $task->schedule_id)->get();
+        $milestones = Milestone::all();
+        orderMilestonesByPeriod($milestones);
+        $milestones = $milestones->pluck('id')->toArray();
+        $currentTaskMilestone = array_search($task->milestone_id, $milestones);
+        $prerequisites = DB::table('pivot_table_tasks')->where('before_tasks', '<>', $id)
+            ->where('after_tasks', '<>', $id)
+            ->whereIn('before_tasks', $tasks->pluck('id')->toArray())
+            ->whereIn('after_tasks', $tasks->pluck('id')->toArray())
+            ->select(['after_tasks', 'before_tasks'])->get();
+        foreach ($beforeTasks as $beforeTaskID) {
+            if (
+                array_search(
+                    $tasks->where('id', $beforeTaskID)->first()->milestone_id,
+                    $milestones
+                ) > $currentTaskMilestone
+            ) {
+                return [
+                    'error' => 'invalid before tasks',
+                ];
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = $beforeTaskID;
+            $newPrerequisite->after_tasks = intval($id);
+            $prerequisites->push($newPrerequisite);
+        }
+
+        foreach ($afterTasks as $afterTaskID) {
+            if (
+                array_search(
+                    $tasks->where('id', $afterTaskID)->first()->milestone_id,
+                    $milestones
+                ) < $currentTaskMilestone
+            ) {
+                return [
+                    'error' => 'invalid after tasks',
+                ];
+            }
+
+            $newPrerequisite = new stdClass();
+            $newPrerequisite->before_tasks = intval($id);
+            $newPrerequisite->after_tasks = $afterTaskID;
+            $prerequisites->push($newPrerequisite);
+        }
+
+        if (taskRelation($tasks->pluck('id')->toArray(), $prerequisites) === 'invalid') {
+            return [
+                'error' => 'invalid relations',
+            ];
+        }
+
+        return 'oke';
     }
 
     /**
@@ -528,7 +585,13 @@ class TaskController extends Controller
 
         // comment history and update before after tasks
         $task->update($request->all());
-        if (!empty($request->beforeTasks)) {
+
+        if ($request->has('beforeTasks')) {
+            $result = $this->validateTaskRelation($id, $task, $request->beforeTasks, $request->afterTasks);
+            if ($result !== 'oke') {
+                return response($result, 400);
+            }
+
             $oldBeforeTasks = $task->beforeTasks;
             $newBeforeTasks = $request->beforeTasks;
             $oldBeforeTasksID = $oldBeforeTasks->pluck('id')->toArray();
@@ -548,7 +611,7 @@ class TaskController extends Controller
             }
         }
 
-        if (empty($request->afterTasks)) {
+        if ($request->has('afterTasks')) {
             $oldAfterTasks = $task->afterTasks;
             $newAfterTasks = $request->afterTasks;
             $oldAfterTasksID = $oldAfterTasks->pluck('id')->toArray();
@@ -704,7 +767,7 @@ class TaskController extends Controller
             },
         ])->findOrFail($id);
 
-        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))
+        $templateTask = TemplateTask::whereNotIn('id', $task->schedule->tasks->pluck('template_task_id'))->where('is_parent', 0)
             ->with(['categories:id,category_name', 'milestone:id,name'])->get(['id', 'name', 'milestone_id']);
 
         return response()->json($templateTask);
