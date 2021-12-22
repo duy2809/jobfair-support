@@ -227,7 +227,7 @@ const JfLayout = ({ children, id, bgr }) => {
         <Layout className="site-layout">
           <div className="Jf__header px-10">
             <Tooltip placement="bottom" title={name}>
-                <h1>{truncate(name)}</h1>
+              <h1>{truncate(name)}</h1>
             </Tooltip>
             <div className="admin__jf">
               <span className="text-lg">{startDate ?? 'N/A'}</span>
