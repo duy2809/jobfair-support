@@ -55,7 +55,6 @@ const JfLayout = ({ children, id, bgr }) => {
   }
 
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
-
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
