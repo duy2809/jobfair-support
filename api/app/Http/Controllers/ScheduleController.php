@@ -630,7 +630,6 @@ class ScheduleController extends Controller
                     ], 400);
                 }
             }
-
         }
 
         // if all milestones's duration is oke then update the durations
@@ -645,6 +644,7 @@ class ScheduleController extends Controller
         }
         $this->calculateParentDuration($request->schedule_id);
     }
+
     private function calculateParentDuration($scheduleId)
     {
         $schedule = Schedule::findOrFail($scheduleId);
@@ -653,7 +653,7 @@ class ScheduleController extends Controller
         $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
             ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
         $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
-        $parentTemplateTasks = $templateTasks->where("is_parent", 1);
+        $parentTemplateTasks = $templateTasks->where('is_parent', 1);
         $parentTemplateTasks = $parentTemplateTasks->map(function ($templateTask) use ($templateTasks, $templateTasksOrder) {
             $templateTask->children = $templateTasks->filter(function ($element) use ($templateTask) {
                 return $element->pivot->template_task_parent_id === $templateTask->id;
@@ -663,11 +663,14 @@ class ScheduleController extends Controller
                 if ($index1 === $index2) {
                     return 0;
                 }
+
                 if ($index1 < $index2) {
                     return -1;
                 }
+
                 return 1;
             });
+
             return $templateTask;
         });
         $parentTemplateTasks->each(function ($parentTemplateTask) use ($schedule) {
@@ -683,9 +686,8 @@ class ScheduleController extends Controller
                                 $newDuration = $possibleDuration;
                             }
                         }
-
                     });
-                $newDuration = $newDuration + $child->pivot->duration;
+                $newDuration += $child->pivot->duration;
                 $mapTaskIDToDuration->put($child->id, $newDuration);
             });
             $schedule->templateTasks()->updateExistingPivot($parentTemplateTask, [

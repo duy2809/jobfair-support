@@ -189,15 +189,15 @@ class DatabaseSeeder extends Seeder
 
                 $child = $parent->categories->first()->templateTasks()->where('has_parent', 0)
                     ->where('is_parent', 0)->whereHas('schedules', function ($query) use ($schedule) {
-                    $query->where('schedules.id', $schedule->id);
-                })->where('milestone_id', $parent->milestone_id)->get();
+                        $query->where('schedules.id', $schedule->id);
+                    })->where('milestone_id', $parent->milestone_id)->get();
                 $child->random(min(count($child), 3))->each(function ($templateTask) use ($schedule, $parent) {
                     $templateTask->has_parent = true;
                     $templateTask->save();
                     DB::table('schedule_template_task')->where('schedule_id', $schedule->id)
                         ->where('template_task_id', $templateTask->id)->update([
-                        'template_task_parent_id' => $parent->id,
-                    ]);
+                            'template_task_parent_id' => $parent->id,
+                        ]);
                 });
             }
         );

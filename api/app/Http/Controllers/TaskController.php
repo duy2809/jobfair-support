@@ -179,6 +179,7 @@ class TaskController extends Controller
             } else {
                 $duration = $templateTask->pivot->duration;
             }
+
             $duration--;
             $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
             $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));

@@ -1,30 +1,20 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
-import { Modal, notification, Tooltip } from 'antd'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Modal, notification, Table, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import {
-  afterTask,
-  beforeTask,
-  deleteTask,
-  taskData,
-  getRoleTask,
-} from '~/api/task-detail'
-
+import { afterTask, beforeTask, deleteTask, getRoleTask, taskData } from '~/api/task-detail'
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
 import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
-import './style.scss'
 import StatusStatic from '../../components/status/static-status'
+import './style.scss'
 
 const StackEditor = dynamic(
   () => import('../../components/stackeditor').then((mod) => mod.default),
@@ -54,9 +44,8 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
-    [],
-  )
+  const [childTask, setChildTask] = useState([])
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
   const [action, setAction] = useState('none')
@@ -126,12 +115,24 @@ function TaskDetail() {
       .catch((error) => Error(error.toString()))
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const generateChildTask = (tasks) => tasks.map((task) => ({
+    key: task.id,
+    name: task.name,
+    start_time: task.start_time,
+    end_time: task.end_time,
+    status: task.status,
+  }))
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
           const categoryName = []
+          const { children } = response.data
+          if (children) {
+            // setChildTask(children)
+            setChildTask(generateChildTask(children) ?? [])
+          }
           setJfInfo(data.schedule.jobfair)
           response.data.categories.forEach((element) => {
             categoryName.push(element.category_name)
@@ -164,9 +165,8 @@ function TaskDetail() {
         // set role task
       })
       .catch((error) => {
-        if (error.response.status === 404) {
-          router.push('/404')
-        } else router.push('/error')
+        console.log(error)
+        // router.push('/404')
       })
   }
   const fetchBeforeTask = async () => {
@@ -223,6 +223,26 @@ function TaskDetail() {
   const handleEdit = () => {
     router.push(`/edit-task/${infoTask.id}`)
   }
+
+  const columns = [
+    {
+      title: 'タスク名',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => (
+        <Link href={`/task-detail/${record.key}`}>
+          <a target="_blank">{text}</a>
+        </Link>
+      ),
+    },
+    { title: '開始日', dataIndex: 'start_time', key: 'start_time' },
+    { title: '終了日', dataIndex: 'end_time', key: 'end_time' },
+    {
+      title: 'スターテス',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]
 
   useEffect(() => {
     setLoading(true)
@@ -283,9 +303,7 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">
-                        {infoTask.categories
-                          ? infoTask.categories.join(', ')
-                          : null}
+                        {infoTask.categories ? infoTask.categories.join(', ') : null}
                       </div>
                     </div>
                   </div>
@@ -310,16 +328,12 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -341,9 +355,7 @@ function TaskDetail() {
                     <div className="col-span-5 mx-4">
                       <ul className="list__member">
                         {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
+                          <li>{reviewersList.map((item) => item.name).join(', ')}</li>
                         ) : (
                           <li className="task__chil" />
                         )}
@@ -494,10 +506,7 @@ function TaskDetail() {
                                     />
                                   )} */}
                                   {listMemberAssignee.length === 1
-                                  || !(
-                                    taskStatus === '未着手'
-                                    || taskStatus === '進行中'
-                                  ) ? (
+                                  || !(taskStatus === '未着手' || taskStatus === '進行中') ? (
                                       <td />
                                     ) : (
                                       <>
@@ -510,13 +519,9 @@ function TaskDetail() {
                                             <>
                                               {action === 'changeMemberStatus'
                                             && item.name === memberChangeStatus ? (
-                                                  <StatusStatic
-                                                    status={tempStatus}
-                                                  />
+                                                  <StatusStatic status={tempStatus} />
                                                 ) : (
-                                                  <StatusStatic
-                                                    status={`${item.pivot.status}`}
-                                                  />
+                                                  <StatusStatic status={`${item.pivot.status}`} />
                                                 )}
                                             </>
                                           )}
@@ -532,15 +537,22 @@ function TaskDetail() {
                   </div>
                 </div>
               </div>
-              <div className=" mx-12 mt-5">
+              <div className=" mx-12 my-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">
-                  <StackEditor
-                    value={infoTask.description_of_detail}
-                    taskId={idTask}
-                  />
+                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                 </div>
               </div>
+            </div>
+            <div>
+              {childTask.length > 0 && (
+                <Table
+                  className="mx-12"
+                  columns={columns}
+                  dataSource={childTask}
+                  scroll={{ x: 'max-content', y: '200px' }}
+                />
+              )}
             </div>
             <Comment
               id={idTask}
