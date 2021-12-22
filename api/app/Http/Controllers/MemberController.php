@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Schedule;
 use App\Models\User;
 use App\Notifications\MemberEdited;
 use Illuminate\Http\Request;
@@ -106,7 +107,12 @@ class MemberController extends Controller
             }
         }
 
-        return User::findOrFail($id)->tasks;
+        $tasks = User::findOrFail($id)->tasks;
+        foreach ($tasks as $task) {
+            $task->jobfair_name = Schedule::findOrFail($task->schedule_id)->jobfair['name'];
+        }
+
+        return $tasks;
     }
 
     public function getMember()
