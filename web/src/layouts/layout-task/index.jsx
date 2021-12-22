@@ -53,6 +53,9 @@ const JfLayout = ({ children, id, bgr }) => {
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
+
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
@@ -224,7 +227,9 @@ const JfLayout = ({ children, id, bgr }) => {
         </Sider>
         <Layout className="site-layout">
           <div className="Jf__header px-10">
-            <h1>{name}</h1>
+            <Tooltip placement="bottom" title={name}>
+                <h1>{truncate(name)}</h1>
+            </Tooltip>
             <div className="admin__jf">
               <span className="text-lg">{startDate ?? 'N/A'}</span>
               <span className="text-lg px-2 ">{`企業: ${numberOfCompanies ?? 'N/A'}`}</span>
