@@ -10,7 +10,12 @@ import {
 
 import { ReactReduxContext } from 'react-redux'
 import OtherLayout from '../../layouts/OtherLayout'
-import { templateTask, beforeTask, afterTask, deleteTptt } from '../../api/template-task'
+import {
+  templateTask,
+  beforeTask,
+  afterTask,
+  deleteTptt,
+} from '../../api/template-task'
 import MarkDownView from '../../components/markDownView'
 
 function templatetTaskDt() {
@@ -46,8 +51,14 @@ function templatetTaskDt() {
         setEf(response.data.effort)
         setIsDay(response.data.is_day)
         setUnit(response.data.unit)
-        setDes(response.data.description_of_detail)
-      }).catch((error) => {
+        setDes(
+          response.data.description_of_detail.replace(
+            /<a/g,
+            '<a target="_blank" ',
+          ),
+        )
+      })
+      .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
@@ -59,7 +70,8 @@ function templatetTaskDt() {
     await beforeTask(idTplt)
       .then((response) => {
         setBeforeTask(response.data.before_tasks)
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
@@ -69,7 +81,8 @@ function templatetTaskDt() {
     await afterTask(idTplt)
       .then((response) => {
         setAfterTasks(response.data.after_tasks)
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
@@ -80,7 +93,7 @@ function templatetTaskDt() {
     notification.success({
       duration: 3,
       message: '正常に削除されました',
-      onClick: () => { },
+      onClick: () => {},
     })
   }
   const deletetpl = async () => {
@@ -88,7 +101,8 @@ function templatetTaskDt() {
       .then(async () => {
         router.push('/template-tasks')
         saveNotification()
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
         }
@@ -102,7 +116,7 @@ function templatetTaskDt() {
       onOk: async () => {
         deletetpl()
       },
-      onCancel: () => { },
+      onCancel: () => {},
       centered: true,
       okText: 'はい',
       cancelText: 'いいえ',
@@ -181,7 +195,9 @@ function templatetTaskDt() {
                       <p>カテゴリ</p>
                     </div>
                     <div className="col-span-2 mx-4">
-                      <div className="item__right">{categoryName.join(', ')}</div>
+                      <div className="item__right">
+                        {categoryName.join(', ')}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -221,8 +237,14 @@ function templatetTaskDt() {
               </div>
 
               <div className="grid grid-cols-2 mx-16 mt-5">
-                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
-                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
+                <div
+                  style={{ alignItems: 'flex-start' }}
+                  className="col-span-1 mx-8 grid grid-cols-3"
+                >
+                  <p
+                    style={{ marginBottom: '0' }}
+                    className="layber col-span-1 mx-5 text-right font-bold"
+                  >
                     前のタスク
                     {' '}
                   </p>
@@ -253,8 +275,14 @@ function templatetTaskDt() {
                     </>
                   )}
                 </div>
-                <div style={{ alignItems: 'flex-start' }} className="col-span-1 mx-8 grid grid-cols-3">
-                  <p style={{ marginBottom: '0' }} className="layber col-span-1 mx-5 text-right font-bold">
+                <div
+                  style={{ alignItems: 'flex-start' }}
+                  className="col-span-1 mx-8 grid grid-cols-3"
+                >
+                  <p
+                    style={{ marginBottom: '0' }}
+                    className="layber col-span-1 mx-5 text-right font-bold"
+                  >
                     次のタスク
                   </p>
                   {afterTasks.length > 0 ? (

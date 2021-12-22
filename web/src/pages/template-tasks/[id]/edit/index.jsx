@@ -94,8 +94,10 @@ const EditTemplateTaskPage = () => {
         setEffortNumber(res.data.effort)
         if (res.data.unit === 'students') {
           setUnit('学生数')
-        } else {
+        } else if (res.data.unit === 'companies') {
           setUnit('企業数')
+        } else {
+          setUnit('none')
         }
         setIsDay(res.data.is_day)
         form.setFieldsValue({
@@ -104,7 +106,13 @@ const EditTemplateTaskPage = () => {
           milestone: res.data.milestone.name,
           description: res.data.description_of_detail,
           effort: res.data.effort,
-          unit: res.data.unit,
+          unit:
+            // eslint-disable-next-line no-nested-ternary
+            res.data.unit === 'students'
+              ? '学生数'
+              : res.data.unit === 'companies'
+                ? '企業数'
+                : 'none',
           is_day: isDayData[res.data.is_day].name,
         })
       })
