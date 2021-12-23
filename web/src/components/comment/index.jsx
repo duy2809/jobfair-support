@@ -132,7 +132,7 @@ function index({
     } catch (err) {
       if (err.response.status === 404) {
         router.push('/404')
-      }
+      } else router.push('/error')
     }
   }
 
@@ -146,7 +146,7 @@ function index({
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
-        }
+        } else router.push('/error')
       })
   }
   const [listStatus, setListStatus] = useState([])
@@ -313,7 +313,7 @@ function index({
     } catch (error) {
       if (error.response.status === 404) {
         router.push('/404')
-      } else return error
+      } else router.push('/error')
       return null
     }
   }
@@ -372,7 +372,7 @@ function index({
     } catch (error) {
       if (error.response.status === 404) {
         router.push('/404')
-      }
+      } else router.push('/error')
     }
     return newComment
   }
