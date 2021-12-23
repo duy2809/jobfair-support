@@ -62,11 +62,8 @@ export const CustomNode = (props) => {
   }
   let defaultMaxDay
   if (props.daysMilestone.length > 0) {
-    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : null
-  } else {
-    defaultMaxDay = 20
+    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : defaultMaxDay = 20
   }
-
   return (
     <div
       className={`tree-node ${styles.root}`}
