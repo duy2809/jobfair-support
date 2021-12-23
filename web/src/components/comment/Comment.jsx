@@ -67,7 +67,7 @@ function Comment(props) {
     } catch (error) {
       if (error.response.status === 404) {
         router.push('/404')
-      } else return error
+      } else router.push('/error')
       return null
     }
   }
