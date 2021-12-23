@@ -19,7 +19,6 @@ import {
   DeleteTwoTone,
   // eslint-disable-next-line import/no-duplicates
 } from '@ant-design/icons'
-import { TypeIcon } from './TypeIcon'
 import styles from './CustomNode.module.scss'
 
 export const CustomNode = (props) => {
@@ -100,7 +99,7 @@ export const CustomNode = (props) => {
                       <Col span={20}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                           <div>
-                            {props.node.droppable && (
+                            {props.node.droppable ? (
                               <div onClick={handleToggle}>
                                 {iseOpen ? (
                                   <DownOutlined className="mr-1" />
@@ -108,7 +107,7 @@ export const CustomNode = (props) => {
                                   <RightOutlined className="mr-1" />
                                 )}
                               </div>
-                            )}
+                            ) : null}
                           </div>
                           <div className="mr-1">
                             {props.node.droppable ? (
@@ -121,7 +120,6 @@ export const CustomNode = (props) => {
                           </div>
                           <div className="text">
                             <span>{props.node.text}</span>
-                            {' '}
                           </div>
                         </div>
                       </Col>

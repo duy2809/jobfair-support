@@ -2,18 +2,17 @@
 import React, { useState } from 'react'
 import {
   Tree,
-  // DragLayerMonitorProps,
   getDescendants,
 } from '@minoru/react-dnd-treeview'
 import { PlusOutlined } from '@ant-design/icons'
 import useTree from '../../pages/template-task-advance/useTree'
 
 import { CustomNode } from './CustomNode'
-import { CustomDragPreview } from './CustomDragPreview'
 import { AddDialog } from './AddDialog'
 import SelectMilestone from './SelectMilestone'
 import './App.module.scss'
 
+// data replaces data when the api has not yet called, if there is no library, an error will be reported
 const backupData = [
   {
     id: 1,
@@ -39,7 +38,7 @@ const backupData = [
     ],
   },
 ]
-
+// function sort task
 const getLastId = (treeData) => {
   const reversedArray = [...treeData].sort((a, b) => {
     if (a.id < b.id) {
@@ -70,17 +69,9 @@ function App({
   dataChartMilestone,
   setDataChartMilestone,
 }) {
-  const defaultTime = []
-  if (dataChartMilestone) {
-    for (let index = 0; index < dataChartMilestone.length; index += 1) {
-      if (dataChartMilestone[index].milestone_id === idMilestoneActive) {
-        defaultTime.push(dataChartMilestone[index])
-      }
-    }
-  }
-  const day = dayMilestone || null
-  const [daysMilestone, setDaysMilestone] = useState(day)
+  const [daysMilestone, setDaysMilestone] = useState(dayMilestone || null)
   const { treeData, setTreeData } = useTree(idSchedule)
+  // handleDrop task
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
       if (newTree[index].droppable) {
@@ -99,6 +90,7 @@ function App({
   }
   const [open, setOpen] = useState(false)
   const [textAdd, setTextAdd] = useState('')
+  // hande change Name father task
   const handleTextChange = (id, value) => {
     const newTree = treeData.map((node) => {
       if (node.id === id) {
@@ -122,6 +114,7 @@ function App({
     setSamleData(newSam)
   }
 
+  // after change duration of task
   const onAfterChange = (value) => {
     const newData = dataChartMilestone
     for (let index = 0; index < newData.length; index += 1) {
@@ -163,6 +156,7 @@ function App({
       listMilestone.push({ name: element.milestone_name, id: element.id })
     })
     : null
+    // handle delete father task
   const handleDelete = (id) => {
     const deleteIds = [
       id,
@@ -194,7 +188,7 @@ function App({
   const handleCloseDialog = () => {
     setOpen(false)
   }
-
+  // handle submit
   const handleSubmit = (newNode) => {
     const lastId = getLastId(treeData) + 1
 
@@ -208,6 +202,7 @@ function App({
 
     setOpen(false)
   }
+  // onMilestoneChange
   const onMilestoneChange = (value) => {
     const newList = SampleData
       ? SampleData.filter((item) => item.id === value)
@@ -217,6 +212,7 @@ function App({
     const daysActive = dayMilestone.filter((item) => item.id === value)
     setDaysMilestone(daysActive)
   }
+  // add task father
   const handleAddText = (text) => {
     if (text.length === 0) return
     const dataAdd = {
@@ -282,12 +278,8 @@ function App({
             onAfterChange={onAfterChange}
             treeData={treeData}
             daysMilestone={daysMilestone}
-            defaultTime={defaultTime}
             day={dayMilestone}
           />
-        )}
-        dragPreviewRender={(monitorProps) => (
-          <CustomDragPreview monitorProps={monitorProps} />
         )}
         onDrop={handleDrop}
       />
