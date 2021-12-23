@@ -182,7 +182,7 @@ class ScheduleController extends Controller
 
     public function search(Request $request)
     {
-        return Schedule::where('name', 'like', '%' . $request->input('name') . '%')->get();
+        return Schedule::where('name', 'like', '%'.$request->input('name').'%')->get();
     }
 
     public function getSchedule($id)
@@ -380,7 +380,7 @@ class ScheduleController extends Controller
             $relation = static::orderTasks($temp, $endTasks, $list);
         }
 
-        return $result+static::flatArray($relation);
+        return $result + static::flatArray($relation);
     }
 
     /**
@@ -401,8 +401,8 @@ class ScheduleController extends Controller
                 ->select(['after_tasks', 'before_tasks'])->whereIn('before_tasks', $ownTasks->pluck('template_tasks.id'))
                 ->whereIn('after_tasks', $ownTasks->pluck('template_tasks.id'))
                 ->get()->map(function ($element) {
-                return [$element->after_tasks, $element->before_tasks];
-            });
+                    return [$element->after_tasks, $element->before_tasks];
+                });
             $withoutRelation = $ownTasks->whereHas('beforeTasks', null, '=', 0)
                 ->whereHas('afterTasks', null, '=', 0)->pluck('template_tasks.id');
 
@@ -424,7 +424,7 @@ class ScheduleController extends Controller
             return [
                 'id'            => $item->id,
                 'name'          => $item->name,
-                'timestamp'     => $item->period === 0 ? '' : $item->period . $postfix,
+                'timestamp'     => $item->period === 0 ? '' : $item->period.$postfix,
                 'numberOfTasks' => $templateTasks->get()->where('milestone_id', $item->id)->count(),
                 'totalIndex'    => $totalIndex,
             ];
@@ -606,14 +606,14 @@ class ScheduleController extends Controller
                 $newStartTime = $minStartTime;
                 $templateTask = $templateTasks->where('id', $templateTaskId)->first();
                 $templateTask->beforeTasks->each(function ($element)
-                     use (&$newStartTime, $mapTaskIDToEndTime, $templateTaskIds) {
-                        if (in_array($element->id, $templateTaskIds)) {
-                            $possibleStartTime = $mapTaskIDToEndTime[$element->id] + 1;
-                            if ($newStartTime < $possibleStartTime) {
-                                $newStartTime = $possibleStartTime;
-                            }
+ use (&$newStartTime, $mapTaskIDToEndTime, $templateTaskIds) {
+                    if (in_array($element->id, $templateTaskIds)) {
+                        $possibleStartTime = $mapTaskIDToEndTime[$element->id] + 1;
+                        if ($newStartTime < $possibleStartTime) {
+                            $newStartTime = $possibleStartTime;
                         }
-                    });
+                    }
+                });
                 // request must send all template tasks in a milestone
                 if (!array_key_exists($templateTaskId, $milestone['template_tasks'])) {
                     return response([
@@ -643,6 +643,7 @@ class ScheduleController extends Controller
                     ->update(['duration' => $milestone['template_tasks'][$templateTask->id]]);
             }
         }
+
         $this->calculateParentDuration($request->schedule_id);
     }
 
@@ -680,14 +681,14 @@ class ScheduleController extends Controller
             $parentTemplateTask->children->each(function ($child) use (&$mapTaskIDToDuration, $templateTaskIds) {
                 $newDuration = 0;
                 $child->beforeTasks->each(function ($element)
-                     use (&$newDuration, &$mapTaskIDToDuration, $templateTaskIds) {
-                        if (in_array($element->id, $templateTaskIds)) {
-                            $possibleDuration = $mapTaskIDToDuration[$element->id];
-                            if ($newDuration < $possibleDuration) {
-                                $newDuration = $possibleDuration;
-                            }
+ use (&$newDuration, &$mapTaskIDToDuration, $templateTaskIds) {
+                    if (in_array($element->id, $templateTaskIds)) {
+                        $possibleDuration = $mapTaskIDToDuration[$element->id];
+                        if ($newDuration < $possibleDuration) {
+                            $newDuration = $possibleDuration;
                         }
-                    });
+                    }
+                });
                 $newDuration += $child->pivot->duration;
                 $mapTaskIDToDuration->put($child->id, $newDuration);
             });
@@ -696,6 +697,7 @@ class ScheduleController extends Controller
             ], false);
         });
     }
+
     public function deleteTemplateTaskParent(Request $request, $id)
     {
         $templateTaskParent = TemplateTask::findOrFail($id);

@@ -74,6 +74,13 @@ const templateTaskAdvance = () => {
       onClick: () => {},
     })
   }
+  const ErrorNotification = () => {
+    notification.error({
+      message: '変更は正常に保存されました。',
+      duration: 3,
+      onClick: () => {},
+    })
+  }
   const handSubmit = async () => {
     try {
       const task = []
@@ -110,14 +117,16 @@ const templateTaskAdvance = () => {
       }
       await updateParent(data)
         .then((response) => {
+          console.log(data, 'database')
           if (response.status === 200) {
             router.push(`/schedule/${idSchedule}`)
             saveNotification()
           }
         })
         .catch((error) => {
+          console.log(data, 'database')
           if (error.response.status === 404) {
-            router.push('/404')
+            ErrorNotification()
           }
         })
     } catch (error) {
@@ -158,6 +167,7 @@ const templateTaskAdvance = () => {
                       setIdMileStoneActive={setIdMileStoneActive}
                       onAfterChange={onAfterChange}
                       dayMilestone={dayMilestone}
+                      dataChartMilestone={dataChartMilestone}
                     />
                   </div>
                 </Card>

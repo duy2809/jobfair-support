@@ -15,6 +15,7 @@ const useHome = (idSchedule) => {
     await getNewMilestone(idSchedule)
       .then((res) => {
         const dataRes = Object.values(res.data)
+        console.log(res.data, 'data')
         const newSamp = []
         const dayMilestones = []
         for (let index = 0; index < dataRes.length; index += 1) {
@@ -33,8 +34,9 @@ const useHome = (idSchedule) => {
               {
                 id: dataRes[index].template_tasks[item].id,
                 text: dataRes[index].template_tasks[item].name,
-                parent: 0,
-                droppable: false,
+                parent: dataRes[index].template_tasks[item].parent,
+                droppable: dataRes[index].template_tasks[item].is_parent,
+                duration: dataRes[index].template_tasks[item].duration,
               },
             )
             newSamp.push(newTask)
@@ -47,7 +49,7 @@ const useHome = (idSchedule) => {
         for (let index = 0; index < newRes.length; index += 1) {
           const templa = []
           for (let item = 0; item < newRes[index].task.length; item += 1) {
-            templa.push({ [newRes[index].task[item].id]: 1 })
+            templa.push({ [newRes[index].task[item].id]: newRes[index].task[item].duration })
             const a = {
               milestone_id: newRes[index].id,
               template_tasks: templa,
@@ -58,6 +60,7 @@ const useHome = (idSchedule) => {
         const newMilestone = milestones.filter((value, index, self) => index === self.findIndex((t) => (
           t.milestone_id === value.milestone_id
         )))
+        console.log(newMilestone, 'new')
         setDataChartMilestone(newMilestone)
         setSamleData(newRes)
         setTreeData(newRes[0].task)
