@@ -81,10 +81,17 @@ function MemberList() {
         setRole(res.data.auth.user.role)
       }
     })
+
+    const sortMember = (member1, member2) => {
+      if (member1.updated_at < member2.updated_at) {
+        return 1
+      }
+      return member2.updated_at < member1.updated_at ? -1 : 0
+    }
     MemberApi.getListMember()
       .then((res) => {
         const { data } = res
-        setMembers(data)
+        setMembers(data.sort(sortMember))
         data.map((item) => {
           item.categories_name = []
           if (item.categories.length) {
