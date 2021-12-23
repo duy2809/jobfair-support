@@ -1,13 +1,23 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import {
+  DeleteTwoTone,
+  EditTwoTone,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
 import { Modal, notification, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { afterTask, beforeTask, deleteTask, taskData, getRoleTask } from '~/api/task-detail'
+import {
+  afterTask,
+  beforeTask,
+  deleteTask,
+  taskData,
+  getRoleTask,
+} from '~/api/task-detail'
 
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
@@ -81,6 +91,7 @@ function TaskDetail() {
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
+      setListMemberAssignee(copyState.updateListMember)
       setAction('none')
     }
     if (copyState.new_status !== '') {
@@ -138,7 +149,10 @@ function TaskDetail() {
             effort: data.template_task.effort,
             is_day: data.template_task.is_day,
             unit: data.template_task.unit,
-            description_of_detail: data.description_of_detail,
+            description_of_detail: data.description_of_detail.replace(
+              /<a/g,
+              '<a target="_blank" ',
+            ),
           })
           setTaskStatus(data.status)
           setListMemberAssignee(data.users)
@@ -218,7 +232,7 @@ function TaskDetail() {
     fetchAfterTask()
     fetchReviewersList()
     setLoading(false)
-  }, [role])
+  }, [role, router.query.id])
   const assigneeNames = listMemberAssignee.map((assignee) => assignee.id)
 
   return (
@@ -318,36 +332,6 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
-                {/* {listMemberAssignee.length == 1? (<></>):
-                } */}
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
-                        ) : (
-                          <li className="task__chil" />
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8 ">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">ステータス</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <StatusStatic status={taskStatus} />
-                    </div>
-                  </div>
-                </div>
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -438,7 +422,8 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <table>
-                        {newAsigneesFromNewComment.length > 0 && action === 'none'
+                        {newAsigneesFromNewComment.length > 0
+                        && action === 'none'
                           ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
@@ -514,6 +499,36 @@ function TaskDetail() {
                               </>
                             ))}
                       </table>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8 ">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">ステータス</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <StatusStatic status={taskStatus} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 mx-4">
+                <div className="col-span-1 mx-4 mt-5">
+                  <div className="grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">レビュアー</p>
+                    </div>
+                    <div className="col-span-5 mx-4">
+                      <ul className="list__member">
+                        {reviewersList.length !== 0 ? (
+                          <li>
+                            {reviewersList.map((item) => item.name).join(', ')}
+                          </li>
+                        ) : (
+                          <li className="task__chil" />
+                        )}
+                      </ul>
                     </div>
                   </div>
                 </div>

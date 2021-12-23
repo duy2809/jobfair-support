@@ -33,14 +33,14 @@ class StatusController extends Controller
                 return 'member';
             }
 
-            return 'taskMember'.$userId;
+            return 'taskMember';
         }
 
         $user = User::find($userId);
-        if ($user->tasks->find($taskId)) {
-            return 'taskMember'.$userId;
-        } else if ($user->reviewTasks->find($taskId)) {
+        if ($user->reviewTasks->find($taskId)) {
             return 'reviewer';
+        } else if ($user->tasks->find($taskId)) {
+            return 'taskMember'.$userId;
         }
 
         return 'member';

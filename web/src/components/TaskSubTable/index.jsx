@@ -74,11 +74,11 @@ const TaskSubTable = ({
       dataColumn.map((dataItem) => {
         if (dataItem.title === 'タスク名') {
           dataItem.render = (row) => (
-            <Link href={taskNameToLink({ row })}>
+            <a href={taskNameToLink({ row })}>
               <Tooltip title={row}>
-                <a>{truncate(row)}</a>
+                <p>{truncate(row)}</p>
               </Tooltip>
-            </Link>
+            </a>
           )
         }
         if (dataItem.title === 'JF名') {
@@ -231,6 +231,7 @@ const TaskSubTable = ({
           display: 'flex',
           justifyContent: 'space-between',
           marginTop: '36px',
+          height: '40px',
         }}
       >
         <div>
@@ -271,16 +272,12 @@ const TaskSubTable = ({
           </Link>
           <span className="queue-demo">
             {showSearchIcon && (
-              <Button
-                style={{ border: 'none' }}
-                shape="circle"
-                icon={(
-                  <SearchOutlined
-                    style={{ marginLeft: '4px', fontSize: '24px' }}
-                  />
-                )}
-                onClick={onClick}
-              />
+              <a className="hv-icon" onClick={onClick}>
+                <SearchOutlined
+                  className="hv-icon"
+                  style={{ marginLeft: '4px', fontSize: '24px' }}
+                />
+              </a>
             )}
 
             <span>
