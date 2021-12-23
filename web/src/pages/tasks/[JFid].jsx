@@ -207,13 +207,36 @@ function TaskList() {
   const deletetpl = async (id) => {
     setLoading(true)
     try {
-      await deleteTask(id).then(() => {
-        const newList = temperaryData.filter((item) => item.idtask !== id)
-        setTemperaryData(newList)
-        setOriginalData(newList)
-        saveNotification()
+      await deleteTask(id).then((res) => {
+        const deletedTask = res.data.deleted_task
+        console.log(deletedTask.is_parent)
+        if (deletedTask.parent_id === null && deletedTask.is_parent !== 1) {
+          const newList = originalData.filter((item) => item.idtask !== id)
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        } else if (deletedTask.is_parent === 1) {
+          let newList = originalData.filter((item) => item.idtask !== id)
+          const newTask = originalData.find((el) => el.key === deletedTask.id)
+            .children.map((el) => ({ ...el, parent_id: null }))
+          newList = [...newList, ...newTask]
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        } else {
+          const newList = originalData.map((item) => {
+            if (item.key === deletedTask.parent_id) {
+              item.children = item.children.filter((element) => element.idtask !== id)
+            }
+            return item
+          })
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        }
       })
     } catch (error) {
+      console.log(error)
       if (error.response.status === 404) {
         router.push('/404')
       } else Error(error.toString())
@@ -397,7 +420,7 @@ function TaskList() {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => role === 'admin' && (
+        render: (_text, record) => role === 'admin' && record.is_parent !== 1 && (
           <Space size="middle">
             <EditTwoTone
               id={record.key}

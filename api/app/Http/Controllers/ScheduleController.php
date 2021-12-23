@@ -64,7 +64,7 @@ class ScheduleController extends Controller
         $schedule->milestones()->attach($request->addedMilestones);
         $schedule->templateTasks()->attach($request->addedTemplateTasks);
 
-        return $schedule;
+        return Schedule::where('name', $request->name)->where('jobfair_id', null)->first();
     }
 
     /**
@@ -626,7 +626,8 @@ class ScheduleController extends Controller
                 $mapTaskIDToEndTime->put($templateTaskId, $newEndTime);
                 if ($newEndTime > $minStartTime + $gap - 1) {
                     return response([
-                        'msg' => 'invalid duration',
+                        'msg'              => 'invalid duration',
+                        'template_task_id' => $templateTaskId,
                     ], 400);
                 }
             }
@@ -714,7 +715,7 @@ class ScheduleController extends Controller
         $schedule = Schedule::with([
             'milestones:id,name,is_week,period',
             'milestones.templateTasks' => function ($templateTask) use ($idTemplateTask) {
-                $templateTask->whereIn('template_tasks.id', $idTemplateTask)->select(['id', 'name', 'milestone_id']);
+                $templateTask->whereIn('template_tasks.id', $idTemplateTask)->select(['id', 'name', 'milestone_id', 'is_parent']);
             },
         ])->findOrFail($id, ['id', 'name']);
         foreach ($schedule->milestones as $item) {
@@ -736,9 +737,10 @@ class ScheduleController extends Controller
 
         foreach ($schedule->milestones as $milestone) {
             foreach ($milestone->templateTasks as $templateTask) {
-                $taskParentId = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)
-                    ->where('schedule_id', $id)->first()->template_task_parent_id;
-                $templateTask['parent'] = $taskParentId === null ? 0 : $taskParentId;
+                $taskInfo = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)
+                    ->where('schedule_id', $id)->first();
+                $templateTask['parent'] = $taskInfo->template_task_parent_id === null ? 0 : $taskInfo->template_task_parent_id;
+                $templateTask['duration'] = $taskInfo->duration === null ? 1 : $taskInfo->duration;
                 $temp = TemplateTask::findOrFail($templateTask->id);
                 $templateTask['beforeTasks'] = $temp->beforeTasks->pluck('id');
                 $templateTask['afterTasks'] = $temp->afterTasks->pluck('id');

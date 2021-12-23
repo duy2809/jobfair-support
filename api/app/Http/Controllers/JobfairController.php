@@ -50,7 +50,7 @@ class JobfairController extends Controller
         : $milestone['period'];
         $startTime = date(
             'Y-m-d',
-            strtotime($jobfair->start_date.' + '.$numDates.'days')
+            strtotime($jobfair->start_date . ' + ' . $numDates . 'days')
         );
     }
 
@@ -85,13 +85,15 @@ class JobfairController extends Controller
                     // can always calculate end time of before tasks because of before tasks is always be handled first (ordered by TaskRelation func)
                     $newStartTime = $currentStartTime;
                     $templateTask->beforeTasks->each(function ($element) use (&$newStartTime, $mapTaskIDToEndTime) {
-                        $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id].'+ 1 day'));
+                        $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id] . '+ 1 day'));
                         if ($newStartTime < $possibleStartTime) {
                             $newStartTime = $possibleStartTime;
                         }
                     });
+
                     $duration = $templateTask->pivot->duration - 1;
-                    $newEndTime = date('Y-m-d', strtotime($newStartTime.' + '.min($duration, 0).'days'));
+
+                    $newEndTime = date('Y-m-d', strtotime($newStartTime . ' + ' . max($duration, 0) . 'days'));
                     $input = $templateTask->toArray();
                     $input['is_parent'] = $templateTask->is_parent;
                     $input['start_time'] = $newStartTime;
@@ -99,6 +101,9 @@ class JobfairController extends Controller
                     $input['schedule_id'] = $newSchedule->id;
                     $input['status'] = '未着手';
                     $input['template_task_id'] = $templateTask->id;
+                    if ($templateTask->is_parent === 1) {
+                        $input['description_of_detail'] = '';
+                    }
                     $newTask = Task::create($input);
                     $newTask->categories()->attach($templateTask->categories);
                     $mapTaskIDToEndTime->put($templateTaskId, $newEndTime);
@@ -310,8 +315,8 @@ class JobfairController extends Controller
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
                     ->where('is_parent', 1)->orWhere(function ($query) {
-                        $query->where('is_parent', 0)->where('parent_id', null);
-                    })
+                    $query->where('is_parent', 0)->where('parent_id', null);
+                })
                     ->orderBy('tasks.id', 'ASC');
             },
         ])->findOrFail($id, ['id']);
@@ -367,7 +372,7 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($q) use ($request) {
                 $q->select('id', 'name', 'status', 'start_time', 'end_time', 'updated_at', 'schedule_id')
-                    ->where('tasks.name', 'LIKE', '%'.$request->name.'%');
+                    ->where('tasks.name', 'LIKE', '%' . $request->name . '%');
             },
         ])->findOrFail($id, ['id']);
 

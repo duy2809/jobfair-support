@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { getNewMilestone } from '../../api/template-advance'
+import { getNewMilestone } from '../api/template-advance'
 
 const useHome = (idSchedule) => {
   const router = useRouter()

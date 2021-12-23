@@ -127,6 +127,7 @@ function TaskDetail() {
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
+          console.log(data)
           const categoryName = []
           const { children } = response.data
           if (children) {
@@ -153,6 +154,7 @@ function TaskDetail() {
               /<a/g,
               '<a target="_blank" ',
             ),
+            is_parent: data.is_parent,
           })
           setTaskStatus(data.status)
           setListMemberAssignee(data.users)
@@ -263,7 +265,7 @@ function TaskDetail() {
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
-                {role === 'admin' ? (
+                {role === 'admin' && infoTask.is_parent !== 1 ? (
                   <>
                     <EditTwoTone
                       className="border-none mx-1 text-2xl"
@@ -347,22 +349,24 @@ function TaskDetail() {
                 </div>
                 {/* {listMemberAssignee.length == 1? (<></>):
                 } */}
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>{reviewersList.map((item) => item.name).join(', ')}</li>
-                        ) : (
-                          <li className="task__chil" />
-                        )}
-                      </ul>
+                { infoTask.is_parent !== 1 && (
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.length !== 0 ? (
+                            <li>{reviewersList.map((item) => item.name).join(', ')}</li>
+                          ) : (
+                            <li className="task__chil" />
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) }
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -395,77 +399,80 @@ function TaskDetail() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 mx-4 mt-5">
-                <div className="col-span-1 mx-5 grid grid-cols-8">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">前のタスク</p>
-                  </div>
-                  {beforeTasks?.length > 0 ? (
-                    <>
-                      <ul className="ml-5 task_list">
-                        {beforeTasks
-                          ? beforeTasks.map((item) => (
-                            <li className="mb-3">
-                              <Tooltip placement="top" title={item.name}>
-                                <a
-                                  href={`/task-detail/${item.id}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-block text-blue-600 whitespace-nowrap "
-                                >
-                                  {truncate(item.name)}
-                                </a>
-                              </Tooltip>
-                            </li>
-                          ))
-                          : null}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
-                  )}
-                </div>
-                <div className="col-span-1 mx-8 grid grid-cols-8">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">次のタスク</p>
-                  </div>
-                  {afterTasks?.length > 0 ? (
-                    <>
-                      <ul className="ml-5 task_list">
-                        {afterTasks
-                          ? afterTasks.map((item) => (
-                            <li className="mb-3">
-                              <Tooltip placement="top" title={item.name}>
-                                <a
-                                  href={`/task-detail/${item.id}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-block text-blue-600 whitespace-nowrap "
-                                >
-                                  {truncate(item.name)}
-                                </a>
-                              </Tooltip>
-                            </li>
-                          ))
-                          : null}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
-                  )}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 mx-4">
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
+              { infoTask.is_parent !== 1 && (
+                <div className="grid grid-cols-2 mx-4 mt-5">
+                  <div className="col-span-1 mx-5 grid grid-cols-8">
                     <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">担当者</p>
+                      <p className="font-bold text-right">前のタスク</p>
                     </div>
-                    <div className="col-span-5 mx-4">
-                      <table>
-                        {newAsigneesFromNewComment.length > 0
+                    {beforeTasks?.length > 0 ? (
+                      <>
+                        <ul className="ml-5 task_list">
+                          {beforeTasks
+                            ? beforeTasks.map((item) => (
+                              <li className="mb-3">
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </li>
+                            ))
+                            : null}
+                        </ul>
+                      </>
+                    ) : (
+                      <ul className="list__task col-span-6" />
+                    )}
+                  </div>
+                  <div className="col-span-1 mx-8 grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">次のタスク</p>
+                    </div>
+                    {afterTasks?.length > 0 ? (
+                      <>
+                        <ul className="ml-5 task_list">
+                          {afterTasks
+                            ? afterTasks.map((item) => (
+                              <li className="mb-3">
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </li>
+                            ))
+                            : null}
+                        </ul>
+                      </>
+                    ) : (
+                      <ul className="list__task col-span-6" />
+                    )}
+                  </div>
+                </div>
+              ) }
+              { infoTask.is_parent !== 1 && (
+                <div className="grid grid-cols-2 mx-4">
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">担当者</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <table>
+                          {newAsigneesFromNewComment.length > 0
                         && action === 'none'
-                          ? newAsigneesFromNewComment
+                            ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return (
@@ -484,7 +491,7 @@ function TaskDetail() {
                                 </>
                               )
                             })
-                          : listMemberAssignee
+                            : listMemberAssignee
                             && listMemberAssignee.map((item) => (
                               <>
                                 <tr key={item.id} className="task__chil">
@@ -532,11 +539,12 @@ function TaskDetail() {
                                 <br />
                               </>
                             ))}
-                      </table>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) }
               <div className=" mx-12 my-5">
                 <p className="font-bold">詳細</p>
                 <div className=" mx-10  demo-infinite-container">

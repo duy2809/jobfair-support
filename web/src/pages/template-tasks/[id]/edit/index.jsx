@@ -252,6 +252,14 @@ const EditTemplateTaskPage = () => {
         if (error.response.status === 404) {
           router.push('/404')
         }
+        if (error.response.status === 400) {
+          if (error.response.data?.error) {
+            notification.error({
+              message: '前のタスクまたは次のタスクは正しくないので、確認してみてください。',
+              duration: 3,
+            })
+          }
+        }
         if (JSON.parse(error.response.request.response).message === 'Edit Failed') {
           notification.error({
             message: 'このテンプレートタスク名は存在しています',

@@ -382,8 +382,18 @@ function EditTask() {
               setdisableBtn(false)
               if (error.response.status === 404) {
                 router.push('/404')
+              } else
+              if (error.response.status === 400) {
+                if (error.response.data?.error) {
+                  notification.error({
+                    message: '前のタスクまたは次のタスクは正しくないので、確認してみてください。',
+                  })
+                } else {
+                  forbidNotification()
+                }
+              } else {
+                forbidNotification()
               }
-              forbidNotification()
             })
         }
       } catch (error) {

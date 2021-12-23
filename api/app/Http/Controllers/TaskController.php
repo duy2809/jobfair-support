@@ -185,7 +185,7 @@ class TaskController extends Controller
             $startTime = date('Y-m-d', strtotime($jobfair->start_date . ' + ' . $numDates . 'days'));
             $input = $templateTask->toArray();
             $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . min($duration, 0) . 'days'));
+            $input['end_time'] = date('Y-m-d', strtotime($startTime . ' + ' . max($duration, 0) . 'days'));
             $input['schedule_id'] = $schedule->id;
             $input['status'] = '未着手';
             $input['template_task_id'] = $templateTask->id;
@@ -685,12 +685,13 @@ class TaskController extends Controller
         }
 
         $task = Task::findOrFail($id);
+        $deletedTask = $task->toArray();
         $task->categories()->detach();
         $task->beforeTasks()->detach();
         $task->afterTasks()->detach();
         $task->delete();
 
-        return response()->json(['message' => 'Delete Successfully'], 200);
+        return response()->json(['message' => 'Delete Successfully', 'deleted_task' => $deletedTask], 200);
     }
 
     public function getReviewers($id)
