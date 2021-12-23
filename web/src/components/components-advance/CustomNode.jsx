@@ -3,7 +3,7 @@
 /* eslint-disable import/no-duplicates */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   CloseCircleOutlined,
   CheckOutlined,
@@ -29,18 +29,6 @@ export const CustomNode = (props) => {
   const [labelText, setLabelText] = useState(text)
   const [iseOpen, setIsOpen] = useState(false)
   const [visibleInput, setVisibleInput] = useState(false)
-  const [defaultValue, setDefaultValue] = useState(1)
-  // useEffect(() => {
-  //   let defaultNew
-  //   if (props.defaultTime.length > 0) {
-  //     for (let index = 0; index < props.defaultTime[0].template_tasks.length; index += 1) {
-  //       if (Object.keys(props.defaultTime[0].template_tasks[0])[0] === props.node.id.toString()) {
-  //         defaultNew = Object.values(props.defaultTime[0].template_tasks[index])
-  //       }
-  //     }
-  //   }
-  //   setDefaultValue(defaultNew ? defaultNew[0] : 1)
-  // }, [])
   const handleToggle = (e) => {
     setIsOpen(!iseOpen)
     e.stopPropagation()
@@ -57,13 +45,12 @@ export const CustomNode = (props) => {
   const handleChangeText = (e) => {
     setLabelText(e.target.value)
   }
-
   const handleSubmit = () => {
     setVisibleInput(false)
     props.onTextChange(id, labelText)
   }
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
-  const [inputValue, setInputValue] = useState({ id: null, value: 1 })
+  const [inputValue, setInputValue] = useState({ id: null, value: props.node.duration })
   const onChange = (value) => {
     setInputValue({ id: props.node.id, value })
     // eslint-disable-next-line no-unused-expressions
@@ -73,7 +60,7 @@ export const CustomNode = (props) => {
   }
   let defaultMaxDay
   if (props.daysMilestone.length > 0) {
-    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : 20
+    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : defaultMaxDay = 20
   } else {
     defaultMaxDay = 20
   }
@@ -112,16 +99,17 @@ export const CustomNode = (props) => {
                     <Row gutter={[50, 50]}>
                       <Col span={20}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-
-                          {props.node.droppable && (
-                            <div onClick={handleToggle}>
-                              {iseOpen ? (
-                                <DownOutlined className="mr-1" />
-                              ) : (
-                                <RightOutlined className="mr-1" />
-                              )}
-                            </div>
-                          )}
+                          <div>
+                            {props.node.droppable && (
+                              <div onClick={handleToggle}>
+                                {iseOpen ? (
+                                  <DownOutlined className="mr-1" />
+                                ) : (
+                                  <RightOutlined className="mr-1" />
+                                )}
+                              </div>
+                            )}
+                          </div>
                           <div className="mr-1">
                             {props.node.droppable ? (
                               <FolderFilled />
@@ -166,7 +154,7 @@ export const CustomNode = (props) => {
                             max={defaultMaxDay}
                             onChange={onChange}
                             onAfterChange={onAfterChange}
-                            defaultValue={defaultValue ? defaultValue[0] : 1}
+                            defaultValue={1}
                             value={
                               typeof inputValue.value === 'number'
                                 ? inputValue.value

@@ -62,13 +62,13 @@ const getLastId = (treeData) => {
 // eslint-disable-next-line react/prop-types
 function App({
   idSchedule,
-  onAfterChange,
   SampleData,
   setSamleData,
   idMilestoneActive,
   setIdMileStoneActive,
   dayMilestone,
   dataChartMilestone,
+  setDataChartMilestone,
 }) {
   const defaultTime = []
   if (dataChartMilestone) {
@@ -111,6 +111,41 @@ function App({
       return node
     })
 
+    setTreeData(newTree)
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newTree,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
+  }
+
+  const onAfterChange = (value) => {
+    const newData = dataChartMilestone
+    for (let index = 0; index < newData.length; index += 1) {
+      for (
+        let item = 0;
+        item < newData[index].template_tasks.length;
+        item += 1
+      ) {
+        const keyOj = newData[index].template_tasks[item]
+        if (value.id.toString() === Object.keys(keyOj)[0]) {
+          newData[index].template_tasks[item] = { [value.id]: value.value }
+        }
+      }
+    }
+    setDataChartMilestone(newData)
+    const newTree = treeData.map((node) => {
+      if (node.id === value.id) {
+        return {
+          ...node,
+          duration: value.value,
+        }
+      }
+      return node
+    })
     setTreeData(newTree)
     const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
     const newSample = {

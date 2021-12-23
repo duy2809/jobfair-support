@@ -117,14 +117,12 @@ const templateTaskAdvance = () => {
       }
       await updateParent(data)
         .then((response) => {
-          console.log(data, 'database')
           if (response.status === 200) {
             router.push(`/schedule/${idSchedule}`)
             saveNotification()
           }
         })
         .catch((error) => {
-          console.log(data, 'database')
           if (error.response.status === 404) {
             ErrorNotification()
           }
@@ -168,6 +166,7 @@ const templateTaskAdvance = () => {
                       onAfterChange={onAfterChange}
                       dayMilestone={dayMilestone}
                       dataChartMilestone={dataChartMilestone}
+                      setDataChartMilestone={setDataChartMilestone}
                     />
                   </div>
                 </Card>
