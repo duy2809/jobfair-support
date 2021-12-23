@@ -29,6 +29,16 @@ export const CustomNode = (props) => {
   const [labelText, setLabelText] = useState(text)
   const [iseOpen, setIsOpen] = useState(false)
   const [visibleInput, setVisibleInput] = useState(false)
+  const [defaultValue, setDefaultValue] = useState(null)
+  let defaultNew
+  if (props.defaultTime.length > 0) {
+    for (let index = 0; index < props.defaultTime[0].template_tasks.length; index += 1) {
+      if (Object.keys(props.defaultTime[0].template_tasks[0])[0] === props.node.id.toString()) {
+        defaultNew = Object.values(props.defaultTime[0].template_tasks[index])
+      }
+    }
+  }
+  // setDefaultValue(defaultNew.length > 0 ? defaultNew[0] : null)
   const handleToggle = (e) => {
     setIsOpen(!iseOpen)
     e.stopPropagation()
@@ -98,17 +108,16 @@ export const CustomNode = (props) => {
                     <Row gutter={[50, 50]}>
                       <Col span={20}>
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <div>
-                            {props.node.droppable && (
-                              <div onClick={handleToggle}>
-                                {iseOpen ? (
-                                  <DownOutlined className="mr-1" />
-                                ) : (
-                                  <RightOutlined className="mr-1" />
-                                )}
-                              </div>
-                            )}
-                          </div>
+
+                          {props.node.droppable && (
+                            <div onClick={handleToggle}>
+                              {iseOpen ? (
+                                <DownOutlined className="mr-1" />
+                              ) : (
+                                <RightOutlined className="mr-1" />
+                              )}
+                            </div>
+                          )}
                           <div className="mr-1">
                             {props.node.droppable ? (
                               <FolderFilled />
@@ -153,7 +162,7 @@ export const CustomNode = (props) => {
                             max={defaultMaxDay}
                             onChange={onChange}
                             onAfterChange={onAfterChange}
-                            defaultValue={1}
+                            defaultValue={defaultNew ? defaultNew[0] : 1}
                             value={
                               typeof inputValue.value === 'number'
                                 ? inputValue.value

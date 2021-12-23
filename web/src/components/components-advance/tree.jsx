@@ -68,8 +68,17 @@ function App({
   idMilestoneActive,
   setIdMileStoneActive,
   dayMilestone,
+  dataChartMilestone,
 }) {
-  console.log(dayMilestone,"day")
+  const defaultTime = []
+  if (dataChartMilestone) {
+    for (let index = 0; index < dataChartMilestone.length; index += 1) {
+      if (dataChartMilestone[index].milestone_id === idMilestoneActive) {
+        defaultTime.push(dataChartMilestone[index])
+      }
+    }
+  }
+
   const daysStart = dayMilestone
   const [daysMilestone, setDaysMilestone] = useState(daysStart)
   const { treeData, setTreeData } = useTree(idSchedule)
@@ -239,6 +248,7 @@ function App({
             onAfterChange={onAfterChange}
             treeData={treeData}
             daysMilestone={daysMilestone}
+            defaultTime={defaultTime}
           />
         )}
         dragPreviewRender={(monitorProps) => (
