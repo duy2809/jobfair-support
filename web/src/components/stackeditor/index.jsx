@@ -27,7 +27,7 @@ const StackEditor = (props) => {
   }, [props.value])
   return (
     <div>
-      <MarkDownView source={description} />
+      <MarkDownView source={description} linkTarget="_blank" />
       <Button
         type="primary"
         className="flex justify-center items-center"
