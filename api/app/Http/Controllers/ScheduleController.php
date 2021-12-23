@@ -624,7 +624,8 @@ class ScheduleController extends Controller
                 $mapTaskIDToEndTime->put($templateTaskId, $newEndTime);
                 if ($newEndTime > $minStartTime + $gap - 1) {
                     return response([
-                        'msg' => 'invalid duration',
+                        'msg'              => 'invalid duration',
+                        'template_task_id' => $templateTaskId,
                     ], 400);
                 }
             }

@@ -3,7 +3,7 @@
 /* eslint-disable import/no-duplicates */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import {
   CloseCircleOutlined,
   CheckOutlined,
@@ -51,12 +51,9 @@ export const CustomNode = (props) => {
     props.onTextChange(id, labelText)
   }
   const dragOverProps = useDragOver(id, props.isOpen, props.onToggle)
-  // const [inputValue, setInputValue] = useState({ id: null, value: 1 })
-  const inputValue = useRef({ id: null, value: 1 })
-
+  const [inputValue, setInputValue] = useState({ id: null, value: 1 })
   const onChange = (value) => {
-    inputValue.current = { id: props.node.id, value }
-    // setInputValue({ id: props.node.id, value })
+    setInputValue({ id: props.node.id, value })
     // eslint-disable-next-line no-unused-expressions
   }
   function onAfterChange(value) {
@@ -158,12 +155,12 @@ export const CustomNode = (props) => {
                             onAfterChange={onAfterChange}
                             defaultValue={1}
                             value={
-                              typeof inputValue.current.value === 'number'
-                                ? inputValue.current.value
+                              typeof inputValue.value === 'number'
+                                ? inputValue.value
                                 : 0
                             }
                           />
-                          <div className="inputValue">{inputValue.current.value}</div>
+                          <div className="inputValue">{inputValue.value}</div>
                         </div>
                       ) : null}
                     </div>

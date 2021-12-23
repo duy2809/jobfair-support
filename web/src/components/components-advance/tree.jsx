@@ -69,6 +69,7 @@ function App({
   setIdMileStoneActive,
   dayMilestone,
 }) {
+  console.log(dayMilestone,"day")
   const daysStart = dayMilestone
   const [daysMilestone, setDaysMilestone] = useState(daysStart)
   const { treeData, setTreeData } = useTree(idSchedule)
