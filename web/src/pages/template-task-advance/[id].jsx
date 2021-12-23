@@ -74,6 +74,13 @@ const templateTaskAdvance = () => {
       onClick: () => {},
     })
   }
+  const ErrorNotification = () => {
+    notification.error({
+      message: '変更は正常に保存されました。',
+      duration: 3,
+      onClick: () => {},
+    })
+  }
   const handSubmit = async () => {
     try {
       const task = []
@@ -117,7 +124,7 @@ const templateTaskAdvance = () => {
         })
         .catch((error) => {
           if (error.response.status === 404) {
-            router.push('/404')
+            ErrorNotification()
           }
         })
     } catch (error) {

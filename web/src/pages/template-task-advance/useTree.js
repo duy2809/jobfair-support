@@ -33,8 +33,8 @@ const useHome = (idSchedule) => {
               {
                 id: dataRes[index].template_tasks[item].id,
                 text: dataRes[index].template_tasks[item].name,
-                parent: 0,
-                droppable: false,
+                parent: dataRes[index].template_tasks[item].parent,
+                droppable: dataRes[index].template_tasks[item].is_parent,
               },
             )
             newSamp.push(newTask)

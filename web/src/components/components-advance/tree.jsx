@@ -63,7 +63,6 @@ const getLastId = (treeData) => {
 function App({
   idSchedule,
   onAfterChange,
-  onChangeTime,
   SampleData,
   setSamleData,
   idMilestoneActive,
@@ -236,7 +235,6 @@ function App({
             {...options}
             onDelete={handleDelete}
             onTextChange={handleTextChange}
-            onChangeTime={onChangeTime}
             onAfterChange={onAfterChange}
             treeData={treeData}
             daysMilestone={daysMilestone}
