@@ -58,11 +58,11 @@ const JfLayout = ({ children, id, bgr }) => {
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
+        setAdminId(response.data.jobfair_admin_id)
         setName(response.data.name)
         setStartDate(response.data.start_date.split('-').join('/'))
         setNumberOfStudents(response.data.number_of_students)
         setNumberOfCompanies(response.data.number_of_companies)
-        setAdminId(response.data.jobfair_admin_id)
       })
       if (AdminId) {
         await getAvatar(AdminId)
@@ -83,7 +83,7 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   useEffect(() => {
     fetchJF()
-  }, [children])
+  }, [children, AdminId])
   useEffect(() => {
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
