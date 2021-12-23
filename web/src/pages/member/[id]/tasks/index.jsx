@@ -12,31 +12,39 @@ import Loading from '../../../../components/loading'
 
 const columns = [
   {
-    title: 'No.',
-    key: 'No.',
-    dataIndex: 'id',
-    render: (value, item, index) => index + 1,
+    title: 'JF名',
+    key: 'JF名',
+    dataIndex: 'jobfair_name',
+    render: (name) => name,
     width: '10%',
   },
   {
     title: 'タスク名',
     dataIndex: 'name',
     key: 'タスク名',
-    width: '30%',
+    width: '20%',
     render: (name) => `${name.slice(0, 1).toUpperCase()}${name.slice(1)}`,
+  },
+  {
+    title: '開始日',
+    key: '開始日',
+    dataIndex: 'start_time',
+    width: '10%',
+    render: (date) => formatDate(date),
+  },
+  {
+    title: '終了日',
+    key: '終了日',
+    dataIndex: 'end_time',
+    width: '10%',
+    render: (date) => formatDate(date),
   },
   {
     title: 'ステータス',
     key: 'ステータス',
     dataIndex: 'status',
-    width: '30%',
+    width: '10%',
     render: (email) => email,
-  },
-  {
-    title: '終了時間',
-    key: '終了時間',
-    dataIndex: 'end_time',
-    render: (date) => formatDate(date),
   },
 ]
 
