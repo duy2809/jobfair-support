@@ -6,6 +6,7 @@ import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
 import Loading from '../components/loading'
+import './styles.scss'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
