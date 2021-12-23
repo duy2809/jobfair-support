@@ -15,7 +15,6 @@ const useHome = (idSchedule) => {
     await getNewMilestone(idSchedule)
       .then((res) => {
         const dataRes = Object.values(res.data)
-        console.log(res.data,"data")
         const newSamp = []
         const dayMilestones = []
         for (let index = 0; index < dataRes.length; index += 1) {
@@ -60,7 +59,6 @@ const useHome = (idSchedule) => {
         const newMilestone = milestones.filter((value, index, self) => index === self.findIndex((t) => (
           t.milestone_id === value.milestone_id
         )))
-        console.log(newMilestone,"new")
         setDataChartMilestone(newMilestone)
         setSamleData(newRes)
         setTreeData(newRes[0].task)

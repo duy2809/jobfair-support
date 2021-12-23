@@ -78,9 +78,8 @@ function App({
       }
     }
   }
-
-  const daysStart = dayMilestone
-  const [daysMilestone, setDaysMilestone] = useState(daysStart)
+  const day = dayMilestone || null
+  const [daysMilestone, setDaysMilestone] = useState(day)
   const { treeData, setTreeData } = useTree(idSchedule)
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
@@ -249,6 +248,7 @@ function App({
             treeData={treeData}
             daysMilestone={daysMilestone}
             defaultTime={defaultTime}
+            day={dayMilestone}
           />
         )}
         dragPreviewRender={(monitorProps) => (

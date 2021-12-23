@@ -3,7 +3,7 @@
 /* eslint-disable import/no-duplicates */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CloseCircleOutlined,
   CheckOutlined,
@@ -29,16 +29,18 @@ export const CustomNode = (props) => {
   const [labelText, setLabelText] = useState(text)
   const [iseOpen, setIsOpen] = useState(false)
   const [visibleInput, setVisibleInput] = useState(false)
-  const [defaultValue, setDefaultValue] = useState(null)
-  let defaultNew
-  if (props.defaultTime.length > 0) {
-    for (let index = 0; index < props.defaultTime[0].template_tasks.length; index += 1) {
-      if (Object.keys(props.defaultTime[0].template_tasks[0])[0] === props.node.id.toString()) {
-        defaultNew = Object.values(props.defaultTime[0].template_tasks[index])
-      }
-    }
-  }
-  // setDefaultValue(defaultNew.length > 0 ? defaultNew[0] : null)
+  const [defaultValue, setDefaultValue] = useState(1)
+  // useEffect(() => {
+  //   let defaultNew
+  //   if (props.defaultTime.length > 0) {
+  //     for (let index = 0; index < props.defaultTime[0].template_tasks.length; index += 1) {
+  //       if (Object.keys(props.defaultTime[0].template_tasks[0])[0] === props.node.id.toString()) {
+  //         defaultNew = Object.values(props.defaultTime[0].template_tasks[index])
+  //       }
+  //     }
+  //   }
+  //   setDefaultValue(defaultNew ? defaultNew[0] : 1)
+  // }, [])
   const handleToggle = (e) => {
     setIsOpen(!iseOpen)
     e.stopPropagation()
@@ -71,7 +73,9 @@ export const CustomNode = (props) => {
   }
   let defaultMaxDay
   if (props.daysMilestone.length > 0) {
-    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : defaultMaxDay = 20
+    defaultMaxDay = props.daysMilestone[0].gap < 100 ? props.daysMilestone[0].gap : 20
+  } else {
+    defaultMaxDay = 20
   }
   return (
     <div
@@ -162,7 +166,7 @@ export const CustomNode = (props) => {
                             max={defaultMaxDay}
                             onChange={onChange}
                             onAfterChange={onAfterChange}
-                            defaultValue={defaultNew ? defaultNew[0] : 1}
+                            defaultValue={defaultValue ? defaultValue[0] : 1}
                             value={
                               typeof inputValue.value === 'number'
                                 ? inputValue.value
