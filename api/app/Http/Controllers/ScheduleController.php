@@ -63,7 +63,8 @@ class ScheduleController extends Controller
         $schedule->milestones()->attach($request->addedMilestones);
         $schedule->templateTasks()->attach($request->addedTemplateTasks);
 
-        return Schedule::where('name', $request->name)->where('jobfair_id', null)->first();    }
+        return Schedule::where('name', $request->name)->where('jobfair_id', null)->first();
+    }
 
     /**
      * Display the specified resource.
@@ -671,6 +672,7 @@ class ScheduleController extends Controller
             $day = $item->is_week === 1 ? $item->period * 7 : $item->period;
             $item['day'] = $day;
         }
+
         $schedule->milestones = $schedule->milestones->sortBy('day');
         foreach ($schedule->milestones as $milestone) {
             $index = $schedule->milestones->search(function ($element) use ($milestone) {
@@ -682,6 +684,7 @@ class ScheduleController extends Controller
             $schedule->milestones[$index + 1]->day - $schedule->milestones[$index]->day : PHP_INT_MAX;
             $milestone['gap'] = $gap;
         }
+
         foreach ($schedule->milestones as $milestone) {
             foreach ($milestone->templateTasks as $templateTask) {
                 $taskInfo = DB::table('schedule_template_task')->where('template_task_id', $templateTask->id)
@@ -693,6 +696,7 @@ class ScheduleController extends Controller
                 $templateTask['afterTasks'] = $temp->afterTasks->pluck('id');
             }
         }
+
         return $schedule->milestones->toArray();
     }
 }
