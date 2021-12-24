@@ -13,7 +13,7 @@ import {
 } from '@ant-design/icons'
 import { getCategorys } from '../../api/edit-task'
 import { updateManagerTask } from '../../api/task-detail'
-import { jftask } from '../../api/jf-toppage'
+import { listTaskWithParent } from '../../api/jf-toppage'
 // eslint-disable-next-line react/prop-types
 export default function EditUserAssignee({ setLoading, loadTableData, record, setRowEdit, setIsEdit }) {
   // eslint-disable-next-line react/prop-types
@@ -86,7 +86,7 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
       await updateManagerTask(record.idtask, data).then(() => {
         saveEditNotification()
       })
-      await jftask(router.query.JFid).then((response) => {
+      await listTaskWithParent(router.query.JFid).then((response) => {
         loadTableData(response)
       })
       setLoading(false)

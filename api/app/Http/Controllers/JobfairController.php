@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Notifications\JobfairCreated;
 use App\Notifications\JobfairEdited;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class JobfairController extends Controller
@@ -20,37 +21,142 @@ class JobfairController extends Controller
         $this->middleware('auth')->except('isAdminJobfair');
     }
 
+    private function createRelation($templateTasks, $mapToTaskId)
+    {
+        $templateTaskIds = $templateTasks->pluck('id')->toArray();
+        $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
+            ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
+        $prerequisites = $prerequisites->map(function ($element) use ($mapToTaskId) {
+            return [
+                'before_tasks' => $mapToTaskId[$element->before_tasks],
+                'after_tasks'  => $mapToTaskId[$element->after_tasks],
+            ];
+        });
+        DB::table('pivot_table_tasks')->insert($prerequisites->toArray());
+        // template task child -> template task parent: relatively task child -> task parent
+        $templateTasks->each(function ($element) use ($mapToTaskId) {
+            if (isset($element->pivot->template_task_parent_id)) {
+                $task = Task::findOrFail($mapToTaskId[$element->id]);
+                $task->parent_id = $mapToTaskId[$element->pivot->template_task_parent_id];
+                $task->save();
+            }
+        });
+    }
+
+    private function setNewStartTimeFromMilestone($milestone, $jobfair, &$startTime)
+    {
+        $numDates = $milestone['is_week'] ?
+        $milestone['period'] * 7
+        : $milestone['period'];
+        $startTime = date(
+            'Y-m-d',
+            strtotime($jobfair->start_date.' + '.$numDates.'days')
+        );
+    }
+
+    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
+    {
+        $templateTasks = $templateSchedule->templateTasks()->with('milestone')->with('beforeTasks')->get();
+        $milestones = $templateSchedule->milestones()->with('templateTasks', function ($query) use ($templateTasks) {
+            $query->whereIn('template_tasks.id', $templateTasks->pluck('id')->toArray());
+        })->get();
+        orderMilestonesByPeriod($milestones);
+
+        $mapTemplateTaskToTaskID = collect([]);
+        $prerequisitesAll = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
+            ->whereIn('before_tasks', $templateTasks->pluck('id')->toArray())->whereIn('after_tasks', $templateTasks->pluck('id')->toArray())->get();
+        // after sort milestone then sort template tasks in each milestone in order to get correct time of tasks
+        foreach ($milestones->toArray() as $milestone) {
+            $templateTaskIds = array_map(function ($item) {
+                return $item['id'];
+            }, $milestone['template_tasks']);
+            if (count($templateTaskIds) > 0) {
+                // get relations and sort by relations
+                $prerequisites = $prerequisitesAll
+                    ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds);
+                $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
+                // start time of the milestone
+                $currentStartTime = date('Y-m-d', strtotime($jobfair->start_date));
+                $this->setNewStartTimeFromMilestone($milestone, $jobfair, $currentStartTime);
+                // map template task ID to its task's end time
+                $mapTaskIDToEndTime = collect([]);
+                $mapTaskIDToStartTime = collect([]);
+                foreach ($templateTasksOrder as $templateTaskId => $orderIndex) {
+                    $templateTask = $templateTasks->where('id', $templateTaskId)->first();
+                    // start time is max of the latest end time of before task and its milestone start time
+                    // can always calculate end time of before tasks because of before tasks is always be handled first (ordered by TaskRelation func)
+                    if ($templateTask->is_parent !== 1) {
+                        $newStartTime = $currentStartTime;
+                        $templateTask->beforeTasks->each(function ($element) use (&$newStartTime, $mapTaskIDToEndTime) {
+                            $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToEndTime[$element->id].'+ 1 day'));
+                            if ($newStartTime < $possibleStartTime) {
+                                $newStartTime = $possibleStartTime;
+                            }
+                        });
+
+                        $duration = $templateTask->pivot->duration - 1;
+
+                        $newEndTime = date('Y-m-d', strtotime($newStartTime.' + '.max($duration, 0).'days'));
+                        $input = $templateTask->toArray();
+                        $input['is_parent'] = $templateTask->is_parent;
+                        $input['start_time'] = $newStartTime;
+                        $input['end_time'] = $newEndTime;
+                        $input['schedule_id'] = $newSchedule->id;
+                        $input['status'] = '未着手';
+                        $input['template_task_id'] = $templateTask->id;
+                        if ($templateTask->is_parent === 1) {
+                            $input['description_of_detail'] = '';
+                        }
+
+                        $newTask = Task::create($input);
+                        $newTask->categories()->attach($templateTask->categories);
+                        $mapTaskIDToEndTime->put($templateTaskId, $newEndTime);
+                        $mapTaskIDToStartTime->put($templateTaskId, $newStartTime);
+                        $mapTemplateTaskToTaskID->put($templateTaskId, $newTask->id);
+                    }
+                }
+
+                $templateTasks->whereIn('id', $templateTaskIds)->where('is_parent', 1)->each(function ($parentTT)
+ use ($currentStartTime, $templateTasks, $mapTaskIDToStartTime, $newSchedule, &$mapTemplateTaskToTaskID) {
+                        $minStartTime = null;
+                        $templateTasks->filter(function ($el) use ($parentTT) {
+                            return $el->pivot->template_task_parent_id === $parentTT->id;
+                        })->each(function ($child) use (&$minStartTime, $mapTaskIDToStartTime) {
+                            $possibleStartTime = date('Y-m-d', strtotime($mapTaskIDToStartTime[$child->id]));
+                            if ($minStartTime === null || $possibleStartTime < $minStartTime) {
+                                $minStartTime = $possibleStartTime;
+                            }
+                        });
+                        $duration = $parentTT->pivot->duration - 1;
+
+                        $newEndTime = date('Y-m-d', strtotime($minStartTime.' + '.max($duration, 0).'days'));
+                        $input = $parentTT->toArray();
+                        $input['is_parent'] = $parentTT->is_parent;
+                        $input['start_time'] = $minStartTime === null ? $currentStartTime : $minStartTime;
+                        $input['end_time'] = $newEndTime;
+                        $input['schedule_id'] = $newSchedule->id;
+                        $input['status'] = '未着手';
+                        $input['template_task_id'] = $parentTT->id;
+                    if ($parentTT->is_parent === 1) {
+                        $input['description_of_detail'] = '';
+                    }
+
+                        $newTask = Task::create($input);
+                        $newTask->categories()->attach($parentTT->categories);
+                        $mapTemplateTaskToTaskID->put($parentTT->id, $newTask->id);
+                });
+            }
+        }
+
+        // clone relation
+        $this->createRelation($templateTasks, $mapTemplateTaskToTaskID);
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    private function createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair)
-    {
-        foreach ($templateSchedule->templateTasks as $templateTask) {
-            $numDates = $templateTask->milestone->is_week ? $templateTask->milestone->period * 7 : $templateTask->milestone->period;
-            $startTime = date('Y-m-d', strtotime($jobfair->start_date.' + '.$numDates.'days'));
-            $duration = 0;
-            if ($templateTask->unit === 'students') {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_students;
-            } else if ($templateTask->unit === 'none') {
-                $duration = (float) $templateTask->effort;
-            } else {
-                $duration = (float) $templateTask->effort * $jobfair->number_of_companies;
-            }
-
-            $duration = $templateTask->is_day ? $duration : ceil($duration / 24);
-            $input = $templateTask->toArray();
-            $input['start_time'] = $startTime;
-            $input['end_time'] = date('Y-m-d', strtotime($startTime.' + '.$duration.'days'));
-            $input['schedule_id'] = $newSchedule->id;
-            $input['status'] = '未着手';
-            $input['template_task_id'] = $templateTask->id;
-            $newTask = Task::create($input);
-            $newTask->categories()->attach($templateTask->categories);
-        }
-    }
-
     public function index()
     {
         $jobfairs = Jobfair::join('users', 'jobfairs.jobfair_admin_id', '=', 'users.id')
@@ -81,6 +187,8 @@ class JobfairController extends Controller
         $newSchedule = Schedule::create($templateSchedule->toArray());
         $newSchedule->update(['jobfair_id' => $jobfair->id]);
         $newSchedule->milestones()->attach($templateSchedule->milestones);
+
+        // create milestone and task for new schedule
         $this->createMilestonesAndTasks($templateSchedule, $newSchedule, $jobfair);
 
         $jobfair->user->notify(new JobfairCreated($jobfair, auth()->user()));
@@ -221,11 +329,49 @@ class JobfairController extends Controller
         $tasks = Jobfair::with([
             'schedule.tasks' => function ($query) {
                 $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
-
+                    ->where('is_parent', 0)
                     ->select(['tasks.id', 'tasks.name', 'tasks.start_time', 'tasks.end_time', 'tasks.milestone_id', 'tasks.status', 'tasks.schedule_id'])
                     ->orderBy('tasks.id', 'ASC');
             },
         ])->findOrFail($id, ['id']);
+
+        return response()->json($tasks);
+    }
+
+    public function getTasksWithParent($id)
+    {
+        $arr = str_split($id);
+        foreach ($arr as $char) {
+            if ($char < '0' || $char > '9') {
+                return response(['message' => 'invalid id'], 404);
+            }
+        }
+
+        $tasks = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name')
+                    ->where('is_parent', 1)->orWhere(function ($query) {
+                        $query->where('is_parent', 0)->where('parent_id', null);
+                    })
+                    ->orderBy('tasks.id', 'ASC');
+            },
+        ])->findOrFail($id, ['id']);
+        $jobfair = Jobfair::with([
+            'schedule.tasks' => function ($query) {
+                $query->with('milestone:id,name', 'users:id,name', 'categories:id,category_name');
+            },
+        ])->findOrFail($id, ['id']);
+        $tasks->schedule->tasks = $tasks->schedule->tasks->map(function ($task) use ($jobfair) {
+            if ($task->is_parent === 1) {
+                $temp = $jobfair->schedule->tasks->where('parent_id', $task->id);
+                $task->children = collect([]);
+                $temp->each(function ($item, $key) use ($temp, &$task) {
+                    $task->children->push($temp[$key]);
+                });
+            }
+
+            return $task;
+        });
 
         return response()->json($tasks);
     }
@@ -302,7 +448,7 @@ class JobfairController extends Controller
         }
 
         $jobfair = Jobfair::findOrFail($id);
-        $tasks = $jobfair->schedule->tasks()->with(['beforeTasks', 'afterTasks'])->get();
+        $tasks = $jobfair->schedule->tasks()->where('is_parent', 0)->with(['beforeTasks', 'afterTasks'])->get();
 
         return response()->json($tasks);
     }

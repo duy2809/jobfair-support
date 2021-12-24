@@ -26,7 +26,7 @@ class ChangeTypeColumnToAssignments extends Migration
     public function down()
     {
         Schema::table('assignments', function (Blueprint $table) {
-            $table->text('notification')->nullable(false)->change();
+            $table->text('notification')->change();
         });
     }
 }

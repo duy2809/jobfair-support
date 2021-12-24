@@ -20,11 +20,13 @@ class Task extends Model
         'memo',
         'schedule_id',
         'template_task_id',
+        'is_parent',
+        'parent_id',
     ];
     protected $guarded = [];
     protected $casts = [
         'start_time' => 'date: Y/m/d',
-        'end_time' => 'date: Y/m/d',
+        'end_time'   => 'date: Y/m/d',
     ];
 
     public function milestone()

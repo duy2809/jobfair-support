@@ -1,30 +1,20 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
-import {
-  DeleteTwoTone,
-  EditTwoTone,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
-import { Modal, notification, Tooltip } from 'antd'
+import { DeleteTwoTone, EditTwoTone, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Modal, notification, Table, Tooltip } from 'antd'
 // import Editt from './editor'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import {
-  afterTask,
-  beforeTask,
-  deleteTask,
-  taskData,
-  getRoleTask,
-} from '~/api/task-detail'
-
+import { afterTask, beforeTask, deleteTask, getRoleTask, taskData } from '~/api/task-detail'
 import Comment from '~/components/comment/index'
 import Loading from '~/components/loading'
 import JfLayout from '~/layouts/layout-task'
 import { reviewers } from '../../api/edit-task'
-import './style.scss'
 import StatusStatic from '../../components/status/static-status'
+import './style.scss'
 
 const StackEditor = dynamic(
   () => import('../../components/stackeditor').then((mod) => mod.default),
@@ -54,9 +44,8 @@ function TaskDetail() {
     unit: '',
     description_of_detail: '',
   })
-  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState(
-    [],
-  )
+  const [childTask, setChildTask] = useState([])
+  const [newAsigneesFromNewComment, setNewAsigneesFromNewComment] = useState([])
   const [taskStatus, setTaskStatus] = useState(infoTask.status)
   const [tempStatus, setTempStatus] = useState()
   const [action, setAction] = useState('none')
@@ -91,7 +80,6 @@ function TaskDetail() {
     Object.assign(copyState, childState)
     if (copyState.new_assignees.length > 0) {
       setNewAsigneesFromNewComment(copyState.new_assignees)
-      setListMemberAssignee(copyState.updateListMember)
       setAction('none')
     }
     if (copyState.new_status !== '') {
@@ -127,12 +115,25 @@ function TaskDetail() {
       .catch((error) => Error(error.toString()))
   }
   const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const generateChildTask = (tasks) => tasks.map((task) => ({
+    key: task.id,
+    name: task.name,
+    start_time: task.start_time,
+    end_time: task.end_time,
+    status: task.status,
+  }))
   const fetchTaskData = async () => {
     await taskData(idTask)
       .then((response) => {
         if (response.status === 200) {
           const data = response.data
+          console.log(data)
           const categoryName = []
+          const { children } = response.data
+          if (children) {
+            // setChildTask(children)
+            setChildTask(generateChildTask(children) ?? [])
+          }
           setJfInfo(data.schedule.jobfair)
           response.data.categories.forEach((element) => {
             categoryName.push(element.category_name)
@@ -153,6 +154,7 @@ function TaskDetail() {
               /<a/g,
               '<a target="_blank" ',
             ),
+            is_parent: data.is_parent,
           })
           setTaskStatus(data.status)
           setListMemberAssignee(data.users)
@@ -165,9 +167,8 @@ function TaskDetail() {
         // set role task
       })
       .catch((error) => {
-        if (error.response.status === 404) {
-          router.push('/404')
-        } else router.push('/error')
+        console.log(error)
+        // router.push('/404')
       })
   }
   const fetchBeforeTask = async () => {
@@ -225,6 +226,26 @@ function TaskDetail() {
     router.push(`/edit-task/${infoTask.id}`)
   }
 
+  const columns = [
+    {
+      title: 'タスク名',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => (
+        <Link href={`/task-detail/${record.key}`}>
+          <a target="_blank">{text}</a>
+        </Link>
+      ),
+    },
+    { title: '開始日', dataIndex: 'start_time', key: 'start_time' },
+    { title: '終了日', dataIndex: 'end_time', key: 'end_time' },
+    {
+      title: 'スターテス',
+      dataIndex: 'status',
+      key: 'status',
+    },
+  ]
+
   useEffect(() => {
     setLoading(true)
     fetchTaskData()
@@ -244,7 +265,7 @@ function TaskDetail() {
             <div className="title flex justify-between items-center">
               <h1>タスク詳細</h1>
               <div className="button__right mb-12 pb-2">
-                {role === 'admin' ? (
+                {role === 'admin' && infoTask.is_parent !== 1 ? (
                   <>
                     <EditTwoTone
                       className="border-none mx-1 text-2xl"
@@ -284,9 +305,7 @@ function TaskDetail() {
                     </div>
                     <div className="col-span-5 mx-4">
                       <div className="item__right">
-                        {infoTask.categories
-                          ? infoTask.categories.join(', ')
-                          : null}
+                        {infoTask.categories ? infoTask.categories.join(', ') : null}
                       </div>
                     </div>
                   </div>
@@ -311,16 +330,12 @@ function TaskDetail() {
                       {infoTask.unit === 'none' ? (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                         </>
                       ) : (
                         <>
                           <span className="ef">{infoTask.effort}</span>
-                          <span className="ef">
-                            {infoTask.is_day ? '日' : '時間'}
-                          </span>
+                          <span className="ef">{infoTask.is_day ? '日' : '時間'}</span>
                           <span>/</span>
                           {infoTask.unit === 'students' ? (
                             <span className="ef">学生数</span>
@@ -332,6 +347,9 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
+                {/* {listMemberAssignee.length == 1? (<></>):
+                } */}
+
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -354,77 +372,80 @@ function TaskDetail() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 mx-4 mt-5">
-                <div className="col-span-1 mx-5 grid grid-cols-8">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">前のタスク</p>
-                  </div>
-                  {beforeTasks?.length > 0 ? (
-                    <>
-                      <ul className="ml-5 task_list">
-                        {beforeTasks
-                          ? beforeTasks.map((item) => (
-                            <li className="mb-3">
-                              <Tooltip placement="top" title={item.name}>
-                                <a
-                                  href={`/task-detail/${item.id}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-block text-blue-600 whitespace-nowrap "
-                                >
-                                  {truncate(item.name)}
-                                </a>
-                              </Tooltip>
-                            </li>
-                          ))
-                          : null}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
-                  )}
-                </div>
-                <div className="col-span-1 mx-8 grid grid-cols-8">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">次のタスク</p>
-                  </div>
-                  {afterTasks?.length > 0 ? (
-                    <>
-                      <ul className="ml-5 task_list">
-                        {afterTasks
-                          ? afterTasks.map((item) => (
-                            <li className="mb-3">
-                              <Tooltip placement="top" title={item.name}>
-                                <a
-                                  href={`/task-detail/${item.id}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="inline-block text-blue-600 whitespace-nowrap "
-                                >
-                                  {truncate(item.name)}
-                                </a>
-                              </Tooltip>
-                            </li>
-                          ))
-                          : null}
-                      </ul>
-                    </>
-                  ) : (
-                    <ul className="list__task col-span-6" />
-                  )}
-                </div>
-              </div>
-              <div className="grid grid-cols-2 mx-4">
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
+              { infoTask.is_parent !== 1 && (
+                <div className="grid grid-cols-2 mx-4 mt-5">
+                  <div className="col-span-1 mx-5 grid grid-cols-8">
                     <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">担当者</p>
+                      <p className="font-bold text-right">前のタスク</p>
                     </div>
-                    <div className="col-span-5 mx-4">
-                      <table>
-                        {newAsigneesFromNewComment.length > 0
+                    {beforeTasks?.length > 0 ? (
+                      <>
+                        <ul className="ml-5 task_list">
+                          {beforeTasks
+                            ? beforeTasks.map((item) => (
+                              <li className="mb-3">
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </li>
+                            ))
+                            : null}
+                        </ul>
+                      </>
+                    ) : (
+                      <ul className="list__task col-span-6" />
+                    )}
+                  </div>
+                  <div className="col-span-1 mx-8 grid grid-cols-8">
+                    <div className="layber col-span-2 mx-4">
+                      <p className="font-bold text-right">次のタスク</p>
+                    </div>
+                    {afterTasks?.length > 0 ? (
+                      <>
+                        <ul className="ml-5 task_list">
+                          {afterTasks
+                            ? afterTasks.map((item) => (
+                              <li className="mb-3">
+                                <Tooltip placement="top" title={item.name}>
+                                  <a
+                                    href={`/task-detail/${item.id}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block text-blue-600 whitespace-nowrap "
+                                  >
+                                    {truncate(item.name)}
+                                  </a>
+                                </Tooltip>
+                              </li>
+                            ))
+                            : null}
+                        </ul>
+                      </>
+                    ) : (
+                      <ul className="list__task col-span-6" />
+                    )}
+                  </div>
+                </div>
+              ) }
+              { infoTask.is_parent !== 1 && (
+                <div className="grid grid-cols-2 mx-4">
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">担当者</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <table>
+                          {newAsigneesFromNewComment.length > 0
                         && action === 'none'
-                          ? newAsigneesFromNewComment
+                            ? newAsigneesFromNewComment
                             && newAsigneesFromNewComment.map((item, index) => {
                               const id = index + item
                               return (
@@ -443,7 +464,7 @@ function TaskDetail() {
                                 </>
                               )
                             })
-                          : listMemberAssignee
+                            : listMemberAssignee
                             && listMemberAssignee.map((item) => (
                               <>
                                 <tr key={item.id} className="task__chil">
@@ -465,10 +486,7 @@ function TaskDetail() {
                                     />
                                   )} */}
                                   {listMemberAssignee.length === 1
-                                  || !(
-                                    taskStatus === '未着手'
-                                    || taskStatus === '進行中'
-                                  ) ? (
+                                  || !(taskStatus === '未着手' || taskStatus === '進行中') ? (
                                       <td />
                                     ) : (
                                       <>
@@ -481,13 +499,9 @@ function TaskDetail() {
                                             <>
                                               {action === 'changeMemberStatus'
                                             && item.name === memberChangeStatus ? (
-                                                  <StatusStatic
-                                                    status={tempStatus}
-                                                  />
+                                                  <StatusStatic status={tempStatus} />
                                                 ) : (
-                                                  <StatusStatic
-                                                    status={`${item.pivot.status}`}
-                                                  />
+                                                  <StatusStatic status={`${item.pivot.status}`} />
                                                 )}
                                             </>
                                           )}
@@ -498,10 +512,13 @@ function TaskDetail() {
                                 <br />
                               </>
                             ))}
-                      </table>
+                        </table>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ) }
+              <div className="grid grid-cols-2 mx-4">
                 <div className="col-span-1 mx-4 mt-5">
                   <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
@@ -512,36 +529,45 @@ function TaskDetail() {
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 mx-4">
-                <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
-                    <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
-                    </div>
-                    <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>
-                            {reviewersList.map((item) => item.name).join(', ')}
-                          </li>
-                        ) : (
-                          <li className="task__chil" />
-                        )}
-                      </ul>
+                { infoTask.is_parent !== 1 && (
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.length !== 0 ? (
+                            <li>{reviewersList.map((item) => item.name).join(', ')}</li>
+                          ) : (
+                            <li className="task__chil" />
+                          )}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                </div>
+
+                ) }
               </div>
-              <div className=" mx-12 mt-5">
-                <p className="font-bold">詳細</p>
-                <div className=" mx-10  demo-infinite-container">
-                  <StackEditor
-                    value={infoTask.description_of_detail}
-                    taskId={idTask}
-                  />
+
+              { infoTask.is_parent !== 1 && (
+                <div className=" mx-12 my-5">
+                  <p className="font-bold">詳細</p>
+                  <div className=" mx-10  demo-infinite-container">
+                    <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
+                  </div>
                 </div>
-              </div>
+              ) }
+            </div>
+            <div>
+              {childTask.length > 0 && (
+                <Table
+                  className="mx-12 mt-5"
+                  columns={columns}
+                  dataSource={childTask}
+                  scroll={{ x: 'max-content', y: '200px' }}
+                />
+              )}
             </div>
             <Comment
               id={idTask}

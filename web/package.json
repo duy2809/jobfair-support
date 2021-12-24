@@ -16,6 +16,7 @@
     "@ant-design/icons": "^4.6.2",
     "@babel/runtime": "7.13.8",
     "@dhtmlx/trial-react-gantt": "^1.1.2",
+    "@minoru/react-dnd-treeview": "^1.6.0",
     "@sentry/browser": "^6.7.1",
     "@uiw/react-markdown-preview": "3.4.0",
     "@uiw/react-md-editor": "^3.6.5",

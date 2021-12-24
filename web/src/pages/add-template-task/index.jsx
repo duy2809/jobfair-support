@@ -1,16 +1,5 @@
 import { ExclamationCircleOutlined, LoadingOutlined } from '@ant-design/icons'
-import {
-  Button,
-  Form,
-  Spin,
-  Input,
-  Modal,
-  notification,
-  Select,
-  Space,
-  Tag,
-  Tooltip,
-} from 'antd'
+import { Button, Form, Spin, Input, Modal, notification, Select, Space, Tag, Tooltip } from 'antd'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
@@ -19,10 +8,10 @@ import OtherLayout from '../../layouts/OtherLayout'
 import * as Extensions from '../../utils/extensions'
 import './style.scss'
 import MarkDownView from '../../components/markDownView'
-
-const MDEditor = dynamic(
+// import Editor from '../../components/comment/Editor'
+const Editor = dynamic(
   // eslint-disable-next-line import/no-unresolved
-  () => import('@uiw/react-md-editor').then((mod) => mod.default),
+  () => import('../../components/comment/Editor'),
   { ssr: false },
 )
 const index = () => {
@@ -273,10 +262,7 @@ const index = () => {
     if (Extensions.isFullWidth(value)) {
       return Promise.reject(new Error('1以上の半角の整数で入力してください'))
     }
-    if (
-      !Extensions.isFullWidth(value)
-      && !Extensions.Reg.floatNumber.test(value * 1.0)
-    ) {
+    if (!Extensions.isFullWidth(value) && !Extensions.Reg.floatNumber.test(value * 1.0)) {
       return Promise.reject(new Error('使用できない文字が含まれています。'))
     }
 
@@ -448,10 +434,7 @@ const index = () => {
                             <div className="left-side mx-4 w-1/2">
                               <div className="container ">
                                 {/* template task name */}
-                                <Form.Item
-                                  label="テンプレートタスク名"
-                                  required={!isPreview}
-                                >
+                                <Form.Item label="テンプレートタスク名" required={!isPreview}>
                                   <Form.Item
                                     name="template_name"
                                     noStyle
@@ -470,9 +453,7 @@ const index = () => {
                                         document
                                           .getElementById('error-msg')
                                           .setAttribute('hidden', 'true')
-                                        document.getElementById(
-                                          'validate_name',
-                                        ).style.border = '1px solid #e5e7eb'
+                                        document.getElementById('validate_name').style.border = '1px solid #e5e7eb'
                                       }}
                                       style={{
                                         display: isPreview ? 'none' : '',
@@ -481,9 +462,7 @@ const index = () => {
                                       maxLength={200}
                                     />
                                   </Form.Item>
-                                  <p
-                                    style={{ display: isPreview ? '' : 'none' }}
-                                  >
+                                  <p style={{ display: isPreview ? '' : 'none' }}>
                                     {dataPreview.name}
                                   </p>
                                   <span
@@ -500,10 +479,7 @@ const index = () => {
                                 </Form.Item>
 
                                 {/* milestone */}
-                                <Form.Item
-                                  label="マイルストーン"
-                                  required={!isPreview}
-                                >
+                                <Form.Item label="マイルストーン" required={!isPreview}>
                                   <Form.Item
                                     noStyle
                                     name="milestone"
@@ -533,9 +509,7 @@ const index = () => {
                                       ))}
                                     </Select>
                                   </Form.Item>
-                                  <p
-                                    style={{ display: isPreview ? '' : 'none' }}
-                                  >
+                                  <p style={{ display: isPreview ? '' : 'none' }}>
                                     {dataPreview.milestone}
                                   </p>
                                 </Form.Item>
@@ -549,11 +523,7 @@ const index = () => {
 
                                 </Form.Item> */}
                                 <Form.Item label="前のタスク">
-                                  <Form.Item
-                                    noStyle
-                                    className="task ml-3"
-                                    name="beforeTasks"
-                                  >
+                                  <Form.Item noStyle className="task ml-3" name="beforeTasks">
                                     <Select
                                       mode="multiple"
                                       size="large"
@@ -568,10 +538,7 @@ const index = () => {
                                       }}
                                     >
                                       {beforeTasks.map((element) => (
-                                        <Select.Option
-                                          key={element.id}
-                                          value={element.name}
-                                        >
+                                        <Select.Option key={element.id} value={element.name}>
                                           {element.name}
                                         </Select.Option>
                                       ))}
@@ -594,10 +561,7 @@ const index = () => {
                                               paddingBottom: '3px',
                                             }}
                                           >
-                                            <Tooltip
-                                              placement="top"
-                                              title={element}
-                                            >
+                                            <Tooltip placement="top" title={element}>
                                               <div className="inline-block text-blue-600 whitespace-nowrap">
                                                 {truncate(element)}
                                               </div>
@@ -645,10 +609,7 @@ const index = () => {
                                     style={{ display: isPreview ? 'none' : '' }}
                                   >
                                     {listCatergories.map((element) => (
-                                      <Select.Option
-                                        key={element.id}
-                                        value={element.category_name}
-                                      >
+                                      <Select.Option key={element.id} value={element.category_name}>
                                         {element.category_name}
                                       </Select.Option>
                                     ))}
@@ -692,11 +653,7 @@ const index = () => {
                                   </div>
                                   {/* ----------------- */}
                                   <div className="w-100 flex flex-shrink  justify-center align-middle  flex-row w-100">
-                                    <Form.Item
-                                      noStyle
-                                      name="isDay"
-                                      required={!isPreview}
-                                    >
+                                    <Form.Item noStyle name="isDay" required={!isPreview}>
                                       <Select
                                         className="special-selector w-100 "
                                         showArrow
@@ -745,10 +702,7 @@ const index = () => {
                                         style={{
                                           display: isPreview ? 'none' : '',
                                         }}
-                                        value={[
-                                          unitData[0].name,
-                                          unitData[0].id,
-                                        ]}
+                                        value={[unitData[0].name, unitData[0].id]}
                                       >
                                         {unitData.map((element) => (
                                           <Select.Option
@@ -780,11 +734,7 @@ const index = () => {
 
                               </Form.Item> */}
                               <Form.Item label="次のタスク">
-                                <Form.Item
-                                  noStyle
-                                  name="afterTasks"
-                                  className="task ml-3"
-                                >
+                                <Form.Item noStyle name="afterTasks" className="task ml-3">
                                   <Select
                                     mode="multiple"
                                     size="large"
@@ -797,10 +747,7 @@ const index = () => {
                                     style={{ display: isPreview ? 'none' : '' }}
                                   >
                                     {afterTasks.map((element) => (
-                                      <Select.Option
-                                        key={element.id}
-                                        value={element.name}
-                                      >
+                                      <Select.Option key={element.id} value={element.name}>
                                         {element.name}
                                       </Select.Option>
                                     ))}
@@ -823,10 +770,7 @@ const index = () => {
                                             paddingBottom: '3px',
                                           }}
                                         >
-                                          <Tooltip
-                                            placement="top"
-                                            title={element}
-                                          >
+                                          <Tooltip placement="top" title={element}>
                                             <div className="inline-block text-blue-600 whitespace-nowrap">
                                               {truncate(element)}
                                             </div>
@@ -852,12 +796,12 @@ const index = () => {
                             className="pr-3 pl-14 mb-2"
                             style={{ display: isPreview ? 'none' : '' }}
                           >
-                            <MDEditor
-                              style={{ height: '40px !important' }}
-                              preview="edit"
-                              height="300"
-                              value={markdown}
-                              onChange={setMarkdown}
+                            <Editor
+                              jfID={1}
+                              value={markdown || ' '}
+                              onChange={(data) => {
+                                setMarkdown(data)
+                              }}
                             />
                           </div>
                           <div
@@ -870,10 +814,7 @@ const index = () => {
                           {/* 2 button */}
                           <div className="mt-8 flex justify-end -mr-4">
                             <Form.Item label=" " colon={false}>
-                              <Space
-                                size={20}
-                                style={{ display: isPreview ? 'none' : '' }}
-                              >
+                              <Space size={20} style={{ display: isPreview ? 'none' : '' }}>
                                 <Button
                                   htmlType="button"
                                   className="ant-btn"

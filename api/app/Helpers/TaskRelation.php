@@ -20,6 +20,7 @@ if (!function_exists('taskRelation')) {
         $list = $visited = [];
         // Create a hash of colors that default to 0 (white)
         $colors = array_combine(array_keys($tasks), array_fill(0, count($listTask), 0));
+        // max height of each node is also orderIndex
         $maxOrderIndex = array_combine(array_keys($tasks), array_fill(0, count($listTask), 0));
 
         $cycle = false;
@@ -33,7 +34,7 @@ if (!function_exists('taskRelation')) {
             &$colors,
             &$helper,
             &$maxOrderIndex
-) {
+        ) {
             // If we have visited the node before, return
             if (isset($visited[$task])) {
                 return;

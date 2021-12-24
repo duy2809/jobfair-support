@@ -90,7 +90,43 @@ class MilestoneController extends Controller
             }
         }
 
-        return Schedule::with(['templateTasks', 'templateTasks.categories', 'milestones'])->findOrFail($id);
+        $templateTasks = Schedule::findOrFail($id)->templateTasks;
+        $templateTaskIds = $templateTasks->pluck('id')->toArray();
+        $result = Schedule::with('milestones')->with('milestones.templateTasks', function ($query) use ($templateTaskIds) {
+            $query->whereIn('id', $templateTaskIds)->where(function ($q) {
+                $q->where('is_parent', 1)->orWhere('has_parent', 0);
+            })->with('categories');
+        })->findOrFail($id);
+        $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
+            ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
+        $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
+        $result = $result->milestones->map(function ($milestone) use ($templateTasks, $templateTasksOrder) {
+            $milestone->templateTasks->map(function ($templateTask) use ($templateTasks, $templateTasksOrder) {
+                if ($templateTask->is_parent === 1) {
+                    $templateTask->children = $templateTasks->filter(function ($element) use ($templateTask) {
+                        return $element->pivot->template_task_parent_id === $templateTask->id;
+                    })->sort(function ($child1, $child2) use ($templateTasksOrder) {
+                        $index1 = array_search($child1->id, array_keys($templateTasksOrder));
+                        $index2 = array_search($child2->id, array_keys($templateTasksOrder));
+                        if ($index1 === $index2) {
+                            return 0;
+                        }
+
+                        if ($index1 < $index2) {
+                            return -1;
+                        }
+
+                        return 1;
+                    });
+                }
+
+                return $templateTask;
+            });
+
+            return $milestone;
+        });
+
+        return $result;
     }
 
     /**
