@@ -6,11 +6,8 @@ import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
 import Loading from '../components/loading'
-<<<<<<< HEAD
 import './styles.scss'
-=======
 import * as Extensions from '../utils/extensions'
->>>>>>> add toast message for login page
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
