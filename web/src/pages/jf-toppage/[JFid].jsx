@@ -34,6 +34,7 @@ function jftoppage() {
         router.push('/404')
       }
     })
+    setLoading(false)
   }
 
   useEffect(() => {
