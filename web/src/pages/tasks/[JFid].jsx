@@ -27,7 +27,7 @@ import { ReactReduxContext } from 'react-redux'
 import JfLayout from '../../layouts/layout-task'
 import { getCategories } from '../../api/template-task'
 import { getAllMileStone } from '../../api/milestone'
-import { jftask } from '../../api/jf-toppage'
+import { listTaskWithParent } from '../../api/jf-toppage'
 import { deleteTask } from '../../api/task-detail'
 import { loadingIcon } from '~/components/loading'
 import EditUserAssignee from '../../components/EditUserAssignee'
@@ -47,8 +47,8 @@ function TaskList() {
   const [isFilterMI, setIsFilterMI] = useState(false)
   const [loading, setLoading] = useState(true)
   const [visible, setVisible] = useState(false)
-  const [originalData, setOriginalData] = useState()
-  const [temperaryData, setTemperaryData] = useState()
+  const [originalData, setOriginalData] = useState([])
+  const [temperaryData, setTemperaryData] = useState([])
   const [optionMilestone, setOptionMileStone] = useState([])
   const [optionCategory, setOptionCategory] = useState([])
   const [status, setStatus] = useState(router.query.status)
@@ -104,8 +104,8 @@ function TaskList() {
           name: dataResponse[i].users[j].name,
         })
       }
-      data.push({
-        id: i + 1,
+      let info = {
+        key: dataResponse[i].id,
         idtask: dataResponse[i].id,
         taskName: dataResponse[i].name,
         start_date: dataResponse[i].start_time,
@@ -116,14 +116,54 @@ function TaskList() {
         managers: manager,
         mems: mem,
         idCategory: categoryId,
-      })
+        parent_id: dataResponse[i]?.parent_id,
+        is_parent: dataResponse[i]?.is_parent,
+      }
+      if ('children' in dataResponse[i]) {
+        const children = []
+        dataResponse[i].children.forEach((child) => {
+          const childManager = []
+          const member = []
+          const childCategoryName = []
+          const childCategoryId = []
+          for (let j = 0; j < child.categories.length; j += 1) {
+            childCategoryName.push(child.categories[j].category_name)
+            childCategoryId.push(child.categories[j].id)
+          }
+          for (let j = 0; j < child.users.length; j += 1) {
+            childManager.push(child.users[j].name)
+            member.push({
+              id: child.users[j].id,
+              name: child.users[j].name,
+            })
+          }
+          const childInfo = {
+            key: child.id,
+            idtask: child.id,
+            taskName: child.name,
+            start_date: child.start_time,
+            end_date: child.end_time,
+            status: child.status,
+            category_name: childCategoryName,
+            milestone_name: child?.milestone.name,
+            managers: childManager,
+            mems: member,
+            idCategory: childCategoryId,
+            parent_id: child?.parent_id,
+            is_parent: child?.is_parent,
+          }
+          children.push(childInfo)
+        })
+        info = { ...info, children }
+      }
+      data.push(info)
     }
-
     setTemperaryData(data)
     setOriginalData(data)
+    let filteredData = [...data]
     if (valueSearch) {
       const taskNameParameter = router.query.name.toLowerCase()
-      const filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
+      filteredData = data.filter((task) => task.taskName.toLowerCase().includes(taskNameParameter))
       setTemperaryData(filteredData)
     }
     if (status) {
@@ -132,16 +172,17 @@ function TaskList() {
       const arr = [0, 0, 0, 0, 0, 0]
       arr[index] = 1
       setActive(arr)
-      const filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
+      filteredData = data.filter((task) => !task.status.localeCompare(router.query.status))
       setTemperaryData(filteredData)
     }
   }
 
   const loadCategoryOptions = (response) => {
     const option = []
+    option.push(<Option key={0} value={0}>全て</Option>)
     for (let i = 0; i < response.data.length; i += 1) {
       option.push(
-        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
+        <Option value={response.data[i].category_name}>{response.data[i].category_name}</Option>,
       )
     }
     setOptionCategory(option)
@@ -149,8 +190,9 @@ function TaskList() {
 
   const loadMilestoneOptions = (response) => {
     const option = []
+    option.push(<Option value={0}>全て</Option>)
     for (let i = 0; i < response.data.length; i += 1) {
-      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
+      option.push(<Option value={response.data[i].name}>{response.data[i].name}</Option>)
     }
     setOptionMileStone(option)
   }
@@ -165,13 +207,36 @@ function TaskList() {
   const deletetpl = async (id) => {
     setLoading(true)
     try {
-      await deleteTask(id).then(() => {
-        const newList = temperaryData.filter((item) => item.idtask !== id)
-        setTemperaryData(newList)
-        setOriginalData(newList)
-        saveNotification()
+      await deleteTask(id).then((res) => {
+        const deletedTask = res.data.deleted_task
+        console.log(deletedTask.is_parent)
+        if (deletedTask.parent_id === null && deletedTask.is_parent !== 1) {
+          const newList = originalData.filter((item) => item.idtask !== id)
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        } else if (deletedTask.is_parent === 1) {
+          let newList = originalData.filter((item) => item.idtask !== id)
+          const newTask = originalData.find((el) => el.key === deletedTask.id)
+            .children.map((el) => ({ ...el, parent_id: null }))
+          newList = [...newList, ...newTask]
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        } else {
+          const newList = originalData.map((item) => {
+            if (item.key === deletedTask.parent_id) {
+              item.children = item.children.filter((element) => element.idtask !== id)
+            }
+            return item
+          })
+          setTemperaryData(newList)
+          setOriginalData(newList)
+          saveNotification()
+        }
       })
     } catch (error) {
+      console.log(error)
       if (error.response.status === 404) {
         router.push('/404')
       } else Error(error.toString())
@@ -198,37 +263,11 @@ function TaskList() {
     router.push(`/edit-task/${id}`)
   }
   const handleSelectCategory = (value) => {
-    if (value) {
-      setIsFilterCA(true)
-    } else setIsFilterCA(false)
     setCategory(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? task.category_name.includes(value) : task.category_name)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
   }
 
   const handlSelectMilestone = (value) => {
-    if (value) {
-      setIsFilterMI(true)
-    } else setIsFilterMI(false)
     setMilestone(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? !task.milestone_name.localeCompare(value) : task.milestone_name)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (category ? task.category_name.includes(category) : task.category_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
   }
   const handleRow = (record) => ({
     onClick: () => {
@@ -303,92 +342,95 @@ function TaskList() {
         dataIndex: 'managers',
         fixed: 'left',
         render: (managers, record) => {
-          if (rowEdit === record.id) {
+          if (record.is_parent !== 1) {
+            if (rowEdit === record.key) {
+              return (
+                <EditUserAssignee
+                  setIsEdit={setIsEdit}
+                  setRowEdit={setRowEdit}
+                  record={record}
+                  loadTableData={loadTableData}
+                  setLoading={setLoading}
+                />
+              )
+            }
+
             return (
-              <EditUserAssignee
-                setIsEdit={setIsEdit}
-                setRowEdit={setRowEdit}
-                record={record}
-                loadTableData={loadTableData}
-                setLoading={setLoading}
-              />
+              <div
+                onClick={() => {
+                  if (rowEdit && isEdit) {
+                    Modal.confirm({
+                      title: '変更内容が保存されません。よろしいですか？',
+                      icon: <ExclamationCircleOutlined />,
+                      content: '',
+                      centered: true,
+                      okText: 'はい',
+                      cancelText: 'いいえ',
+                      onOk: () => {
+                        setRowEdit(record.key)
+                        setIsEdit(false)
+                      },
+                    })
+                  } else {
+                    setRowEdit(record.key)
+                  }
+                }}
+                className=""
+              >
+                { // eslint-disable-next-line consistent-return
+                  managers.length > 0 ? managers.map((item) => {
+                    if (item === managers[managers.length - 1]) {
+                      return (
+                        <span className="">
+
+                          <span>
+                            {' '}
+                            {item}
+                          </span>
+                          <span><EditTwoTone className="ml-1" /></span>
+                        </span>
+                      )
+                    }
+                    if (item !== managers[managers.length - 1]) {
+                      return (
+                        <>
+                          <span style={{ paddingRight: '3px' }}>
+                            {item}
+                            ,
+                          </span>
+                        </>
+                      )
+                    }
+                  }) : (
+                    <div className="flex items-center">
+                      <EditTwoTone />
+                      <span style={{ color: '#999' }} className="ml-1">
+                        担当者を選択してください
+                      </span>
+                    </div>
+                  )
+                }
+              </div>
             )
           }
-
-          return (
-            <div
-              onClick={() => {
-                if (rowEdit && isEdit) {
-                  Modal.confirm({
-                    title: '変更内容が保存されません。よろしいですか？',
-                    icon: <ExclamationCircleOutlined />,
-                    content: '',
-                    centered: true,
-                    okText: 'はい',
-                    cancelText: 'いいえ',
-                    onOk: () => {
-                      setRowEdit(record.id)
-                      setIsEdit(false)
-                    },
-                  })
-                } else {
-                  setRowEdit(record.id)
-                }
-              }}
-              className=""
-            >
-              { // eslint-disable-next-line consistent-return
-                managers.length > 0 ? managers.map((item) => {
-                  if (item === managers[managers.length - 1]) {
-                    return (
-                      <span className="">
-
-                        <span>
-                          {' '}
-                          {item}
-                        </span>
-                        <span><EditTwoTone className="ml-1" /></span>
-                      </span>
-                    )
-                  }
-                  if (item !== managers[managers.length - 1]) {
-                    return (
-                      <>
-                        <span style={{ paddingRight: '3px' }}>
-                          {item}
-                          ,
-                        </span>
-                      </>
-                    )
-                  }
-                }) : (
-                  <div className="flex items-center">
-                    <EditTwoTone />
-                    <span style={{ color: '#999' }} className="ml-1">
-                      担当者を選択してください
-                    </span>
-                  </div>
-                )
-              }
-            </div>
-          )
+          return ''
         },
       },
       {
         title: 'アクション',
         key: 'action',
         width: '10%',
-        render: (_text, record) => role === 'admin' && (
+        render: (_text, record) => role === 'admin' && record.is_parent !== 1 && (
           <Space size="middle">
             <EditTwoTone
-              id={record.id}
+              id={record.key}
               onClick={() => {
                 handleEdit(record.idtask)
               }}
             />
 
             <DeleteTwoTone
-              id={record.id}
+              id={record.key}
               onClick={() => {
                 modelDelete(record.idtask)
               }}
@@ -485,7 +527,7 @@ function TaskList() {
     getRole()
     initPagination()
     try {
-      await jftask(router.query.JFid).then((response) => {
+      await listTaskWithParent(router.query.JFid).then((response) => {
         loadTableData(response)
       })
       await getCategories().then((response) => {
@@ -501,41 +543,46 @@ function TaskList() {
     }
     setLoading(false)
   }, [role])
-  // Search data on Table
-  const searchDataOnTable = (value) => {
-    value = value.toLowerCase()
-    const filteredData = originalData.filter(
-      (task) => (value
-        ? task.taskName.toLowerCase().includes(value)
-            || task.managers.some((manager) => manager.toLowerCase().includes(value))
-        : task.taskName)
-        && (category ? task.category_name.includes(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name)
-        && (status ? !task.status.localeCompare(status) : task.status),
-    )
-    setTemperaryData(filteredData)
-  }
   const onSearch = (e) => {
     const currValue = e.target.value
     setValueSearch(currValue)
-    searchDataOnTable(currValue)
   }
 
   const FilterByStatus = (value) => {
     setStatus(value)
-    const filteredData = originalData.filter(
-      (task) => (value ? !task.status.localeCompare(value) : task.status)
-        && (valueSearch
-          ? task.taskName.toLowerCase().includes(valueSearch.toLowerCase())
-            || task.managers.some((manager) => manager.toLowerCase().includes(valueSearch.toLowerCase()))
-          : task.taskName)
-        && (category ? !task.category_name.localeCompare(category) : task.category_name)
-        && (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
-    )
-    setTemperaryData(filteredData)
-    setLoading(false)
   }
-  // const [active] = useState([1, 0, 0, 0, 0])
+  useEffect(() => {
+    if (originalData.length > 0) {
+      let filteredData = [...originalData]
+      if (status !== '') {
+        filteredData = filteredData.filter(
+          (task) => (status ? !task.status.localeCompare(status) : task.status),
+        )
+      }
+      if (valueSearch) {
+        const value = valueSearch.toLowerCase()
+        filteredData = filteredData.filter(
+          (task) => (value
+            ? task.taskName.toLowerCase().includes(value)
+            || task.managers.some((manager) => manager.toLowerCase().includes(value))
+            : task.taskName),
+        )
+      }
+      if (milestone !== 0) {
+        filteredData = filteredData.filter(
+          (task) => (milestone ? !task.milestone_name.localeCompare(milestone) : task.milestone_name),
+        )
+      } else setIsFilterMI(false)
+      if (category !== 0) {
+        setIsFilterCA(true)
+        filteredData = filteredData.filter(
+          (task) => (category ? task.category_name.includes(category) : task.category_name),
+        )
+      } else setIsFilterCA(false)
+      setLoading(false)
+      setTemperaryData(filteredData)
+    }
+  }, [milestone, category, valueSearch, status])
   const chooseStatus = (index) => {
     setLoading(true)
     const arr = [0, 0, 0, 0, 0, 0]

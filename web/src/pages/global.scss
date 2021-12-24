@@ -181,7 +181,7 @@ body {
     background: #a0aec0;
   }
 
-  thead[class*="ant-table-thead"] th {
+  thead[class*='ant-table-thead'] th {
     background-color: #bae8e8 !important;
   }
 
@@ -324,6 +324,10 @@ body {
     height: 40px;
     font-size: 16px;
     border-radius: 5px;
+  }
+
+  .ant-notification-notice {
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
   }
 }
 

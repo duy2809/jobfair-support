@@ -13,7 +13,7 @@ import { Card, Row, Col, Button, Modal, notification } from 'antd'
 import Otherlayout from '../../layouts/OtherLayout'
 import Loading from '../../components/loading'
 import Tree from '../../components/components-advance/tree'
-import useTree from './useTree'
+import {useTree} from './useTree'
 import './style.scss'
 import { updateParent } from '../../api/template-advance'
 
@@ -32,23 +32,6 @@ const templateTaskAdvance = () => {
   } = useTree(idSchedule)
   const [listData, setListData] = useState([])
   const onChangeTime = (value) => {}
-  const onAfterChange = (value) => {
-    const idt = value.id
-    const newData = dataChartMilestone
-    for (let index = 0; index < newData.length; index += 1) {
-      for (
-        let item = 0;
-        item < newData[index].template_tasks.length;
-        item += 1
-      ) {
-        const keyOj = newData[index].template_tasks[item]
-        if (value.id.toString() === Object.keys(keyOj)[0]) {
-          newData[index].template_tasks[item] = { [value.id]: value.value }
-        }
-      }
-    }
-    setDataChartMilestone(newData)
-  }
   const cancelConfirmModle = () => {
     Modal.confirm({
       title: '変更内容が保存されません。よろしいですか？',
@@ -160,7 +143,6 @@ const templateTaskAdvance = () => {
                       setSamleData={setSamleData}
                       idMilestoneActive={idMilestoneActive}
                       setIdMileStoneActive={setIdMileStoneActive}
-                      onAfterChange={onAfterChange}
                       dayMilestone={dayMilestone}
                       dataChartMilestone={dataChartMilestone}
                       setDataChartMilestone={setDataChartMilestone}

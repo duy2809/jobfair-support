@@ -28,7 +28,7 @@ class FixNotificationTable extends Migration
     {
         Schema::table('notifications', function ($table) {
             $table->morphs('subjectable');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

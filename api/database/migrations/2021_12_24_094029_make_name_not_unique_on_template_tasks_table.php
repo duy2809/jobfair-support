@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeColumnToComments extends Migration
+class MakeNameNotUniqueOnTemplateTasksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class ChangeColumnToComments extends Migration
      */
     public function up()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->text('body')->nullable()->change();
-            $table->string('new_status')->after('old_status')->nullable();
+        Schema::table('template_tasks', function (Blueprint $table) {
+            $table->dropUnique(['name']);
         });
     }
 
@@ -26,8 +25,8 @@ class ChangeColumnToComments extends Migration
      */
     public function down()
     {
-        Schema::table('comments', function (Blueprint $table) {
-            $table->dropColumn('new_status');
+        Schema::table('template_tasks', function (Blueprint $table) {
+            $table->string('name')->unique()->change();
         });
     }
 }

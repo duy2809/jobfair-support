@@ -35,7 +35,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/TaskRelation.php"
+            "app/Helpers/TaskRelation.php",
+            "app/Helpers/OrderMilestoneByPeriod.php"
         ]
     },
     "autoload-dev": {

@@ -87,11 +87,11 @@ function index(props) {
     setEditorState(state)
     const res = await import('draftjs-to-html')
     const data = res.default(convertToRaw(state.getCurrentContent()))
-    props.onChange(data)
+    props.onChange(data || '')
   }
-  const setEditorStateWhenEditing = async () => {
+  const setEditorStateWhenEditing = async (data) => {
     const convertMarkdown2Draft = await import('html-to-draftjs').then((module) => module.default)
-    const blocksFromHtml = convertMarkdown2Draft(commentContent || '')
+    const blocksFromHtml = convertMarkdown2Draft(data || '')
     const { contentBlocks, entityMap } = blocksFromHtml
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap)
     const newEditorState = EditorState.createWithContent(contentState)
@@ -109,10 +109,11 @@ function index(props) {
 
   useEffect(() => {
     getAllUser()
-    setEditorStateWhenEditing()
+    setEditorStateWhenEditing(commentContent)
     return () => setEditorState(EditorState.createEmpty())
   }, [])
   useEffect(() => {
+    setEditorStateWhenEditing(props.value || '')
     setCommentContent(props.value)
   }, [props.value])
 
