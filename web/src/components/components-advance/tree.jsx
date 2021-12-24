@@ -234,7 +234,7 @@ function App({
     setSamleData(newSam)
   }
   return (
-    <div className="tree">
+    <div className="treeAdvanceSetting">
       <div>
         <div className="header__tree mb-3">
           <div className="tree__left">

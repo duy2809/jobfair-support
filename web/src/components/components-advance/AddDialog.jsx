@@ -20,7 +20,7 @@ export const AddDialog = ({ handleAddText, handleCloseDialog }) => {
   }
   return (
 
-    <div className="addText">
+    <div className="addTextAdvanceSetting">
       <input
         className="input_edit"
         onChange={handleChangeText}

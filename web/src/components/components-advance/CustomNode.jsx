@@ -65,7 +65,7 @@ export const CustomNode = (props) => {
   }
   return (
     <div
-      className={`tree-node ${styles.root}`}
+      className={`.tree-node-advance-setting ${styles.root}`}
       {...dragOverProps}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

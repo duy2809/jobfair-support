@@ -116,7 +116,7 @@ const templateTaskAdvance = () => {
     }
   }
   return (
-    <>
+    <div className="advance-settings">
       <Otherlayout>
         <Otherlayout.Main>
           <h1 className="title">詳細設定</h1>
@@ -167,7 +167,7 @@ const templateTaskAdvance = () => {
           )}
         </Otherlayout.Main>
       </Otherlayout>
-    </>
+    </div>
   )
 }
 templateTaskAdvance.middleware = ['auth:superadmin']
