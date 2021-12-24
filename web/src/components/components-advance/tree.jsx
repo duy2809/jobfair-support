@@ -2,18 +2,17 @@
 import React, { useState } from 'react'
 import {
   Tree,
-  // DragLayerMonitorProps,
   getDescendants,
 } from '@minoru/react-dnd-treeview'
 import { PlusOutlined } from '@ant-design/icons'
 import useTree from '../useTree'
 
 import { CustomNode } from './CustomNode'
-import { CustomDragPreview } from './CustomDragPreview'
 import { AddDialog } from './AddDialog'
 import SelectMilestone from './SelectMilestone'
 import './App.module.scss'
 
+// data replaces data when the api has not yet called, if there is no library, an error will be reported
 const backupData = [
   {
     id: 1,
@@ -39,7 +38,7 @@ const backupData = [
     ],
   },
 ]
-
+// function sort task
 const getLastId = (treeData) => {
   const reversedArray = [...treeData].sort((a, b) => {
     if (a.id < b.id) {
@@ -62,26 +61,17 @@ const getLastId = (treeData) => {
 // eslint-disable-next-line react/prop-types
 function App({
   idSchedule,
-  onAfterChange,
   SampleData,
   setSamleData,
   idMilestoneActive,
   setIdMileStoneActive,
   dayMilestone,
   dataChartMilestone,
+  setDataChartMilestone,
 }) {
-  const defaultTime = []
-  if (dataChartMilestone) {
-    for (let index = 0; index < dataChartMilestone.length; index += 1) {
-      if (dataChartMilestone[index].milestone_id === idMilestoneActive) {
-        defaultTime.push(dataChartMilestone[index])
-      }
-    }
-  }
-
-  const daysStart = dayMilestone
-  const [daysMilestone, setDaysMilestone] = useState(daysStart)
+  const [daysMilestone, setDaysMilestone] = useState(dayMilestone || null)
   const { treeData, setTreeData } = useTree(idSchedule)
+  // handleDrop task
   const handleDrop = (newTree) => {
     for (let index = 0; index < newTree.length; index += 1) {
       if (newTree[index].droppable) {
@@ -100,6 +90,7 @@ function App({
   }
   const [open, setOpen] = useState(false)
   const [textAdd, setTextAdd] = useState('')
+  // hande change Name father task
   const handleTextChange = (id, value) => {
     const newTree = treeData.map((node) => {
       if (node.id === id) {
@@ -122,6 +113,42 @@ function App({
     const newSam = SampleData.fill(newSample, index, index + 1)
     setSamleData(newSam)
   }
+
+  // after change duration of task
+  const onAfterChange = (value) => {
+    const newData = dataChartMilestone
+    for (let index = 0; index < newData.length; index += 1) {
+      for (
+        let item = 0;
+        item < newData[index].template_tasks.length;
+        item += 1
+      ) {
+        const keyOj = newData[index].template_tasks[item]
+        if (value.id.toString() === Object.keys(keyOj)[0]) {
+          newData[index].template_tasks[item] = { [value.id]: value.value }
+        }
+      }
+    }
+    setDataChartMilestone(newData)
+    const newTree = treeData.map((node) => {
+      if (node.id === value.id) {
+        return {
+          ...node,
+          duration: value.value,
+        }
+      }
+      return node
+    })
+    setTreeData(newTree)
+    const index = SampleData.findIndex((item) => item.id === idMilestoneActive)
+    const newSample = {
+      id: SampleData[index].id,
+      milestone_name: SampleData[index].milestone_name,
+      task: newTree,
+    }
+    const newSam = SampleData.fill(newSample, index, index + 1)
+    setSamleData(newSam)
+  }
   const listMilestone = []
   // eslint-disable-next-line no-unused-expressions
   SampleData
@@ -129,6 +156,7 @@ function App({
       listMilestone.push({ name: element.milestone_name, id: element.id })
     })
     : null
+    // handle delete father task
   const handleDelete = (id) => {
     const deleteIds = [
       id,
@@ -160,7 +188,7 @@ function App({
   const handleCloseDialog = () => {
     setOpen(false)
   }
-
+  // handle submit
   const handleSubmit = (newNode) => {
     const lastId = getLastId(treeData) + 1
 
@@ -174,6 +202,7 @@ function App({
 
     setOpen(false)
   }
+  // onMilestoneChange
   const onMilestoneChange = (value) => {
     const newList = SampleData
       ? SampleData.filter((item) => item.id === value)
@@ -183,6 +212,7 @@ function App({
     const daysActive = dayMilestone.filter((item) => item.id === value)
     setDaysMilestone(daysActive)
   }
+  // add task father
   const handleAddText = (text) => {
     if (text.length === 0) return
     const dataAdd = {
@@ -248,11 +278,8 @@ function App({
             onAfterChange={onAfterChange}
             treeData={treeData}
             daysMilestone={daysMilestone}
-            defaultTime={defaultTime}
+            day={dayMilestone}
           />
-        )}
-        dragPreviewRender={(monitorProps) => (
-          <CustomDragPreview monitorProps={monitorProps} />
         )}
         onDrop={handleDrop}
       />

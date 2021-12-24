@@ -19,9 +19,6 @@ import { updateParent } from '../../api/template-advance'
 
 const templateTaskAdvance = () => {
   const [loading, setLoading] = useState(false)
-  const { store } = useContext(ReactReduxContext)
-  const [user, setUser] = useState(null)
-
   const router = useRouter()
   const idSchedule = router.query.id
   const {
@@ -35,23 +32,6 @@ const templateTaskAdvance = () => {
   } = useTree(idSchedule)
   const [listData, setListData] = useState([])
   const onChangeTime = (value) => {}
-  const onAfterChange = (value) => {
-    const idt = value.id
-    const newData = dataChartMilestone
-    for (let index = 0; index < newData.length; index += 1) {
-      for (
-        let item = 0;
-        item < newData[index].template_tasks.length;
-        item += 1
-      ) {
-        const keyOj = newData[index].template_tasks[item]
-        if (value.id.toString() === Object.keys(keyOj)[0]) {
-          newData[index].template_tasks[item] = { [value.id]: value.value }
-        }
-      }
-    }
-    setDataChartMilestone(newData)
-  }
   const cancelConfirmModle = () => {
     Modal.confirm({
       title: '変更内容が保存されません。よろしいですか？',
@@ -117,14 +97,12 @@ const templateTaskAdvance = () => {
       }
       await updateParent(data)
         .then((response) => {
-          console.log(data, 'database')
           if (response.status === 200) {
             router.push(`/schedule/${idSchedule}`)
             saveNotification()
           }
         })
         .catch((error) => {
-          console.log(data, 'database')
           if (error.response.status === 404) {
             ErrorNotification()
           }
@@ -165,9 +143,9 @@ const templateTaskAdvance = () => {
                       setSamleData={setSamleData}
                       idMilestoneActive={idMilestoneActive}
                       setIdMileStoneActive={setIdMileStoneActive}
-                      onAfterChange={onAfterChange}
                       dayMilestone={dayMilestone}
                       dataChartMilestone={dataChartMilestone}
+                      setDataChartMilestone={setDataChartMilestone}
                     />
                   </div>
                 </Card>
