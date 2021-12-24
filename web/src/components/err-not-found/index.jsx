@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React from 'react'
+import router from 'next/router'
 import { RollbackOutlined } from '@ant-design/icons'
 
 export default function ErrorNotFound() {
@@ -7,7 +8,7 @@ export default function ErrorNotFound() {
     <div className="flex items-center justify-center" style={{ height: '75vh' }}>
       <div className="flex items-center gap-x-8">
         <div
-        // className='bg-red-500'
+          // className='bg-red-500'
           style={{
             width: '200px',
             height: '200px',
@@ -34,9 +35,9 @@ export default function ErrorNotFound() {
             <button
               className="text-blue-700"
               type="button"
-              onClick={() => history.back()}
+              onClick={() => router.push('/top-page')}
             >
-              前のページへ戻る
+              ホームページへ戻る
             </button>
           </div>
         </div>
