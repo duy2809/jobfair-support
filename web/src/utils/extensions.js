@@ -4,6 +4,8 @@ const floatNumberReg = new RegExp(/^[+-]?\d+(\.\d+)?$/)
 const specialCharacterReg = new RegExp(/[!@#$%^&*()_[+\-=\]{};':"\\|,.<>?]/g)
 const alphanumericReg = new RegExp(/^[a-z0-9]+$/i)
 const vietnameseReg = new RegExp(/[àÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬđĐèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆìÌỉỈĩĨíÍịỊòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰỳỲỷỶỹỸýÝỵỴ]/g)
+const emailReg = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/)
+
 /*
 ^         Start of string
 [a-z0-9]  a or b or c or ... z or 0 or 1 or ... 9
@@ -27,6 +29,7 @@ export const Reg = {
   specialCharacter: specialCharacterReg,
   alphanumeric: alphanumericReg,
   vietnamese: vietnameseReg,
+  email: emailReg,
   floatNumber: floatNumberReg,
 }
 
