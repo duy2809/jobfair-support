@@ -1,9 +1,9 @@
-.tree-node-advance-setting {
-  .text {
+.tree-node {
+  .text{
     margin: 0;
     padding: 0;
   }
-
+ 
   margin: 20px 0;
   .textA {
     pointer-events: none;
@@ -84,29 +84,29 @@
   .nodeLabel {
     padding-right: 15px;
   }
-  .item-task {
-    .ant-slider-track {
-      background-color: rgb(197, 196, 135);
-      height: 20px;
-    }
-    .ant-slider-handle {
-      display: none;
-    }
-    .ant-slider-track:hover {
-      background-color: rgb(197, 196, 135);
-      opacity: 0.7;
-    }
+}
+.item-task {
+  .ant-slider-track {
+    background-color: rgb(197, 196, 135);
+    height: 20px;
   }
-  .inputValue {
-    position: absolute;
-    top: 50%;
-    left: 98%;
-    transform: translateY(-25%);
-    border: 2px solid rgb(197, 196, 135);
-    padding: 0 15px;
-    border-radius: 5px;
+  .ant-slider-handle {
+    display: none;
   }
-  li ul {
-    padding: 0 !important;
+  .ant-slider-track:hover {
+    background-color: rgb(197, 196, 135);
+    opacity: 0.7;
   }
+}
+.inputValue{
+  position: absolute;
+  top: 50%;
+  left: 98%;
+  transform: translateY(-25%);
+  border: 2px solid rgb(197, 196, 135);
+  padding: 0 15px;
+  border-radius: 5px;
+}
+li ul{
+  padding: 0 !important;
 }
