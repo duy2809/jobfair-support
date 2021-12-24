@@ -125,7 +125,7 @@ const templateTaskAdvance = () => {
               <Loading loading={loading} overlay={loading} />
             </div>
           ) : (
-            <div className="m-4 item-center">
+            <div className="m-4 item-center advance">
               <div style={{ width: '85%' }} className="item">
                 <Card
                   bordered={false}
@@ -149,7 +149,7 @@ const templateTaskAdvance = () => {
                     />
                   </div>
                 </Card>
-                <div className="group-button mt-4">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} className="group-button mt-4">
                   <Button
                     htmlType="button"
                     type="primary"
