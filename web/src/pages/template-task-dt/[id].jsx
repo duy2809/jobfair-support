@@ -316,7 +316,7 @@ function templatetTaskDt() {
 
               <div className="mx-16 mt-5">
                 <div className="mr-7 ml-28 des">
-                  <MarkDownView source={des} />
+                  <MarkDownView source={des} linkTarget="_blank" />
                 </div>
               </div>
             </div>

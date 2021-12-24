@@ -179,7 +179,7 @@ function TaskDetail() {
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
-        }
+        } else router.push('/error')
       })
   }
   const fetchAfterTask = async () => {
@@ -190,7 +190,7 @@ function TaskDetail() {
       .catch((error) => {
         if (error.response.status === 404) {
           router.push('/404')
-        }
+        } else router.push('/error')
       })
   }
   const [reviewersList, setReviewersList] = useState([])

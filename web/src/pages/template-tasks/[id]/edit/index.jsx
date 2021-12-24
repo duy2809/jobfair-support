@@ -495,14 +495,17 @@ const EditTemplateTaskPage = () => {
                 >
                   <Editor
                     value={description}
-                    onChange={(data) => {
-                      setDescription(data)
+                    onChange={setDescription}
+                    previewOptions={{
+                      linkTarget: '_blank',
                     }}
-                    jfID={1}
                   />
                 </div>
-                <div className="mr-8 ml-14 mb-2 des" style={{ display: isPreview ? '' : 'none' }}>
-                  <MarkDownView source={description} />
+                <div
+                  className="mr-8 ml-14 mb-2 des"
+                  style={{ display: isPreview ? '' : 'none' }}
+                >
+                  <MarkDownView source={description} linkTarget="_blank" />
                 </div>
                 <div className="flex justify-end -mr-32">
                   <Form.Item>

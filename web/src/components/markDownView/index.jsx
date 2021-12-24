@@ -10,7 +10,7 @@ const MarkdownPreview = dynamic(
 function MarkDownView(props) {
   return (
     <div className="m-4">
-      <MarkdownPreview source={props.source} />
+      <MarkdownPreview source={props.source} linkTarget="_blank" />
     </div>
   )
 }

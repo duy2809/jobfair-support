@@ -6,6 +6,7 @@ import Layout from '~/layouts/Default'
 import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
 import Loading from '../components/loading'
+import './styles.scss'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -28,10 +29,16 @@ const LoginPage = () => {
   /* eslint-disable no-template-curly-in-string */
   const validatorPass = (_, value) => {
     if (value.indexOf(' ') >= 0) {
-      return Promise.reject(new Error('半角英数と記号のみを使用して入力してください。例：123example@!'))
+      return Promise.reject(
+        new Error(
+          '半角英数と記号のみを使用して入力してください。例：123example@!',
+        ),
+      )
     }
     if (value.length > 0 && (value.length < 8 || value.length > 24)) {
-      return Promise.reject(new Error('パスワードは8文字以上24文字以下で入力してください。'))
+      return Promise.reject(
+        new Error('パスワードは8文字以上24文字以下で入力してください。'),
+      )
     }
     if (value.length === 0) {
       return Promise.reject(new Error('この項目は必須です。'))
@@ -239,7 +246,6 @@ const LoginPage = () => {
               </Form.Item>
             </Form>
           </div>
-
         </Layout.Main>
       </Layout>
     </div>

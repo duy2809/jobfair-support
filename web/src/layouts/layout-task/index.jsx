@@ -53,14 +53,16 @@ const JfLayout = ({ children, id, bgr }) => {
   const toggleCollapsed = () => {
     Setcollapsed(!collapsed)
   }
+
+  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
   const fetchJF = async () => {
     if (id) {
       await jfdata(id).then((response) => {
+        setAdminId(response.data.jobfair_admin_id)
         setName(response.data.name)
         setStartDate(response.data.start_date.split('-').join('/'))
         setNumberOfStudents(response.data.number_of_students)
         setNumberOfCompanies(response.data.number_of_companies)
-        setAdminId(response.data.jobfair_admin_id)
       })
       if (AdminId) {
         await getAvatar(AdminId)
@@ -81,7 +83,7 @@ const JfLayout = ({ children, id, bgr }) => {
   }
   useEffect(() => {
     fetchJF()
-  }, [children])
+  }, [children, AdminId])
   useEffect(() => {
     const onBodyClick = (event) => {
       if (ref.current.contains(event.target)) {
@@ -224,7 +226,9 @@ const JfLayout = ({ children, id, bgr }) => {
         </Sider>
         <Layout className="site-layout">
           <div className="Jf__header px-10">
-            <h1>{name}</h1>
+            <Tooltip placement="bottom" title={name}>
+              <h1>{truncate(name)}</h1>
+            </Tooltip>
             <div className="admin__jf">
               <span className="text-lg">{startDate ?? 'N/A'}</span>
               <span className="text-lg px-2 ">{`企業: ${numberOfCompanies ?? 'N/A'}`}</span>
