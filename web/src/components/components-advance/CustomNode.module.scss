@@ -1,9 +1,9 @@
-.tree-node-advance-setting {
-  .text {
+.tree-node {
+  .text{
     margin: 0;
     padding: 0;
   }
-
+ 
   margin: 20px 0;
   .textA {
     pointer-events: none;
@@ -97,7 +97,7 @@
       opacity: 0.7;
     }
   }
-  .inputValue {
+  .inputValue{
     position: absolute;
     top: 50%;
     left: 98%;
@@ -106,7 +106,10 @@
     padding: 0 15px;
     border-radius: 5px;
   }
-  li ul {
+  
+}
+.tree {
+  li ul{
     padding: 0 !important;
   }
 }

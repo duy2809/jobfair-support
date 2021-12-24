@@ -5,7 +5,7 @@ import {
   getDescendants,
 } from '@minoru/react-dnd-treeview'
 import { PlusOutlined } from '@ant-design/icons'
-import useTree from '../useTree'
+import useTree from '../../pages/template-task-advance/useTree'
 
 import { CustomNode } from './CustomNode'
 import { AddDialog } from './AddDialog'
@@ -234,7 +234,7 @@ function App({
     setSamleData(newSam)
   }
   return (
-    <div className="treeAdvanceSetting">
+    <div className="tree">
       <div>
         <div className="header__tree mb-3">
           <div className="tree__left">
@@ -286,5 +286,4 @@ function App({
     </div>
   )
 }
-
 export default App

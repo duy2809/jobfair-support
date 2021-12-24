@@ -13,7 +13,7 @@ import { Card, Row, Col, Button, Modal, notification } from 'antd'
 import Otherlayout from '../../layouts/OtherLayout'
 import Loading from '../../components/loading'
 import Tree from '../../components/components-advance/tree'
-import useTree from '../../components/useTree'
+import useTree from './useTree'
 import './style.scss'
 import { updateParent } from '../../api/template-advance'
 
@@ -116,7 +116,7 @@ const templateTaskAdvance = () => {
     }
   }
   return (
-    <div className="advance-settings">
+    <>
       <Otherlayout>
         <Otherlayout.Main>
           <h1 className="title">詳細設定</h1>
@@ -125,7 +125,7 @@ const templateTaskAdvance = () => {
               <Loading loading={loading} overlay={loading} />
             </div>
           ) : (
-            <div className="m-4 item-center">
+            <div className="m-4 item-center advance">
               <div style={{ width: '85%' }} className="item">
                 <Card
                   bordered={false}
@@ -149,7 +149,7 @@ const templateTaskAdvance = () => {
                     />
                   </div>
                 </Card>
-                <div className="group-button mt-4">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }} className="group-button mt-4">
                   <Button
                     htmlType="button"
                     type="primary"
@@ -167,7 +167,7 @@ const templateTaskAdvance = () => {
           )}
         </Otherlayout.Main>
       </Otherlayout>
-    </div>
+    </>
   )
 }
 templateTaskAdvance.middleware = ['auth:superadmin']
