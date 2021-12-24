@@ -13,7 +13,7 @@ import { Card, Row, Col, Button, Modal, notification } from 'antd'
 import Otherlayout from '../../layouts/OtherLayout'
 import Loading from '../../components/loading'
 import Tree from '../../components/components-advance/tree'
-import {useTree} from './useTree'
+import useTree from './useTree'
 import './style.scss'
 import { updateParent } from '../../api/template-advance'
 
