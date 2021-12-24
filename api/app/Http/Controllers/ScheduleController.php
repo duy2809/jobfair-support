@@ -542,7 +542,7 @@ class ScheduleController extends Controller
 
     public function createTemplateTaskParent(Request $request)
     {
-        $schedule = Schedule::findOrFail($request->schedule_id);
+        $schedule = Schedule::findOrFail($request->schedule_id)->load('templateTasks');
 
         // create template task parent
         foreach ($request->parent as $parent) {
@@ -582,6 +582,9 @@ class ScheduleController extends Controller
         }
 
         $milestones = $milestones->sortBy('day');
+        $IDs = $schedule->templateTasks->pluck('id')->toArray();
+        $prerequisitesAll = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
+            ->whereIn('before_tasks', $IDs)->whereIn('after_tasks', $IDs)->get();
         foreach ($request->milestones as $milestone) {
             $index = $milestones->search(function ($element) use ($milestone) {
                 return $element->id === $milestone['milestone_id'];
@@ -597,8 +600,8 @@ class ScheduleController extends Controller
                 return $task->is_parent === 0;
             });
             $templateTaskIds = $templateTasks->pluck('id')->toArray();
-            $prerequisites = DB::table('pivot_table_template_tasks')->select(['after_tasks', 'before_tasks'])
-                ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds)->get();
+            $prerequisites = $prerequisitesAll
+                ->whereIn('before_tasks', $templateTaskIds)->whereIn('after_tasks', $templateTaskIds);
             $templateTasksOrder = taskRelation($templateTaskIds, $prerequisites);
             // if loop with this order, each before tasks of a template task will be handled before it
             foreach ($templateTasksOrder as $templateTaskId => $orderIndex) {
@@ -693,7 +696,7 @@ class ScheduleController extends Controller
                 $mapTaskIDToDuration->put($child->id, $newDuration);
             });
             $schedule->templateTasks()->updateExistingPivot($parentTemplateTask, [
-                'duration' => $mapTaskIDToDuration[$parentTemplateTask->children->last()->id],
+                'duration' => $mapTaskIDToDuration->max(),
             ], false);
         });
     }
