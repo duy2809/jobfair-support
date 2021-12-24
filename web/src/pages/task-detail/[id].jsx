@@ -518,45 +518,51 @@ function TaskDetail() {
                   </div>
                 </div>
               ) }
-              <div className="col-span-1 mx-4 mt-5">
-                <div className="grid grid-cols-8 ">
-                  <div className="layber col-span-2 mx-4">
-                    <p className="font-bold text-right">ステータス</p>
-                  </div>
-                  <div className="col-span-5 mx-4">
-                    <StatusStatic status={taskStatus} />
-                  </div>
-                </div>
-              </div>
-              { infoTask.is_parent !== 1 && (
+              <div className="grid grid-cols-2 mx-4">
                 <div className="col-span-1 mx-4 mt-5">
-                  <div className="grid grid-cols-8">
+                  <div className="grid grid-cols-8 ">
                     <div className="layber col-span-2 mx-4">
-                      <p className="font-bold text-right">レビュアー</p>
+                      <p className="font-bold text-right">ステータス</p>
                     </div>
                     <div className="col-span-5 mx-4">
-                      <ul className="list__member">
-                        {reviewersList.length !== 0 ? (
-                          <li>{reviewersList.map((item) => item.name).join(', ')}</li>
-                        ) : (
-                          <li className="task__chil" />
-                        )}
-                      </ul>
+                      <StatusStatic status={taskStatus} />
                     </div>
+                  </div>
+                </div>
+                { infoTask.is_parent !== 1 && (
+                  <div className="col-span-1 mx-4 mt-5">
+                    <div className="grid grid-cols-8">
+                      <div className="layber col-span-2 mx-4">
+                        <p className="font-bold text-right">レビュアー</p>
+                      </div>
+                      <div className="col-span-5 mx-4">
+                        <ul className="list__member">
+                          {reviewersList.length !== 0 ? (
+                            <li>{reviewersList.map((item) => item.name).join(', ')}</li>
+                          ) : (
+                            <li className="task__chil" />
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                ) }
+              </div>
+
+              { infoTask.is_parent !== 1 && (
+                <div className=" mx-12 my-5">
+                  <p className="font-bold">詳細</p>
+                  <div className=" mx-10  demo-infinite-container">
+                    <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
                   </div>
                 </div>
               ) }
-              <div className=" mx-12 my-5">
-                <p className="font-bold">詳細</p>
-                <div className=" mx-10  demo-infinite-container">
-                  <StackEditor value={infoTask.description_of_detail} taskId={idTask} />
-                </div>
-              </div>
             </div>
             <div>
               {childTask.length > 0 && (
                 <Table
-                  className="mx-12"
+                  className="mx-12 mt-5"
                   columns={columns}
                   dataSource={childTask}
                   scroll={{ x: 'max-content', y: '200px' }}
