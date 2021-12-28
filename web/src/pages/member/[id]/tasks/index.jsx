@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Select, Table, Input, Button, Empty, DatePicker } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { Select, Table, Input, Button, Empty, DatePicker, Popover } from 'antd'
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router'
 import moment from 'moment'
 import Layout from '../../../../layouts/OtherLayout'
@@ -63,6 +63,7 @@ function TaskList() {
     showSizeChanger: false,
   })
   const [optionStatus, setOptionStatus] = useState('すべて')
+  const [visible, setVisible] = useState(false)
 
   const [searchNameValue, setSearchNameValue] = useState('')
   const [searchDateValue, setSearchDateValue] = useState('')
@@ -83,6 +84,10 @@ function TaskList() {
       ...preState,
       current: e.current,
     }))
+  }
+
+  const handleVisibleChange = () => {
+    setVisible(!visible)
   }
 
   const initPagination = () => {
@@ -172,7 +177,7 @@ function TaskList() {
     handleInput()
   }, [optionStatus, searchNameValue, searchDateValue])
   return (
-    <div>
+    <div className="MemberTaskList">
       {loading && <Loading loading={loading} overlay={loading} />}
       <Layout>
         <Layout.Main>
@@ -193,7 +198,7 @@ function TaskList() {
             </h1>
             <div className="text-xl w-full items-center">
               <div className="flex items-center">
-                <div className="my-5 mr-5">ステータス:</div>
+                <div className="mr-5">ステータス:</div>
                 <Button
                   onClick={handleSelectStatus}
                   className={`border-0 mx-4 ${optionStatus === 'すべて' ? 'option-active' : ''
@@ -237,15 +242,8 @@ function TaskList() {
                   未完了
                 </Button>
               </div>
-              <DatePicker
-                className=""
-                help="Please select the correct date"
-                format={Extensions.dateFormat}
-                placeholder="終了時間"
-                onChange={handleInputDate}
-              />
             </div>
-            <div className="flex w-full items-center justify-between mt-10">
+            <div className="flex w-full items-center justify-between mt-5">
               <div>
                 <span>表示件数: </span>
                 <Select
@@ -257,7 +255,43 @@ function TaskList() {
                   <Option value={50}>50</Option>
                 </Select>
               </div>
-              <div>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Popover
+                  content={(
+                    <>
+                      <h6 className="mb-1" style={{ fontWeight: 700 }}>
+                        終了時間
+                      </h6>
+                      <DatePicker
+                        className=""
+                        help="Please select the correct date"
+                        format={Extensions.dateFormat}
+                        placeholder="終了時間"
+                        onChange={handleInputDate}
+                      />
+                    </>
+                  )}
+                  className="mr-2"
+                  placement="bottomLeft"
+                  trigger="click"
+                  visible={visible}
+                  onVisibleChange={handleVisibleChange}
+                >
+                  {visible ? (
+                    <Button
+                      size="large"
+                      shape="circle"
+                      style={{ background: '#ffd803' }}
+                      icon={<FilterOutlined id="filter" />}
+                    />
+                  ) : (
+                    <Button
+                      size="large"
+                      shape="circle"
+                      icon={<FilterOutlined id="filter" />}
+                    />
+                  )}
+                </Popover>
                 <Input
                   onChange={handleInputName}
                   placeholder="タスク名"
@@ -270,7 +304,6 @@ function TaskList() {
               columns={columns}
               dataSource={filteredData}
               rowKey={(record) => record.id}
-              scroll={{ y: 360 }}
               onRow={handleRow}
               onChange={handleChange}
               pagination={pagination}
