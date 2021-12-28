@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from 'react'
 import { ReactReduxContext } from 'react-redux'
-import { notification, Row, Col } from 'antd'
+import { notification, Row, Col, Tooltip } from 'antd'
 import List from '../../components/list'
 import ListJfToppage from '../../components/toppage-list-jf'
 import { tasks, members, jobfairs, taskReviewer } from '../../api/top-page'
@@ -13,10 +13,11 @@ import TaskSubTable from '../../components/TaskSubTable'
 import RecentUpdate from '../../components/recentUpdate'
 
 const { getListSchedule } = ListScheduleApi
+const truncate = (input) => (input.length > 15 ? `${input.substring(0, 15)}...` : input)
 
 const memListDataColumn = [
   {
-    title: '名前',
+    title: 'メンバ名',
     dataIndex: 'name',
     key: 'name',
     width: '60%',
@@ -32,7 +33,7 @@ const memListDataColumn = [
 
 const jfScheduleDataColumn = [
   {
-    title: '名前',
+    title: 'JFスケジュール名',
     dataIndex: 'name',
     key: 'name',
     render: (text) => <a>{text}</a>,
@@ -41,7 +42,7 @@ const jfScheduleDataColumn = [
 
 const templateTaskDataColumn = [
   {
-    title: '名前',
+    title: 'テンプレートタスク名',
     dataIndex: 'name',
     key: 'name',
     width: '40%',
@@ -52,7 +53,9 @@ const templateTaskDataColumn = [
     key: 'category',
     render: (categoryName) => (
       <div className="">
-        {categoryName.length > 0 ? categoryName.join(', ') : ''}
+        <Tooltip title={(categoryName.length > 0 ? categoryName.join(', ') : '')}>
+          {truncate(categoryName.length > 0 ? categoryName.join(', ') : '')}
+        </Tooltip>
       </div>
     ),
     width: '30%',

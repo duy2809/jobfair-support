@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Table, Input, DatePicker, Tooltip, Card } from 'antd'
+import { Table, Input, DatePicker, Tooltip, Card, Select } from 'antd'
 import { PlusOutlined, SearchOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 import { taskSearch } from '../../api/top-page'
 import { loadingIcon } from '../loading'
+import { getCategories } from '../../api/template-task'
+import { getAllMileStone } from '../../api/milestone'
 import './style.scss'
 // const { Search } = Input;
 
@@ -23,23 +25,45 @@ const List = ({
   routeToAdd,
   isLoading,
 }) => {
-  const truncate = (input) => (input.length > 21 ? `${input.substring(0, 21)}...` : input)
+  const truncate = (input) => (input.length > 15 ? `${input.substring(0, 15)}...` : input)
   const ref = useRef()
   const [show, setShow] = useState(false)
   const [showSearchIcon, setShowSearchIcon] = useState(searchIcon)
   const [newDataColumn, setNewDataColumn] = useState([])
   const [showTable, setShowTable] = useState(true)
   const [list, setList] = useState([])
+  const [optionMilestone, setOptionMileStone] = useState([])
+  const [optionCategory, setOptionCategory] = useState([])
+  const { Option } = Select
   const [filter, setFilter] = useState(() => ({
     name: '',
     milestone: '',
     category: '',
     date: '',
   }))
-  useEffect(() => {
+
+  const loadCategoryOptions = (response) => {
+    const option = []
+    for (let i = 0; i < response.data.length; i += 1) {
+      option.push(
+        <Option key={response.data[i].category_name}>{response.data[i].category_name}</Option>,
+      )
+    }
+    setOptionCategory(option)
+  }
+
+  const loadMilestoneOptions = (response) => {
+    const option = []
+    for (let i = 0; i < response.data.length; i += 1) {
+      option.push(<Option key={response.data[i].name}>{response.data[i].name}</Option>)
+    }
+    setOptionMileStone(option)
+  }
+
+  useEffect(async () => {
     setNewDataColumn(
       dataColumn.map((data) => {
-        if (data.title === '名前') {
+        if (data.title.includes('名')) {
           data.render = (row, record) => (
             <Tooltip title={row}>
               {(() => {
@@ -57,6 +81,14 @@ const List = ({
         return data
       }),
     )
+    if (id === 4) {
+      await getCategories().then((response) => {
+        loadCategoryOptions(response)
+      })
+      await getAllMileStone().then((response) => {
+        loadMilestoneOptions(response)
+      })
+    }
   }, [])
   useEffect(() => {
     setList(dataSource)
@@ -95,10 +127,9 @@ const List = ({
         )
       }
       if (filter.category) {
+        console.log(datas)
         datas = datas.filter(
-          (data) => data.category
-            .toLowerCase()
-            .indexOf(filter.category.toLowerCase()) !== -1,
+          (data) => data.category.indexOf(filter.category) !== -1,
         )
       }
       if (filter.date) {
@@ -116,6 +147,24 @@ const List = ({
   }
   const onClickShow = () => {
     setShowTable(!showTable)
+  }
+
+  const handleSelectCategory = (value) => {
+    if (value) {
+      setFilter({ ...filter, category: value })
+    } else {
+      setFilter({ ...filter, category: '' })
+      setList(dataSource)
+    }
+  }
+
+  const handleSelectMilestone = (value) => {
+    if (value) {
+      setFilter({ ...filter, milestone: value })
+    } else {
+      setFilter({ ...filter, milestone: '' })
+      setList(dataSource)
+    }
   }
 
   const searchInput = (e, dateString = '') => {
@@ -225,7 +274,7 @@ const List = ({
                   }}
                   name="name"
                   className="no-border"
-                  placeholder="名前"
+                  placeholder={`${text}名`}
                   onChange={searchInput}
                   bordered
                   prefix={<SearchOutlined />}
@@ -287,35 +336,37 @@ const List = ({
             <div className="flex items-center justify-end pl-2">
               {showCategoryInput && (
                 <div className="flex items-center justify-end pl-2 mb-2">
-                  <div>
-                    <Input
-                      style={{
-                        width: '200px',
-                        height: '40px',
-                      }}
-                      name="category"
-                      placeholder="カテゴリ"
-                      type="text"
-                      onChange={searchInput}
-                    />
-                  </div>
+                  <Select
+                    size="large"
+                    placeholder="カテゴリ"
+                    style={{
+                      width: '200px',
+                      height: '40px',
+                    }}
+                    allowClear="true"
+                    name="category"
+                    onChange={handleSelectCategory}
+                  >
+                    {optionCategory}
+                  </Select>
                 </div>
               )}
 
               {showMilestoneInput && (
                 <div className="flex items-center justify-end pl-2 mb-2">
-                  <div>
-                    <Input
-                      style={{
-                        width: '200px',
-                        height: '40px',
-                      }}
-                      name="milestone"
-                      placeholder="マイルストーン"
-                      type="text"
-                      onChange={searchInput}
-                    />
-                  </div>
+                  <Select
+                    size="large"
+                    placeholder="マイルストーン"
+                    style={{
+                      width: '200px',
+                      height: '40px',
+                    }}
+                    allowClear="true"
+                    name="milestone"
+                    onChange={handleSelectMilestone}
+                  >
+                    {optionMilestone}
+                  </Select>
                 </div>
               )}
             </div>
