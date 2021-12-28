@@ -201,6 +201,14 @@ const EditProfilePage = () => {
           setLoading(false)
           router.push('/404')
         }
+        if (error.response.status === 422) {
+          setLoading(false)
+          notification.error({
+            message: error.response.data.message,
+            duration: 3,
+            onClick: () => {},
+          })
+        }
       })
     }
   }
@@ -348,7 +356,7 @@ const EditProfilePage = () => {
                     </Form.Item>
 
                     <Form.Item
-                      label={<span className="font-bold mr-3">チャットワークID</span>}
+                      label={<span className="font-bold mr-3">スラックID</span>}
                       name="chatwork"
                       rules={[
                         {
@@ -380,7 +388,7 @@ const EditProfilePage = () => {
                         type="text"
                         size="large"
                         onChange={onChatworkIdChange}
-                        placeholder="チャットワークID"
+                        placeholder="スラックID"
                       />
                     </Form.Item>
 

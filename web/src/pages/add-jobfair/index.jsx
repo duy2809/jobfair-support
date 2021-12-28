@@ -144,6 +144,7 @@ const index = () => {
         number_of_students: values.number_of_students * 1.0,
         number_of_companies: values.number_of_companies * 1.0,
         jobfair_admin_id: values.jobfair_admin_id * 1.0,
+        channel_name: values.channel_name.toString(),
       }
       // setdisableBtn(true)
 
@@ -176,6 +177,13 @@ const index = () => {
       // }
       if (error.response.status === 404) {
         routeTo('/404')
+      }
+      if (error.response.status === 422) {
+        notification.error({
+          duration: 3,
+          message: 'このSlackチャンネル名はすでに存在します。 チャンネル名を変更してください',
+          onClick: () => {},
+        })
       }
       return error
     }
@@ -255,6 +263,13 @@ const index = () => {
     return Promise.resolve()
   }
 
+  const channelNameValidator = (_, value) => {
+    if (!value) {
+      return Promise.reject(new Error('この項目は必須です'))
+    }
+
+    return Promise.resolve()
+  }
   const startDayValidator = (_, value) => {
     if (!value) {
       return Promise.reject(new Error('この項目は必須です'))
@@ -374,6 +389,7 @@ const index = () => {
                               placeholder="JF名を入力する"
                               maxLength={200}
                             />
+
                           </Form.Item>
                           <span
                             id="error-msg"
@@ -384,6 +400,29 @@ const index = () => {
                             この名前はすでに存在します
                           </span>
                         </Form.Item>
+                        {/* Slack chanel name */}
+
+                        <Form.Item
+                          required
+                          // hasFeedback
+                          label={<p className="font-bold">チャンネル名</p>}
+                          name="channel_name"
+                          rules={[
+                            {
+                              validator: channelNameValidator,
+                            },
+                          ]}
+                        >
+                          <Input
+                            type="text"
+                            size="large"
+                            onChange={(e) => {
+                              autoConvertHalfwidth(e)
+                            }}
+                            placeholder="チャンネル名を入力する"
+                          />
+                        </Form.Item>
+
                         {/* number of companies */}
                         <Form.Item
                           required

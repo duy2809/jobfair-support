@@ -374,9 +374,15 @@ function EditTask() {
         } else {
           setdisableBtn(true)
           await editTask(idTask, data)
-            .then(() => {
+            .then((response) => {
               router.push(`/task-detail/${idTask}`)
-              saveNotification()
+              if (response.data.warning === true) {
+                notification.warning({
+                  duration: 3,
+                  message: response.data.message,
+                  onClick: () => {},
+                })
+              } else saveNotification()
             })
             .catch((error) => {
               setdisableBtn(false)

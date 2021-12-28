@@ -83,8 +83,14 @@ export default function EditUserAssignee({ setLoading, loadTableData, record, se
     }
     setLoading(true)
     try {
-      await updateManagerTask(record.idtask, data).then(() => {
-        saveEditNotification()
+      await updateManagerTask(record.idtask, data).then((response) => {
+        if (response.data.warning === true) {
+          notification.warning({
+            duration: 3,
+            message: response.data.message,
+            onClick: () => {},
+          })
+        } else saveEditNotification()
       })
       await listTaskWithParent(router.query.JFid).then((response) => {
         loadTableData(response)
