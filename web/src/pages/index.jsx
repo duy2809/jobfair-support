@@ -7,6 +7,7 @@ import { login, sendLinkResetPassword } from '~/api/authenticate'
 import { LOAD_SUCCESS } from '../store/modules/auth'
 import Loading from '../components/loading'
 import './styles.scss'
+import * as Extensions from '../utils/extensions'
 
 const LoginPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -45,16 +46,25 @@ const LoginPage = () => {
     }
     return Promise.resolve()
   }
-  const validateMessages = {
-    required: 'この項目は必須です。',
-    types: {
-      email: 'メールアドレスを正しく入力してください。',
-      string: '',
-    },
-    string: {
-      range: 'パスワードは${min}文字以上${max}文字以下で入力してください。',
-    },
+  const validatorEmail = (_, value) => {
+    if (value.length === 0) {
+      return Promise.reject(new Error('この項目は必須です。'))
+    }
+    if (!value.match(Extensions.Reg.email)) {
+      return Promise.reject(new Error('メールアドレスを正しく入力してください'))
+    }
+    return Promise.resolve()
   }
+  // const validateMessages = {
+  //   required: 'この項目は必須です。',
+  //   types: {
+  //     email: 'メールアドレスを正しく入力してください。',
+  //     string: '',
+  //   },
+  //   string: {
+  //     range: 'パスワードは${min}文字以上${max}文字以下で入力してください。',
+  //   },
+  // }
   /* eslint-enable no-template-curly-in-string */
 
   const openNotification = (type, message, description) => {
@@ -148,12 +158,12 @@ const LoginPage = () => {
               onFinishFailed={onFinishFailed}
               layout="vertical"
               className="w-96"
-              validateMessages={validateMessages}
             >
               <Form.Item
                 label={<p className="font-bold">メールアドレス</p>}
                 name="email"
-                rules={[{ required: true }, { type: 'email' }]}
+                required
+                rules={[{ validator: validatorEmail }]}
               >
                 <Input
                   size="large"
@@ -165,8 +175,8 @@ const LoginPage = () => {
               <Form.Item
                 label={<p className="font-bold">パスワード</p>}
                 name="password"
+                required
                 rules={[
-                  { required: true },
                   {
                     validator: validatorPass,
                   },
@@ -206,12 +216,12 @@ const LoginPage = () => {
                   onFinishFailed={onFinishFailed}
                   layout="vertical"
                   onValuesChange={onChangeDisableOk}
-                  validateMessages={validateMessages}
                 >
                   <Form.Item
                     label={<p className="font-bold">メールアドレス</p>}
                     name="reset-email"
-                    rules={[{ required: true }, { type: 'email' }]}
+                    required
+                    rules={[{ validator: validatorEmail }]}
                   >
                     <Input
                       type="email"
